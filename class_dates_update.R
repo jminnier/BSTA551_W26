@@ -1,0 +1,17 @@
+
+library(here)
+library(quarto)
+
+quarto_render(here("homeworks.qmd"))
+quarto_render(here("schedule.qmd"))
+quarto_render(here("homework", "HW_00.qmd"))
+quarto_render(here("homework", "HW_01.qmd"))
+quarto_render(here("homework", "HW_02.qmd"))
+quarto_render(here("homework", "HW_03.qmd"))
+quarto_render(here("homework", "HW_04.qmd"))
+quarto_render(here("homework", "HW_05.qmd"))
+quarto_render(here("homework", "HW_06.qmd"))
+quarto_render(here("homework", "HW_07.qmd"))
+quarto_render(here("homework", "HW_08.qmd"))
+quarto_render(here("homework", "HW_09.qmd"))
+quarto_render(here("homework", "HW_10.qmd"))
