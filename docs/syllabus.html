@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>BSTA 550 Syllabus – Introduction to Probability</title>
+<title>BSTA 551 Syllabus – Theory of Statistical Inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-fb99f81d7ceaaba0dec83ae1d2851021.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -79,10 +79,10 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./images/bsta_550_hex_3.png" alt="" class="navbar-logo">
+    <img src="./images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Introduction to Probability</span>
+    <span class="navbar-title">Theory of Statistical Inference</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -106,10 +106,6 @@ ul.task-list li input[type="checkbox"] {
   <li class="nav-item">
     <a class="nav-link" href="./homeworks.html"> 
 <span class="menu-text">Homework</span></a>
-  </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./quiz.html"> 
-<span class="menu-text">Quizzes</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -149,13 +145,10 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#course-instructor-evaluations" id="toc-course-instructor-evaluations" class="nav-link" data-scroll-target="#course-instructor-evaluations">Course &amp; Instructor Evaluations</a>
   <ul class="collapse">
   <li><a href="#ongoing-course-feedback" id="toc-ongoing-course-feedback" class="nav-link" data-scroll-target="#ongoing-course-feedback">Ongoing Course Feedback</a></li>
-  <li><a href="#midterm-feedback" id="toc-midterm-feedback" class="nav-link" data-scroll-target="#midterm-feedback">Midterm Feedback</a></li>
   <li><a href="#final-course-feedback" id="toc-final-course-feedback" class="nav-link" data-scroll-target="#final-course-feedback">Final Course Feedback</a></li>
   </ul></li>
-  <li><a href="#schedule" id="toc-schedule" class="nav-link" data-scroll-target="#schedule">Schedule</a></li>
-  <li><a href="#how-to-succeed-in-this-course" id="toc-how-to-succeed-in-this-course" class="nav-link" data-scroll-target="#how-to-succeed-in-this-course">How to succeed in this course</a>
+  <li><a href="#schedule" id="toc-schedule" class="nav-link" data-scroll-target="#schedule">Schedule</a>
   <ul class="collapse">
-  <li><a href="#resources" id="toc-resources" class="nav-link" data-scroll-target="#resources">Resources</a></li>
   <li><a href="#assignments" id="toc-assignments" class="nav-link" data-scroll-target="#assignments">Assignments</a></li>
   </ul></li>
   <li><a href="#course-policies-and-resources" id="toc-course-policies-and-resources" class="nav-link" data-scroll-target="#course-policies-and-resources">Course Policies and Resources</a>
@@ -187,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">BSTA 550 Syllabus</h1>
+<h1 class="title">BSTA 551 Syllabus</h1>
 </div>
 
 
@@ -199,7 +192,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">December 18, 2025</p>
+      <p class="date-modified">December 23, 2025</p>
     </div>
   </div>
     
@@ -214,7 +207,7 @@ ul.task-list li input[type="checkbox"] {
 <style type="text/css">
 .title{
   font-size: 40px;
-  color: #006a4e;
+  color: #639976;
   background-color: #fff;
   padding: 0px;
 }
@@ -222,7 +215,7 @@ ul.task-list li input[type="checkbox"] {
 .description{
   font-size: 20px;
   color: #fff;
-  background-color: #006a4e;
+  background-color: #639976;
   padding: 10px;
 }
 </style>
@@ -230,43 +223,39 @@ ul.task-list li input[type="checkbox"] {
 <section id="key-course-info" class="level2">
 <h2 class="anchored" data-anchor-id="key-course-info">Key Course Info</h2>
 <ul>
-<li><strong>If an assignment on Sakai is closed</strong> or you are submitting late work, please email me AND the TAs your work</li>
-<li><strong>For homework, you will have TWO no-questions-asked, 3-day extensions:</strong> one for the first assignment, and one for either the solutions or presentation. You just need to send me and the TAs a quick email saying “I am using my no-questions-asked extension for Homework __ assignment.”</li>
-<li><strong>Attendance policy:</strong> Attend class in-person or asynchronously through recordings
-<ul>
-<li>Attendance is recorded through Exit tickets that will be graded 7 days after each class</li>
-<li>Attendance is expected for most classes</li>
-</ul></li>
-<li>The class will end on December 10, 2025. <strong>All coursework is expected to be completed by December 12, 2025 at 11pm.</strong></li>
+<li><strong>If an assignment on Sakai is closed</strong> or you are submitting late work, please email me AND the TA your work</li>
+<li>The class instruction will end on March 11, 2026. <strong>All coursework is expected to be completed by Wednesday of finals week March 18, 2026 at 11:59pm.</strong></li>
 </ul>
 </section>
 <section id="description" class="level2">
 <h2 class="anchored" data-anchor-id="description">Description</h2>
-<p>Welcome to BSTA 550! In this course, we will establish foundational knowledge in probability in which more statistics knowledge can be built! This course is designed to introduce history, concepts and distributions in probability, Monte Carlo simulation techniques, and Markov chains. Students will also learn how to write R codes for various statistical computations and plots. Previous experience in R is not required. R is free software available from http://www.r-project.org.</p>
+<p>Welcome to BSTA 551! In this course we will study the theoretical foundaton of statistical inference which includes estimation and hypothesis testing. This is the official course description:</p>
+<p>This course introduces theoretical foundation in Biostatistics. Topics will include distributions of random variables (location-scale families and exponential families), data reduction (sufficiency and completeness of statistics), methods of estimation (method of moment estimators and maximum likelihood estimators), convergence, finite and large sample properties of estimators, interval estimation, hypothesis testing, asymptotic tests (likelihood-ratio tests, score tests, and Wald tests), and statistical simulations to evaluate statistical methods.</p>
 <section id="course-learning-objectives" class="level3">
 <h3 class="anchored" data-anchor-id="course-learning-objectives">Course Learning Objectives</h3>
 <p>At the end of this course, students should be able to…</p>
 <ol type="1">
-<li><p>Assign probability to a chance event using concepts of probability (including fundamental axioms, properties, and counting)</p></li>
-<li><p>Compute probabilities for <em>discrete random variables</em> (including random variables following Bernoulli, binomial, geometric, and Poisson distributions)</p></li>
-<li><p>Compute probabilities for <em>continuous random variables</em> (including random variables following Normal, Gamma, and Beta distributions)</p></li>
-<li><p>Perform statistical computations and simulations using R</p></li>
+<li>Explain the major concepts and theorems in statistical inference.</li>
+<li>Connect theoretical concepts to statistical analyses.</li>
+<li>Conduct simulations to study and evaluate statistical methods.</li>
 </ol>
 </section>
 </section>
 <section id="instructors" class="level2">
 <h2 class="anchored" data-anchor-id="instructors">Instructors</h2>
-<p><a href="./instructors.html">Here is the instructor page.</a> This also has office hours!</p>
+<p><a href="./instructors.html">Here is the instructor page.</a></p>
 </section>
 <section id="meeting-times" class="level2">
 <h2 class="anchored" data-anchor-id="meeting-times">Meeting Times</h2>
-<p>Mondays&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10:30 AM – 12:00 PM PST in room VPT 620M</p>
-<p>Wednesdays&nbsp;&nbsp;&nbsp;&nbsp;10:30 AM – 12:00 PM PST in room VPT 620M</p>
+<p>Mondays&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;10:00 AM – 12:00 PM PST (see Sakai for room)</p>
+<p>Wednesdays&nbsp;&nbsp;&nbsp;&nbsp;10:00 AM – 12:00 PM PST</p>
 <section id="known-exceptions" class="level3">
 <h3 class="anchored" data-anchor-id="known-exceptions">Known Exceptions</h3>
 <ul>
-<li>Wednesday, November 26: No class</li>
-<li>Monday, December 1: Virtual class</li>
+<li>Monday, January 19: No class (holiday)</li>
+<li>Wednesday, February 10: No class</li>
+<li>Monday, February 16: No class (holiday)</li>
+<li>March 16 and 18: Finals week, no in person teaching, possibly virtual office hours as needed</li>
 </ul>
 </section>
 </section>
@@ -274,25 +263,21 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="materials">Materials</h2>
 <section id="textbook" class="level3">
 <h3 class="anchored" data-anchor-id="textbook">Textbook</h3>
-<section id="an-introduction-to-probability-and-simulation" class="level4">
-<h4 class="anchored" data-anchor-id="an-introduction-to-probability-and-simulation">An Introduction to Probability and Simulation</h4>
+<section id="modern-mathematical-statistics-with-applications-3rd-ed." class="level4">
+<h4 class="anchored" data-anchor-id="modern-mathematical-statistics-with-applications-3rd-ed.">Modern Mathematical Statistics with Applications, 3rd ed.</h4>
 <ul>
-<li><p><strong>Author:</strong> Kevin Ross</p></li>
-<li><p><strong>Updated:</strong> 8/11/2022</p></li>
-<li><p><a href="https://bookdown.org/kevin_davisross/probsim-book/">Textbook available online</a></p></li>
+<li><p><strong>Author:</strong> JL Devore, KN Berk, MA Carlton</p></li>
+<li><p><a href="https://librarysearch.ohsu.edu/permalink/01ALLIANCE_OHSU/okd4j/alma99900609916301858">Textbook available online through library</a></p></li>
+<li><p>Citation: Devore JL, Berk KN, Carlton MA. Modern Mathematical Statistics with Applications. Third edition. Springer; 2021. doi:10.1007/978-3-030-55156-8</p></li>
+<li><p>Focus on chapters 6-10</p></li>
 </ul>
 </section>
 <section id="supplemental-readings-optional" class="level4">
 <h4 class="anchored" data-anchor-id="supplemental-readings-optional">Supplemental Readings (Optional)</h4>
 <ul>
-<li><p>Introduction to Probability, Mark Daniel Ward and Ellen Gundlach, 1st edition</p>
-<ul>
-<li>See shared folder for textbook access</li>
-</ul></li>
-<li><p><em>Statistical Inference</em>, Casella and Berger, 2nd ed.&nbsp;(This will be the textbook for BSTA 551-552 Math Stat.)</p></li>
-<li><p><a href="https://math.dartmouth.edu/~prob/prob/prob.pdf"><em>Introduction to Probability</em></a><em>,</em> Charles M. Grinstead and J. Laurie Snell</p></li>
-<li><p><em>Probability With Applications and R</em>, Robert P. Dobrow, Wiley 2013 (eBook available from OHSU library)</p></li>
+<li><p><em>Statistical Inference</em>, Casella and Berger, 2nd ed.&nbsp;(This was the previous textbook BSTA 551-552 Math Stat., very theoretical) <a href="https://librarysearch.ohsu.edu/permalink/01ALLIANCE_OHSU/19jn9i0/alma99900537344401858">ebook OHSU library link</a></p></li>
 <li><p><em>An Introduction to R</em> (<a href="http://cran.r-project.org/manuals.html">free pdf available</a>)</p></li>
+<li><p><em>Statistical Inference via Data Science, A ModernDive into R and the Tidyverse</em>, Ismay, Kim, Valdivia, 2nd ed.&nbsp;<a href="https://moderndive.com/v2/index.html">free ebook online</a></p></li>
 </ul>
 </section>
 </section>
@@ -302,160 +287,29 @@ ul.task-list li input[type="checkbox"] {
 <h4 class="anchored" data-anchor-id="sakai">Sakai</h4>
 <p>While most course materials will be delivered online through this website, assignments will be turned in through <a href="https://sakai.ohsu.edu/">Sakai</a>, OHSU’s course management system. I will include a link on this website to the Sakai assignment page.&nbsp;</p>
 </section>
-<section id="webex" class="level4">
-<h4 class="anchored" data-anchor-id="webex">Webex</h4>
-<p>Webex software will be used for virtual office hours. To give everyone the best possible experience with Webex, I recommend the following best practices:</p>
-<ul>
-<li><p>Please stay muted until you want to participate</p></li>
-<li><p>During office hours, please send a message in chat with your question or with a statement like “I have a question.” This makes sure I or the TA can address everyone’s questions in order.&nbsp;</p></li>
-<li><p>I encourage you to attend office hours with your video on. This helps me recognize you, and keep mental notes on what techniques/concepts I emphasize to facilitate your specific understanding.&nbsp;</p></li>
-</ul>
+<section id="pennstate-stat-415-website" class="level4">
+<h4 class="anchored" data-anchor-id="pennstate-stat-415-website">PennState STAT 415 Website</h4>
+<p>Dr.&nbsp;Wakim linked to Penn State’s probability course materials for 550. They also have the subsequent inference course on the website as well. They have all their <a href="https://online.stat.psu.edu/stat415/">course notes posted on this page</a> if you wish to have an alternative reference.</p>
 </section>
-<section id="pennstate-stat-414-website" class="level4">
-<h4 class="anchored" data-anchor-id="pennstate-stat-414-website">PennState STAT 414 Website</h4>
-<p>PennState has a class offered to advanced undergraduates that has some overlap with our class. They have all their <a href="https://online.stat.psu.edu/stat414/">course notes posted on this page</a>. This is a great source if you would like to see class notes with different phrasing.</p>
-<p>Not all of our topics are covered in their notes, but the most important ones are. If you are having trouble finding our course’s concepts on their page, please make ask me at Office Hours, after class, or in a private meeting. I do not explicitly state corresponding sections under our schedule because I believe it is important for you to develop skills involving resources and learning key words that can help you find answers.&nbsp;</p>
+<section id="university-of-south-carolina-stat-713-website" class="level4">
+<h4 class="anchored" data-anchor-id="university-of-south-carolina-stat-713-website">University of South Carolina STAT 713 Website</h4>
+<p>This is a more thoeretical version (similar to previous math/stats courses taught at OHSU) of statistical inference taught by Professor Tebbs at U of SC. Their notes <a href="https://people.stat.sc.edu/Tebbs/stat713/index.htm">which are linked on the course website</a> are very well written. If you want more theoretical context for what we are learning in this course this is a good source. Note, it uses Casella &amp; Berger’s textbook <em>Statistical Inference</em> as a reference.</p>
 </section>
 <section id="r-statistical-computing-software" class="level4">
 <h4 class="anchored" data-anchor-id="r-statistical-computing-software">R: Statistical Computing Software</h4>
-<p>Students will use statistical software to complete homework assignments. Students are required to use R/RStudio for this course. R can be freely downloaded. <a href="https://rstudio-education.github.io/hopr/starting.html">Helpful documentation</a> on installing R is available. <strong>I encourage you to install R prior to attending our first lecture.</strong> Please email me if you need help installing R or RStudio.</p>
-<p>You will need to download the following three things:</p>
-<ol type="1">
-<li><p>R <a href="https://www.r-project.org/" class="uri">https://www.r-project.org/</a></p></li>
-<li><p>Rstudio <a href="https://posit.co/download/rstudio-desktop/" class="uri">https://posit.co/download/rstudio-desktop/</a></p></li>
-<li><p>Quarto <a href="https://quarto.org/docs/get-started/" class="uri">https://quarto.org/docs/get-started/</a></p></li>
-</ol>
-<section id="additional-r-resources" class="level5">
-<h5 class="anchored" data-anchor-id="additional-r-resources">Additional R Resources</h5>
-<p>Your learning and practicing of R will hopefully not be limited to this course. One of the best aspects of programming in R is that many resources are freely available online. Here are just a few additional resources you may explore beyond this class to continue your training in R.</p>
-</section>
-<section id="useful-online-r-resources" class="level5">
-<h5 class="anchored" data-anchor-id="useful-online-r-resources">Useful online R resources</h5>
-<ul>
-<li><a href="https://rfortherestofus.com/">R for the rest of us</a></li>
-<li>Statistical tools for high-throughput data analysis. <a href="http://www.sthda.com/english/wiki/ggplot2-essentials#google_vignette">ggplot2 essentials</a></li>
-<li><a href="http://www.r-bloggers.com/">R-bloggers</a></li>
-<li>Stack Overflow for troubleshooting</li>
-<li><a href="https://www.imsbio.co.jp/RGM/R_image_list">R Graphical Manual</a></li>
-<li><a href="http://www.statmethods.net/">Quick-R</a>. Accessing the power of R</li>
-<li><a href="http://r4stats.com/">R for SAS, STATA, and SPSS Users</a></li>
-<li><a href="https://ggplot2.tidyverse.org/">ggplot2</a></li>
-<li><a href="https://www.learnr4free.com/en/index.html">Learn R 4 free</a></li>
-<li><a href="https://www.r-consortium.org/blog/2019/09/09/r-community-explorer-r-user-groups">Join a local R user groups</a></li>
-<li><a href="https://blog.ephorie.de/learning-r-the-ultimate-introduction-incl-machine-learning">Learning Machines</a></li>
-</ul>
-</section>
-</section>
-<section id="online-r-courses-to-complement-or-refresh-material-from-class" class="level4">
-<h4 class="anchored" data-anchor-id="online-r-courses-to-complement-or-refresh-material-from-class">Online R courses to complement or refresh material from class</h4>
-<ul>
-<li><a href="https://rfortherestofus.com/">R for the rest of us</a></li>
-<li>Coursera: <a href="https://www.coursera.org/learn/r-programming">R programming</a></li>
-<li>edX: <a href="https://www.edx.org/course/data-science-r-basics">R basics</a></li>
-<li>Data Carpentry: For Biologists</li>
-<li>Data Carpentry: <a href="https://datacarpentry.org/lessons/#ecology-workshop">For Ecologists</a></li>
-<li><a href="https://psyteachr.github.io/">Psychiatric R</a></li>
-<li><a href="https://r-coder.com/">R coder</a></li>
-</ul>
+<p>R/Rstudio will be used to complete some homework assignments. Please see <a href="http://localhost:6712/syllabus.html">Dr.&nbsp;Wakim’s BSTA 550 syllabus</a> section on R if you need any references or refreshers on how to use.</p>
 </section>
 </section>
 </section>
 <section id="assessment" class="level2">
 <h2 class="anchored" data-anchor-id="assessment">Assessment</h2>
-<p>The course is structured around the following four components:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Component</strong></td>
-<td style="text-align: center;"><strong>Modality</strong></td>
-<td style="text-align: center;"><strong>Frequency</strong></td>
-<td style="text-align: left;"><strong>Description</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Lecture</td>
-<td style="text-align: center;">In person</td>
-<td style="text-align: center;">Twice, Weekly</td>
-<td style="text-align: left;">Course content is provided through in-person lectures. Lectures will consist of didactic lessons, interactive examples, and PollEverywhere questions. Sessions will be recorded through Explain Everything and posted to Sakai. <strong>Attending or viewing the lecture within 7 days of the original lecture date is mandatory.</strong> Class attendance will be taken through an Exit Ticket. If viewing the lecture asynchronously, you must take the Exit Ticket to verify your attendance.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Homework Assignment</td>
-<td style="text-align: center;">Online</td>
-<td style="text-align: center;">Weekly</td>
-<td style="text-align: left;">The course includes 9 homework assignments. They are an opportunity for you to engage with important concepts, practice some coding, and apply calculating skills. Homework assignments should be submitted online, and will be graded for completeness by the TAs. Students are encouraged to work in groups for homework assignments, but each person should do their own summary and hand in their work. <strong>Homework assignments will be due on Thursday at 11 PM.</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Quizzes</td>
-<td style="text-align: center;">Online</td>
-<td style="text-align: center;">Every 3 weeks</td>
-<td style="text-align: left;">The purpose of the quizzes is to assess how well you have achieved the learning objectives through questions covering important concepts, conducting statistical processes, and interpreting output. <strong>We will have our quizzes online, over a few days, and it will be open book.</strong> Students must work on the quizzes independently.</td>
-</tr>
-</tbody>
-</table>
-<section id="types-of-assessments" class="level4">
-<h4 class="anchored" data-anchor-id="types-of-assessments">Types of assessments</h4>
-<p>This class will use a combination of formative and summative assessments to build and test our knowledge. Below I define each of these types of assessments:</p>
-<ul>
-<li><p><strong>Formative assessment:</strong> Activity or work meant to help students learn and practice. Feedback on these assessments are meant to help the instructor and student identify gaps in knowledge and highlight accomplishments.</p></li>
-<li><p><strong>Summative assessment:</strong> Work meant to test how well students have achieved learning objectives. Grading of these assessments are meant to gauge how well a student grasps the learning objectives and will be able to use their knowledge outside of the classroom.</p></li>
-</ul>
-</section>
 <section id="breakdown" class="level3">
 <h3 class="anchored" data-anchor-id="breakdown">Breakdown</h3>
 <section id="grading-requirements" class="level4">
 <h4 class="anchored" data-anchor-id="grading-requirements">Grading &amp; Requirements</h4>
-<p>Letter grades will be assigned roughly according to the following scheme: A (&gt;=93%), A- (90-92%), B+ (88-89%), B(83-87%), B- (82-80%), C+(78-79%), C(73-77%), C- (70-72%), D (60 – 69%), F(&lt;60%).</p>
-<p>Grades will be based on homework assignments, midterm exam, class “attendance”, and final exam, as follows:</p>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-<col style="width: 25%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Course activity</strong></td>
-<td style="text-align: center;"><strong>Type of Assessment</strong></td>
-<td style="text-align: center;"><strong>Due Dates</strong></td>
-<td style="text-align: center;"><strong>Percentage of final grade</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Homework Assignments</td>
-<td style="text-align: center;">Formative</td>
-<td style="text-align: center;">Every week</td>
-<td style="text-align: center;">50%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Quizzes</td>
-<td style="text-align: center;">Summative</td>
-<td style="text-align: center;">Every 3 weeks</td>
-<td style="text-align: center;">36%</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Exit tickets (Attendance)</td>
-<td style="text-align: center;">N/A</td>
-<td style="text-align: center;">Twice Weekly</td>
-<td style="text-align: center;">12%</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Mid-Quarter Feedback</td>
-<td style="text-align: center;">N/A</td>
-<td style="text-align: center;">11/02</td>
-<td style="text-align: center;">2%</td>
-</tr>
-</tbody>
-</table>
 </section>
 <section id="homework-grading" class="level4">
 <h4 class="anchored" data-anchor-id="homework-grading">Homework grading</h4>
-<p>No student has the same amount of time available to dedicate to homework. This class may not be a priority to you, you may be taking several other courses, or you may need to dedicate time to other activities. Homework assignments are <strong>formative assessments</strong>, meaning its purpose is to help you learn and practice. To reduce the pressure on you to have perfect homework (the first time around), I have a very simple grading policy: <strong>Your homework will be given a check mark if you turn in 75% of the question parts <em>completed</em> (whether the 75% is correct or wrong).</strong> I highly encourage you to stay up-to-date with the homeworks and put in as much effort as you can. <strong>This will be the most helpful work in this class!</strong></p>
-<p>If you turn in the homework on time, I will give you feedback (on one or more complete problems). There is no penalty for turning in the homework late, <strong>but you will not get feedback on your work.</strong> Please make sure to check the solutions or go to office hours to assess your work.</p>
 </section>
 <section id="viewing-grades-in-sakai" class="level4">
 <h4 class="anchored" data-anchor-id="viewing-grades-in-sakai">Viewing Grades in Sakai</h4>
@@ -467,17 +321,6 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="course-instructor-evaluations">Course &amp; Instructor Evaluations</h2>
 <section id="ongoing-course-feedback" class="level3">
 <h3 class="anchored" data-anchor-id="ongoing-course-feedback">Ongoing Course Feedback</h3>
-<p>Throughout the duration of the course, you are also welcome to informally and anonymously submit your feedback through <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=V3lz4rj6fk2U9pvWr59xWFMopmPUjRtDiHLswhgacNhUN0MzVDk5Q1pKUkxaWTM0VFhVQTJGRlJLRy4u">this Microsoft Form</a> or Class Exit Tickets. This form will be available on Sakai. Students can submit feedback at any time and this form will be reviewed regularly by me. Your responses will be anonymous unless you elect to leave your email address. If I have done anything to make you feel uncomfortable, please give me feedback so I can change my behavior. <strong>Ultimately, this class is for you, and my individual social identity/behavior should not inhibit your learning.</strong> Thank you for your help making BSTA 550 a more successful class! Examples of ongoing feedback are:</p>
-<ul>
-<li><p>Nicky talks a little fast during lecture time. May you speak slower?</p></li>
-<li><p>During Office Hours, Dr.&nbsp;Wakim made a face when I asked a question. This face made me feel self-conscious about my question.</p></li>
-<li><p>Dr.&nbsp;W asked me a question about my experience that made me feel like a monolith. Please do not assume I can speak on behalf of my social identity groups.</p></li>
-<li><p>The in-class examples do not make me more interested in the material.</p></li>
-</ul>
-</section>
-<section id="midterm-feedback" class="level3">
-<h3 class="anchored" data-anchor-id="midterm-feedback">Midterm Feedback</h3>
-<p>During the middle of the quarter, I will ask you to submit guided, anonymous feedback. Completion of feedback will be count towards your grade. To insure anonymity, I will ask you to sign a separate, written statement that you completed the feedback.</p>
 </section>
 <section id="final-course-feedback" class="level3">
 <h3 class="anchored" data-anchor-id="final-course-feedback">Final Course Feedback</h3>
@@ -487,117 +330,10 @@ ul.task-list li input[type="checkbox"] {
 <section id="schedule" class="level2">
 <h2 class="anchored" data-anchor-id="schedule">Schedule</h2>
 <p><a href="./schedule.html">Please refer to the Schedule page.</a> I will make changes to this schedule if we need more or less time on a concept. You do not need to read the corresponding chapters in the textbook for each class.</p>
-</section>
-<section id="how-to-succeed-in-this-course" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-succeed-in-this-course">How to succeed in this course</h2>
-<p>Every professor has different expectations when assigning certain work or providing certain resources. I want to walk through each class resource and assignment so that you know what you can do to succeed in <em>this class</em>. For resources, I want you to optimize the opportunities to learn. For assignments, I want you to know the strategies that students can use to learn the most and prepare for future exams.</p>
-<section id="resources" class="level3">
-<h3 class="anchored" data-anchor-id="resources">Resources</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 33%">
-<col style="width: 33%">
-<col style="width: 33%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Resource</strong></td>
-<td style="text-align: left;"><strong>What is it?</strong></td>
-<td style="text-align: left;"><strong>How do I use it?</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Office Hours</td>
-<td style="text-align: left;">Blocks of time a professor or TA dedicates for questions. The teaching staff will be located in a specific room. Several students may enter the space at a time and will ask specific or broad questions. If many students attend office hours, a queue will be created so that students can be served equally.</td>
-<td style="text-align: left;">The main use of office hours is to ask questions about an assignment or lecture notes. You are welcome to sit and do homework in office hours. OH are also an informal way of meeting fellow students to collaborate with.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Lectures and lecture recordings</td>
-<td style="text-align: left;">Time shared between the professor and students where the professor conveys important class material. Material discussed in lectures include concepts, calculations, code, and examples. Lectures are a mix of presentation of information, working through examples together, interactive activities, and in-class polls.</td>
-<td style="text-align: left;">Students should attend lectures in person if possible. You should attempt to understand new material presented by following the presentation slides, taking notes on additional details that may conveyed verbally, and working through examples with the professor. Students are encouraged to ask questions when you don’t understand the material at any point in the lecture.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Textbooks</td>
-<td style="text-align: left;">Written and published material that explains concepts, steps through calculations, provides examples, and provides practice problems. The listed textbooks is the basis for this course. While I am to cover all topics in class, the textbook provides alternative explanations and additional examples.</td>
-<td style="text-align: left;">While coming to class having read the accompanying textbook chapters helps understanding during class, I do not expect students to have read it. I see the textbook as a good resource if you are struggling with a specific topic after class, in need of an example while working on homework, or want additional practice when studying for the exam.</td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Website</td>
-<td style="text-align: left;">The course website is designed by me so that you have access to all the course materials in a more organized and flexible way. All resources delivered from me to you will be available on the website. Any assignments turned in will be through Sakai.</td>
-<td style="text-align: left;">You can navigate through different course resources and information using the left-side tabs or top navigation bar. Course materials, like lecture notes, homework, data examples, and recordings, can be found under each week’s page under the schedule tab. You can also find the individual resources under the “Course Materials” tab on the left. Links to turn in assignments through Sakai will be given on the website. Please explore the tabs and get a sense of the organization.</td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Sakai</td>
-<td style="text-align: left;">Sakai is a learning management system for higher ed.&nbsp;This is the university sanctioned LMS where we will submit assignments.</td>
-<td style="text-align: left;">You will turn in assignments through Sakai under the “Submissions” tab. Generally, there will be a link to each assignment on the course website. You can also view your grades under “Gradebook” and links to Webex under “Webex.”</td>
-</tr>
-</tbody>
-</table>
-</section>
 <section id="assignments" class="level3">
 <h3 class="anchored" data-anchor-id="assignments">Assignments</h3>
-<table class="caption-top table">
-<colgroup>
-<col style="width: 8%">
-<col style="width: 10%">
-<col style="width: 36%">
-<col style="width: 43%">
-</colgroup>
-<tbody>
-<tr class="odd">
-<td style="text-align: center;"><strong>Assignment</strong></td>
-<td style="text-align: center;"><strong>Type of assessment</strong></td>
-<td style="text-align: left;"><strong>Before you submit/take it</strong></td>
-<td style="text-align: left;"><strong>After it is graded</strong></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;"><p>Homework</p>
-<p>assignment</p></td>
-<td style="text-align: center;">Formative</td>
-<td style="text-align: left;"><ul>
-<li><p>Work out each problem on your own as much as you can</p></li>
-<li><p>Talk through problems with a peer</p></li>
-<li><p>Go to Office Hours for help</p></li>
-<li><p>Write down work that shows your thought process</p></li>
-<li><p>Search your issue on Stack Exchange/Stack Overflow</p></li>
-<li><p>Ask fellow students on Slack</p></li>
-</ul></td>
-<td style="text-align: left;"><ul>
-<li><p>Discuss problems with your group</p></li>
-<li><p>For answers that involve writing sentences, check with me or a TA if your answer is sufficient</p></li>
-<li><p>Go to Office Hours to ask about your work</p></li>
-</ul></td>
-</tr>
-<tr class="odd">
-<td style="text-align: center;">Quizzes</td>
-<td style="text-align: center;">Summative</td>
-<td style="text-align: left;"><ul>
-<li><p>Identify and achieve learning objectives in each lecture</p></li>
-<li><p>Understand why certain statistics tools are used for certain cases</p></li>
-<li><p>Practice testing yourself and others on concepts</p></li>
-<li><p>Come to Office Hours for help with specific problems or concepts</p></li>
-</ul></td>
-<td style="text-align: left;"><ul>
-<li><p>Review the solutions</p></li>
-<li><p>Review your mistakes</p></li>
-<li><p>For solutions that involve writing sentences, check with me or a TA if your answer fits the solution</p></li>
-<li><p>Go to Office Hours to ask about your solutions</p></li>
-<li><p>Do not ask for a regrade unless you have viewed the solutions</p></li>
-</ul></td>
-</tr>
-<tr class="even">
-<td style="text-align: center;">Class Exit Tickets</td>
-<td style="text-align: center;">N/A</td>
-<td style="text-align: left;"><ul>
-<li><p>Bring appropriate electronic device to participate in polls</p></li>
-<li><p>Complete the survey during the last 5 minutes of class or after class within 7 days</p></li>
-</ul></td>
-<td style="text-align: left;"><ul>
-<li>Review muddiest and clearest points from the week</li>
-</ul></td>
-</tr>
-</tbody>
-</table>
-<p>If you would like any other course resources explained in this format, please request it through the <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=V3lz4rj6fk2U9pvWr59xWFMopmPUjRtDiHLswhgacNhUNkE1U0IwRExOQTlGWElaUko4VDZaWFhINS4u">Ongoing Course Feedback</a>.&nbsp;</p>
+<p>Written problem sets, approximately weekly, usually assigned Wednesday and due the following Wednesday.</p>
+<p>Homework problems requiring a written solution are assigned approximately one week in advance of their due date. Homework assignments will be posted in the Sakai submissions box.</p>
 </section>
 </section>
 <section id="course-policies-and-resources" class="level2">
@@ -606,7 +342,7 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="late-work-policy">Late Work Policy</h3>
 <p>I encourage you to make your best effort to submit all assignments on time, but I understand circumstances arise that are beyond our control. Please see this <a href="https://myuni.swansea.ac.uk/academic-life/extenuating-circumstances/#how-can-the-university-support-me-and-what-should-i-do=is-expanded&amp;what-are-extenuating-circumstances=is-expanded&amp;what-isnt-an-extenuating-circumstance=is-expanded&amp;what-supporting-evidence-is-required=is-expanded&amp;who-should-i-contact-to-make-an-extenuating-circumstances-application=is-expanded&amp;who-will-make-a-decision-on-my-application=is-expanded">Swansea University’s page on extenuating circumstances</a> for some examples. Not all circumstances are covered here, so please reach out if you have questions.&nbsp;</p>
 <ul>
-<li><p>The class will end on December 10, 2025. <strong>All coursework is expected to be completed by December 12, 2025 at 11pm.</strong> If you have <em>extenuating circumstances</em>, and need additional time to complete class assignments, please contact me. Together, we will come up with a plan for completion and to sort out registrar logistics.</p></li>
+<li><p>The class will end on March 18, 2026. <strong>All coursework is expected to be completed by March 20, 2026 at 11pm.</strong> If you have <em>extenuating circumstances</em>, and need additional time to complete class assignments, please contact me. Together, we will come up with a plan for completion and to sort out registrar logistics. If you need an Incomplete, generally this requires request two weeks before the end of class.</p></li>
 <li><p>If you have extenuating circumstances that may jeopardize your ability to do work for several weeks, please contact me. We will come up with a plan to keep you on track in the course and prevent any delay in your education.</p></li>
 <li><p>For homework, you will have TWO no-questions-asked, 3-day extensions: one for the first assignment part and one for either the solutions or presentation. Please use this wisely! You just need to send me a quick email saying “I am using my no-questions-asked extension for Homework __ assignment/solutions/presentation.”</p></li>
 <li><p>For homework, I ask you to email me directly about any late submissions. You can explain your circumstances and may ask us for an extension. I am very likely to grant an extension, but <strong>I want to emphasize how important it will be to stay on track with your homework</strong>! Your group is depending on you, and delaying homework may only add stress on the next homework!</p></li>
@@ -625,7 +361,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="plagiarism-and-attribution" class="level3">
 <h3 class="anchored" data-anchor-id="plagiarism-and-attribution">Plagiarism and Attribution</h3>
-<p>Please note that this section has been motivated by <a href="https://dmice.ohsu.edu/bedricks/courses/bmi525/policies.html">Dr.&nbsp;Steven Bedrick’s Course Policies and Grading site</a> for BMI 525. (Note that this is a good example of informal attribution of someone else’s work.)</p>
+<p>Please note that this section is directly sourced from Dr.&nbsp;Nicky Wakim’s Course Policies for BSTA 550 which has itself has been motivated by <a href="https://dmice.ohsu.edu/bedricks/courses/bmi525/policies.html">Dr.&nbsp;Steven Bedrick’s Course Policies and Grading site</a> for BMI 525. (Note that this is a good example of informal attribution of someone else’s work.)</p>
 <p>In this class, it is easy to use ChatGPT or other AI tools to solve your homework for you. Many problems follow a basic structure that is especially easy for ChatGPT to solve. In this class, you may use ChatGPT to help with your homework. You may even ask for direct answers. However, there are a few things I do not want you to do:</p>
 <ul>
 <li><p><strong>Do not copy ChatGPT’s answer directly into your homework.</strong> Your homework is graded for full credit if you turn it in, in any state, so turning in ChatGPT’s answers is unacceptable. I rather see half-written answers that show what you’re thinking than see a correct answer from ChatGPT.</p></li>

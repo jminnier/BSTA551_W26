@@ -11,8 +11,7 @@ editor_options:
 
 ## Announcements
 
-- Welcome! I will put announcements and reminders on these pages!
-- Thanks for being patient while I've been out of the country!
+- Welcome! I am heavily borrowing from Dr. Nicky Wakim's 550 website and format, because it's awesome.
 
 ## Key dates
 
@@ -20,6 +19,6 @@ editor_options:
 
 ## Last class
 
-- There wasn't one heh
+- Holidays
 
 

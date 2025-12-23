@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Introduction to Probability</title>
+<title>Theory of Statistical Inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -39,7 +39,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-fb99f81d7ceaaba0dec83ae1d2851021.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script src="site_libs/quarto-contrib/iconify-1.0.0-beta.2/iconify-icon.min.js"></script>
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
@@ -80,10 +80,10 @@ ul.task-list li input[type="checkbox"] {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="./index.html" class="navbar-brand navbar-brand-logo">
-    <img src="./images/bsta_550_hex_3.png" alt="" class="navbar-logo">
+    <img src="./images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
     </a>
     <a class="navbar-brand" href="./index.html">
-    <span class="navbar-title">Introduction to Probability</span>
+    <span class="navbar-title">Theory of Statistical Inference</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -108,10 +108,6 @@ ul.task-list li input[type="checkbox"] {
     <a class="nav-link" href="./homeworks.html"> 
 <span class="menu-text">Homework</span></a>
   </li>  
-  <li class="nav-item">
-    <a class="nav-link" href="./quiz.html"> 
-<span class="menu-text">Quizzes</span></a>
-  </li>  
 </ul>
           </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
@@ -130,22 +126,23 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<div style="background-color: #006a4e">
+<div style="background-color: #639976">
 <div style="color: #FFFFFF">
-<div class="grid">
-<div class="g-col-4">
+<div class="grid align-items-center">
+<div class="g-col-5">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/bsta_550_hex_3.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="337"></p>
+<p><img src="images/lummi_curiosity_discovery.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="500"></p>
 </figure>
 </div>
 </div>
-<section id="bsta-550-introduction-to-probability" class="level1 g-col-7">
-<h1>BSTA 550: Introduction to Probability</h1>
-<section id="fall-2025" class="level3">
-<h3 class="anchored" data-anchor-id="fall-2025">Fall 2025</h3>
+<section id="bsta-551-theory-of-statistical-inference" class="level1 g-col-7">
+<h1>BSTA 551: Theory of Statistical Inference</h1>
+<section id="winter-2026" class="level3">
+<h3 class="anchored" data-anchor-id="winter-2026">Winter 2026</h3>
 <p>&nbsp;</p>
-<p>Welcome to Biostatistics and Probability! This course is designed to introduce history, concepts and distributions in probability, Monte Carlo simulation techniques, and Markov chains. Students will also learn how to write R codes for various statistical computations and plots. Previous experience in R is not required. R is free software available from <a href="http://www.r-project.org" class="uri">http://www.r-project.org</a>.</p>
+<p>This is course introduces a theoretical foundation of Biostatistics for masters level students focusing on statistical inference. We will study methods of estimation (point and interval), as well as hypothesis testing. Some simulation and boostrap methods for estimation and testing will be included along with more theoretical asympototic and finite sample inference methods.</p>
+<p>Prerequisites: BSTA 550 Probability, familiarity with R.</p>
 <p>&nbsp;</p>
 </section>
 </section>
@@ -155,26 +152,26 @@ ul.task-list li input[type="checkbox"] {
 <div class="grid">
 <section id="instructor" class="level3 g-col-3">
 <h3 class="anchored" data-anchor-id="instructor">Instructor</h3>
-<p><iconify-icon inline="" icon="fluent:person-24-filled" style="font-size: 24px;"></iconify-icon> <a href="./instructors.html">Dr.&nbsp;Nicky Wakim</a></p>
-<p><iconify-icon inline="" icon="bi:building-fill" style="font-size: 24px;"></iconify-icon> Vanport 622A</p>
-<p><iconify-icon inline="" icon="tabler:mail-filled" style="font-size: 24px;"></iconify-icon> <a href="mailto:wakim@ohsu.edu">wakim@ohsu.edu</a></p>
+<p><iconify-icon inline="" icon="fluent:person-24-filled" style="font-size: 24px;"></iconify-icon> <a href="./instructors.html">Dr.&nbsp;Jessica Minnier</a></p>
+<p><iconify-icon inline="" icon="bi:building-fill" style="font-size: 24px;"></iconify-icon> (see Sakai)</p>
+<p><iconify-icon inline="" icon="tabler:mail-filled" style="font-size: 24px;"></iconify-icon> <a href="mailto:minnier@ohsu.edu">minnier@ohsu.edu</a></p>
 </section>
 <section id="office-hours" class="level3 g-col-3">
 <h3 class="anchored" data-anchor-id="office-hours">Office Hours</h3>
-<p><a href="https://ohsu.webex.com/meet/parkecha">Charles</a> <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> Th 11am-12pm</p>
-<p><a href="https://ohsu.webex.com/meet/parkecha">Charles</a> <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> F 12-1pm</p>
-<p><a href="https://ohsu.webex.com/meet/wakim">Nicky</a> <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> Th 10-11am</p>
+<p><a href="https://ohsu.webex.com/meet/parkecha">Charles</a> <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> TBD</p>
+<p><a href="https://ohsu.webex.com/meet/parkecha">Charles</a> <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> TBD</p>
+<p>Jessica <iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> M/W 12pm-12:30pm after class</p>
 </section>
 <section id="course-details" class="level3 g-col-3">
 <h3 class="anchored" data-anchor-id="course-details">Course details</h3>
 <p><iconify-icon inline="" icon="fa6-solid:calendar-days" style="font-size: 24px;"></iconify-icon> Mondays, Wednesdays</p>
-<p><iconify-icon inline="" icon="fa6-solid:calendar" style="font-size: 24px;"></iconify-icon> Sept 29 - Dec 10</p>
-<p><iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> 10:30 AM - 12 PM</p>
-<p><iconify-icon inline="" icon="fa6-solid:person-chalkboard" style="font-size: 24px;"></iconify-icon> In-person, VPT 620M</p>
+<p><iconify-icon inline="" icon="fa6-solid:calendar" style="font-size: 24px;"></iconify-icon> Jan 5 - March 18</p>
+<p><iconify-icon inline="" icon="icon-park-solid:time" style="font-size: 24px;"></iconify-icon> 10 AM - 12 PM</p>
+<p><iconify-icon inline="" icon="fa6-solid:person-chalkboard" style="font-size: 24px;"></iconify-icon> In-person (see Sakai for room)</p>
 </section>
-<section id="contacting-me" class="level3 g-col-3">
-<h3 class="anchored" data-anchor-id="contacting-me">Contacting me</h3>
-<p>E-mail or Slack is the best way to get in contact with me. I will try to respond to all course-related e-mails within 24 hours Monday-Friday.</p>
+<section id="contact" class="level3 g-col-3">
+<h3 class="anchored" data-anchor-id="contact">Contact</h3>
+<p>E-mail or OHSU Teams is the best way to get in contact with me.</p>
 </section>
 </div>
 <hr>
@@ -183,7 +180,7 @@ ul.task-list li input[type="checkbox"] {
 
 </div>
 <div class="g-col-3">
-<p><a href="https://github.com/nwakim/BSTA_550_25F"><iconify-icon inline="" icon="icomoon-free:github" style="font-size: 24px;"></iconify-icon> View the source on GitHub</a></p>
+<p><a href="https://github.com/jminnier/sph_bsta551_w26_website"><iconify-icon inline="" icon="icomoon-free:github" style="font-size: 24px;"></iconify-icon> View the source on GitHub</a></p>
 </div>
 </div>
 

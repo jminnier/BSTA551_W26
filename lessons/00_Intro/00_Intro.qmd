@@ -1,10 +1,9 @@
 ---
-title: "Welcome to BSTA 550!"
-author: "Nicky Wakim"
+title: "Welcome to BSTA 551!"
+author: "Jessica Minnier"
 title-slide-attributes:
-    data-background-color: "#006a4e"
-date: " `r library(here); source(here('class_dates.R')); w1d1` "
-categories: ["Week 1"]
+    data-background-color: "#639976"
+date: "`r library(here); source(here('class_dates.R')); w1d1`"
 format: 
   revealjs:
     theme: "../simple_NW.scss"
@@ -16,40 +15,34 @@ format:
     footer: Welcome
 ---
 
-## Nicky Wakim (she/her)
+## Jessica Minnier (she/her)
 
 ::::::: columns
 ::: {.column width="45%"}
--   **Call me "Nicky," "Dr. W," "Professor Wakim," or any combo!**
+-   **Call me "Jessica," "Dr. M," "Professor Minnier [MIN-ee-ay]," or any combo!**
 
--   Assistant Professor of Biostatistics
+-   Associate Professor of Biostatistics
 
      
 
--   Grew up in DC area (Virginia side!)
+-   This is a "newish" class to me
 
--   Moved here from Michigan around 2 years ago
+-   Taught 552 Math/Stats II (RIP) for 9 years; Intro to R course developed & taught 3 years
 
--   Two sweet kitties
-
--   Volleyball, pickleball, ceramics, strolling around my neighborhood
-
--   But also sleeping, TV, and reading
-
--   Proud plant mamma
-
--   *A few other things about myself that I will share non-publicly*
+-   *Intro*
+    +   SPH, Knight Cancer Institute, risk prediction, 'omics
+    
 :::
 
 ::: {.column width="5%"}
 :::
 
 ::: {.column width="25%"}
-![](/images/Intro_slides/bike.JPG){width="450"} ![](/images/Intro_slides/cats.mov){width="450"} ![](/images/Intro_slides/crater_lake.jpeg){width="450"}
+![](/images/Intro_slides/graduation1.jpeg){width="450"} ![](/images/Intro_slides/graduation2.jpg){width="450"}
 :::
 
 ::: {.column width="25%"}
-![](/images/Intro_slides/Narrows.JPG){width="450"}
+![](/images/Intro_slides/kids2.jpg){width="450"} ![](/images/Intro_slides/kids3.JPG){width="450"}
 :::
 :::::::
 
@@ -58,7 +51,6 @@ library(here)
 source(here("class_dates.R"))
 ```
 
-# Pride yourself in learning things, not knowing things
 
 ```{css}
 #| echo: false
