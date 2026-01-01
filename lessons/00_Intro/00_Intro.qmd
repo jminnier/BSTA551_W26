@@ -64,14 +64,13 @@ source(here("class_dates.R"))
 
 ## Some important tasks
 
--   Star the class website: <https://nwakim.github.io/BSTA_550_25F/>
+-   Star the class website: <https://jminnier.github.io/BSTA551_26W/>
 
  
 
 -   Complete Homework 0 by this Thursday at 11pm!
 
-    -   Includes office hours set up, attendance prefereance, and homework due date decision
-    -   Think about what day of the week you would like your homeworks due
+    -   Poll for office hours set up
 
  
 
@@ -80,17 +79,16 @@ source(here("class_dates.R"))
 ## Let's visit the website: Homepage
 
 ```{=html}
-<iframe id="frame" src="https://nwakim.github.io/BSTA_550_25F/"></iframe>
+<iframe id="frame" src="https://www.jessicaminnier.com/BSTA551_26W/"></iframe>
 ```
 
 ## Let's visit the website: Syllabus (1/2)
 
 -   Course learning objectives
--   Textbook online! (different than last year)
--   Resources: PennState STAT 414 site!
--   R: you will get a lot of help in BSTA 511 and we will use some!
+-   Textbook in print or ebook via library access (different than last year)
+-   Resources: Other course sites
 -   Assessments and grade breakdowns
-    -   Mostly homework + quizzes
+    -   Mostly homework
 -   Feedback from you to me: in the form of exit tickets, midterm feedback, and final course eval
 -   How to succeed in this course: resources and assignments explained
 -   Late work policy / Attendance policy

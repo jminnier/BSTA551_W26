@@ -4373,5 +4373,495 @@
     "title": "Schedule",
     "section": "",
     "text": "Week\nDate\nLesson\nTopic\nTB\nKey Info\nSlides HTML\nSlides PDF\nSlides Notes\nExit tix\nRecord-ing\nMuddy Points\n\n\n\n\n1\n01/05\n\nWelcome\n\n\n\n\n\n\n\n\n\n\n\n\n1\nIntroduction to Statistical Inference; Statistics\n6.1, 6.2\n\n\n\n\n\n\n\n\n\n\n01/07\n2\nPoint estimation; Bias, variance, and MSE of estimators\n7.1\n\n\n\n\n\n\n\n\n\n\n01/08\n\nHW 0 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2\n01/12\n3\nChi-square, t, F distributions\n6.3, 6.4\n\n\n\n\n\n\n\n\n\n\n01/14\n4\nUnbiased estimators, MVUE\n7.1\n\n\n\n\n\n\n\n\n\n\n01/15\n\nHW 1 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3\n01/19\nNo class\n\n\n\n\n\n\n\n\n\n\n\n\n01/21\n5\nLikelihood, MLE, MME\n7.2\n\n\n\n\n\n\n\n\n\n\n01/22\n\nHW 2 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n4\n01/26\n6\nSufficient statistics, Fisher Information\n7.3\n\n\n\n\n\n\n\n\n\n\n01/28\n8\nMLE Large sample properties\n7.4\n\n\n\n\n\n\n\n\n\n\n01/29\n\nHW 3 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5\n02/02\n9\nInterval estimation: single sample, one-sample t, population proportions\n8.1-8.4\n\n\n\n\n\n\n\n\n\n\n02/04\n10\nBootstrap confidence intervals\n8.5\n\n\n\n\n\n\n\n\n\n\n02/05\n\nHW 4 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6\n02/09\n11\nBootstrap confidence intervals; Percentile method\n8.5\n\n\n\n\n\n\n\n\n\n\n02/11\nNo class\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7\n02/16\nNo class\n\n\n\n\n\n\n\n\n\n\n\n\n02/18\n12\nHypotheses and test procedures\n9.1-9.3\n\n\n\n\n\n\n\n\n\n\n02/19\n\nHW 6 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8\n02/23\n13\nType I and Type II errors\n9.2-9.3\n\n\n\n\n\n\n\n\n\n\n02/25\n14\nPower and sample size; P-values\n9.2, 9.4\n\n\n\n\n\n\n\n\n\n\n02/26\n\nHW 7 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n9\n03/02\n15\nNeyman-Pearson Lemma, Likelihood Ratio Tests\n9.5\n\n\n\n\n\n\n\n\n\n\n03/04\n16\nLarge-sample Z tests; Bootstrap hypothesis testing and bootstrap P-values\n9.6\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n03/12\n\nHW 8 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n03/19\n\nHW 9 due 11 pm"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#welcome-to-statistical-inference",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#welcome-to-statistical-inference",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Welcome to Statistical Inference!",
+    "text": "Welcome to Statistical Inference!\nCourse Focus: How do we learn about populations from samples?\n\nPoint Estimation (Weeks 1-4): What’s our best guess for a parameter?\nConfidence Intervals (Weeks 5-6): What’s a plausible range?\nHypothesis Testing (Weeks 7-9): Can we make decisions from data?\nTwo-Sample Methods (Week 10): Comparing groups"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#todays-goals",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#todays-goals",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Today’s Goals",
+    "text": "Today’s Goals\n\nExplain what an estimator is and how it differs from an estimate\nUse R to simulate sampling distributions\nUnderstand how optimization finds “best” values numerically\nDefine bias and calculate it for simple estimators"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#motivating-example-clinical-trial",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#motivating-example-clinical-trial",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Motivating Example: Clinical Trial",
+    "text": "Motivating Example: Clinical Trial\nA pharmaceutical company is testing a new blood pressure medication.\nThe Question: What is the true average reduction in systolic blood pressure?\n\nWhat we have: Data from 25 patients in a trial\n\n# Actual blood pressure reductions (mmHg) from 25 patients\nbp_reductions &lt;- c(12, 8, 15, 10, 7, 14, 11, 9, 13, 16,\n                   8, 12, 10, 14, 11, 9, 15, 13, 7, 12,\n                   10, 8, 14, 11, 13)\n\n# What's our estimate of the true mean reduction?\nmean(bp_reductions)\n\n[1] 11.28\n\n\n\n\nBut how reliable is this estimate? Would we get the same answer with different patients?"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-big-picture-population-vs-sample",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-big-picture-population-vs-sample",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "The Big Picture: Population vs Sample",
+    "text": "The Big Picture: Population vs Sample\n\n\nKey insight: We use sample data to make inferences about population parameters."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-expected-value",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-expected-value",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Review: Expected Value",
+    "text": "Review: Expected Value\nThe expected value \\(E(X)\\) is the long-run average of a random variable.\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\\(E(c) = c\\) for any constant \\(c\\)\n\\(E(cX) = c \\cdot E(X)\\)\n\\(E(X + Y) = E(X) + E(Y)\\)\n\\(E\\left(\\sum_{i=1}^n X_i\\right) = \\sum_{i=1}^n E(X_i)\\)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-expected-value-of-sample-mean",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-expected-value-of-sample-mean",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Expected Value of Sample Mean",
+    "text": "Worked Example: Expected Value of Sample Mean\nProblem: If \\(X_1, X_2, \\ldots, X_n\\) are iid observations from a population with mean \\(\\mu\\), what is \\(E(\\bar{X})\\)?\n\nSolution: Let’s work through this step by step.\n\\[E(\\bar{X}) = E\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n\n\n\\[= \\frac{1}{n} E\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2: constants come out)}\\]\n\n\n\\[= \\frac{1}{n} \\sum_{i=1}^n E(X_i) \\quad \\text{(Property 4: sum of expectations)}\\]\n\n\n\\[= \\frac{1}{n} \\cdot n\\mu = \\mu \\quad \\text{(Each } E(X_i) = \\mu \\text{)}\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-expected-value",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-expected-value",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Calculate Expected Value",
+    "text": "Your Turn: Calculate Expected Value\nExercise: A hospital measures the recovery time (in days) for patients after surgery. Let \\(X_1, X_2, X_3\\) be recovery times for 3 patients. The population mean recovery time is \\(\\mu = 5\\) days.\nQuestions:\n\nWhat is \\(E(X_1)\\)?\nWhat is \\(E(X_1 + X_2 + X_3)\\)?\nWhat is \\(E(\\bar{X})\\) where \\(\\bar{X} = \\frac{X_1 + X_2 + X_3}{3}\\)?\n\n\nAnswers:\n\n\\(E(X_1) = \\mu = 5\\) days\n\\(E(X_1 + X_2 + X_3) = 5 + 5 + 5 = 15\\) days\n\\(E(\\bar{X}) = \\frac{15}{3} = 5\\) days"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-variance",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-variance",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Review: Variance",
+    "text": "Review: Variance\nVariance measures the spread of a distribution: \\(\\text{Var}(X) = E[(X - \\mu)^2]\\)\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\\(\\text{Var}(c) = 0\\) for any constant\n\\(\\text{Var}(cX) = c^2 \\cdot \\text{Var}(X)\\)\nIf \\(X\\) and \\(Y\\) are independent: \\(\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)\\)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-variance-of-sample-mean",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-variance-of-sample-mean",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Variance of Sample Mean",
+    "text": "Worked Example: Variance of Sample Mean\nProblem: If \\(X_1, \\ldots, X_n\\) are independent observations with variance \\(\\sigma^2\\), what is \\(\\text{Var}(\\bar{X})\\)?\n\n\\[\\text{Var}(\\bar{X}) = \\text{Var}\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n\n\n\\[= \\frac{1}{n^2} \\text{Var}\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2)}\\]\n\n\n\\[= \\frac{1}{n^2} \\sum_{i=1}^n \\text{Var}(X_i) \\quad \\text{(Property 3: independence)}\\]\n\n\n\\[= \\frac{1}{n^2} \\cdot n\\sigma^2 = \\frac{\\sigma^2}{n}\\]\n\n\n\n\n\n\nKey Result\n\n\nThe variance of \\(\\bar{X}\\) decreases as sample size \\(n\\) increases!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-seeing-variance-decrease",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-seeing-variance-decrease",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Seeing Variance Decrease",
+    "text": "Simulation: Seeing Variance Decrease\n\n# Population parameters\ntrue_mean &lt;- 120  # True mean systolic BP\ntrue_sd &lt;- 15     # Population standard deviation\n\n# Simulate sample means for different sample sizes\nsimulation_data &lt;- tibble(n = c(5, 25, 100)) |&gt; \n  cross_join(tibble(sim = 1:2000)) |&gt; \n  mutate(\n    sample_mean = map2_dbl(n, sim, \\(size, s) {\n      mean(rnorm(size, true_mean, true_sd))\n    })\n  )\n\n# Calculate observed standard deviation for each sample size\nsimulation_data |&gt; \n  group_by(n) |&gt; \n  summarize(\n    observed_sd = sd(sample_mean),\n    theoretical_sd = true_sd / sqrt(first(n))\n  )\n\n# A tibble: 3 × 3\n      n observed_sd theoretical_sd\n  &lt;dbl&gt;       &lt;dbl&gt;          &lt;dbl&gt;\n1     5        6.91           6.71\n2    25        3.01           3   \n3   100        1.50           1.5"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-effect-of-sample-size",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-effect-of-sample-size",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Visualizing the Effect of Sample Size",
+    "text": "Visualizing the Effect of Sample Size"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#why-optimization-matters-in-statistics",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#why-optimization-matters-in-statistics",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Why Optimization Matters in Statistics",
+    "text": "Why Optimization Matters in Statistics\nMany statistical methods require finding the “best” value of a parameter.\nExamples:\n\nMaximum Likelihood: Find the parameter value that makes the observed data most probable\nLeast Squares: Find the parameter value that minimizes prediction errors\nMinimum Variance: Find the estimator with the smallest spread\n\n\nThe Problem: How do we find maximums and minimums without calculus?"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#optimization-the-graphical-intuition",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#optimization-the-graphical-intuition",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Optimization: The Graphical Intuition",
+    "text": "Optimization: The Graphical Intuition\n\nThe maximum occurs where the function reaches its peak."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#concrete-example-finding-the-best-estimate",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#concrete-example-finding-the-best-estimate",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Concrete Example: Finding the Best Estimate",
+    "text": "Concrete Example: Finding the Best Estimate\nScenario: In a clinical trial, 7 out of 10 patients respond to treatment. What’s the best estimate of the true response rate \\(p\\)?\n\nApproach: Find the value of \\(p\\) that makes observing “7 out of 10” most likely.\nThe probability of observing exactly 7 successes in 10 trials is: \\[P(X = 7) = \\binom{10}{7} p^7 (1-p)^3\\]\n\n\nQuestion: For what value of \\(p\\) is this probability largest?"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#grid-search-a-simple-numerical-approach",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#grid-search-a-simple-numerical-approach",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Grid Search: A Simple Numerical Approach",
+    "text": "Grid Search: A Simple Numerical Approach\nIdea: Try many values and see which gives the largest result.\n\n# Try different values of p\ngrid_search &lt;- tibble(p = seq(0.01, 0.99, by = 0.01)) |&gt; \n  mutate(\n    likelihood = dbinom(7, size = 10, prob = p)\n  )\n\n# Find the maximum\ngrid_search |&gt; \n  slice_max(likelihood, n = 1)\n\n# A tibble: 1 × 2\n      p likelihood\n  &lt;dbl&gt;      &lt;dbl&gt;\n1   0.7      0.267\n\n\n\nThe maximum likelihood estimate is \\(\\hat{p} = 0.70 = \\frac{7}{10}\\). This makes intuitive sense!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#using-rs-optimizer",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#using-rs-optimizer",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Using R’s Optimizer",
+    "text": "Using R’s Optimizer\nR has built-in functions to find maximums and minimums more precisely:\n\n# Define the likelihood function\nlikelihood_function &lt;- function(p) {\n  dbinom(7, size = 10, prob = p)\n}\n\n# Use optimize() to find the maximum\n# Note: optimize finds MINIMUM by default, so we negate for maximum\nresult &lt;- optimize(\n  f = function(p) -likelihood_function(p),  # Negative to find max\n  interval = c(0, 1)                         # Search between 0 and 1\n)\n\n# The maximum occurs at:\ncat(\"Maximum likelihood estimate: p =\", result$minimum)\n\nMaximum likelihood estimate: p = 0.6999843"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#how-numerical-optimization-works",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#how-numerical-optimization-works",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "How Numerical Optimization Works",
+    "text": "How Numerical Optimization Works\n\nKey idea: The algorithm evaluates the function at different points and iteratively narrows in on the maximum."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-numerical-optimization",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-numerical-optimization",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Numerical Optimization",
+    "text": "Your Turn: Numerical Optimization\nExercise: A diagnostic test correctly identifies a disease in 18 out of 25 patients who have it. Find the maximum likelihood estimate for the test’s sensitivity \\(p\\).\n\n# Fill in the blanks:\nlikelihood_fn &lt;- function(p) {\n  dbinom(___, size = ___, prob = p)  # What goes here?\n}\n\nresult &lt;- optimize(\n  f = function(p) -likelihood_fn(p),\n  interval = c(0, 1)\n)\n\nresult$minimum  # This is the MLE\n\n\n\n# Solution:\nlikelihood_fn &lt;- function(p) {\n  dbinom(18, size = 25, prob = p)\n}\n\nresult &lt;- optimize(f = function(p) -likelihood_fn(p), interval = c(0, 1))\ncat(\"MLE of sensitivity:\", result$minimum)  # Should be 18/25 = 0.72\n\nMLE of sensitivity: 0.7200103"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#when-optimization-gets-harder",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#when-optimization-gets-harder",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "When Optimization Gets Harder",
+    "text": "When Optimization Gets Harder\nSometimes we need to optimize over multiple parameters or complex functions:\n\n# Example: Finding mean and SD that best fit data\npatient_data &lt;- c(120, 135, 128, 142, 131, 125, 138, 129, 133, 127)\n\n# Negative log-likelihood for normal distribution\nneg_log_lik &lt;- function(params) {\n  mu &lt;- params[1]\n  sigma &lt;- params[2]\n  if (sigma &lt;= 0) return(Inf)  # sigma must be positive\n  -sum(dnorm(patient_data, mean = mu, sd = sigma, log = TRUE))\n}\n\n# Use optim() for multiple parameters\nresult &lt;- optim(par = c(130, 10), fn = neg_log_lik)\ncat(\"MLE for mean:\", round(result$par[1], 2), \"\\n\")\n\nMLE for mean: 130.8 \n\ncat(\"MLE for SD:\", round(result$par[2], 2), \"\\n\")\n\nMLE for SD: 6.13 \n\ncat(\"Compare to sample mean:\", round(mean(patient_data), 2))\n\nCompare to sample mean: 130.8"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#break-15-minutes",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#break-15-minutes",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "— Break (15 minutes) —",
+    "text": "— Break (15 minutes) —"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#what-is-a-point-estimator",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#what-is-a-point-estimator",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "What is a Point Estimator?",
+    "text": "What is a Point Estimator?\n\n\n\n\n\n\nDefinitions\n\n\n\nA parameter is a fixed (but unknown) characteristic of a population (e.g., \\(\\mu\\), \\(\\sigma\\), \\(p\\))\nAn estimator is a rule/formula for calculating an estimate from sample data\nAn estimate is the actual number you calculate from a specific sample\n\n\n\n\n\nExample:\n\n\n\n\n\n\n\n\nConcept\nSymbol\nExample\n\n\n\n\nParameter\n\\(\\mu\\)\nTrue mean BP reduction\n\n\nEstimator\n\\(\\bar{X} = \\frac{1}{n}\\sum X_i\\)\nThe formula “sample mean”\n\n\nEstimate\n\\(\\bar{x} = 11.2\\)\nThe number from our data"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-sampling-distribution",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-sampling-distribution",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "The Sampling Distribution",
+    "text": "The Sampling Distribution\nDifferent samples give different estimates. The sampling distribution describes this variability.\n\n\n\n\n\nSample\nSample Mean (x̄)\n\n\n\n\n1\n9.90\n\n\n2\n10.31\n\n\n3\n10.03\n\n\n4\n10.85\n\n\n5\n9.17\n\n\n6\n9.31\n\n\n\n\n\n\nEach sample gives a different estimate, but they cluster around the true value \\(\\mu = 10\\)."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-building-a-sampling-distribution",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-building-a-sampling-distribution",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Building a Sampling Distribution",
+    "text": "Simulation: Building a Sampling Distribution\n\n# Parameters\ntrue_effect &lt;- 10  # True mean BP reduction (mmHg)\ntrue_sd &lt;- 4       # Standard deviation\nn_patients &lt;- 25   # Patients per trial\nn_trials &lt;- 5000   # Number of simulated trials\n\n# Simulate many clinical trials\nsampling_distribution &lt;- tibble(trial = 1:n_trials) |&gt; \n  mutate(\n    sample_mean = map_dbl(trial, \\(t) {\n      patients &lt;- rnorm(n_patients, true_effect, true_sd)\n      mean(patients)\n    })\n  )\n\n# Visualize\nsampling_distribution |&gt; \n  ggplot(aes(x = sample_mean)) +\n  geom_histogram(bins = 50, fill = \"steelblue\", alpha = 0.7, color = \"white\") +\n  geom_vline(xintercept = true_effect, color = \"red\", linewidth = 1.5) +\n  labs(title = \"Sampling Distribution of the Sample Mean\",\n       subtitle = str_glue(\"True μ = {true_effect}, n = {n_patients}, {n_trials} simulated trials\"),\n       x = \"Sample Mean (estimated BP reduction)\", y = \"Frequency\")"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-building-a-sampling-distribution-output",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-building-a-sampling-distribution-output",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Building a Sampling Distribution",
+    "text": "Simulation: Building a Sampling Distribution"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#what-makes-a-good-estimator",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#what-makes-a-good-estimator",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "What Makes a Good Estimator?",
+    "text": "What Makes a Good Estimator?\nWe want estimators that are:\n\nAccurate (unbiased): On average, hits the true value\nPrecise (low variance): Estimates are clustered together\nEfficient: Best combination of accuracy and precision"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#bias-formal-definition",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#bias-formal-definition",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Bias: Formal Definition",
+    "text": "Bias: Formal Definition\n\n\n\n\n\n\nDefinition\n\n\nThe bias of an estimator \\(\\hat{\\theta}\\) is: \\[\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\]\nAn estimator is unbiased if \\(\\text{Bias}(\\hat{\\theta}) = 0\\), i.e., \\(E(\\hat{\\theta}) = \\theta\\).\n\n\n\n\nInterpretation:\n\nBias measures systematic error\nPositive bias = tends to overestimate\nNegative bias = tends to underestimate\nZero bias = correct on average"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-proving-sample-mean-is-unbiased",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-proving-sample-mean-is-unbiased",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Proving Sample Mean is Unbiased",
+    "text": "Worked Example: Proving Sample Mean is Unbiased\nClaim: The sample mean \\(\\bar{X}\\) is an unbiased estimator of \\(\\mu\\).\nProof: We need to show \\(E(\\bar{X}) = \\mu\\).\n\n\\[\\text{Bias}(\\bar{X}) = E(\\bar{X}) - \\mu\\]\n\n\nWe already showed that \\(E(\\bar{X}) = \\mu\\), so:\n\\[\\text{Bias}(\\bar{X}) = \\mu - \\mu = 0 \\checkmark\\]\n\n\nConclusion: The sample mean is unbiased for estimating the population mean."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-sample-proportion",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-sample-proportion",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Sample Proportion",
+    "text": "Worked Example: Sample Proportion\nSetup: In a vaccine trial, \\(X\\) patients out of \\(n\\) develop immunity. The estimator is \\(\\hat{p} = X/n\\).\nClaim: \\(\\hat{p}\\) is unbiased for the true immunity rate \\(p\\).\n\nProof: Since \\(X \\sim \\text{Binomial}(n, p)\\), we know \\(E(X) = np\\).\n\\[E(\\hat{p}) = E\\left(\\frac{X}{n}\\right) = \\frac{1}{n} E(X) = \\frac{1}{n} \\cdot np = p\\]\n\n\n\\[\\text{Bias}(\\hat{p}) = E(\\hat{p}) - p = p - p = 0 \\checkmark\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#concrete-calculation-bias-of-sample-proportion",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#concrete-calculation-bias-of-sample-proportion",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Concrete Calculation: Bias of Sample Proportion",
+    "text": "Concrete Calculation: Bias of Sample Proportion\nData: In a study of 80 patients, 52 showed improvement.\n\nn &lt;- 80\nx &lt;- 52\np_hat &lt;- x / n\n\ncat(\"Sample proportion:\", p_hat, \"\\n\")\n\nSample proportion: 0.65 \n\ncat(\"If true p = 0.65, what is the bias of this single estimate?\\n\")\n\nIf true p = 0.65, what is the bias of this single estimate?\n\ncat(\"Observed - True =\", p_hat - 0.65)\n\nObserved - True = 0\n\n\n\nImportant distinction:\n\nA single estimate can be above or below the true value\nBias refers to the average behavior across many samples\nAn unbiased estimator still gives wrong answers for individual samples!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-verifying-unbiasedness",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-verifying-unbiasedness",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Verifying Unbiasedness",
+    "text": "Simulation: Verifying Unbiasedness\n\n# Verify that sample proportion is unbiased\ntrue_p &lt;- 0.65\nn_patients &lt;- 80\nn_simulations &lt;- 10000\n\nproportion_simulation &lt;- tibble(sim = 1:n_simulations) |&gt; \n  mutate(\n    successes = rbinom(n_simulations, size = n_patients, prob = true_p),\n    p_hat = successes / n_patients\n  )\n\nproportion_simulation |&gt; \n  summarize(\n    true_p = true_p,\n    mean_of_estimates = mean(p_hat),\n    empirical_bias = mean(p_hat) - true_p\n  )\n\n# A tibble: 1 × 3\n  true_p mean_of_estimates empirical_bias\n   &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;\n1   0.65             0.650      -0.000183\n\n\nThe bias is essentially zero (just simulation noise)!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#a-biased-estimator-the-maximum",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#a-biased-estimator-the-maximum",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "A Biased Estimator: The Maximum",
+    "text": "A Biased Estimator: The Maximum\nProblem: Estimate the upper bound \\(\\theta\\) of a Uniform[0, \\(\\theta\\)] distribution.\nNatural idea: Use the largest observation: \\(\\hat{\\theta} = \\max(X_1, \\ldots, X_n)\\)\n\nThink about it: Can this estimator ever overestimate \\(\\theta\\)?\n\n\nNo! The sample maximum is always ≤ the population maximum.\nThis means the estimator is biased low."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#calculating-the-bias-mathematically",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#calculating-the-bias-mathematically",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Calculating the Bias Mathematically",
+    "text": "Calculating the Bias Mathematically\nFor \\(X_1, \\ldots, X_n \\sim \\text{Uniform}[0, \\theta]\\), it can be shown that:\n\\[E(\\max(X_1, \\ldots, X_n)) = \\frac{n}{n+1} \\theta\\]\n\nBias calculation:\n\\[\\text{Bias} = E(\\hat{\\theta}) - \\theta = \\frac{n}{n+1}\\theta - \\theta = -\\frac{\\theta}{n+1}\\]\n\n\nExample: If \\(\\theta = 10\\) and \\(n = 5\\):\n\\[\\text{Bias} = -\\frac{10}{6} = -1.67\\]\nThe estimator underestimates by about 1.67 on average."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-bias",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-bias",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Calculate Bias",
+    "text": "Your Turn: Calculate Bias\nExercise: A lab instrument has a maximum detection limit \\(\\theta\\). We take \\(n = 9\\) measurements from Uniform[0, \\(\\theta\\)] and use the maximum as our estimate.\n\nIf \\(\\theta = 100\\), what is \\(E(\\hat{\\theta})\\)?\nWhat is the bias?\nBy what percentage does this estimator underestimate on average?\n\n\nSolution:\n\n\\(E(\\hat{\\theta}) = \\frac{9}{10} \\times 100 = 90\\)\n\\(\\text{Bias} = 90 - 100 = -10\\)\nUnderestimates by \\(\\frac{10}{100} = 10\\%\\)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-visualizing-the-biased-estimator",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-visualizing-the-biased-estimator",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Visualizing the Biased Estimator",
+    "text": "Simulation: Visualizing the Biased Estimator\n\ntrue_theta &lt;- 100\nn &lt;- 9\nn_sims &lt;- 5000\n\nmax_simulation &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    max_estimate = map_dbl(sim, \\(s) max(runif(n, 0, true_theta)))\n  )\n\n# Calculate empirical bias\nmax_simulation |&gt; \n  summarize(\n    theoretical_E = n / (n + 1) * true_theta,\n    empirical_mean = mean(max_estimate),\n    theoretical_bias = -true_theta / (n + 1),\n    empirical_bias = mean(max_estimate) - true_theta\n  )"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-visualizing-the-biased-estimator-output",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-visualizing-the-biased-estimator-output",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Visualizing the Biased Estimator",
+    "text": "Simulation: Visualizing the Biased Estimator\n\n# A tibble: 1 × 4\n  theoretical_E empirical_mean theoretical_bias empirical_bias\n          &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;\n1            90           90.3              -10          -9.70"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-biased-estimator",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-biased-estimator",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Visualizing the Biased Estimator",
+    "text": "Visualizing the Biased Estimator"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#correcting-the-bias",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#correcting-the-bias",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Correcting the Bias",
+    "text": "Correcting the Bias\nIdea: Multiply by a correction factor to “un-bias” the estimator.\nSince \\(E(\\max) = \\frac{n}{n+1}\\theta\\), we can define:\n\\[\\hat{\\theta}_{\\text{unbiased}} = \\frac{n+1}{n} \\cdot \\max(X_1, \\ldots, X_n)\\]\n\nCheck:\n\\[E(\\hat{\\theta}_{\\text{unbiased}}) = \\frac{n+1}{n} \\cdot E(\\max) = \\frac{n+1}{n} \\cdot \\frac{n}{n+1}\\theta = \\theta \\checkmark\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-apply-the-correction",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-apply-the-correction",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Apply the Correction",
+    "text": "Your Turn: Apply the Correction\nExercise: Using the lab instrument example with \\(n = 9\\) and \\(\\theta = 100\\):\n\nIf you observe \\(\\max = 92\\), what is the biased estimate?\nWhat is the unbiased estimate?\n\n\nSolution:\n\nBiased estimate: \\(\\hat{\\theta}_b = 92\\)\nUnbiased estimate: \\(\\hat{\\theta}_u = \\frac{10}{9} \\times 92 = 102.2\\)\n\n\nobserved_max &lt;- 92\nn &lt;- 9\n\nbiased_est &lt;- observed_max\nunbiased_est &lt;- (n + 1) / n * observed_max\n\ncat(\"Biased estimate:\", biased_est, \"\\n\")\n\nBiased estimate: 92 \n\ncat(\"Unbiased estimate:\", round(unbiased_est, 1))\n\nUnbiased estimate: 102.2"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#day-1-summary",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#day-1-summary",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Day 1 Summary",
+    "text": "Day 1 Summary\nKey Concepts:\n\nExpected Value: \\(E(\\bar{X}) = \\mu\\) (sample mean is centered at population mean)\nVariance: \\(\\text{Var}(\\bar{X}) = \\sigma^2/n\\) (precision improves with larger \\(n\\))\nOptimization: Finding maximum/minimum values numerically\n\nGrid search: try many values\noptimize(): efficient numerical search\n\nBias: \\(\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\)\n\nUnbiased if \\(E(\\hat{\\theta}) = \\theta\\)\nCan sometimes correct biased estimators"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#day-1-practice-problems",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#day-1-practice-problems",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Day 1 Practice Problems",
+    "text": "Day 1 Practice Problems\n\nCalculate \\(E(\\bar{X})\\) and \\(\\text{Var}(\\bar{X})\\) for a sample of size \\(n = 16\\) from a population with \\(\\mu = 50\\) and \\(\\sigma = 12\\).\nUse optimize() to find the MLE for \\(p\\) when you observe 23 successes in 40 trials.\nFor a Uniform[0, \\(\\theta\\)] distribution with \\(n = 20\\) observations and \\(\\theta = 50\\), calculate:\n\nThe expected value of the maximum\nThe bias of using the maximum as an estimator\nThe corrected unbiased estimator"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-where-we-left-off",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#review-where-we-left-off",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Review: Where We Left Off",
+    "text": "Review: Where We Left Off\nKey concepts from Lesson 1:\n\nEstimator vs. estimate\nSampling distribution\nBias: \\(\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\)\nUnbiased estimators: \\(E(\\hat{\\theta}) = \\theta\\)\n\n\nToday’s Goals:\n\nStandard error and precision\nMean squared error (MSE)\nThe bias-variance tradeoff\nComparing estimators with simulations"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#standard-error-measuring-precision",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#standard-error-measuring-precision",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Standard Error: Measuring Precision",
+    "text": "Standard Error: Measuring Precision\n\n\n\n\n\n\nDefinition\n\n\nThe standard error of an estimator is its standard deviation: \\[SE(\\hat{\\theta}) = \\sqrt{\\text{Var}(\\hat{\\theta})}\\]\n\n\n\n\nKey Standard Errors:\n\n\n\nEstimator\nStandard Error\n\n\n\n\nSample mean \\(\\bar{X}\\)\n\\(\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample proportion \\(\\hat{p}\\)\n\\(\\sqrt{\\frac{p(1-p)}{n}}\\)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-standard-error-of-sample-mean",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-standard-error-of-sample-mean",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Standard Error of Sample Mean",
+    "text": "Worked Example: Standard Error of Sample Mean\nProblem: In a blood pressure study, the population SD is \\(\\sigma = 15\\) mmHg. Calculate the standard error of \\(\\bar{X}\\) for sample sizes \\(n = 25\\) and \\(n = 100\\).\n\nSolution:\nFor \\(n = 25\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{25}} = \\frac{15}{5} = 3 \\text{ mmHg}\\]\nFor \\(n = 100\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{100}} = \\frac{15}{10} = 1.5 \\text{ mmHg}\\]\n\n\nInterpretation: With 100 patients, our estimate is twice as precise as with 25 patients."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-standard-error",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-standard-error",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Calculate Standard Error",
+    "text": "Your Turn: Calculate Standard Error\nExercise: A survey measures patient satisfaction on a 0-100 scale. The population standard deviation is \\(\\sigma = 20\\).\n\nWhat is the SE of \\(\\bar{X}\\) for \\(n = 16\\) patients?\nWhat sample size is needed to achieve \\(SE = 2\\)?\n\n\nSolutions:\n\n\\(SE = \\frac{20}{\\sqrt{16}} = \\frac{20}{4} = 5\\)\nWe need \\(\\frac{20}{\\sqrt{n}} = 2\\), so \\(\\sqrt{n} = 10\\), thus \\(n = 100\\)\n\n\nsigma &lt;- 20\n# Problem 1\nse_n16 &lt;- sigma / sqrt(16)\n# Problem 2\nn_needed &lt;- (sigma / 2)^2\n\ncat(\"SE for n=16:\", se_n16, \"\\nSample size for SE=2:\", n_needed)\n\nSE for n=16: 5 \nSample size for SE=2: 100"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-problem-with-unknown-parameters",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-problem-with-unknown-parameters",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "The Problem with Unknown Parameters",
+    "text": "The Problem with Unknown Parameters\nIssue: Standard errors often involve unknown parameters!\n\nSE of \\(\\bar{X}\\) requires knowing \\(\\sigma\\)\nSE of \\(\\hat{p}\\) requires knowing \\(p\\)\n\n\nSolution: Estimated standard error — substitute estimates for unknown parameters\n\\[\\widehat{SE}(\\bar{X}) = \\frac{s}{\\sqrt{n}}\\]\n\\[\\widehat{SE}(\\hat{p}) = \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#example-estimated-standard-error",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#example-estimated-standard-error",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Example: Estimated Standard Error",
+    "text": "Example: Estimated Standard Error\n\n# Blood pressure data from 25 patients\nbp_reductions &lt;- c(12, 8, 15, 10, 7, 14, 11, 9, 13, 16,\n                   8, 12, 10, 14, 11, 9, 15, 13, 7, 12,\n                   10, 8, 14, 11, 13)\n\nn &lt;- length(bp_reductions)\nx_bar &lt;- mean(bp_reductions)\ns &lt;- sd(bp_reductions)\n\n# Estimated standard error\nse_estimated &lt;- s / sqrt(n)\n\ntibble(\n  Statistic = c(\"Sample Mean\", \"Sample SD\", \"Sample Size\", \"Estimated SE\"),\n  Value = c(x_bar, round(s, 2), n, round(se_estimated, 2))\n)\n\n# A tibble: 4 × 2\n  Statistic    Value\n  &lt;chr&gt;        &lt;dbl&gt;\n1 Sample Mean  11.3 \n2 Sample SD     2.64\n3 Sample Size  25   \n4 Estimated SE  0.53"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#mean-squared-error-combining-bias-and-variance",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#mean-squared-error-combining-bias-and-variance",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Mean Squared Error: Combining Bias and Variance",
+    "text": "Mean Squared Error: Combining Bias and Variance\nWhat if we have to choose between a biased estimator with low variance and an unbiased estimator with high variance?\n\n\n\n\n\n\n\nDefinition: Mean Squared Error\n\n\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\nKey Formula: \\[\\text{MSE} = \\text{Variance} + \\text{Bias}^2\\]\n\n\n\n\n\nMSE captures total error — both systematic (bias) and random (variance)."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#proving-the-mse-formula",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#proving-the-mse-formula",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Proving the MSE Formula",
+    "text": "Proving the MSE Formula\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\n\nAdd and subtract \\(E(\\hat{\\theta})\\):\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}) + E(\\hat{\\theta}) - \\theta)^2]\\]\n\n\nExpand the square:\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}))^2] + 2E[(\\hat{\\theta} - E(\\hat{\\theta}))](E(\\hat{\\theta}) - \\theta) + (E(\\hat{\\theta}) - \\theta)^2\\]\n\n\nThe middle term equals zero because \\(E[\\hat{\\theta} - E(\\hat{\\theta})] = 0\\):\n\\[= \\text{Var}(\\hat{\\theta}) + [\\text{Bias}(\\hat{\\theta})]^2\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-computing-mse",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#worked-example-computing-mse",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Worked Example: Computing MSE",
+    "text": "Worked Example: Computing MSE\nSetup: Estimating \\(\\theta\\) from Uniform[0, \\(\\theta\\)] with \\(n = 9\\) and \\(\\theta = 100\\).\nBiased estimator: \\(\\hat{\\theta}_b = \\max(X_i)\\)\nFrom theory:\n\n\\(E(\\hat{\\theta}_b) = \\frac{9}{10}(100) = 90\\)\n\\(\\text{Var}(\\hat{\\theta}_b) = \\frac{n \\theta^2}{(n+1)^2(n+2)} = \\frac{9 \\times 100^2}{100 \\times 11} = 81.82\\)\n\n\n\\[\\text{Bias} = 90 - 100 = -10\\] \\[\\text{MSE} = 81.82 + (-10)^2 = 81.82 + 100 = 181.82\\]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-mse",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-mse",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Calculate MSE",
+    "text": "Your Turn: Calculate MSE\nExercise: For the unbiased estimator \\(\\hat{\\theta}_u = \\frac{n+1}{n}\\max(X_i)\\) with \\(n = 9\\) and \\(\\theta = 100\\):\n\nWhat is the bias?\nIf \\(\\text{Var}(\\hat{\\theta}_u) = 101.01\\), what is the MSE?\nWhich estimator has lower MSE: biased or unbiased?\n\n\nSolutions:\n\nBias = 0 (it’s unbiased!)\n\\(\\text{MSE} = 101.01 + 0^2 = 101.01\\)\nUnbiased has lower MSE (101.01 &lt; 181.82)\n\nBut this isn’t always the case!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#break-15-minutes-1",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#break-15-minutes-1",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "— Break (15 minutes) —",
+    "text": "— Break (15 minutes) —"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-bias-variance-tradeoff",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#the-bias-variance-tradeoff",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "The Bias-Variance Tradeoff",
+    "text": "The Bias-Variance Tradeoff\nSometimes a biased estimator has lower MSE than an unbiased one!\n\nExample: Estimating a proportion \\(p\\) with \\(n = 20\\) observations\nEstimator 1: Standard: \\(\\hat{p}_1 = \\frac{X}{n}\\) (unbiased)\nEstimator 2: “Add-two”: \\(\\hat{p}_2 = \\frac{X + 2}{n + 4}\\) (biased toward 0.5)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#comparing-proportion-estimators-theory",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#comparing-proportion-estimators-theory",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Comparing Proportion Estimators: Theory",
+    "text": "Comparing Proportion Estimators: Theory\nFor \\(\\hat{p}_1 = X/n\\) (standard):\n\nBias = 0\nVariance = \\(\\frac{p(1-p)}{n}\\)\nMSE = \\(\\frac{p(1-p)}{n}\\)\n\n\nFor \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\) (add-two):\n\nBias = \\(\\frac{2 - 4p}{n+4}\\)\nVariance = \\(\\frac{np(1-p)}{(n+4)^2}\\)\nMSE = Variance + Bias²"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-bias-of-add-two-estimator",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-calculate-bias-of-add-two-estimator",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Calculate Bias of Add-Two Estimator",
+    "text": "Your Turn: Calculate Bias of Add-Two Estimator\nExercise: For \\(n = 20\\) and \\(p = 0.3\\):\n\nCalculate the bias of \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\)\n\nHint: \\(E(X) = np\\) for binomial, so \\(E(\\hat{p}_2) = \\frac{np + 2}{n + 4}\\)\n\nSolution:\n\\[E(\\hat{p}_2) = \\frac{20(0.3) + 2}{24} = \\frac{8}{24} = 0.333\\]\n\\[\\text{Bias} = 0.333 - 0.3 = 0.033\\]\nThe add-two estimator is biased toward 0.5 (and 0.333 is closer to 0.5 than 0.3 is)."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-comparing-the-estimators",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-comparing-the-estimators",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Comparing the Estimators",
+    "text": "Simulation: Comparing the Estimators\n\ntrue_p &lt;- 0.3\nn &lt;- 20\nn_sims &lt;- 10000\n\n# Simulate both estimators\ncomparison_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    x = rbinom(n_sims, size = n, prob = true_p),\n    p_hat_standard = x / n,\n    p_hat_addtwo = (x + 2) / (n + 4)\n  )\n\n# Compare MSE\ncomparison_sim |&gt; \n  summarize(\n    `Standard Bias` = mean(p_hat_standard) - true_p,\n    `Add-Two Bias` = mean(p_hat_addtwo) - true_p,\n    `Standard Variance` = var(p_hat_standard),\n    `Add-Two Variance` = var(p_hat_addtwo),\n    `Standard MSE` = mean((p_hat_standard - true_p)^2),\n    `Add-Two MSE` = mean((p_hat_addtwo - true_p)^2)\n  ) |&gt; \n  pivot_longer(everything(), names_to = \"Metric\", values_to = \"Value\") |&gt; \n  mutate(Value = round(Value, 5))\n\n# A tibble: 6 × 2\n  Metric              Value\n  &lt;chr&gt;               &lt;dbl&gt;\n1 Standard Bias     0.00049\n2 Add-Two Bias      0.0337 \n3 Standard Variance 0.0104 \n4 Add-Two Variance  0.00722\n5 Standard MSE      0.0104 \n6 Add-Two MSE       0.00835"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-tradeoff",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#visualizing-the-tradeoff",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Visualizing the Tradeoff",
+    "text": "Visualizing the Tradeoff"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#mse-comparison-across-different-true-values",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#mse-comparison-across-different-true-values",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "MSE Comparison Across Different True Values",
+    "text": "MSE Comparison Across Different True Values\n\nKey Insight: The “best” estimator depends on the true parameter value!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#medical-application-disease-prevalence",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#medical-application-disease-prevalence",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Medical Application: Disease Prevalence",
+    "text": "Medical Application: Disease Prevalence\nScenario: Estimating prevalence of a rare disease (\\(p \\approx 0.05\\)) vs. a common condition (\\(p \\approx 0.5\\)).\n\n# Compare MSE at different prevalence levels\nn &lt;- 50\n\nmse_at_p &lt;- function(p, n) {\n  mse_std &lt;- p * (1-p) / n\n  bias_add2 &lt;- (2 - 4*p) / (n + 4)\n  var_add2 &lt;- n * p * (1-p) / (n + 4)^2\n  mse_add2 &lt;- var_add2 + bias_add2^2\n  \n  tibble(p = p, MSE_Standard = mse_std, MSE_AddTwo = mse_add2,\n         Better = ifelse(mse_std &lt; mse_add2, \"Standard\", \"Add-Two\"))\n}\n\nbind_rows(\n  mse_at_p(0.05, n),\n  mse_at_p(0.50, n)\n) |&gt; \n  mutate(across(where(is.numeric), \\(x) round(x, 5)))\n\n# A tibble: 2 × 4\n      p MSE_Standard MSE_AddTwo Better  \n  &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   \n1  0.05      0.00095    0.00193 Standard\n2  0.5       0.005      0.00429 Add-Two"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#sample-variance-why-n-1",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#sample-variance-why-n-1",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Sample Variance: Why n-1?",
+    "text": "Sample Variance: Why n-1?\nTwo formulas for sample variance:\n\\[S^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n-1} \\quad \\text{vs.} \\quad \\tilde{S}^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n}\\]\n\nQuestion: Why do we divide by \\(n-1\\) instead of \\(n\\)?\nAnswer: Dividing by \\(n\\) gives a biased estimator!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-comparing-variance-estimators",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#simulation-comparing-variance-estimators",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Comparing Variance Estimators",
+    "text": "Simulation: Comparing Variance Estimators\n\ntrue_variance &lt;- 100  # σ² = 100\nn &lt;- 10\nn_sims &lt;- 10000\n\nvariance_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    sample_data = map(sim, \\(s) rnorm(n, 0, sqrt(true_variance))),\n    s2_n_minus_1 = map_dbl(sample_data, var),\n    s2_n = map_dbl(sample_data, \\(x) sum((x - mean(x))^2) / n)\n  )\n\nvariance_sim |&gt; \n  summarize(\n    `True σ²` = true_variance,\n    `E[S² with n-1]` = mean(s2_n_minus_1),\n    `E[S² with n]` = mean(s2_n),\n    `Bias (n-1)` = mean(s2_n_minus_1) - true_variance,\n    `Bias (n)` = mean(s2_n) - true_variance\n  ) |&gt; \n  mutate(across(where(is.numeric), \\(x) round(x, 2)))\n\n# A tibble: 1 × 5\n  `True σ²` `E[S² with n-1]` `E[S² with n]` `Bias (n-1)` `Bias (n)`\n      &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;\n1       100             100.           90.1         0.15      -9.86"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-comprehensive-example",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#your-turn-comprehensive-example",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Your Turn: Comprehensive Example",
+    "text": "Your Turn: Comprehensive Example\nExercise: A clinical trial measures cholesterol reduction. Based on \\(n = 36\\) patients:\n\nSample mean: \\(\\bar{x} = 25\\) mg/dL\nSample SD: \\(s = 12\\) mg/dL\n\nCalculate:\n\nThe estimated standard error of \\(\\bar{X}\\)\nIf the true mean reduction is \\(\\mu = 24\\), and we repeated this trial many times, what would be the expected MSE of \\(\\bar{X}\\)?\n\n\nSolutions:\n\n\\(\\widehat{SE} = \\frac{12}{\\sqrt{36}} = 2\\) mg/dL\n\\(\\bar{X}\\) is unbiased, so \\(\\text{MSE} = \\text{Var}(\\bar{X}) = \\frac{\\sigma^2}{n} \\approx \\frac{144}{36} = 4\\)"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#putting-it-all-together-estimator-summary",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#putting-it-all-together-estimator-summary",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Putting It All Together: Estimator Summary",
+    "text": "Putting It All Together: Estimator Summary\n\n\n\n\n\n\n\n\nProperty\nFormula\nInterpretation\n\n\n\n\nBias\n\\(E(\\hat{\\theta}) - \\theta\\)\nSystematic error\n\n\nVariance\n\\(E[(\\hat{\\theta} - E(\\hat{\\theta}))^2]\\)\nRandom variability\n\n\nStd Error\n\\(\\sqrt{\\text{Var}(\\hat{\\theta})}\\)\nTypical deviation\n\n\nMSE\n\\(\\text{Var} + \\text{Bias}^2\\)\nTotal error\n\n\n\n\n\n\n\n\n\n\nGuidelines for Choosing Estimators\n\n\n\nUnbiasedness is desirable but not always essential\nLower variance/SE means more precision\nMSE provides a single criterion combining both\nSometimes biased estimators have lower MSE!"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#week-1-summary",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#week-1-summary",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Week 1 Summary",
+    "text": "Week 1 Summary\nDay 1:\n\nPopulation parameters vs. sample estimates\nExpected value and variance of \\(\\bar{X}\\)\nNumerical optimization (grid search, optimize())\nBias: definition, calculation, and correction\n\nDay 2:\n\nStandard error and estimated standard error\nMean Squared Error = Variance + Bias²\nBias-variance tradeoff\nNo single “best” estimator for all situations"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#homework-problems",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#homework-problems",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Homework Problems",
+    "text": "Homework Problems\n\nBias Calculation: For a sample of size \\(n\\) from Exponential(\\(\\lambda\\)), the MLE is \\(\\hat{\\lambda} = 1/\\bar{X}\\). It can be shown that \\(E(\\hat{\\lambda}) = \\frac{n}{n-1}\\lambda\\). Calculate the bias and propose an unbiased estimator.\nMSE Comparison: Using simulation, compare the MSE of the standard proportion estimator vs. the add-two estimator for \\(n = 10\\) and \\(p = 0.1, 0.3, 0.5\\).\nNumerical Optimization: Use optimize() to find the MLE when you observe \\(x_1 = 2.1, x_2 = 3.5, x_3 = 1.8, x_4 = 2.9\\) from an Exponential(\\(\\lambda\\)) distribution. The likelihood is \\(L(\\lambda) = \\lambda^4 e^{-\\lambda \\sum x_i}\\)."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#next-week-preview",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#next-week-preview",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Next Week Preview",
+    "text": "Next Week Preview\nWeek 2: Minimum Variance Unbiased Estimators\n\nAmong all unbiased estimators, which has smallest variance?\nThe Cramér-Rao lower bound\nEfficiency of estimators\nIntroduction to Maximum Likelihood Estimation"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#references",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#references",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 7.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#questions",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#questions",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!\nOffice hours: [Time/Location]\nCourse website: [URL]"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1summary",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1summary",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Lesson 1Summary",
+    "text": "Lesson 1Summary\nKey Concepts:\n\nExpected Value: \\(E(\\bar{X}) = \\mu\\) (sample mean is centered at population mean)\nVariance: \\(\\text{Var}(\\bar{X}) = \\sigma^2/n\\) (precision improves with larger \\(n\\))\nOptimization: Finding maximum/minimum values numerically\n\nGrid search: try many values\noptimize(): efficient numerical search\n\nBias: \\(\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\)\n\nUnbiased if \\(E(\\hat{\\theta}) = \\theta\\)\nCan sometimes correct biased estimators"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1-practice-problems",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1-practice-problems",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Lesson 1 Practice Problems",
+    "text": "Lesson 1 Practice Problems\n\nCalculate \\(E(\\bar{X})\\) and \\(\\text{Var}(\\bar{X})\\) for a sample of size \\(n = 16\\) from a population with \\(\\mu = 50\\) and \\(\\sigma = 12\\).\nUse optimize() to find the MLE for \\(p\\) when you observe 23 successes in 40 trials.\nFor a Uniform[0, \\(\\theta\\)] distribution with \\(n = 20\\) observations and \\(\\theta = 50\\), calculate:\n\nThe expected value of the maximum\nThe bias of using the maximum as an estimator\nThe corrected unbiased estimator"
+  },
+  {
+    "objectID": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1-summary",
+    "href": "lessons/01_Intro_Point_Estimation/01_Intro_Point_Estimation.html#lesson-1-summary",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Lesson 1 Summary",
+    "text": "Lesson 1 Summary\nKey Concepts:\n\nExpected Value: \\(E(\\bar{X}) = \\mu\\) (sample mean is centered at population mean)\nVariance: \\(\\text{Var}(\\bar{X}) = \\sigma^2/n\\) (precision improves with larger \\(n\\))\nOptimization: Finding maximum/minimum values numerically\n\nGrid search: try many values\noptimize(): efficient numerical search\n\nBias: \\(\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\)\n\nUnbiased if \\(E(\\hat{\\theta}) = \\theta\\)\nCan sometimes correct biased estimators"
   }
 ]
