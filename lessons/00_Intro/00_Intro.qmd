@@ -25,7 +25,7 @@ format:
 
      
 
--   This is a "newish" class to me
+-   This is a "newish" class to me and the program
 
 -   Taught 552 Math/Stats II (RIP) for 9 years; Intro to R course developed & taught 3 years
 
@@ -100,13 +100,13 @@ source(here("class_dates.R"))
 
 |  |  |  |
 |:--------------------------|:----------------|:---------------------------|
-| [[{{< iconify akar-icons info-fill size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample_key_info.qmd)]{style="color:#f8f5f0;"} | Key Info | I will post announcements and other important class related info here. For example, if I change a due date or discuss a common mistake in homework, I will put it here. |
-| [[{{< iconify ri slideshow-fill size=80px >}}](lessons/17_Negative_binomial_rv/17_Negative_binomial_rv.qmd)]{style="color:#f8f5f0;"} | Slides HTML | These are the basic slides that will open in your browser. |
-| [[{{< iconify bi file-earmark-pdf-fill size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample.pdf)]{style="color:#f8f5f0;"} | Slides PDF | These are the slides in pdf form for easy note taking. I'm not always the best at posting these before class, so make sure you know how to save your own copy of pdf slides! |
-| [[{{< iconify pepicons-pop pen-circle-filled size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample_notes.pdf)]{style="color:#f8f5f0;"} | Slides Notes | These are the annotated slides in pdf form. In class, I add my own notes to slides. After class, I will post them here. |
-| [[{{< iconify healthicons health-worker-form size=90px >}}](https://forms.office.com/Pages/ResponsePage.aspx?id=V3lz4rj6fk2U9pvWr59xWFMopmPUjRt)]{style="color:#f8f5f0;"} | Exit tix | These are links to that day's exit ticket. |
-| [[{{< iconify mdi video size=90px >}}](mothing)]{style="color:#f8f5f0;"} | Recording | I record our classes. This will be a link to the OneDrive folder containing this recording. |
-| [[{{< iconify pajamas question size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample_muddy_points.qmd)]{style="color:#f8f5f0;"} | Muddy Points | You will have a chance to ask questions about class in your exit tickets. If I notice a trend in confusion, I will add explanations to these "Muddy Points" |
+| [[{{< iconify akar-icons info-fill size=80px >}}](lessons/01_Intro_Inference/01_Intro_Inference.qmd)]{style="color:#f8f5f0;"} | Key Info | I will post announcements and other important class related info here. For example, if I change a due date or discuss a common mistake in homework, I will put it here. |
+| [[{{< iconify ri slideshow-fill size=80px >}}](lessons/01_Intro_Inference/01_Intro_Inference.qmd)]{style="color:#f8f5f0;"} | Slides HTML | These are the basic slides that will open in your browser. |
+| [[{{< iconify bi file-earmark-pdf-fill size=80px >}}](lessons/lessons/01_Intro_Inference/01_Intro_Inference.pdf)]{style="color:#f8f5f0;"} | Slides PDF | These are the slides in pdf form for easy note taking. I'm not always the best at posting these before class, so make sure you know how to save your own copy of pdf slides! |
+| [[{{< iconify pepicons-pop pen-circle-filled size=80px >}}]]{style="color:#f8f5f0;"} | Slides Notes | These are the annotated slides in pdf form. In class, I add my own notes to slides. After class, I will post them here. |
+| [[{{< iconify healthicons health-worker-form size=90px >}}])]{style="color:#f8f5f0;"} | Exit tix | These are links to that day's exit ticket. |
+| [[{{< iconify mdi video size=90px >}}](nothing)]{style="color:#f8f5f0;"} | Recording | I record our classes. This will be a link to the OneDrive folder containing this recording. |
+| [[{{< iconify pajamas question size=80px >}}]()]{style="color:#f8f5f0;"} | Muddy Points | You will have a chance to ask questions about class in your exit tickets. If I notice a trend in confusion, I will add explanations to these "Muddy Points" |
 
 ## Let's visit the website: Search
 

@@ -1,0 +1,588 @@
+---
+title: "BSTA 551: Statistical Inference"
+subtitle: "Lesson 1: Introduction to Statistical Inference; Statistics"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w1d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 1
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 1: Introduction to Statistical Inference
+
+## Welcome to Statistical Inference! {.center}
+
+**Course Focus:** How do we learn about populations from samples?
+
+::: incremental
+-   **Point Estimation** (Weeks 1-4): What's our best guess for a parameter?
+-   **Confidence Intervals** (Weeks 5-6): What's a plausible range?
+-   **Hypothesis Testing** (Weeks 7-9): Can we make decisions from data?
+-   **Two-Sample Methods** (Week 10): Comparing groups
+:::
+
+## Today's Goals
+
+::: incremental
+1.  Understand the fundamental problem of statistical inference
+2.  Distinguish between populations and samples, parameters and statistics
+3.  Use R to simulate sampling distributions
+4.  Review key properties of expected value and variance
+:::
+
+## Motivating Example: Clinical Trial
+
+A pharmaceutical company is testing a new blood pressure medication.
+
+**The Question:** What is the true average reduction in systolic blood pressure?
+
+. . .
+
+**What we have:** Data from 25 patients in a trial
+
+```{r}
+# Actual blood pressure reductions (mmHg) from 25 patients
+bp_reductions <- c(12, 8, 15, 10, 7, 14, 11, 9, 13, 16,
+                   8, 12, 10, 14, 11, 9, 15, 13, 7, 12,
+                   10, 8, 14, 11, 13)
+
+# What's our estimate of the true mean reduction?
+mean(bp_reductions)
+```
+
+. . .
+
+This "estimate" is the observed value of the (random variable) sample mean statistic: $\bar{X} = \sum_{i=1}^n X_i$
+
+. . .
+
+But how **reliable** is this estimate? Would we get the same answer with different patients?
+
+# Statistical Inference: The Big Picture {background-color="#2c3e50"}
+
+## The Big Picture: Population vs Sample
+
+```{r}
+#| echo: false
+#| fig-height: 5
+tibble(
+  x = c(1, 2),
+  y = c(1, 1),
+  size = c(4, 2)
+) |> 
+  ggplot(aes(x = x, y = y)) +
+  geom_point(aes(size = size), color = "steelblue", alpha = 0.5) +
+  # Regular text labels
+  annotate("text", x = 1, y = 1, 
+           label = "Population\n(Unknown parameter μ)", size = 6) +
+  annotate("text", x = 2, y = 1.05, 
+           label = "Sample", size = 6) +
+  # Parsed label for x-bar
+  annotate("text", x = 2, y = 0.95, 
+           label = "(Compute~estimate~bar(X))", size = 6, parse = TRUE) +
+  annotate("segment", x = 1.3, xend = 1.7, y = 1, yend = 1,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1.5) +
+  annotate("text", x = 1.5, y = 1.15, label = "Random\nSampling", size = 5) +
+  annotate("segment", x = 1.7, xend = 1.3, y = 0.85, yend = 0.85,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1.5, color = "darkred") +
+  annotate("text", x = 1.5, y = 0.7, label = "Inference", size = 5, color = "darkred") +
+  scale_size_identity() +
+  xlim(0.5, 2.5) + ylim(0.5, 1.5) +
+  theme_void()
+```
+
+::: lob
+**Key insight:** We use sample data to make inferences about population parameters.
+:::
+
+## Key Terminology (Devore 6.1)
+
+::: callout-important
+## Definitions
+
+-   **Population:** The entire collection of individuals or measurements of interest
+-   **Sample:** A subset of the population that we actually observe
+-   **Parameter:** A numerical characteristic of the population (e.g., $\mu$, $\sigma$, $p$)
+-   **Statistic:** A numerical characteristic computed from sample data (e.g., $\bar{X}$, $S$, $\hat{p}$)
+:::
+
+. . .
+
+**The Central Challenge:** Parameters are fixed but unknown; statistics are known but random.
+
+## Parameters vs. Statistics
+
+| Concept   | Population (Parameter) | Sample (Statistic)        |
+|-----------|------------------------|---------------------------|
+| Mean      | $\mu$                  | $\bar{X} = \frac{1}{n}\sum X_i$ |
+| Variance  | $\sigma^2$             | $S^2 = \frac{1}{n-1}\sum(X_i - \bar{X})^2$ |
+| Proportion| $p$                    | $\hat{p} = X/n$           |
+| Maximum   | $\theta$ (upper bound) | $\max(X_1, \ldots, X_n)$  |
+
+. . .
+
+**Key Point:** Parameters use Greek letters; statistics use Roman letters or "hats."
+
+## The Sampling Process (Devore 6.2)
+
+**Random Sampling Assumptions:**
+
+1. Each observation $X_i$ is a random variable
+2. The $X_i$ are **independent** of each other
+3. Each $X_i$ has the **same distribution** (identically distributed)
+
+. . .
+
+Together: $X_1, X_2, \ldots, X_n$ are **i.i.d.** (independent and identically distributed)
+
+. . .
+
+::: callout-note
+## Why This Matters
+The i.i.d. assumption allows us to derive the properties of statistics mathematically.
+:::
+
+# Review: Expected Value and Variance {background-color="#27ae60"}
+
+## Review: Expected Value
+
+The **expected value** $E(X)$ is the long-run average of a random variable.
+
+::: callout-note
+## Key Properties We'll Use Today
+
+1.  $E(c) = c$ for any constant $c$
+2.  $E(cX) = c \cdot E(X)$
+3.  $E(X + Y) = E(X) + E(Y)$
+4.  $E\left(\sum_{i=1}^n X_i\right) = \sum_{i=1}^n E(X_i)$
+:::
+
+## Worked Example: Expected Value of Sample Mean
+
+**Problem:** If $X_1, X_2, \ldots, X_n$ are *iid* observations from a population with mean $\mu$, what is $E(\bar{X})$?
+
+. . .
+
+**Solution:** Let's work through this step by step.
+
+$$E(\bar{X}) = E\left(\frac{1}{n}\sum_{i=1}^n X_i\right)$$
+
+. . .
+
+$$= \frac{1}{n} E\left(\sum_{i=1}^n X_i\right) \quad \text{(Property 2: constants come out)}$$
+
+. . .
+
+$$= \frac{1}{n} \sum_{i=1}^n E(X_i) \quad \text{(Property 4: sum of expectations)}$$
+
+. . .
+
+$$= \frac{1}{n} \cdot n\mu = \mu \quad \text{(Each } E(X_i) = \mu \text{)}$$
+
+## Your Turn: Calculate Expected Value
+
+**Exercise:** A hospital measures the recovery time (in days) for patients after surgery. Let $X_1, X_2, X_3$ be recovery times for 3 patients. The population mean recovery time is $\mu = 5$ days.
+
+**Questions:**
+
+1.  What is $E(X_1)$?
+2.  What is $E(X_1 + X_2 + X_3)$?
+3.  What is $E(\bar{X})$ where $\bar{X} = \frac{X_1 + X_2 + X_3}{3}$?
+
+. . .
+
+**Answers:**
+
+1.  $E(X_1) = \mu = 5$ days
+2.  $E(X_1 + X_2 + X_3) = 5 + 5 + 5 = 15$ days
+3.  $E(\bar{X}) = \frac{15}{3} = 5$ days
+
+## Review: Variance
+
+**Variance** measures the spread of a distribution: $\text{Var}(X) = E[(X - \mu)^2]$
+
+::: callout-note
+## Key Properties We'll Use Today
+
+1.  $\text{Var}(c) = 0$ for any constant
+2.  $\text{Var}(cX) = c^2 \cdot \text{Var}(X)$
+3.  If $X$ and $Y$ are **independent**: $\text{Var}(X + Y) = \text{Var}(X) + \text{Var}(Y)$
+:::
+
+## Worked Example: Variance of Sample Mean
+
+**Problem:** If $X_1, \ldots, X_n$ are independent observations with variance $\sigma^2$, what is $\text{Var}(\bar{X})$?
+
+. . .
+
+$$\text{Var}(\bar{X}) = \text{Var}\left(\frac{1}{n}\sum_{i=1}^n X_i\right)$$
+
+. . .
+
+$$= \frac{1}{n^2} \text{Var}\left(\sum_{i=1}^n X_i\right) \quad \text{(Property 2)}$$
+
+. . .
+
+$$= \frac{1}{n^2} \sum_{i=1}^n \text{Var}(X_i) \quad \text{(Property 3: independence)}$$
+
+. . .
+
+$$= \frac{1}{n^2} \cdot n\sigma^2 = \frac{\sigma^2}{n}$$
+
+::: callout-important
+## Key Result
+
+The variance of $\bar{X}$ **decreases** as sample size $n$ increases!
+:::
+
+# The Sampling Distribution {background-color="#8e44ad"}
+
+## What is a Sampling Distribution?
+
+Different samples give different values of a statistic. The **sampling distribution** describes this variability.
+
+```{r}
+#| echo: false
+#| fig-height: 4.5
+# Show multiple samples from same population
+set.seed(123)
+true_mean <- 10
+n <- 25
+
+# Take 6 different samples
+sample_results <- tibble(sample_num = 1:6) |> 
+  mutate(
+    data = map(sample_num, \(s) rnorm(n, true_mean, 3)),
+    sample_mean = map_dbl(data, mean)
+  )
+
+sample_results |> 
+  select(sample_num, sample_mean) |> 
+  mutate(sample_mean = round(sample_mean, 2)) |> 
+  knitr::kable(col.names = c("Sample", "Sample Mean (x̄)"))
+```
+
+. . .
+
+Each sample gives a **different estimate**, but they cluster around the true value $\mu = 10$.
+
+## Simulation: Building a Sampling Distribution
+
+```{r}
+#| output-location: slide
+# Parameters
+true_effect <- 10  # True mean BP reduction (mmHg)
+true_sd <- 4       # Standard deviation
+n_patients <- 25   # Patients per trial
+n_trials <- 5000   # Number of simulated trials
+
+# Simulate many clinical trials
+sampling_distribution <- tibble(trial = 1:n_trials) |> 
+  mutate(
+    sample_mean = map_dbl(trial, \(t) {
+      patients <- rnorm(n_patients, true_effect, true_sd)
+      mean(patients)
+    })
+  )
+
+# Visualize
+sampling_distribution |> 
+  ggplot(aes(x = sample_mean)) +
+  geom_histogram(bins = 50, fill = "steelblue", alpha = 0.7, color = "white") +
+  geom_vline(xintercept = true_effect, color = "red", linewidth = 1.5) +
+  labs(title = "Sampling Distribution of the Sample Mean",
+       subtitle = str_glue("True μ = {true_effect}, n = {n_patients}, {n_trials} simulated trials"),
+       x = "Sample Mean (estimated BP reduction)", y = "Frequency")
+```
+
+## Simulation: Seeing Variance Decrease
+
+```{r}
+#| code-line-numbers: "|1-3|5-12|14-15"
+# Population parameters
+true_mean <- 120  # True mean systolic BP
+true_sd <- 15     # Population standard deviation
+
+# Simulate sample means for different sample sizes
+simulation_data <- tibble(n = c(5, 25, 100)) |> 
+  cross_join(tibble(sim = 1:2000)) |> 
+  mutate(
+    sample_mean = map2_dbl(n, sim, \(size, s) {
+      mean(rnorm(size, true_mean, true_sd))
+    })
+  )
+
+# Calculate observed standard deviation for each sample size
+simulation_data |> 
+  group_by(n) |> 
+  summarize(
+    observed_sd = sd(sample_mean),
+    theoretical_sd = true_sd / sqrt(first(n))
+  )
+```
+
+## Visualizing the Effect of Sample Size
+
+```{r}
+#| echo: false
+#| fig-height: 5
+simulation_data |> 
+  mutate(n_label = paste("n =", n) |> fct_reorder(n)) |> 
+  ggplot(aes(x = sample_mean)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.7, color = "white") +
+  geom_vline(xintercept = true_mean, color = "red", linetype = "dashed", linewidth = 1) +
+  facet_wrap(~n_label, scales = "free_y") +
+  labs(title = "Sampling Distribution of X̄ for Different Sample Sizes",
+       subtitle = "Larger n → Less spread → More precise estimates",
+       x = "Sample Mean", y = "Frequency") +
+  annotate("text", x = 128, y = Inf, label = "True μ = 120", 
+           vjust = 2, color = "red", size = 4)
+```
+
+# Understanding Optimization {background-color="#2c3e50"}
+
+## Why Optimization Matters in Statistics
+
+Many statistical methods require finding the "best" value of a parameter.
+
+**Examples:**
+
+-   **Maximum Likelihood:** Find the parameter value that makes the observed data most probable
+-   **Least Squares:** Find the parameter value that minimizes prediction errors
+-   **Minimum Variance:** Find the estimator with the smallest spread
+
+. . .
+
+**The Problem:** How do we find maximums and minimums numerically?
+
+## Optimization: The Graphical Intuition
+
+```{r}
+#| echo: false
+#| fig-height: 5
+# Create a likelihood function to visualize
+tibble(p = seq(0, 1, by = 0.01)) |> 
+  mutate(likelihood = dbinom(7, size = 10, prob = p)) |> 
+  ggplot(aes(x = p, y = likelihood)) +
+  geom_line(color = "steelblue", linewidth = 1.5) +
+  geom_vline(xintercept = 0.7, color = "red", linetype = "dashed") +
+  geom_point(aes(x = 0.7, y = dbinom(7, 10, 0.7)), color = "red", size = 4) +
+  labs(title = "Finding the Maximum of a Function",
+       subtitle = "Where is this function highest?",
+       x = "Parameter value (p)", y = "Function value") +
+  annotate("text", x = 0.75, y = 0.28, label = "Maximum\nat p = 0.7", 
+           color = "red", size = 5)
+```
+
+**The maximum occurs where the function reaches its peak.**
+
+## Concrete Example: Finding the Best Estimate
+
+**Scenario:** In a clinical trial, 7 out of 10 patients respond to treatment. What's the best estimate of the true response rate $p$?
+
+. . .
+
+**Approach:** Find the value of $p$ that makes observing "7 out of 10" most likely.
+
+The probability of observing exactly 7 successes in 10 trials is: $$P(X = 7) = \binom{10}{7} p^7 (1-p)^3$$
+
+. . .
+
+**Question:** For what value of $p$ is this probability largest?
+
+## Grid Search: A Simple Numerical Approach
+
+**Idea:** Try many values and see which gives the largest result.
+
+```{r}
+# Try different values of p
+grid_search <- tibble(p = seq(0.01, 0.99, by = 0.01)) |> 
+  mutate(
+    likelihood = dbinom(7, size = 10, prob = p)
+  )
+
+# Find the maximum
+grid_search |> 
+  slice_max(likelihood, n = 1)
+```
+
+. . .
+
+The maximum likelihood estimate is $\hat{p} = 0.70 = \frac{7}{10}$. This makes intuitive sense!
+
+## Using R's Optimizer
+
+R has built-in functions to find maximums and minimums more precisely:
+
+```{r}
+# Define the likelihood function
+likelihood_function <- function(p) {
+  dbinom(7, size = 10, prob = p)
+}
+
+# Use optimize() to find the maximum
+# Note: optimize finds MINIMUM by default, so we negate for maximum
+result <- optimize(
+  f = function(p) -likelihood_function(p),  # Negative to find max
+  interval = c(0, 1)                         # Search between 0 and 1
+)
+
+# The maximum occurs at:
+cat("Maximum likelihood estimate: p =", result$minimum)
+```
+
+## How Numerical Optimization Works
+
+```{r}
+#| echo: false
+#| fig-height: 5
+# Visualize the optimization process
+search_points <- tibble(
+  iteration = 1:6,
+  p = c(0.5, 0.75, 0.625, 0.6875, 0.71875, 0.703125),
+  likelihood = dbinom(7, 10, p)
+)
+
+tibble(p = seq(0, 1, by = 0.01)) |> 
+  mutate(likelihood = dbinom(7, size = 10, prob = p)) |> 
+  ggplot(aes(x = p, y = likelihood)) +
+  geom_line(color = "steelblue", linewidth = 1.5) +
+  geom_point(data = search_points, aes(color = iteration), size = 4) +
+  geom_path(data = search_points, aes(color = iteration), 
+            arrow = arrow(length = unit(0.2, "cm")), linewidth = 0.8) +
+  scale_color_viridis_c(option = "plasma") +
+  labs(title = "Numerical Optimization: Searching for the Maximum",
+       subtitle = "The algorithm tries different values, homing in on the peak",
+       x = "Parameter value (p)", y = "Likelihood",
+       color = "Iteration")
+```
+
+**Key idea:** The algorithm evaluates the function at different points and iteratively narrows in on the maximum.
+
+## Your Turn: Numerical Optimization
+
+**Exercise:** A diagnostic test correctly identifies a disease in 18 out of 25 patients who have it. Find the maximum likelihood estimate for the test's sensitivity $p$.
+
+```{r}
+#| eval: false
+# Fill in the blanks:
+likelihood_fn <- function(p) {
+  dbinom(___, size = ___, prob = p)  # What goes here?
+}
+
+result <- optimize(
+  f = function(p) -likelihood_fn(p),
+  interval = c(0, 1)
+)
+
+result$minimum  # This is the MLE
+```
+
+. . .
+
+```{r}
+# Solution:
+likelihood_fn <- function(p) {
+  dbinom(18, size = 25, prob = p)
+}
+
+result <- optimize(f = function(p) -likelihood_fn(p), interval = c(0, 1))
+cat("MLE of sensitivity:", result$minimum)  # Should be 18/25 = 0.72
+```
+
+## When Optimization Gets Harder
+
+Sometimes we need to optimize over multiple parameters or complex functions:
+
+```{r}
+# Example: Finding mean and SD that best fit data
+patient_data <- c(120, 135, 128, 142, 131, 125, 138, 129, 133, 127)
+
+# Negative log-likelihood for normal distribution
+neg_log_lik <- function(params) {
+  mu <- params[1]
+  sigma <- params[2]
+  if (sigma <= 0) return(Inf)  # sigma must be positive
+  -sum(dnorm(patient_data, mean = mu, sd = sigma, log = TRUE))
+}
+
+# Use optim() for multiple parameters
+result <- optim(par = c(130, 10), fn = neg_log_lik)
+cat("MLE for mean:", round(result$par[1], 2), "\n")
+cat("MLE for SD:", round(result$par[2], 2), "\n")
+cat("Compare to sample mean:", round(mean(patient_data), 2))
+```
+
+# Summary and Looking Ahead {background-color="#3498db"}
+
+## Lesson 1 Summary
+
+**Key Concepts:**
+
+1.  **Statistical Inference:** Using sample data to learn about population parameters
+
+2.  **Parameters vs. Statistics:**
+    -   Parameters ($\mu$, $\sigma$, $p$): Fixed but unknown population values
+    -   Statistics ($\bar{X}$, $S$, $\hat{p}$): Calculated from sample data
+
+3.  **Sampling Distribution:** The distribution of a statistic across many samples
+    -   $E(\bar{X}) = \mu$ (centered at population mean)
+    -   $\text{Var}(\bar{X}) = \sigma^2/n$ (precision improves with larger $n$)
+
+4.  **Numerical Optimization:** Finding maximum/minimum values
+    -   Grid search: try many values
+    -   `optimize()`: efficient numerical search
+
+## Lesson 1 Practice Problems
+
+1.  Calculate $E(\bar{X})$ and $\text{Var}(\bar{X})$ for a sample of size $n = 16$ from a population with $\mu = 50$ and $\sigma = 12$.
+
+2.  Use `optimize()` to find the MLE for $p$ when you observe 23 successes in 40 trials.
+
+3.  A quality control engineer samples 5 items from a production line. If the population mean weight is 100g with SD = 5g, what is the expected value and variance of the sample mean?
+
+4.  Simulate the sampling distribution of the sample median for $n = 30$ observations from a Normal(100, 15) distribution. Compare to the sampling distribution of the sample mean.
+
+## Next Lesson Preview
+
+**Lesson 2: Point Estimation; Bias, Variance, and MSE**
+
+-   What is a point estimator?
+-   Bias: systematic error in estimation
+-   Standard error: precision of estimators
+-   Mean Squared Error: combining bias and variance
+-   The bias-variance tradeoff
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapters 6.1, 6.2
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!

@@ -1,0 +1,574 @@
+---
+title: "BSTA 551: Statistical Inference"
+subtitle: "Lesson 3: The Chi-Squared, t, and F Distributions"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w2d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 3
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 3: The Chi-Squared, t, and F Distributions
+
+## Review: Where We Left Off
+
+**Key concepts from Lessons 1-2:**
+
+-   Estimator vs. estimate; parameters vs. statistics
+-   Bias: $\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta$
+-   Variance and Standard Error: $SE(\hat{\theta}) = \sqrt{\text{Var}(\hat{\theta})}$
+-   Mean Squared Error: $\text{MSE} = \text{Var} + \text{Bias}^2$
+
+. . .
+
+**Today's Goals:**
+
+::: incremental
+1.  Understand the chi-squared distribution and its connection to normal samples
+2.  Learn the t distribution and when it arises
+3.  Understand the F distribution as a ratio of chi-squared variables
+4.  Use R to work with these distributions
+:::
+
+## Motivating Example: Variability in Drug Response
+
+A pharmaceutical company is studying individual variation in drug metabolism.
+
+**Question:** How do we characterize the *variability* in patient responses, not just the average?
+
+```{r}
+# Liver enzyme levels (U/L) from 15 patients
+enzyme_levels <- c(42, 38, 51, 45, 40, 55, 48, 37, 44, 52, 
+                   46, 43, 49, 41, 47)
+
+tibble(
+  Statistic = c("Sample Mean", "Sample SD", "Sample Variance"),
+  Value = c(mean(enzyme_levels), sd(enzyme_levels), var(enzyme_levels))
+) |> mutate(Value = round(Value, 2))
+```
+
+. . .
+
+**Key insight:** To make inferences about variability, we need to understand the *sampling distribution of the variance*.
+
+# The Chi-Squared Distribution {background-color="#2c3e50"}
+
+## The Chi-Squared Distribution: Definition (Devore 6.3)
+
+::: callout-important
+## Definition
+
+For a positive integer $\nu$, let $Z_1, \ldots, Z_\nu$ be **independent** standard normal random variables. The **chi-squared distribution with $\nu$ degrees of freedom** is the distribution of:
+
+$$\chi^2_\nu = Z_1^2 + Z_2^2 + \cdots + Z_\nu^2$$
+:::
+
+. . .
+
+**Key Properties:**
+
+| Property | Value |
+|----------|-------|
+| Mean | $E(\chi^2_\nu) = \nu$ |
+| Variance | $\text{Var}(\chi^2_\nu) = 2\nu$ |
+| Shape | Right-skewed, becomes more symmetric as $\nu$ increases |
+
+## Visualizing the Chi-Squared Distribution
+
+```{r}
+#| fig-height: 5
+tibble(x = seq(0.01, 30, length.out = 500)) |>
+  crossing(df = c(1, 2, 5, 10)) |>
+  mutate(
+    density = dchisq(x, df),
+    df = factor(df, labels = paste(c(1, 2, 5, 10), "df"))
+  ) |>
+  ggplot(aes(x = x, y = density, color = df)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    title = "Chi-Squared Distribution for Various Degrees of Freedom",
+    x = "x", y = "Density", color = "Degrees of\nFreedom"
+  ) +
+  scale_color_brewer(palette = "Set1") +
+  theme(legend.position = c(0.8, 0.7))
+```
+
+## Chi-Squared and the Gamma Distribution
+
+::: callout-note
+## Connection to Gamma
+
+The chi-squared distribution with $\nu$ df is equivalent to a **Gamma distribution** with:
+
+-   Shape parameter $\alpha = \nu/2$
+-   Scale parameter $\beta = 2$
+
+This means $\chi^2_\nu = \text{Gamma}(\nu/2, 2)$.
+:::
+
+. . .
+
+**Why this matters:**
+
+-   We can use gamma distribution properties
+-   Chi-squared variables are **additive**: if $X_1 \sim \chi^2_{\nu_1}$ and $X_2 \sim \chi^2_{\nu_2}$ are independent, then $X_1 + X_2 \sim \chi^2_{\nu_1 + \nu_2}$
+
+## Medical Example: LED Lamp Lifecycle (Devore Example 6.12)
+
+From Devore, Berk & Carlton: The lifecycle (in thousands of hours) of certain LED medical lamps follows a $\chi^2_8$ distribution.
+
+```{r}
+# Parameters for χ²₈ distribution
+df_lamps <- 8
+mean_life <- df_lamps  # E(X) = ν
+sd_life <- sqrt(2 * df_lamps)  # SD(X) = √(2ν)
+
+cat("Mean lifecycle:", mean_life, "thousand hours\n")
+cat("SD of lifecycle:", round(sd_life, 2), "thousand hours\n")
+
+# Probability lamp lasts between 6 and 10 thousand hours
+prob_range <- pchisq(10, df_lamps) - pchisq(6, df_lamps)
+cat("P(6 ≤ X ≤ 10):", round(prob_range, 3))
+```
+
+## Your Turn: Chi-Squared Calculations
+
+**Exercise:** For the LED lamp example ($\chi^2_8$ distribution):
+
+1.  What is the probability a lamp lasts more than 15,000 hours?
+2.  Find the 90th percentile of the lifecycle distribution.
+3.  What is the "middle 95%" range of lifecycles?
+
+. . .
+
+**Solutions:**
+
+```{r}
+# 1. P(X > 15)
+prob_over_15 <- 1 - pchisq(15, 8)
+cat("P(X > 15):", round(prob_over_15, 4), "\n")
+
+# 2. 90th percentile
+p90 <- qchisq(0.90, 8)
+cat("90th percentile:", round(p90, 2), "thousand hours\n")
+
+# 3. Middle 95%
+lower <- qchisq(0.025, 8)
+upper <- qchisq(0.975, 8)
+cat("Middle 95%: [", round(lower, 2), ",", round(upper, 2), "]")
+```
+
+## The Critical Connection: Sample Variance (Devore 6.4)
+
+::: callout-important
+## Fundamental Theorem
+
+If $X_1, X_2, \ldots, X_n$ is a random sample from a **normal distribution** $N(\mu, \sigma^2)$, then:
+
+$$\frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}$$
+
+where $S^2 = \frac{1}{n-1}\sum_{i=1}^n (X_i - \bar{X})^2$ is the sample variance.
+:::
+
+. . .
+
+**This is crucial because:**
+
+-   It tells us exactly how sample variances behave
+-   The $(n-1)$ degrees of freedom arise because we "use up" one df estimating $\mu$ with $\bar{X}$
+-   This forms the basis for inference about population variances
+
+## Simulation: Verifying the Chi-Squared Result
+
+```{r}
+#| fig-height: 5
+n <- 10
+sigma_sq <- 100  # True variance
+n_sims <- 10000
+
+# Simulate the transformation (n-1)S²/σ²
+chi_sq_sim <- tibble(sim = 1:n_sims) |>
+  mutate(
+    sample_data = map(sim, ~rnorm(n, mean = 50, sd = sqrt(sigma_sq))),
+    s_squared = map_dbl(sample_data, var),
+    chi_sq_stat = (n - 1) * s_squared / sigma_sq
+  )
+
+# Compare to theoretical χ²(n-1) distribution
+chi_sq_sim |>
+  ggplot(aes(x = chi_sq_stat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, 
+                 fill = "steelblue", alpha = 0.7, color = "white") +
+  stat_function(fun = dchisq, args = list(df = n - 1), 
+                color = "red", linewidth = 1.5) +
+  labs(title = "Simulated (n-1)S²/σ² vs. Theoretical χ²(n-1)",
+       subtitle = paste("n =", n, ", σ² =", sigma_sq, ",", n_sims, "simulations"),
+       x = "Value", y = "Density") +
+  annotate("text", x = 20, y = 0.08, label = "Red: χ²(9) density", 
+           color = "red", size = 5)
+```
+
+# The t Distribution {background-color="#27ae60"}
+
+## The t Distribution: Definition (Devore 6.3)
+
+::: callout-important
+## Definition
+
+Let $Z$ be a standard normal random variable and $Y$ be a $\chi^2_\nu$ random variable, **independent** of $Z$. Then the **t distribution with $\nu$ degrees of freedom** is the distribution of:
+
+$$T = \frac{Z}{\sqrt{Y/\nu}}$$
+:::
+
+. . .
+
+**Key Properties:**
+
+| Property | Value |
+|----------|-------|
+| Mean | $E(T) = 0$ (for $\nu > 1$) |
+| Variance | $\text{Var}(T) = \frac{\nu}{\nu - 2}$ (for $\nu > 2$) |
+| Shape | Symmetric, bell-shaped, heavier tails than normal |
+
+## Comparing t and Normal Distributions
+
+```{r}
+#| fig-height: 5
+tibble(x = seq(-4, 4, length.out = 500)) |>
+  crossing(df = c(1, 2, 5, 30)) |>
+  mutate(
+    t_density = dt(x, df),
+    df = factor(df, labels = paste(c(1, 2, 5, 30), "df"))
+  ) |>
+  ggplot(aes(x = x, y = t_density, color = df)) +
+  geom_line(linewidth = 1.2) +
+  stat_function(fun = dnorm, color = "black", linewidth = 1.5, linetype = "dashed") +
+  labs(
+    title = "t Distribution Compared to Standard Normal",
+    subtitle = "Dashed black line: Standard Normal (Z)",
+    x = "x", y = "Density", color = "t Distribution"
+  ) +
+  scale_color_brewer(palette = "Set1") +
+  annotate("text", x = 2.5, y = 0.35, label = "As df → ∞, t → Z", size = 5)
+```
+
+## Gosset's Theorem: The Practical t Distribution (Devore 6.4)
+
+::: callout-important
+## Gosset's Theorem (1908)
+
+If $X_1, X_2, \ldots, X_n$ is a random sample from a **normal distribution** $N(\mu, \sigma)$, then:
+
+$$T = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t_{n-1}$$
+
+This is the **one-sample t statistic**.
+:::
+
+. . .
+
+**Why this matters:**
+
+-   In practice, we rarely know $\sigma$
+-   Replacing $\sigma$ with $S$ introduces additional uncertainty
+-   The t distribution accounts for this extra variability
+
+## Comparing Z and T Statistics
+
+Two related quantities for inference about $\mu$:
+
+$$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \quad \text{vs.} \quad T = \frac{\bar{X} - \mu}{S/\sqrt{n}}$$
+
+. . .
+
+| When to use | Distribution | Requires knowing |
+|-------------|--------------|------------------|
+| Z statistic | Standard Normal | Population $\sigma$ |
+| T statistic | $t_{n-1}$ | Only sample data |
+
+. . .
+
+**Key insight:** The t distribution has heavier tails because $S$ varies from sample to sample.
+
+## Medical Example: Blood Pressure Reduction
+
+A clinical trial measures systolic blood pressure reduction (mmHg) in 12 patients taking a new medication.
+
+```{r}
+# Blood pressure reductions from 12 patients
+bp_reduction <- c(8.2, 12.5, 9.1, 7.8, 11.3, 10.4, 
+                  9.7, 13.1, 8.9, 10.8, 12.0, 9.5)
+
+n <- length(bp_reduction)
+x_bar <- mean(bp_reduction)
+s <- sd(bp_reduction)
+
+# T statistic (testing if true mean reduction is μ₀ = 8)
+mu_0 <- 8
+t_stat <- (x_bar - mu_0) / (s / sqrt(n))
+
+cat("Sample mean:", round(x_bar, 2), "mmHg\n")
+cat("Sample SD:", round(s, 2), "mmHg\n")
+cat("T statistic (vs μ₀ = 8):", round(t_stat, 3), "\n")
+cat("P-value:", round(2 * pt(-abs(t_stat), df = n - 1), 4))
+```
+
+## Your Turn: t Distribution Application
+
+**Exercise:** A hospital measures recovery times (days) for 8 post-surgery patients:
+
+```{r}
+recovery_times <- c(4.2, 5.8, 3.9, 5.1, 4.7, 6.2, 4.4, 5.5)
+```
+
+1.  Calculate the sample mean and sample standard deviation
+2.  Compute the t statistic for testing whether the true mean is 5 days
+3.  Find the critical value $t_{0.025, 7}$ (for a two-sided 95% test)
+
+. . .
+
+**Solutions:**
+
+```{r}
+n <- length(recovery_times)
+x_bar <- mean(recovery_times)
+s <- sd(recovery_times)
+t_stat <- (x_bar - 5) / (s / sqrt(n))
+t_crit <- qt(0.975, df = n - 1)
+
+cat("Mean:", round(x_bar, 3), "SD:", round(s, 3), "\n")
+cat("T statistic:", round(t_stat, 3), "\n")
+cat("Critical value t₀.₀₂₅,₇:", round(t_crit, 3))
+```
+
+# The F Distribution {background-color="#8e44ad"}
+
+## The F Distribution: Definition (Devore 6.3)
+
+::: callout-important
+## Definition
+
+Let $Y_1 \sim \chi^2_{\nu_1}$ and $Y_2 \sim \chi^2_{\nu_2}$ be **independent** chi-squared random variables. The **F distribution** with $\nu_1$ numerator df and $\nu_2$ denominator df is:
+
+$$F = \frac{Y_1/\nu_1}{Y_2/\nu_2} \sim F_{\nu_1, \nu_2}$$
+:::
+
+. . .
+
+**Key Properties:**
+
+-   $E(F) = \frac{\nu_2}{\nu_2 - 2}$ (for $\nu_2 > 2$)
+-   Right-skewed, positive values only
+-   Used for comparing variances and in ANOVA
+
+## Visualizing the F Distribution
+
+```{r}
+#| fig-height: 5
+expand_grid(
+  df1 = c(1, 5, 10),
+  df2 = c(5, 20)
+) |>
+  mutate(df_label = paste0("(", df1, ", ", df2, ")")) |>
+  crossing(x = seq(0.01, 5, length.out = 300)) |>
+  mutate(density = df(x, df1, df2)) |>
+  ggplot(aes(x = x, y = density, color = df_label)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    title = "F Distribution for Various Degrees of Freedom",
+    subtitle = "Label format: (numerator df, denominator df)",
+    x = "x", y = "Density", color = "Degrees of\nFreedom"
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  coord_cartesian(ylim = c(0, 1))
+```
+
+## The F Statistic for Comparing Variances
+
+::: callout-note
+## Comparing Two Population Variances
+
+If we have independent samples from two normal populations:
+
+-   Sample 1: $n_1$ observations, sample variance $S_1^2$
+-   Sample 2: $n_2$ observations, sample variance $S_2^2$
+
+Then under $H_0: \sigma_1^2 = \sigma_2^2$:
+
+$$F = \frac{S_1^2}{S_2^2} \sim F_{n_1-1, n_2-1}$$
+:::
+
+. . .
+
+This will be essential for ANOVA and comparing treatment groups.
+
+## Medical Example: Treatment Variability Comparison
+
+Two pain medications are being compared. Is the *variability* in pain relief different?
+
+```{r}
+# Pain relief scores (higher = more relief)
+drug_A <- c(6.2, 7.1, 5.8, 6.9, 7.3, 6.5, 7.0, 6.4, 6.8, 7.2)
+drug_B <- c(5.5, 8.2, 4.9, 7.8, 6.1, 8.5, 5.2, 7.4, 6.3, 8.0)
+
+# Compare variances
+var_A <- var(drug_A)
+var_B <- var(drug_B)
+f_stat <- var_B / var_A  # Put larger variance in numerator
+
+cat("Var(Drug A):", round(var_A, 3), "\n")
+cat("Var(Drug B):", round(var_B, 3), "\n")
+cat("F statistic:", round(f_stat, 3), "\n")
+cat("P-value (two-sided):", round(2 * pf(f_stat, 9, 9, lower.tail = FALSE), 4))
+```
+
+. . .
+
+Drug B shows significantly more variable responses!
+
+## Relationships Between Distributions
+
+```{r}
+#| echo: false
+#| fig-width: 12
+#| fig-height: 6
+
+# Create a visual showing relationships
+ggplot() +
+  xlim(0, 10) + ylim(0, 10) +
+  # Normal box
+  annotate("rect", xmin = 0.5, xmax = 3.5, ymin = 6.5, ymax = 9.5, 
+           fill = "lightblue", color = "darkblue", linewidth = 1.5) +
+  annotate("text", x = 2, y = 8, label = "Z ~ N(0,1)", size = 6, fontface = "bold") +
+  
+  # Chi-squared box
+  annotate("rect", xmin = 6.5, xmax = 9.5, ymin = 6.5, ymax = 9.5,
+           fill = "lightgreen", color = "darkgreen", linewidth = 1.5) +
+  annotate("text", x = 8, y = 8, label = expression(chi[nu]^2), size = 6, fontface = "bold") +
+  
+  # t box
+  annotate("rect", xmin = 0.5, xmax = 3.5, ymin = 0.5, ymax = 3.5,
+           fill = "lightyellow", color = "orange", linewidth = 1.5) +
+  annotate("text", x = 2, y = 2, label = expression(t[nu]), size = 6, fontface = "bold") +
+  
+  # F box
+  annotate("rect", xmin = 6.5, xmax = 9.5, ymin = 0.5, ymax = 3.5,
+           fill = "lightpink", color = "red", linewidth = 1.5) +
+  annotate("text", x = 8, y = 2, label = expression(F[list(nu[1],nu[2])]), size = 6, fontface = "bold") +
+  
+  # Arrows and labels
+  annotate("segment", x = 3.5, y = 8, xend = 6.2, yend = 8,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1) +
+  annotate("text", x = 4.85, y = 8.5, label = expression(Z^2 == chi[1]^2), size = 4) +
+  
+  annotate("segment", x = 2, y = 6.5, xend = 2, yend = 3.8,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1) +
+  annotate("text", x = 3.2, y = 5.2, label = expression(T == frac(Z, sqrt(chi^2/nu))), size = 4) +
+  
+  annotate("segment", x = 8, y = 6.5, xend = 8, yend = 3.8,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1) +
+  annotate("text", x = 9.5, y = 5.2, label = expression(F == frac(chi[1]^2/nu[1], chi[2]^2/nu[2])), size = 4) +
+  
+  annotate("segment", x = 3.5, y = 2, xend = 6.2, yend = 2,
+           arrow = arrow(length = unit(0.3, "cm")), linewidth = 1) +
+  annotate("text", x = 4.85, y = 2.5, label = expression(T^2 == F[list(1,nu)]), size = 4) +
+  
+  theme_void() +
+  labs(title = "Relationships Among Sampling Distributions") +
+  theme(plot.title = element_text(size = 18, hjust = 0.5, face = "bold"))
+```
+
+## R Functions for These Distributions
+
+```{r}
+#| code-line-numbers: "|1-4|6-9|11-14"
+# Chi-squared distribution
+pchisq(10, df = 5)       # P(χ²₅ ≤ 10)
+qchisq(0.95, df = 5)     # 95th percentile
+rchisq(5, df = 5)        # 5 random values
+
+# t distribution  
+pt(2, df = 10)           # P(t₁₀ ≤ 2)
+qt(0.975, df = 10)       # 97.5th percentile (for 95% CI)
+rt(5, df = 10)           # 5 random values
+
+# F distribution
+pf(3, df1 = 5, df2 = 20) # P(F₅,₂₀ ≤ 3)
+qf(0.95, df1 = 5, df2 = 20)  # 95th percentile
+rf(5, df1 = 5, df2 = 20)     # 5 random values
+```
+
+# Summary and Looking Ahead {background-color="#3498db"}
+
+## Lesson 3 Summary
+
+**The Chi-Squared Distribution:**
+
+-   Sum of squared standard normals: $\chi^2_\nu = \sum Z_i^2$
+-   Mean = $\nu$, Variance = $2\nu$
+-   $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$ for normal samples
+
+**The t Distribution:**
+
+-   Ratio: $T = Z/\sqrt{\chi^2_\nu/\nu}$
+-   Arises when we estimate $\sigma$ with $S$
+-   $(\bar{X} - \mu)/(S/\sqrt{n}) \sim t_{n-1}$
+
+**The F Distribution:**
+
+-   Ratio of two scaled chi-squared: $F = (Y_1/\nu_1)/(Y_2/\nu_2)$
+-   Used for comparing variances
+-   Key relationship: $t_\nu^2 = F_{1,\nu}$
+
+## Lesson 3 Practice Problems
+
+1.  A sample of 16 observations from a normal distribution has sample variance $s^2 = 25$. If $\sigma^2 = 20$, what is $P\left(\frac{(n-1)S^2}{\sigma^2} \leq 18.75\right)$?
+
+2.  Find the critical values $t_{0.05, 15}$ and $t_{0.025, 15}$.
+
+3.  Two independent samples from normal populations have $s_1^2 = 45$ (n=10) and $s_2^2 = 20$ (n=8). Calculate the F statistic for testing equal variances.
+
+4.  Verify that $t_{0.05,10}^2 = F_{0.10, 1, 10}$ using R.
+
+## Next Lesson Preview
+
+**Lesson 4: Normal Sample Statistics and MVUE**
+
+-   Key results for statistics from normal samples
+-   Independence of $\bar{X}$ and $S^2$
+-   Confidence intervals for variance
+-   Minimum variance unbiased estimators (MVUE)
+-   Consistency of estimators
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapters 6.3, 6.4
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Appendix B.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!

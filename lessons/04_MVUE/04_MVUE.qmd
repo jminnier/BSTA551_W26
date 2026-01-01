@@ -1,0 +1,511 @@
+---
+title: "BSTA 551: Statistical Inference"
+subtitle: "Lesson 4: Normal Sample Statistics and MVUE"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w2d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 4
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 4: Normal Sample Statistics and MVUE
+
+## Review: Lesson 3 Key Results
+
+**From Lesson 3:**
+
+-   $\chi^2_\nu$ distribution: sum of squared standard normals
+-   $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$ for normal samples
+-   t distribution arises when estimating $\sigma$ with $S$
+-   F distribution: ratio of independent chi-squared variables
+
+. . .
+
+**Today's Goals:**
+
+::: incremental
+1.  Explore key statistics for normal random samples
+2.  Understand the independence of $\bar{X}$ and $S^2$
+3.  Construct confidence intervals for variance
+4.  Define minimum variance unbiased estimators (MVUE)
+5.  Understand consistency of estimators
+:::
+
+# Key Results for Normal Samples {background-color="#2c3e50"}
+
+## Key Results for Normal Samples (Devore 6.4)
+
+::: callout-important
+## Fundamental Results
+
+If $X_1, \ldots, X_n$ is a random sample from $N(\mu, \sigma^2)$:
+
+1.  $\bar{X} \sim N\left(\mu, \frac{\sigma^2}{n}\right)$
+
+2.  $\bar{X}$ and $S^2$ are **independent** random variables
+
+3.  $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}$
+
+4.  $\frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t_{n-1}$
+:::
+
+. . .
+
+The independence of $\bar{X}$ and $S^2$ is remarkable and unique to normal distributions!
+
+## Simulation: Independence of Mean and Variance
+
+```{r}
+#| fig-height: 5
+n <- 20
+n_sims <- 2000
+
+# Generate samples and compute statistics
+sample_stats <- tibble(sim = 1:n_sims) |>
+  mutate(
+    data = map(sim, ~rnorm(n, mean = 50, sd = 10)),
+    x_bar = map_dbl(data, mean),
+    s_squared = map_dbl(data, var)
+  )
+
+# Check correlation
+cor_test <- cor.test(sample_stats$x_bar, sample_stats$s_squared)
+
+sample_stats |>
+  ggplot(aes(x = x_bar, y = s_squared)) +
+  geom_point(alpha = 0.3, color = "steelblue") +
+  geom_smooth(method = "lm", color = "red", se = FALSE) +
+  labs(
+    title = "Sample Mean vs. Sample Variance (Normal Population)",
+    subtitle = paste("Correlation:", round(cor_test$estimate, 3), 
+                     "— These are independent!"),
+    x = expression(bar(X)), y = expression(S^2)
+  )
+```
+
+## Medical Example: Cholesterol Study
+
+A study measures LDL cholesterol (mg/dL) in 20 patients on a new statin medication.
+
+```{r}
+# LDL cholesterol levels
+ldl_levels <- c(95, 108, 87, 112, 99, 105, 92, 118, 103, 89,
+                110, 96, 102, 88, 115, 94, 107, 100, 91, 106)
+
+n <- length(ldl_levels)
+x_bar <- mean(ldl_levels)
+s <- sd(ldl_levels)
+
+# Using the t distribution for inference
+t_crit <- qt(0.975, df = n - 1)
+margin_error <- t_crit * s / sqrt(n)
+
+cat("Sample mean:", round(x_bar, 2), "mg/dL\n")
+cat("Sample SD:", round(s, 2), "mg/dL\n")
+cat("95% CI for μ: [", round(x_bar - margin_error, 2), ",", 
+    round(x_bar + margin_error, 2), "]\n")
+```
+
+. . .
+
+The t-based confidence interval properly accounts for uncertainty in both $\mu$ and $\sigma$.
+
+## Confidence Interval for Population Variance
+
+::: callout-note
+## CI for $\sigma^2$
+
+Using $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$, a $100(1-\alpha)\%$ confidence interval for $\sigma^2$ is:
+
+$$\left(\frac{(n-1)S^2}{\chi^2_{\alpha/2, n-1}}, \frac{(n-1)S^2}{\chi^2_{1-\alpha/2, n-1}}\right)$$
+:::
+
+. . .
+
+```{r}
+# 95% CI for variance in LDL example
+alpha <- 0.05
+chi_upper <- qchisq(1 - alpha/2, df = n - 1)
+chi_lower <- qchisq(alpha/2, df = n - 1)
+
+ci_var_lower <- (n - 1) * s^2 / chi_upper
+ci_var_upper <- (n - 1) * s^2 / chi_lower
+
+cat("95% CI for σ²: [", round(ci_var_lower, 1), ",", round(ci_var_upper, 1), "]\n")
+cat("95% CI for σ:  [", round(sqrt(ci_var_lower), 2), ",", round(sqrt(ci_var_upper), 2), "]")
+```
+
+## Your Turn: Confidence Interval for Variance
+
+**Exercise:** A clinical trial measures the time (in minutes) for a drug to take effect in 12 patients. The sample variance is $s^2 = 16$ minutes².
+
+1.  Construct a 90% confidence interval for the population variance $\sigma^2$
+2.  What is the corresponding 90% CI for the population SD $\sigma$?
+
+. . .
+
+**Solutions:**
+
+```{r}
+n <- 12
+s_squared <- 16
+alpha <- 0.10
+
+chi_lower <- qchisq(alpha/2, df = n - 1)
+chi_upper <- qchisq(1 - alpha/2, df = n - 1)
+
+ci_var <- c((n - 1) * s_squared / chi_upper, (n - 1) * s_squared / chi_lower)
+ci_sd <- sqrt(ci_var)
+
+cat("90% CI for σ²:", round(ci_var, 2), "\n")
+cat("90% CI for σ:", round(ci_sd, 2))
+```
+
+# Minimum Variance Unbiased Estimators {background-color="#27ae60"}
+
+## Minimum Variance Unbiased Estimators (MVUE)
+
+::: callout-important
+## The MVUE Concept (Devore 7.1)
+
+Given multiple unbiased estimators of a parameter $\theta$, the **minimum variance unbiased estimator (MVUE)** is the one with the smallest variance.
+
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are both unbiased for $\theta$, prefer $\hat{\theta}_1$ if:
+$$\text{Var}(\hat{\theta}_1) < \text{Var}(\hat{\theta}_2)$$
+:::
+
+. . .
+
+**Why MVUE matters:**
+
+-   Unbiased: on average, we hit the target
+-   Minimum variance: our estimates are tightly clustered
+-   Best of both worlds!
+
+## Example: Two Unbiased Estimators of θ (Devore Example 7.10)
+
+For a Uniform[0, θ] distribution:
+
+**Estimator 1:** $\hat{\theta}_u = \frac{n+1}{n} \cdot \max(X_1, \ldots, X_n)$
+
+-   Unbiased: $E(\hat{\theta}_u) = \theta$
+-   Variance: $\text{Var}(\hat{\theta}_u) = \frac{\theta^2}{n(n+2)}$
+
+**Estimator 2:** $\hat{\theta}_2 = 2\bar{X}$
+
+-   Unbiased: $E(\hat{\theta}_2) = \theta$  
+-   Variance: $\text{Var}(\hat{\theta}_2) = \frac{\theta^2}{3n}$
+
+. . .
+
+Which is better? Compare variances!
+
+## Comparing the Estimators
+
+```{r}
+# Variance comparison
+compare_vars <- function(n) {
+  tibble(
+    n = n,
+    var_theta_u = 1 / (n * (n + 2)),  # Variance of θ̂_u (θ² factor omitted)
+    var_theta_2 = 1 / (3 * n),         # Variance of 2X̄
+    ratio = var_theta_2 / var_theta_u,
+    better = ifelse(var_theta_u < var_theta_2, "θ̂_u (max-based)", "2X̄")
+  )
+}
+
+map_dfr(c(5, 10, 20, 50), compare_vars) |>
+  mutate(across(where(is.numeric), ~round(., 4)))
+```
+
+. . .
+
+The max-based estimator $\hat{\theta}_u$ is always more efficient (smaller variance)!
+
+## Simulation: Visualizing MVUE
+
+```{r}
+#| fig-height: 5
+theta <- 100
+n <- 10
+n_sims <- 5000
+
+estimator_comparison <- tibble(sim = 1:n_sims) |>
+  mutate(
+    sample_data = map(sim, ~runif(n, 0, theta)),
+    theta_u = map_dbl(sample_data, ~(n + 1)/n * max(.x)),
+    theta_2 = map_dbl(sample_data, ~2 * mean(.x))
+  )
+
+estimator_comparison |>
+  pivot_longer(cols = c(theta_u, theta_2), names_to = "estimator", values_to = "estimate") |>
+  mutate(estimator = recode(estimator, 
+                            theta_u = "θ̂_u = (n+1)/n × max",
+                            theta_2 = "θ̂_2 = 2X̄")) |>
+  ggplot(aes(x = estimate, fill = estimator)) +
+  geom_histogram(bins = 50, alpha = 0.6, position = "identity", color = "white") +
+  geom_vline(xintercept = theta, color = "red", linewidth = 1.5, linetype = "dashed") +
+  labs(title = "Comparing Two Unbiased Estimators of θ = 100",
+       subtitle = "θ̂_u has smaller variance (is the MVUE)",
+       x = "Estimate", y = "Frequency", fill = "Estimator") +
+  scale_fill_brewer(palette = "Set1")
+```
+
+## The Fundamental MVUE Result for Normal Means
+
+::: callout-important
+## Theorem (Devore 7.1)
+
+Let $X_1, \ldots, X_n$ be a random sample from a normal distribution with parameters $\mu$ and $\sigma$.
+
+Then $\hat{\mu} = \bar{X}$ is the **MVUE** for $\mu$.
+:::
+
+. . .
+
+This means:
+
+-   Among ALL unbiased estimators of $\mu$ (not just $\bar{X}$, $\tilde{X}$, trimmed means, etc.)
+-   The sample mean $\bar{X}$ has the smallest possible variance
+-   No other unbiased estimator can do better!
+
+## Your Turn: MVUE Practice
+
+**Exercise:** A researcher measures reaction times (ms) in 16 healthy subjects:
+
+```{r}
+reaction_times <- c(245, 267, 234, 289, 256, 278, 242, 271,
+                    263, 251, 284, 238, 275, 259, 247, 280)
+```
+
+1.  Calculate $\bar{X}$ (the MVUE for $\mu$)
+2.  Calculate the sample median $\tilde{X}$
+3.  Both are unbiased for $\mu$ if the population is symmetric. Based on our theorem, which should have smaller variance?
+
+. . .
+
+**Solutions:**
+
+```{r}
+cat("Sample mean (MVUE):", round(mean(reaction_times), 2), "\n")
+cat("Sample median:", round(median(reaction_times), 2), "\n")
+cat("If normal population, the mean has smaller variance than any other unbiased estimator!")
+```
+
+## Properties of the Sample Variance
+
+::: callout-note
+## Key Properties of $S^2$
+
+For a random sample from a normal population:
+
+1.  $E(S^2) = \sigma^2$ (unbiased for $\sigma^2$)
+
+2.  $\text{Var}(S^2) = \frac{2\sigma^4}{n-1}$
+
+3.  As $n \to \infty$, $\text{Var}(S^2) \to 0$ (consistent estimator)
+:::
+
+. . .
+
+```{r}
+# Demonstration of variance of S² decreasing with n
+tibble(n = c(5, 10, 25, 50, 100)) |>
+  mutate(
+    var_s2 = 2 / (n - 1),  # Proportional to 2σ⁴/(n-1)
+    se_s2 = sqrt(var_s2)
+  ) |>
+  mutate(across(where(is.numeric), ~round(., 4)))
+```
+
+# Consistency of Estimators {background-color="#8e44ad"}
+
+## Consistency of Estimators
+
+::: callout-important
+## Definition
+
+An estimator $\hat{\theta}$ is **consistent** for $\theta$ if:
+
+$$\hat{\theta} \xrightarrow{P} \theta \text{ as } n \to \infty$$
+:::
+
+. . .
+
+**Key consistent estimators:**
+
+-   $\bar{X}$ for $\mu$
+-   $S^2$ for $\sigma^2$  
+-   $\hat{p}$ for population proportion $p$
+-   Sample quantiles for population quantiles
+
+## Consistency and MSE
+
+::: callout-important
+## MSE Criterion for Consistency
+
+An estimator $\hat{\theta}$ is **consistent** if:
+
+$$\text{MSE}(\hat{\theta}) \to 0 \text{ as } n \to \infty$$
+:::
+
+. . .
+
+**Why does this work?** Recall that $\text{MSE} = \text{Variance} + \text{Bias}^2$.
+
+For MSE → 0, we need BOTH:
+
+-   $\text{Var}(\hat{\theta}) \to 0$ (estimates become precise)
+-   $\text{Bias}(\hat{\theta}) \to 0$ (estimates become accurate)
+
+. . .
+
+**Example:** For $\bar{X}$ estimating $\mu$:
+
+-   $\text{Bias}(\bar{X}) = 0$ (always unbiased)
+-   $\text{Var}(\bar{X}) = \sigma^2/n \to 0$ as $n \to \infty$
+-   Therefore $\text{MSE}(\bar{X}) = \sigma^2/n \to 0$ ✓
+
+## Simulation: Consistency in Action
+
+```{r}
+#| fig-height: 5
+true_mean <- 50
+true_sd <- 10
+sample_sizes <- c(10, 25, 50, 100, 250, 500)
+n_sims <- 1000
+
+consistency_demo <- map_dfr(sample_sizes, function(n) {
+  tibble(
+    n = n,
+    x_bar = map_dbl(1:n_sims, ~mean(rnorm(n, true_mean, true_sd)))
+  )
+})
+
+consistency_demo |>
+  mutate(n = factor(n)) |>
+  ggplot(aes(x = x_bar, fill = n)) +
+  geom_histogram(bins = 40, alpha = 0.7, color = "white") +
+  facet_wrap(~n, scales = "free_y", labeller = label_both) +
+  geom_vline(xintercept = true_mean, color = "red", linewidth = 1, linetype = "dashed") +
+  labs(title = "Consistency: Estimator Converges as Sample Size Increases",
+       subtitle = "Red dashed line: true mean (μ = 50)",
+       x = expression(bar(X)), y = "Frequency") +
+  theme(legend.position = "none")
+```
+
+## Putting It All Together
+
+**Evaluating an Estimator:**
+
+1.  **Unbiased?** Does $E(\hat{\theta}) = \theta$?
+2.  **Variance?** What is $\text{Var}(\hat{\theta})$?
+3.  **MVUE?** Among unbiased estimators, does it have minimum variance?
+4.  **Consistent?** Does $\hat{\theta} \to \theta$ as $n \to \infty$?
+5.  **MSE?** What is $\text{Var}(\hat{\theta}) + \text{Bias}^2$?
+
+. . .
+
+::: callout-tip
+## Guidelines for Choosing Estimators
+
+1.  Unbiasedness is desirable but not always essential
+2.  Lower variance/SE means more precision
+3.  MSE provides a single criterion combining both
+4.  An estimator with MSE → 0 as n → ∞ is consistent
+:::
+
+# Summary and Looking Ahead {background-color="#3498db"}
+
+## Lesson 4 Summary
+
+**Statistics for Normal Samples:**
+
+-   $\bar{X}$ and $S^2$ are independent (unique to normal!)
+-   $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$
+-   Can construct CIs for both $\mu$ (using t) and $\sigma^2$ (using $\chi^2$)
+
+**MVUE:**
+
+-   Among unbiased estimators, choose the one with smallest variance
+-   $\bar{X}$ is the MVUE for $\mu$ when sampling from normal distribution
+-   The max-based estimator is MVUE for uniform upper bound
+
+**Consistency:**
+
+-   Estimator converges to parameter as $n \to \infty$
+-   Equivalent to MSE → 0 as sample size increases
+
+## Week 2 Summary
+
+| Property | Formula | Interpretation |
+|----------|---------|----------------|
+| Bias | $E(\hat{\theta}) - \theta$ | Systematic error |
+| Variance | $\text{Var}(\hat{\theta})$ | Random variability |
+| MSE | $\text{Var} + \text{Bias}^2$ | Total error |
+| Consistency | $\text{MSE} \to 0$ | Convergence with n |
+
+. . .
+
+**Key distributions this week:**
+
+-   $\chi^2_\nu$: sum of squared normals, used for variance inference
+-   $t_\nu$: used when $\sigma$ is unknown
+-   $F_{\nu_1, \nu_2}$: ratio of chi-squared, used for comparing variances
+
+## Lesson 4 Practice Problems
+
+<!-- 1.  A sample of $n = 25$ from a normal distribution has $s^2 = 16$. Construct a 95% CI for $\sigma^2$. -->
+
+1.  Using R, verify that as df increases, $t_{0.025, \nu}$ approaches $z_{0.025} = 1.96$.
+
+2.  Simulate 10,000 samples of size $n = 15$ from Uniform[0, 100]. Compare the variances of $\hat{\theta}_u$ and $2\bar{X}$. Which is the MVUE?
+
+3.  Show that the sample proportion $\hat{p} = X/n$ from a Binomial$(n, p)$ distribution is consistent by showing its MSE → 0.
+
+## Next Week Preview
+
+**Week 3: Maximum Likelihood Estimation**
+
+-   The likelihood function and likelihood principle
+-   Finding MLEs analytically and numerically  
+-   Method of moments estimation
+-   Properties of maximum likelihood estimators
+
+. . .
+
+**Sneak peek:** The MLE often *is* the MVUE!
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapters 6.3, 6.4, 7.1
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6, Appendix B.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
