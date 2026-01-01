@@ -2160,7 +2160,7 @@
     "href": "lessons/00_Intro/00_Intro.html#lets-visit-the-website-schedule-22",
     "title": "Welcome to BSTA 551!",
     "section": "Let’s visit the website: Schedule (2/2)",
-    "text": "Let’s visit the website: Schedule (2/2)\n\n\n\n\nKey Info\nI will post announcements and other important class related info here. For example, if I change a due date or discuss a common mistake in homework, I will put it here.\n\n\n\nSlides HTML\nThese are the basic slides that will open in your browser.\n\n\n\nSlides PDF\nThese are the slides in pdf form for easy note taking. I’m not always the best at posting these before class, so make sure you know how to save your own copy of pdf slides!\n\n\n[]\nSlides Notes\nThese are the annotated slides in pdf form. In class, I add my own notes to slides. After class, I will post them here.\n\n\n[])\nExit tix\nThese are links to that day’s exit ticket.\n\n\n\nRecording\nI record our classes. This will be a link to the OneDrive folder containing this recording.\n\n\n\nMuddy Points\nYou will have a chance to ask questions about class in your exit tickets. If I notice a trend in confusion, I will add explanations to these “Muddy Points”"
+    "text": "Let’s visit the website: Schedule (2/2)\n\n\n\n\nKey Info\nI will post announcements and other important class related info here. For example, if I change a due date or discuss a common mistake in homework, I will put it here.\n\n\n\nSlides HTML\nThese are the basic slides that will open in your browser.\n\n\n\nSlides PDF\nThese are the slides in pdf form for easy note taking. I’m not always the best at posting these before class, so make sure you know how to save your own copy of pdf slides!\n\n\n\nSlides Notes\nThese are the annotated slides in pdf form. In class, I add my own notes to slides. After class, I will post them here.\n\n\n)\nExit tix\nThese are links to that day’s exit ticket.\n\n\n\nRecording\nI record our classes. This will be a link to the OneDrive folder containing this recording.\n\n\n\nMuddy Points\nYou will have a chance to ask questions about class in your exit tickets. If I notice a trend in confusion, I will add explanations to these “Muddy Points”"
   },
   {
     "objectID": "lessons/00_Intro/00_Intro.html#lets-visit-the-website-search",
@@ -3729,5 +3729,33 @@
     "title": "BSTA 551: Statistical Inference",
     "section": "Simulation: Visualizing the Biased Estimator",
     "text": "Simulation: Visualizing the Biased Estimator\n\n# A tibble: 1 × 4\n  theoretical_E empirical_mean theoretical_bias empirical_bias\n          &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;\n1            90           90.3              -10          -9.70"
+  },
+  {
+    "objectID": "lessons/00_Intro/00_Intro_key_info.html",
+    "href": "lessons/00_Intro/00_Intro_key_info.html",
+    "title": "Key Info and Announcements",
+    "section": "",
+    "text": "Welcome! I am heavily borrowing from Dr. Nicky Wakim’s 550 website and format, because it’s awesome."
+  },
+  {
+    "objectID": "lessons/00_Intro/00_Intro_key_info.html#announcements",
+    "href": "lessons/00_Intro/00_Intro_key_info.html#announcements",
+    "title": "Key Info and Announcements",
+    "section": "",
+    "text": "Welcome! I am heavily borrowing from Dr. Nicky Wakim’s 550 website and format, because it’s awesome."
+  },
+  {
+    "objectID": "lessons/00_Intro/00_Intro_key_info.html#key-dates",
+    "href": "lessons/00_Intro/00_Intro_key_info.html#key-dates",
+    "title": "Key Info and Announcements",
+    "section": "Key dates",
+    "text": "Key dates\n\nHomework 0 is due THIS THURSDAY at 11pm!"
+  },
+  {
+    "objectID": "lessons/00_Intro/00_Intro_key_info.html#last-class",
+    "href": "lessons/00_Intro/00_Intro_key_info.html#last-class",
+    "title": "Key Info and Announcements",
+    "section": "Last class",
+    "text": "Last class\n\nHolidays"
   }
 ]

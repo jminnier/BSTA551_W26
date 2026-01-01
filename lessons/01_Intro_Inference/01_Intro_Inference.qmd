@@ -586,3 +586,9 @@ cat("Compare to sample mean:", round(mean(patient_data), 2))
 ## Questions? {.center background-color="#3498db"}
 
 Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape docs/lessons/01_Intro_Inference/01_Intro_Inference.html lessons/01_Intro_Inference/01_Intro_Inference.pdf
+```
