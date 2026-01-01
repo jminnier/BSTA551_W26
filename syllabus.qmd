@@ -31,7 +31,7 @@ editor_options:
 ## Key Course Info
 
 -   **If an assignment on Sakai is closed** or you are submitting late work, please email me AND the TA your work
--   The class instruction will end on March 11, 2026. **All coursework is expected to be completed by Wednesday of finals week March 18, 2026 at 11:59pm.**
+-   The in-person class instruction will end on Wednesday, March 11, 2026. **All coursework is expected to be completed by Thursday of finals week, March 19, 2026 at 11pm.**
 
 ## Description
 
@@ -107,15 +107,31 @@ This is a more thoeretical version (similar to previous math/stats courses taugh
 
 #### R: Statistical Computing Software
 
-R/Rstudio will be used to complete some homework assignments. Please see [Dr. Wakim's BSTA 550 syllabus](http://localhost:6712/syllabus.html) section on R if you need any references or refreshers on how to use.
+R/Rstudio will be used to complete some homework assignments. Please see [Dr. Wakim's BSTA 550 syllabus](https://nwakim.github.io/BSTA_550_25F/syllabus.html) section on R if you need any references or refreshers on how to use.
 
 ## Assessment
 
 ### Breakdown
 
+50% Homework (Weekly)
+
+20% Midterm
+
+20% Final
+
+10% Attendence (Two exit tickets a week)
+
 #### Grading & Requirements
 
+Letter grades will be assigned roughly according to the following scheme: A (\>=93%), A- (90-92%), B+ (88-89%), B(83-87%), B- (82-80%), C+(78-79%), C(73-77%), C- (70-72%), D (60 – 69%), F(\<60%).
+
 #### Homework grading
+
+\[Identical to Dr. Nicky Wakim's BSTA 550 approach to homework!\]
+
+No student has the same amount of time available to dedicate to homework. This class may not be a priority to you, you may be taking several other courses, or you may need to dedicate time to other activities. Homework assignments are **formative assessments**, meaning its purpose is to help you learn and practice. To reduce the pressure on you to have perfect homework (the first time around), I have a very simple grading policy: **Your homework will be given a check mark if you turn in 75% of the question parts *completed* (whether the 75% is correct or wrong).** I highly encourage you to stay up-to-date with the homeworks and put in as much effort as you can. **This will be the most helpful work in this class!**
+
+If you turn in the homework on time, I will give you feedback (on one or more complete problems). There is no penalty for turning in the homework late, **but you will not get feedback on your work.** Please make sure to check the solutions or go to office hours to assess your work.
 
 #### Viewing Grades in Sakai
 
@@ -124,6 +140,8 @@ Points you receive for graded activities will be posted to the Sakai Gradebook. 
 ## Course & Instructor Evaluations
 
 ### Ongoing Course Feedback
+
+[Submit feedback throughout the course here.](https://forms.office.com/r/2yhdKvbkNX)
 
 ### Final Course Feedback
 
@@ -135,9 +153,9 @@ At the conclusion of the course, you will be asked to complete a formal online r
 
 ### Assignments
 
-Written problem sets, approximately weekly, usually assigned Wednesday and due the following Wednesday.
+Written problem sets, approximately weekly, usually assigned Wednesday and due the following Thursday.
 
-Homework problems requiring a written solution are assigned approximately one week in advance of their due date. Homework assignments will be posted in the Sakai submissions box.
+Homework problems will be posted on the course website. Solutions should be posted as a pdf in the corresponding Sakai submission box.
 
 ## Course Policies and Resources
 
@@ -145,7 +163,7 @@ Homework problems requiring a written solution are assigned approximately one we
 
 I encourage you to make your best effort to submit all assignments on time, but I understand circumstances arise that are beyond our control. Please see this [Swansea University's page on extenuating circumstances](https://myuni.swansea.ac.uk/academic-life/extenuating-circumstances/#how-can-the-university-support-me-and-what-should-i-do=is-expanded&what-are-extenuating-circumstances=is-expanded&what-isnt-an-extenuating-circumstance=is-expanded&what-supporting-evidence-is-required=is-expanded&who-should-i-contact-to-make-an-extenuating-circumstances-application=is-expanded&who-will-make-a-decision-on-my-application=is-expanded) for some examples. Not all circumstances are covered here, so please reach out if you have questions. 
 
--   The class will end on March 18, 2026. **All coursework is expected to be completed by March 20, 2026 at 11pm.** If you have *extenuating circumstances*, and need additional time to complete class assignments, please contact me. Together, we will come up with a plan for completion and to sort out registrar logistics. If you need an Incomplete, generally this requires request two weeks before the end of class.
+-   The class will end on Wednesday, March 18, 2026. **All coursework is expected to be completed by March 19, 2026 at 11pm.** If you have *extenuating circumstances*, and need additional time to complete class assignments, please contact me. Together, we will come up with a plan for completion and to sort out registrar logistics. If you need an Incomplete, generally this requires request two weeks before the end of class.
 
 -   If you have extenuating circumstances that may jeopardize your ability to do work for several weeks, please contact me. We will come up with a plan to keep you on track in the course and prevent any delay in your education.
 
@@ -163,7 +181,7 @@ If you think a question was incorrectly graded, first compare your answer to the
 
 You are expected to attend class, participate in-class polls, and complete the exit ticket. For students who miss class or need a review, I will make video and audio recordings of lectures available. There are no guarantees against technical or other challenges for the recording availability or quality.
 
-**You will need to attend all classes.** There are 19 classes total, so you are welcome to watch the recordings or come in-person. While I want attendance to be a flexible thing, I need to set certain requirements around in-person attendance to align with the school's policy. Attendance is measured through exit tickets that will be due 7 days after each class.
+**You will need to attend all classes.** There are 17 classes total, so you are welcome to watch the recordings or come in-person. While I want attendance to be a flexible thing, I need to set certain requirements around in-person attendance to align with the school's policy. Attendance is measured through exit tickets that will be due 7 days after each class.
 
 This is meant to keep you on track within the course and prevent a pile up of material. Make sure to complete the exit ticket at the end of class to demonstrate attendance.
 
@@ -209,10 +227,10 @@ I will provide clear instructions for all assignments, and a grading rubric when
 ### Student Expectations and Resources
 
 [*Attend class*]{.underline}**\
-**You are expected to attend at least 12 scheduled class meetings in-person. Attendance is taken through exit tickets. If you have issues accessing the poll on a specific day, please let me know. 
+**You are expected to attend at least 10 scheduled class meetings in-person. Attendance is taken through exit tickets. If you have issues accessing the poll on a specific day, please let me know. 
 
 [*Participate**\
-***]{.underline}I encourage you to participate actively in class and in Slack discussions. I will expect all students, and all instructors, to be respectful of each other's contributions, whether I agree with them or not. Professional interactions are expected.
+***]{.underline}I encourage you to participate actively in class. I will expect all students, and all instructors, to be respectful of each other's contributions, whether I agree with them or not. Professional interactions are expected.
 
 [*Build rapport*]{.underline}\
 If you find that you have any trouble keeping up with assignments or other aspects of the course, make sure you let me know as early as possible. As you will find, building rapport and effective relationships are key to becoming an effective professional. Make sure that you are proactive in informing me when difficulties arise during the quarter so that I can help you find a solution in regards to coursework.
@@ -239,14 +257,11 @@ Cheating and other forms of academic misconduct will not be tolerated in this co
 
 ## Course Communications
 
-**Sakai/Slack announcements\
-**For important/urgent matters, I will communicate with you using announcements via Sakai that will be delivered to your OHSU Email account as well as displayed in the Sakai course site Announcements section. I will copy these announcements in Slack if they do not involve changes to the schedule. Unfortunately, there are certain announcements that OHSU requires I initiate behind the firewall.
-
-**General course questions\
-**It is normal to have many questions about things that relate to the course, such as clarification about assignments, course materials, or assessments. Please post these on our Slack Workspace. Please use the channels that I created for questions. You are encouraged to give answers and help each other. I will monitor these threads, so I will endorse or correct responses as needed. Please give me 24 hours to respond to questions within Monday-Friday. Work-life balance is important for me as well, so I will try to respond as quickly as I can within my healthy limits. 
+**Sakai announcements\
+**For important/urgent matters, I will communicate with you using announcements via Sakai that will be delivered to your OHSU Email account as well as displayed in the Sakai course site Announcements section.
 
 **E-mail**\
-E-mail should be used only for messages that are private in nature. Please send private messages to my OHSU email address (wakim\@ohsu.edu). **Messages sent through Sakai Inbox will not be answered.** Do not send messages asking general information about the class; please post those on Slack instead.
+E-mail should be used only for messages that are private in nature. Please send private messages to my OHSU email address (minnier\@ohsu.edu).
 
 ## Further Student Resources
 

@@ -19,7 +19,7 @@ format:
 
 ::::::: columns
 ::: {.column width="45%"}
--   **Call me "Jessica," "Dr. M," "Professor Minnier [MIN-ee-ay]," or any combo!**
+-   **Call me "Jessica," "Dr. M," "Professor Minnier \[MIN-ee-ay\]," or any combo!**
 
 -   Associate Professor of Biostatistics
 
@@ -29,9 +29,10 @@ format:
 
 -   Taught 552 Math/Stats II (RIP) for 9 years; Intro to R course developed & taught 3 years
 
--   *Intro*
-    +   SPH, Knight Cancer Institute, risk prediction, 'omics
-    
+-   *About me*
+
+    -   SPH, Knight Cancer Institute
+    -   Research: risk prediction, 'omics, large cohort studies, oncology trials
 :::
 
 ::: {.column width="5%"}
@@ -42,7 +43,7 @@ format:
 :::
 
 ::: {.column width="25%"}
-![](/images/Intro_slides/kids2.jpg){width="450"} ![](/images/Intro_slides/kids3.JPG){width="450"}
+![](/images/Intro_slides/kids2.png) ![](/images/Intro_slides/kids3.JPG){width="450"}
 :::
 :::::::
 
@@ -50,7 +51,6 @@ format:
 library(here)
 source(here("class_dates.R"))
 ```
-
 
 ```{css}
 #| echo: false
@@ -64,7 +64,7 @@ source(here("class_dates.R"))
 
 ## Some important tasks
 
--   Star the class website: <https://jminnier.github.io/BSTA551_26W/>
+-   Star the class website: <https://jessicaminnier.com/BSTA551_W26/>
 
  
 
@@ -79,44 +79,27 @@ source(here("class_dates.R"))
 ## Let's visit the website: Homepage
 
 ```{=html}
-<iframe id="frame" src="https://www.jessicaminnier.com/BSTA551_26W/"></iframe>
+<iframe id="frame" src="https://jessicaminnier.com/BSTA551_W26/"></iframe>
 ```
 
-## Let's visit the website: Syllabus (1/2)
-
--   Course learning objectives
--   Textbook in print or ebook via library access (different than last year)
--   Resources: Other course sites
--   Assessments and grade breakdowns
-    -   Mostly homework
--   Feedback from you to me: in the form of exit tickets, midterm feedback, and final course eval
--   How to succeed in this course: resources and assignments explained
--   Late work policy / Attendance policy
--   ChatGPT and other AI technology
--   Course expectations: a few ways that I will show you respect and commitment to you as students
-    -   And a few ways I expect from you!
--   Communicating with me: give me 24 hours to reply M-F
-    -   I try really hard to keep emails from taking over my life
-    
-## Let's visit the website: Syllabus (2/2)
+## Let's visit the website: Syllabus
 
 ```{=html}
-<iframe id="frame" src="https://nwakim.github.io/BSTA_550_25F/syllabus.html"></iframe>
+<iframe id="frame" src="https://jessicaminnier.com/BSTA551_W26/syllabus.html"></iframe>
 ```
-
 
 ## Let's visit the website: Schedule (1/2)
 
 -   Weeks, class info, homeworks, labs
 
 ```{=html}
-<iframe id="frame" src="https://nwakim.github.io/BSTA_550_25F/schedule.html"></iframe>
+<iframe id="frame" src="https://jessicaminnier.com/BSTA551_W26/schedule.html"></iframe>
 ```
 
 ## Let's visit the website: Schedule (2/2)
 
 |  |  |  |
-|:----------------------------|:-------------|:-----------------------------|
+|:--------------------------|:----------------|:---------------------------|
 | [[{{< iconify akar-icons info-fill size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample_key_info.qmd)]{style="color:#f8f5f0;"} | Key Info | I will post announcements and other important class related info here. For example, if I change a due date or discuss a common mistake in homework, I will put it here. |
 | [[{{< iconify ri slideshow-fill size=80px >}}](lessons/17_Negative_binomial_rv/17_Negative_binomial_rv.qmd)]{style="color:#f8f5f0;"} | Slides HTML | These are the basic slides that will open in your browser. |
 | [[{{< iconify bi file-earmark-pdf-fill size=80px >}}](lessons/01_Outcomes_Events_Sample/01_Outcomes_Events_Sample.pdf)]{style="color:#f8f5f0;"} | Slides PDF | These are the slides in pdf form for easy note taking. I'm not always the best at posting these before class, so make sure you know how to save your own copy of pdf slides! |
@@ -128,30 +111,21 @@ source(here("class_dates.R"))
 ## Let's visit the website: Search
 
 ```{=html}
-<iframe id="frame" src="https://nwakim.github.io/BSTA_550_25F/schedule.html"></iframe>
+<iframe id="frame" src="https://jessicaminnier.com/BSTA551_W26/schedule.html"></iframe>
 ```
 
 ## Let's visit the website: Homework!
 
 ```{=html}
-<iframe id="frame" src="https://nwakim.github.io/BSTA_550_25F/homeworks.html"></iframe>
+<iframe id="frame" src="https://jessicaminnier.com/BSTA551_W26/homeworks.html"></iframe>
 ```
 
-## Decision on Homework due dates
-
--   I have some set due dates in the schedule
-
--   Please look at your other classes, your calendar, etc
-
--   Consider what day of the week you would like to turn in your assignments
-
--   Question in HW 0 to cast your vote and share your opinion
 
 ## Structure for this course
 
 -   Learning the basic tools to understand statistics
-    - This is the first quarter that I am adding simulations
-    - So I rearranged a lot of the topics!
+    -   This is the first quarter that I am adding simulations
+    -   So I rearranged a lot of the topics!
 
  
 
@@ -160,7 +134,7 @@ source(here("class_dates.R"))
  
 
 -   This class will help you build a toolbox that allows you to analyze data while understanding the inner theory at play
-  - You can use probability and simulations to change your analysis as you need 
+-   You can use probability and simulations to change your analysis as you need
 
 ## What we will cover
 

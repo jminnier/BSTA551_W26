@@ -65,11 +65,12 @@ hw6sol = cal_dates[56]
 ## Week 9 dates
 w9d1 = cal_dates[57]
 w9d2 = cal_dates[59]
+hw8 = cal_dates[60]
 
 ## Week 10 dates
 w10d1 = cal_dates[64]
 w10d2 = cal_dates[66]
-hw8 = cal_dates[67]
+hw9 = cal_dates[67]
 hw7sol = cal_dates[69]
 q3_open = cal_dates[66]
 q3_close = cal_dates[70]
@@ -77,6 +78,6 @@ q3_close = cal_dates[70]
 ## Week 11 dates
 w11d1 = cal_dates[71]
 w11d2 = cal_dates[73]
-hw9 = cal_dates[74]
+final_close = cal_dates[74]
 hw8sol = cal_dates[75]
 hw7prez = cal_dates[73]
