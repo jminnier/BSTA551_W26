@@ -2902,14 +2902,14 @@
     "href": "lessons/00_Intro/00_Intro.html#structure-for-this-course",
     "title": "Welcome to BSTA 551!",
     "section": "Structure for this course",
-    "text": "Structure for this course\n\nLearning the basic tools to understand statistics\n\nThis is the first quarter that I am adding simulations\nSo I rearranged a lot of the topics!\n\n\n \n\nIt is going to feel useless at times, but I swear it is not!\n\n \n\nThis class will help you build a toolbox that allows you to analyze data while understanding the inner theory at play\nYou can use probability and simulations to change your analysis as you need"
+    "text": "Structure for this course\n\nStatistics is based on mathematics, which has theoretical underpinnings.\nUnderstanding the “why” behind why we perform certain hypothesis tests and where our estimates come from.\nThink of this course as paired with the applied courses. There may be a lot of overlap, but we are going deeper with the “why” and “how”\nThis used to be two quarters of material, with more proofs and much more calculus. I tried to make this course more digestible in 10 weeks, while also including some simulation/boostrap/permutation methods. Therefore: topics will go by quickly!! We won’t have time to prove most things, you will have to take a lot of this on face value.\n\n \n\nI agree with Dr. Wakim: “It is going to feel useless at times, but I swear it is not!”"
   },
   {
     "objectID": "lessons/00_Intro/00_Intro.html#what-we-will-cover",
     "href": "lessons/00_Intro/00_Intro.html#what-we-will-cover",
     "title": "Welcome to BSTA 551!",
     "section": "What we will cover",
-    "text": "What we will cover"
+    "text": "What we will cover\n\nPoint Estimation\nHypothesis Testing\nConfidence Interval Estimation\nAsymptotic properties of estimators/tests\nBootstrap/resampling methods"
   },
   {
     "objectID": "lessons/11_Joint_distributions/Old_notes/25_Joint_densities.html",
@@ -4870,5 +4870,12 @@
     "title": "Welcome to BSTA 551!",
     "section": "Let’s visit the website: Syllabus",
     "text": "Let’s visit the website: Syllabus"
+  },
+  {
+    "objectID": "lessons/00_Intro/00_Intro.html#textbook",
+    "href": "lessons/00_Intro/00_Intro.html#textbook",
+    "title": "Welcome to BSTA 551!",
+    "section": "Textbook",
+    "text": "Textbook\nModern Mathematical Statistics with Applications, 3rd ed.\n\nAuthor: JL Devore, KN Berk, MA Carlton\nTextbook available online through library\nCitation: Devore JL, Berk KN, Carlton MA. Modern Mathematical Statistics with Applications. Third edition. Springer; 2021. doi:10.1007/978-3-030-55156-8\nFocus on chapters 6-10"
   }
 ]

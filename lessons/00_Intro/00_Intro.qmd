@@ -123,19 +123,35 @@ source(here("class_dates.R"))
 
 ## Structure for this course
 
--   Learning the basic tools to understand statistics
-    -   This is the first quarter that I am adding simulations
-    -   So I rearranged a lot of the topics!
+-   Statistics is based on mathematics, which has theoretical underpinnings.
+
+-   Understanding the "why" behind why we perform certain hypothesis tests and where our estimates come from.
+
+-   Think of this course as paired with the applied courses. There may be a lot of overlap, but we are going deeper with the "why" and "how" 
+
+-   This used to be two quarters of material, with more proofs and much more calculus. I tried to make this course more digestible in 10 weeks, while also including some simulation/boostrap/permutation methods. Therefore: topics will go by quickly!! We won't have time to prove most things, you will have to take a lot of this on face value.
 
  
 
--   It is going to feel useless at times, but I swear it is not!
+-   I agree with Dr. Wakim: "It is going to feel useless at times, but I swear it is not!"
 
- 
-
--   This class will help you build a toolbox that allows you to analyze data while understanding the inner theory at play
--   You can use probability and simulations to change your analysis as you need
 
 ## What we will cover
 
-![](../img_slides/course_map.png){fig-align="center"}
+- Point Estimation
+- Hypothesis Testing
+- Confidence Interval Estimation
+- Asymptotic properties of estimators/tests
+- Bootstrap/resampling methods
+
+## Textbook
+
+#### Modern Mathematical Statistics with Applications, 3rd ed.
+
+-   **Author:** JL Devore, KN Berk, MA Carlton
+
+-   [Textbook available online through library](https://librarysearch.ohsu.edu/permalink/01ALLIANCE_OHSU/okd4j/alma99900609916301858)
+
+-   Citation: Devore JL, Berk KN, Carlton MA. Modern Mathematical Statistics with Applications. Third edition. Springer; 2021. doi:10.1007/978-3-030-55156-8
+
+-   Focus on chapters 6-10
