@@ -155,7 +155,9 @@ source(here("class_dates.R"))
 -   Focus on chapters 6-10
 
 
-```
+```{bash}
+#| eval: false
+#| include: false
 decktape docs/lessons/00_Intro/00_Intro.html lessons/00_Intro/00_Intro.pdf
 ```
 
