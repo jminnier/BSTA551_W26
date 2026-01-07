@@ -1,0 +1,760 @@
+---
+title: "Lesson 3: Unbiased Estimators, MVUE, Likelihood Theory"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w1d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 3
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+
+# Lesson 3: Finding the Best Estimator
+
+## Review: Where We Left Off
+
+**Key concepts from Lesson 2:**
+
+-   Point estimators vs. estimates
+-   Bias: $\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta$
+-   Unbiasedness: $E(\hat{\theta}) = \theta$
+-   MSE = Variance + Bias²
+
+. . .
+
+**Today's Goals:**
+
+-   Understand what makes one unbiased estimator better than another
+-   Learn about Minimum Variance Unbiased Estimators (MVUE)
+-   Introduce likelihood functions (preview of Lesson 4)
+-   Define Fisher Information and its role in estimation
+-   Learn the Cramér-Rao Lower Bound for variance
+
+
+## Motivating Example: Estimating Drug Efficacy
+
+A clinical trial tests the effectiveness of a new antibiotic. Two researchers propose different estimators for the true response rate $p$:
+
+. . .
+
+**Researcher A:** Use $\hat{p}_A = X/n$ (sample proportion)
+
+**Researcher B:** Use $\hat{p}_B = (X + 1)/(n + 2)$ (adjusted proportion)
+
+. . .
+
+Both estimators are functions of the same data. **Which should we use?**
+
+```{r}
+# Suppose 15 out of 20 patients respond
+n <- 20; x <- 15
+p_hat_A <- x / n
+p_hat_B <- (x + 1) / (n + 2)
+cat("Researcher A's estimate:", p_hat_A, "\n")
+cat("Researcher B's estimate:", p_hat_B)
+```
+
+# Choosing Among Unbiased Estimators {background-color="#27ae60"}
+
+## The Problem of Multiple Unbiased Estimators
+
+Recall from Lesson 2: There can be **many** unbiased estimators for the same parameter!
+
+. . .
+
+**Example:** For a symmetric distribution with mean $\mu$:
+
+-   Sample mean $\bar{X}$ is unbiased for $\mu$
+-   Sample median $\tilde{X}$ is unbiased for $\mu$
+-   Trimmed means are unbiased for $\mu$
+
+. . .
+
+::: callout-note
+## The Key Question
+If two estimators are both unbiased, how do we choose between them?
+:::
+
+## Comparing Two Unbiased Estimators: Intuition
+
+```{r}
+#| echo: false
+#| fig-height: 5
+set.seed(123)
+true_mu <- 50
+
+comparison_data <- tibble(
+  estimator = rep(c("Low Variance (Better)", "High Variance (Worse)"), each = 1000),
+  estimate = c(
+    rnorm(1000, true_mu, 2),
+    rnorm(1000, true_mu, 5)
+  )
+)
+
+comparison_data |> 
+  ggplot(aes(x = estimate, fill = estimator)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = true_mu, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "Two Unbiased Estimators: Which is Better?",
+       subtitle = "Both centered on true value (red line), but with different spread",
+       x = "Estimate", y = "Frequency", fill = "Estimator") +
+  scale_fill_manual(values = c("steelblue", "orange")) +
+  theme(legend.position = "top")
+```
+
+**Answer:** Among unbiased estimators, prefer the one with **smaller variance**.
+
+## The Principle: Minimum Variance Unbiased Estimator
+
+::: callout-important
+## Definition (Devore 7.1)
+
+The **Minimum Variance Unbiased Estimator (MVUE)** of a parameter $\theta$ is the estimator $\hat{\theta}$ such that:
+
+1.  $\hat{\theta}$ is unbiased: $E(\hat{\theta}) = \theta$
+2.  $\hat{\theta}$ has smaller or equal variance than any other unbiased estimator
+
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are both unbiased for $\theta$, we prefer the one with smaller variance.
+:::
+
+. . .
+
+**Intuition:** Among estimators that are "correct on average," we want the most precise one.
+
+## Example: Uniform Distribution Upper Bound
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Uniform}[0, \theta]$
+
+Two unbiased estimators for $\theta$:
+
+. . .
+
+1.  $\hat{\theta}_1 = 2\bar{X}$ (since $E(X_i) = \theta/2$, so $E(2\bar{X}) = \theta$)
+
+2.  $\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_1, \ldots, X_n)$ (corrected maximum)
+
+. . .
+
+**Question:** Which has smaller variance?
+
+## Calculating Variances
+
+For $\hat{\theta}_1 = 2\bar{X}$:
+$$\text{Var}(\hat{\theta}_1) = \text{Var}(2\bar{X}) = 4 \cdot \text{Var}(\bar{X}) = 4 \cdot \frac{\sigma^2}{n} = 4 \cdot \frac{\theta^2/12}{n} = \frac{\theta^2}{3n}$$
+
+. . .
+
+For $\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_i)$, it can be shown that:
+$$\text{Var}(\hat{\theta}_2) = \frac{\theta^2}{n(n+2)}$$
+
+. . .
+
+**Comparison:** For $n > 1$:
+$$\frac{\theta^2}{n(n+2)} < \frac{\theta^2}{3n}$$
+
+The corrected maximum $\hat{\theta}_2$ is more efficient!
+
+## Simulation: Comparing the Two Estimators
+
+```{r}
+#| code-line-numbers: "|1-3|5-12|14-19"
+theta <- 10  # True upper bound
+n <- 20
+n_sims <- 5000
+
+# Simulate both estimators
+uniform_sim <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    data = map(sim, \(s) runif(n, 0, theta)),
+    theta_hat_1 = map_dbl(data, \(d) 2 * mean(d)),
+    theta_hat_2 = map_dbl(data, \(d) (n + 1) / n * max(d))
+  )
+
+# Compare variances
+uniform_sim |> 
+  summarize(
+    `Var(2*X̄)` = var(theta_hat_1),
+    `Var(corrected max)` = var(theta_hat_2),
+    `Theoretical Var(2*X̄)` = theta^2 / (3 * n),
+    `Theoretical Var(corrected max)` = theta^2 / (n * (n + 2))
+  ) |> 
+  pivot_longer(everything()) |> 
+  mutate(value = round(value, 4))
+```
+
+## Visualizing the Comparison
+
+```{r}
+#| echo: false
+#| fig-height: 5
+uniform_sim |> 
+  select(theta_hat_1, theta_hat_2) |> 
+  pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
+  mutate(Estimator = case_when(
+    Estimator == "theta_hat_1" ~ "theta_hat_1",
+    Estimator == "theta_hat_2" ~ "theta_hat_2"
+  )) |> 
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(bins = 50, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = theta, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = expression(paste("Comparing Two Unbiased Estimators for ", theta)),
+       subtitle = str_glue("True θ = {theta}, n = {n}"),
+       x = "Estimate", y = "Frequency") +
+  scale_fill_manual(
+    values = c("theta_hat_1" = "darkgreen", "theta_hat_2" = "steelblue"),
+    labels = c(
+      "theta_hat_1" = expression(2*bar(X)~"(higher variance)"),
+      "theta_hat_2" = expression("Corrected Maximum (MVUE)")
+    )
+  ) +
+  theme(legend.position = "top")
+```
+
+The corrected maximum is **more concentrated** around the true value!
+
+
+# Introduction to Likelihood {background-color="#27ae60"}
+
+## The Likelihood Function: A Brief Introduction
+
+::: callout-important
+## Definition (Preview - Full treatment in Lesson 4)
+
+The **likelihood function** $L(\theta)$ is the joint probability/density of the observed data, viewed as a *function of the parameter* $\theta$:
+
+$$L(\theta) = \prod_{i=1}^n f(x_i; \theta)$$
+
+where $f$ is the pmf (discrete) or pdf (continuous).
+:::
+
+. . .
+
+**Key Idea:** The likelihood tells us how "likely" different parameter values are, given our observed data.
+
+## The Log-Likelihood Function
+
+Taking the logarithm converts products to sums:
+
+$$\ell(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(x_i; \theta)$$
+
+. . .
+
+**Why use log-likelihood?**
+
+-   Easier to differentiate (sums vs. products)
+-   Numerically more stable
+-   Same maximum as likelihood (since log is monotonic)
+
+. . .
+
+The **score function** is the first derivative: $\ell'(\theta) = \frac{d}{d\theta}\ell(\theta)$
+
+## Example: Bernoulli Likelihood
+
+For $X_1, \ldots, X_n \sim \text{Bernoulli}(p)$ with $x = \sum x_i$ successes:
+
+**Likelihood:**
+$$L(p) = p^x(1-p)^{n-x}$$
+
+**Log-likelihood:**
+$$\ell(p) = x\ln(p) + (n-x)\ln(1-p)$$
+
+**Score function:**
+$$\ell'(p) = \frac{x}{p} - \frac{n-x}{1-p}$$
+
+## Visualizing the Log-Likelihood
+
+```{r}
+#| echo: false
+#| fig-height: 5
+n <- 200
+x <- 156
+
+log_lik_data <- tibble(
+  p = seq(0.5, 0.95, by = 0.001),
+  log_likelihood = x * log(p) + (n - x) * log(1 - p)
+)
+
+mle_p <- x / n
+
+# Calculate second derivative at MLE for curvature illustration
+log_lik_data |> 
+  ggplot(aes(x = p, y = log_likelihood)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_vline(xintercept = mle_p, color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(x = mle_p, y = x * log(mle_p) + (n - x) * log(1 - mle_p)), 
+             color = "red", size = 4) +
+  labs(title = "Log-Likelihood for Bernoulli Data",
+       subtitle = str_glue("n = {n}, x = {x} successes"),
+       x = "Parameter (p)", 
+       y = expression("Log-Likelihood "*ell(p))) +
+  annotate("text", x = mle_p + 0.05, y = x * log(mle_p) + (n - x) * log(1 - mle_p) - 2,
+           label = bquote(atop("Maximum at", hat(p) == .(mle_p))), 
+           color = "red", size = 5, parse = FALSE)
+```
+
+The **curvature** of this function contains information about how precisely we can estimate $p$.
+
+# Fisher Information {background-color="#8e44ad"}
+
+## Curvature and Information
+
+**Key Observation:** The more curved the log-likelihood is at its peak, the more precisely we can estimate the parameter.
+
+```{r}
+#| echo: false
+# Compare curvature for different sample sizes
+bind_rows(
+  tibble(n = 25, y = 19, p = seq(0.5, 0.95, 0.01)) |> 
+    mutate(log_lik = y * log(p) + (n - y) * log(1 - p) - (y * log(y/n) + (n-y) * log(1-y/n))),
+  tibble(n = 100, y = 76, p = seq(0.5, 0.95, 0.01)) |> 
+    mutate(log_lik = y * log(p) + (n - y) * log(1 - p) - (y * log(y/n) + (n-y) * log(1-y/n)))
+) |> 
+  ggplot(aes(x = p, y = log_lik, color = factor(n))) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(xintercept = 0.76, linetype = "dashed", alpha = 0.5) +
+  labs(title = "Log-Likelihood Curvature: More Data = More Information",
+       subtitle = expression("Both have same MLE ("*hat(p)*" = 0.76), but n = 100 is more curved"),
+       x = "Parameter (p)", y = "Centered Log-Likelihood",
+       color = "Sample size") +
+  scale_color_manual(values = c("steelblue", "darkgreen")) +
+  theme(legend.position = "top",
+        plot.title = element_text(size = 18),
+        plot.subtitle = element_text(size = 16),
+        plot.margin = margin(10, 15, 10, 10))
+```
+
+**More curvature = more information = more precise estimates**
+
+## Fisher Information: Definition (Devore 7.4)
+
+::: callout-important
+## Definition (Devore 7.4)
+
+Let $f(x; \theta)$ be a pmf or pdf. The **Fisher Information** in a single observation $X$ is:
+
+$$I(\theta) = E\left[-\frac{\partial^2}{\partial\theta^2} \ln f(X; \theta)\right] = E[-\ell''(\theta)]$$
+
+Equivalently:
+$$I(\theta) = E\left[\left(\frac{\partial}{\partial\theta} \ln f(X; \theta)\right)^2\right] = E[(\ell'(\theta))^2] = \text{Var}(\ell'(\theta))$$
+:::
+
+. . .
+
+**Intuition:** Fisher information measures the expected curvature of the log-likelihood.
+
+## Fisher Information in a Sample
+
+For a random sample $X_1, \ldots, X_n$:
+
+$$I_n(\theta) = n \cdot I(\theta)$$
+
+. . .
+
+**The information is additive!** Each observation contributes the same amount of information.
+
+. . .
+
+::: callout-tip
+## Key Properties
+-   $I(\theta) > 0$ (always positive)
+-   Larger sample size → more information
+-   Information depends on the distribution, not the data
+:::
+
+## Example: Fisher Information for Bernoulli
+
+For $X \sim \text{Bernoulli}(p)$: $f(x; p) = p^x(1-p)^{1-x}$
+
+**Step 1:** Log-likelihood for single observation:
+$$\ln f(x; p) = x\ln(p) + (1-x)\ln(1-p)$$
+
+**Step 2:** Second derivative:
+$$\frac{\partial^2}{\partial p^2}\ln f(x; p) = -\frac{x}{p^2} - \frac{1-x}{(1-p)^2}$$
+
+## Bernoulli Fisher Information (continued)
+
+**Step 3:** Take expectation (multiply by -1):
+$$I(p) = E\left[\frac{X}{p^2} + \frac{1-X}{(1-p)^2}\right]$$
+
+$$= \frac{E(X)}{p^2} + \frac{1 - E(X)}{(1-p)^2} = \frac{p}{p^2} + \frac{1-p}{(1-p)^2}$$
+
+$$= \frac{1}{p} + \frac{1}{1-p} = \frac{1}{p(1-p)}$$
+
+. . .
+
+**For a sample of size $n$:**
+$$I_n(p) = \frac{n}{p(1-p)}$$
+
+## Example: Fisher Information for Normal (known $\sigma$)
+
+For $X \sim N(\mu, \sigma^2)$ with $\sigma$ known:
+
+$$f(x; \mu) = \frac{1}{\sqrt{2\pi}\sigma}e^{-(x-\mu)^2/(2\sigma^2)}$$
+
+. . .
+
+$$\ln f(x; \mu) = -\frac{1}{2}\ln(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}$$
+
+. . .
+
+$$\frac{\partial}{\partial\mu}\ln f = \frac{x-\mu}{\sigma^2}, \quad \frac{\partial^2}{\partial\mu^2}\ln f = -\frac{1}{\sigma^2}$$
+
+. . .
+
+$$I(\mu) = E\left[\frac{1}{\sigma^2}\right] = \frac{1}{\sigma^2}$$
+
+**For a sample:** $I_n(\mu) = \frac{n}{\sigma^2}$
+
+## Example: Fisher Information for Exponential
+
+For $X \sim \text{Exponential}(\lambda)$: $f(x; \lambda) = \lambda e^{-\lambda x}$
+
+**Log-likelihood:** $\ln f(x; \lambda) = \ln(\lambda) - \lambda x$
+
+. . .
+
+**Derivatives:**
+$$\frac{\partial}{\partial\lambda}\ln f = \frac{1}{\lambda} - x$$
+$$\frac{\partial^2}{\partial\lambda^2}\ln f = -\frac{1}{\lambda^2}$$
+
+. . .
+
+**Fisher Information:**
+$$I(\lambda) = E\left[\frac{1}{\lambda^2}\right] = \frac{1}{\lambda^2}$$
+
+**For a sample:** $I_n(\lambda) = \frac{n}{\lambda^2}$
+
+## Your Turn: Calculate Fisher Information
+
+**Exercise:** For the Poisson distribution with parameter $\mu$, where $f(x; \mu) = \frac{e^{-\mu}\mu^x}{x!}$:
+
+1.  Find $\ln f(x; \mu)$
+2.  Calculate $\frac{\partial^2}{\partial\mu^2}\ln f(x; \mu)$
+3.  Find $I(\mu)$
+
+. . .
+
+**Solution:**
+
+1.  $\ln f = -\mu + x\ln(\mu) - \ln(x!)$
+2.  $\frac{\partial}{\partial\mu}\ln f = -1 + \frac{x}{\mu}$, $\frac{\partial^2}{\partial\mu^2}\ln f = -\frac{x}{\mu^2}$
+3.  $I(\mu) = E\left[\frac{X}{\mu^2}\right] = \frac{E(X)}{\mu^2} = \frac{\mu}{\mu^2} = \frac{1}{\mu}$
+
+# The Cramér-Rao Lower Bound {background-color="#e74c3c"}
+
+## The Fundamental Inequality
+
+::: callout-important
+## Cramér-Rao Inequality (Devore 7.4)
+
+Let $X_1, \ldots, X_n$ be a random sample from $f(x; \theta)$ whose support does not depend on $\theta$. If $T = t(X_1, \ldots, X_n)$ is an **unbiased** estimator of $\theta$, then:
+
+$$\text{Var}(T) \geq \frac{1}{I_n(\theta)} = \frac{1}{n \cdot I(\theta)}$$
+
+The right-hand side is the **Cramér-Rao Lower Bound (CRLB)**.
+:::
+
+. . .
+
+**In words:** No unbiased estimator can have variance smaller than $1/I_n(\theta)$.
+
+## Why the CRLB Matters
+
+The Cramér-Rao bound tells us:
+
+1.  **The best possible precision** for any unbiased estimator
+2.  **Whether an estimator is efficient** (achieves the bound)
+3.  **How much we lose** by using a suboptimal estimator
+
+. . .
+
+::: callout-tip
+## Efficiency Definition
+An unbiased estimator $T$ is **efficient** if:
+$$\text{Var}(T) = \frac{1}{I_n(\theta)}$$
+
+An efficient estimator is the MVUE!
+:::
+
+## Example: Is $\hat{p}$ Efficient for Bernoulli?
+
+For $X_1, \ldots, X_n \sim \text{Bernoulli}(p)$:
+
+**Estimator:** $\hat{p} = \bar{X} = \frac{\sum X_i}{n}$
+
+**Variance:** $\text{Var}(\hat{p}) = \frac{p(1-p)}{n}$
+
+. . .
+
+**Fisher Information:** $I_n(p) = \frac{n}{p(1-p)}$
+
+**CRLB:** $\frac{1}{I_n(p)} = \frac{p(1-p)}{n}$
+
+. . .
+
+$$\text{Var}(\hat{p}) = \frac{p(1-p)}{n} = \text{CRLB} \checkmark$$
+
+**$\hat{p}$ is efficient and is the MVUE of $p$!**
+
+## Example: Is $\bar{X}$ Efficient for Normal Mean?
+
+For $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$ with known $\sigma$:
+
+**Estimator:** $\bar{X}$
+
+**Variance:** $\text{Var}(\bar{X}) = \frac{\sigma^2}{n}$
+
+. . .
+
+**Fisher Information:** $I_n(\mu) = \frac{n}{\sigma^2}$
+
+**CRLB:** $\frac{1}{I_n(\mu)} = \frac{\sigma^2}{n}$
+
+. . .
+
+$$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} = \text{CRLB} \checkmark$$
+
+**$\bar{X}$ is efficient and is the MVUE of $\mu$!**
+
+## Visualizing Efficiency
+
+```{r}
+#| echo: false
+#| fig-height: 5
+set.seed(123)
+true_mu <- 50
+sigma <- 10
+n <- 25
+n_sims <- 3000
+
+# Compare sample mean (efficient) to sample median (inefficient)
+efficiency_sim <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    data = map(sim, \(s) rnorm(n, true_mu, sigma)),
+    sample_mean = map_dbl(data, mean),
+    sample_median = map_dbl(data, median)
+  )
+
+# Theoretical variances
+var_mean <- sigma^2 / n  # = CRLB
+var_median <- (pi/2) * sigma^2 / n  # approximately
+
+efficiency_sim |> 
+  select(sample_mean, sample_median) |> 
+  pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
+  mutate(Estimator = case_when(
+    Estimator == "sample_mean" ~ str_glue("Sample Mean (Var = {round(var_mean, 2)}, Efficient)"),
+    Estimator == "sample_median" ~ str_glue("Sample Median (Var ≈ {round(var_median, 2)}, Not Efficient)")
+  )) |> 
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = true_mu, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "Efficient vs. Inefficient Estimators for Normal Mean",
+       subtitle = str_glue("CRLB = σ²/n = {round(var_mean, 2)}; Sample mean achieves it"),
+       x = "Estimate", y = "Frequency") +
+  scale_fill_manual(values = c("steelblue", "darkgreen")) +
+  theme(legend.position = "top")
+```
+
+## Efficiency of the Sample Median
+
+For normal data, the sample median is unbiased for $\mu$ but has:
+
+$$\text{Var}(\tilde{X}) \approx \frac{\pi}{2} \cdot \frac{\sigma^2}{n} \approx 1.57 \cdot \frac{\sigma^2}{n}$$
+
+. . .
+
+**Efficiency of median:**
+$$\text{Efficiency} = \frac{\text{CRLB}}{\text{Var}(\tilde{X})} = \frac{\sigma^2/n}{1.57 \cdot \sigma^2/n} \approx 0.64$$
+
+. . .
+
+The median is only about **64% as efficient** as the mean for normal data.
+
+We need about **1.57 times as many observations** with the median to achieve the same precision as the mean!
+
+## Medical Application: Estimating Treatment Effect
+
+A clinical trial measures systolic BP reduction (mmHg). Assume $N(\mu, \sigma^2 = 100)$.
+
+```{r}
+n <- 30
+sigma_sq <- 100
+
+# CRLB for μ
+crlb <- sigma_sq / n
+
+# Variance of sample mean
+var_xbar <- sigma_sq / n
+
+# Efficiency check
+cat("CRLB for μ:", round(crlb, 3), "\n")
+cat("Var(X̄):", round(var_xbar, 3), "\n")
+cat("Is X̄ efficient?", var_xbar == crlb, "\n\n")
+
+# Sample data
+bp_data <- c(12.3, 8.7, 15.2, 10.1, 7.4, 14.8, 11.2, 9.5, 13.1, 16.2,
+             8.1, 12.5, 10.8, 14.3, 11.7, 9.2, 15.0, 13.4, 7.9, 12.1,
+             10.5, 8.3, 14.1, 11.5, 13.8, 9.8, 11.9, 12.7, 10.3, 14.6)
+
+cat("MVUE of μ (sample mean):", round(mean(bp_data), 2), "mmHg\n")
+cat("Standard Error:", round(sqrt(crlb), 2), "mmHg")
+```
+
+## When is the CRLB Not Attained?
+
+Not all unbiased estimators achieve the CRLB!
+
+**Example:** Uniform[0, $\theta$] distribution
+
+-   Fisher Information: $I(\theta) = 1/\theta^2$
+-   CRLB: $\theta^2/n$
+
+. . .
+
+Two unbiased estimators:
+
+-   $\hat{\theta}_1 = 2\bar{X}$ has variance $\theta^2/(3n)$
+-   $\hat{\theta}_2 = \frac{n+1}{n}\max(X_i)$ has variance $\theta^2/[n(n+2)]$
+
+. . .
+
+Neither achieves CRLB = $\theta^2/n$! Why?
+
+**The support of Uniform[0, $\theta$] depends on $\theta$**, violating a regularity condition.
+
+## When Does the CRLB Not Apply?
+
+The Cramér-Rao inequality requires:
+
+1.  The **support** of $f(x; \theta)$ doesn't depend on $\theta$
+2.  Certain **regularity conditions** on derivatives
+
+. . .
+
+**Examples where CRLB doesn't apply:**
+
+-   Uniform[0, $\theta$] - support depends on $\theta$
+-   Uniform[$\theta$, $\theta + 1$] - support depends on $\theta$
+-   Some discrete distributions with restricted parameter spaces
+
+. . .
+
+::: callout-warning
+Always check regularity conditions before applying the CRLB!
+:::
+
+## MVUE Summary
+
+::: callout-important
+## Finding the MVUE
+
+1.  Calculate $I(\theta)$ for the distribution
+2.  Compute CRLB = $1/[n \cdot I(\theta)]$
+3.  Find an unbiased estimator
+4.  Check if its variance equals the CRLB
+5.  If yes → it's the MVUE!
+:::
+
+. . .
+
+**Key Results:**
+
+| Distribution | Parameter | MVUE | CRLB |
+|--------------|-----------|------|------|
+| Bernoulli($p$) | $p$ | $\bar{X}$ | $p(1-p)/n$ |
+| Normal($\mu, \sigma^2$) | $\mu$ | $\bar{X}$ | $\sigma^2/n$ |
+| Exponential($\lambda$) | $\lambda$ | See note | $\lambda^2/n$ |
+| Poisson($\mu$) | $\mu$ | $\bar{X}$ | $\mu/n$ |
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## Lesson 3 Summary
+
+**Key Concepts:**
+
+1.  **MVUE:** The unbiased estimator with minimum variance
+    -   Among unbiased estimators, prefer smaller variance
+
+2.  **Likelihood & Log-Likelihood:**
+    -   $L(\theta) = \prod f(x_i; \theta)$, $\ell(\theta) = \sum \ln f(x_i; \theta)$
+    -   Curvature relates to estimation precision
+
+3.  **Fisher Information:** $I(\theta) = E[-\ell''(\theta)]$
+    -   Measures curvature of log-likelihood
+    -   Additive across observations: $I_n(\theta) = n \cdot I(\theta)$
+
+4.  **Cramér-Rao Lower Bound:**
+    -   $\text{Var}(T) \geq 1/I_n(\theta)$ for unbiased $T$
+    -   Efficient estimators achieve the bound → MVUE
+
+## Key Formulas to Remember
+
+| Distribution | Parameter | $I(\theta)$ | CRLB |
+|--------------|-----------|-------------|------|
+| Bernoulli | $p$ | $\frac{1}{p(1-p)}$ | $\frac{p(1-p)}{n}$ |
+| Normal (known $\sigma$) | $\mu$ | $\frac{1}{\sigma^2}$ | $\frac{\sigma^2}{n}$ |
+| Exponential | $\lambda$ | $\frac{1}{\lambda^2}$ | $\frac{\lambda^2}{n}$ |
+| Poisson | $\mu$ | $\frac{1}{\mu}$ | $\frac{\mu}{n}$ |
+
+## Lesson 3 Practice Problems
+
+1.  **(Devore 7.51)** For the geometric distribution $P(X = x) = (1-p)^{x-1}p$, find Fisher information and the CRLB.
+
+2.  **(Devore 7.52)** For Poisson($\mu$), show that $\bar{X}$ is an efficient estimator.
+
+3.  **(Devore 7.53)** For Uniform[0, $\theta$], explain why neither $2\bar{X}$ nor the corrected maximum achieves the CRLB.
+
+4.  **Medical Application:** In a trial, 72 of 90 patients respond. Calculate Fisher information, CRLB, and verify that $\hat{p} = 72/90$ is efficient.
+
+
+
+## Next Lesson Preview
+
+**Lesson 4: Method of Moments and Maximum Likelihood Estimation**
+
+-   Method of Moments: Equate population and sample moments
+-   Maximum Likelihood: Maximize the likelihood function
+-   Properties: invariance, consistency, asymptotic normality
+-   MLEs are asymptotically efficient!
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapters 7.1, 7.4
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/03_MVUE_Likelihood/03_MVUE.html lessons/03_MVUE/03_MVUE.pdf
+```

@@ -60,7 +60,7 @@ Wednesdays    10:00 AM -- 12:00 PM PST
 ### Known Exceptions
 
 -   Monday, January 19: No class (holiday)
--   Wednesday, February 10: No class
+-   Wednesday, February 11: No class
 -   Monday, February 16: No class (holiday)
 -   March 16 and 18: Finals week, no in person teaching, possibly virtual office hours as needed
 
@@ -119,7 +119,7 @@ R/Rstudio will be used to complete some homework assignments. Please see [Dr. Wa
 
 20% Final
 
-10% Attendence (Two exit tickets a week)
+10% Attendance (Two exit tickets a week, complete at least 10)
 
 #### Grading & Requirements
 

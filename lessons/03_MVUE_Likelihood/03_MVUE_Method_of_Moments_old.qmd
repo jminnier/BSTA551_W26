@@ -1,0 +1,769 @@
+---
+title: "Lesson 3: Unbiased Estimators, MVUE, and Method of Moments"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w2d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 3
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 3: Finding the Best Estimator
+
+## Review: Where We Left Off
+
+**Key concepts from Lesson 2:**
+
+-   Point estimators vs. estimates
+-   Bias: $\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta$
+-   Unbiasedness: $E(\hat{\theta}) = \theta$
+-   MSE = Variance + Bias²
+
+. . .
+
+**Today's Goals:**
+
+-   Understand what makes one unbiased estimator better than another
+-   Learn about Minimum Variance Unbiased Estimators (MVUE)
+-   Introduce the Method of Moments for constructing estimators
+-   Apply these methods to medical research examples
+
+## Motivating Example: Estimating Drug Efficacy
+
+A clinical trial tests the effectiveness of a new antibiotic. Two researchers propose different estimators for the true response rate $p$:
+
+. . .
+
+**Researcher A:** Use $\hat{p}_A = X/n$ (sample proportion)
+
+**Researcher B:** Use $\hat{p}_B = (X + 1)/(n + 2)$ (adjusted proportion)
+
+. . .
+
+Both estimators are functions of the same data. **Which should we use?**
+
+```{r}
+# Suppose 15 out of 20 patients respond
+n <- 20; x <- 15
+p_hat_A <- x / n
+p_hat_B <- (x + 1) / (n + 2)
+cat("Researcher A's estimate:", p_hat_A, "\n")
+cat("Researcher B's estimate:", p_hat_B)
+```
+
+# Choosing Among Unbiased Estimators {background-color="#27ae60"}
+
+## The Problem of Multiple Unbiased Estimators
+
+Recall from Lesson 2: There can be **many** unbiased estimators for the same parameter!
+
+. . .
+
+**Example:** For a symmetric distribution with mean $\mu$:
+
+-   Sample mean $\bar{X}$ is unbiased for $\mu$
+-   Sample median $\tilde{X}$ is unbiased for $\mu$
+-   Trimmed means are unbiased for $\mu$
+
+. . .
+
+::: callout-note
+## The Key Question
+If two estimators are both unbiased, how do we choose between them?
+:::
+
+## Comparing Two Unbiased Estimators: Intuition
+
+```{r}
+#| echo: false
+#| fig-height: 5
+set.seed(123)
+true_mu <- 50
+
+comparison_data <- tibble(
+  estimator = rep(c("Low Variance (Better)", "High Variance (Worse)"), each = 1000),
+  estimate = c(
+    rnorm(1000, true_mu, 2),
+    rnorm(1000, true_mu, 5)
+  )
+)
+
+comparison_data |> 
+  ggplot(aes(x = estimate, fill = estimator)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = true_mu, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "Two Unbiased Estimators: Which is Better?",
+       subtitle = "Both centered on true value (red line), but with different spread",
+       x = "Estimate", y = "Frequency", fill = "Estimator") +
+  scale_fill_manual(values = c("steelblue", "orange")) +
+  theme(legend.position = "top")
+```
+
+**Answer:** Among unbiased estimators, prefer the one with **smaller variance**.
+
+## The Principle: Minimum Variance Unbiased Estimator
+
+::: callout-important
+## Definition (Devore 7.1)
+
+The **Minimum Variance Unbiased Estimator (MVUE)** of a parameter $\theta$ is the estimator $\hat{\theta}$ such that:
+
+1.  $\hat{\theta}$ is unbiased: $E(\hat{\theta}) = \theta$
+2.  $\hat{\theta}$ has smaller or equal variance than any other unbiased estimator
+
+If $\hat{\theta}_1$ and $\hat{\theta}_2$ are both unbiased for $\theta$, we prefer the one with smaller variance.
+:::
+
+. . .
+
+**Intuition:** Among estimators that are "correct on average," we want the most precise one.
+
+## Example: Uniform Distribution Upper Bound
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Uniform}[0, \theta]$
+
+Two unbiased estimators for $\theta$:
+
+. . .
+
+1.  $\hat{\theta}_1 = 2\bar{X}$ (since $E(X_i) = \theta/2$, so $E(2\bar{X}) = \theta$)
+
+2.  $\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_1, \ldots, X_n)$ (corrected maximum)
+
+. . .
+
+**Question:** Which has smaller variance?
+
+## Calculating Variances
+
+For $\hat{\theta}_1 = 2\bar{X}$:
+$$\text{Var}(\hat{\theta}_1) = \text{Var}(2\bar{X}) = 4 \cdot \text{Var}(\bar{X}) = 4 \cdot \frac{\sigma^2}{n} = 4 \cdot \frac{\theta^2/12}{n} = \frac{\theta^2}{3n}$$
+
+. . .
+
+For $\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_i)$, it can be shown that:
+$$\text{Var}(\hat{\theta}_2) = \frac{\theta^2}{n(n+2)}$$
+
+. . .
+
+**Comparison:** For $n > 1$:
+$$\frac{\theta^2}{n(n+2)} < \frac{\theta^2}{3n}$$
+
+The corrected maximum $\hat{\theta}_2$ is more efficient!
+
+## Simulation: Comparing the Two Estimators
+
+```{r}
+#| code-line-numbers: "|1-3|5-12|14-19"
+theta <- 10  # True upper bound
+n <- 20
+n_sims <- 5000
+
+# Simulate both estimators
+uniform_sim <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    data = map(sim, \(s) runif(n, 0, theta)),
+    theta_hat_1 = map_dbl(data, \(d) 2 * mean(d)),
+    theta_hat_2 = map_dbl(data, \(d) (n + 1) / n * max(d))
+  )
+
+# Compare variances
+uniform_sim |> 
+  summarize(
+    `Var(2*X̄)` = var(theta_hat_1),
+    `Var(corrected max)` = var(theta_hat_2),
+    `Theoretical Var(2*X̄)` = theta^2 / (3 * n),
+    `Theoretical Var(corrected max)` = theta^2 / (n * (n + 2))
+  ) |> 
+  pivot_longer(everything()) |> 
+  mutate(value = round(value, 4))
+```
+
+## Visualizing the Comparison
+
+```{r}
+#| echo: false
+#| fig-height: 5
+uniform_sim |> 
+  select(theta_hat_1, theta_hat_2) |> 
+  pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
+  mutate(Estimator = case_when(
+    Estimator == "theta_hat_1" ~ "2X̄ (higher variance)",
+    Estimator == "theta_hat_2" ~ "Corrected Maximum (MVUE)"
+  )) |> 
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(bins = 50, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = theta, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "Comparing Two Unbiased Estimators for θ",
+       subtitle = str_glue("True θ = {theta}, n = {n}"),
+       x = "Estimate", y = "Frequency") +
+  scale_fill_manual(values = c("darkgreen", "steelblue")) +
+  theme(legend.position = "top")
+```
+
+The corrected maximum is **more concentrated** around the true value!
+
+## The MVUE Theorem for Normal Distributions
+
+::: callout-important
+## Theorem (Devore 7.1)
+
+Let $X_1, \ldots, X_n$ be a random sample from a **normal distribution** with parameters $\mu$ and $\sigma$. Then:
+
+The sample mean $\bar{X}$ is the **MVUE** for $\mu$.
+:::
+
+. . .
+
+**Why this matters:** When sampling from a normal population, no other unbiased estimator of $\mu$ can have smaller variance than $\bar{X}$.
+
+. . .
+
+This is a powerful result! It tells us that $\bar{X}$ is optimal (in the MVUE sense) for normal data.
+
+## Medical Application: Blood Pressure Reduction
+
+A pharmaceutical trial measures systolic blood pressure reduction (mmHg) in patients taking a new medication. Assume reductions are normally distributed.
+
+```{r}
+# Blood pressure reductions from 30 patients
+bp_data <- c(12.3, 8.7, 15.2, 10.1, 7.4, 14.8, 11.2, 9.5, 13.1, 16.2,
+             8.1, 12.5, 10.8, 14.3, 11.7, 9.2, 15.0, 13.4, 7.9, 12.1,
+             10.5, 8.3, 14.1, 11.5, 13.8, 9.8, 11.9, 12.7, 10.3, 14.6)
+
+# MVUE for mean reduction
+x_bar <- mean(bp_data)
+se_x_bar <- sd(bp_data) / sqrt(length(bp_data))
+
+cat("MVUE of mean reduction:", round(x_bar, 2), "mmHg\n")
+cat("Standard error:", round(se_x_bar, 2), "mmHg")
+```
+
+Since the data is assumed normal, $\bar{X}$ is not just unbiased—it's the **best** unbiased estimator.
+
+## Your Turn: Comparing Estimators
+
+**Exercise:** For a normal distribution with known $\sigma = 10$, which estimator of $\mu$ has smaller variance?
+
+-   $\hat{\mu}_1 = \bar{X}$ (sample mean)
+-   $\hat{\mu}_2 = \tilde{X}$ (sample median)
+
+For a normal distribution with $n = 20$:
+
+-   $\text{Var}(\bar{X}) = \sigma^2/n = 100/20 = 5$
+-   $\text{Var}(\tilde{X}) \approx \frac{\pi}{2} \cdot \frac{\sigma^2}{n} \approx 1.57 \cdot 5 = 7.85$
+
+. . .
+
+**The sample mean wins!** For normal data, $\bar{X}$ is the MVUE.
+
+## When Might the Median Be Better?
+
+Although $\bar{X}$ is MVUE for normal data, the median can be better for:
+
+-   **Heavy-tailed distributions** (where outliers are more common)
+-   **Contaminated data** (mixture of two distributions)
+
+. . .
+
+```{r}
+#| echo: false
+#| fig-height: 4.5
+set.seed(42)
+n_sim <- 2000
+n <- 30
+
+# Normal vs. contaminated normal
+normal_comparison <- tibble(sim = 1:n_sim) |> 
+  mutate(
+    normal_data = map(sim, \(s) rnorm(n, 100, 15)),
+    contaminated_data = map(sim, \(s) {
+      # 90% normal, 10% outliers
+      x <- rnorm(n, 100, 15)
+      outlier_idx <- sample(1:n, 3)
+      x[outlier_idx] <- x[outlier_idx] + rnorm(3, 30, 10)
+      x
+    }),
+    mean_normal = map_dbl(normal_data, mean),
+    median_normal = map_dbl(normal_data, median),
+    mean_contaminated = map_dbl(contaminated_data, mean),
+    median_contaminated = map_dbl(contaminated_data, median)
+  )
+
+normal_comparison |> 
+  select(mean_contaminated, median_contaminated) |> 
+  pivot_longer(everything()) |> 
+  mutate(name = ifelse(name == "mean_contaminated", "Sample Mean", "Sample Median")) |> 
+  ggplot(aes(x = value, fill = name)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = 100, color = "red", linetype = "dashed", linewidth = 1) +
+  labs(title = "With Contaminated Data: Median Can Be Better",
+       subtitle = "10% outliers added to normal data",
+       x = "Estimate", y = "Frequency", fill = "Estimator") +
+  scale_fill_manual(values = c("steelblue", "darkgreen")) +
+  theme(legend.position = "top")
+```
+
+# Method of Moments {background-color="#8e44ad"}
+
+## Motivation: How Do We Find Estimators?
+
+So far, we've evaluated estimators. But **how do we construct them** in the first place?
+
+. . .
+
+Two major constructive methods:
+
+1.  **Method of Moments** (today)
+2.  **Maximum Likelihood** (Lesson 4)
+
+. . .
+
+::: callout-note
+## Key Idea
+Both methods give us systematic recipes for deriving estimators from any specified distribution.
+:::
+
+## Population vs. Sample Moments
+
+::: callout-important
+## Definitions (Devore 7.2)
+
+**Population Moments:**
+
+-   1st moment: $E(X) = \mu$
+-   2nd moment: $E(X^2)$
+-   kth moment: $E(X^k)$
+
+**Sample Moments:**
+
+-   1st sample moment: $\frac{1}{n}\sum_{i=1}^n X_i = \bar{X}$
+-   2nd sample moment: $\frac{1}{n}\sum_{i=1}^n X_i^2$
+-   kth sample moment: $\frac{1}{n}\sum_{i=1}^n X_i^k$
+:::
+
+## The Method of Moments Principle
+
+::: callout-important
+## Method of Moments Estimators (MMEs)
+
+To estimate $m$ unknown parameters $\theta_1, \ldots, \theta_m$:
+
+1.  Express the first $m$ population moments as functions of the parameters
+2.  Set each population moment equal to its sample counterpart
+3.  Solve the resulting system of equations for $\theta_1, \ldots, \theta_m$
+:::
+
+. . .
+
+**The idea:** If the population and sample moments should be "close," we can estimate parameters by equating them.
+
+## Example 1: Exponential Distribution (One Parameter)
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Exponential}(\lambda)$ where $\lambda$ is the rate parameter.
+
+**Goal:** Find the MME for $\lambda$.
+
+. . .
+
+**Step 1:** Population moment: $E(X) = 1/\lambda$
+
+**Step 2:** Set equal to sample moment: $\frac{1}{\lambda} = \bar{X}$
+
+**Step 3:** Solve: $\hat{\lambda} = \frac{1}{\bar{X}}$
+
+. . .
+
+::: callout-tip
+## Intuition
+If the population mean is $1/\lambda$, and we estimate the population mean with $\bar{X}$, then we estimate $\lambda$ with $1/\bar{X}$.
+:::
+
+## Medical Application: Hospital Wait Times
+
+Emergency room wait times are often modeled with an exponential distribution. The parameter $\lambda$ represents the rate (patients served per hour).
+
+```{r}
+# Wait times (minutes) for 40 patients
+wait_times <- c(12, 45, 8, 23, 67, 15, 31, 42, 19, 56,
+                28, 11, 38, 22, 49, 17, 33, 25, 41, 14,
+                52, 9, 36, 27, 44, 18, 29, 47, 21, 35,
+                13, 39, 24, 51, 16, 32, 46, 20, 37, 26)
+
+# Method of moments estimate for λ (per minute)
+lambda_hat <- 1 / mean(wait_times)
+
+cat("Sample mean wait time:", round(mean(wait_times), 2), "minutes\n")
+cat("MME of λ:", round(lambda_hat, 4), "per minute\n")
+cat("MME of λ:", round(lambda_hat * 60, 2), "per hour")
+```
+
+## Verifying with Simulation
+
+```{r}
+#| fig-height: 4.5
+# Compare empirical distribution to fitted exponential
+tibble(wait_time = wait_times) |> 
+  ggplot(aes(x = wait_time)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 15, 
+                 fill = "steelblue", alpha = 0.7) +
+  stat_function(fun = dexp, args = list(rate = lambda_hat),
+                color = "red", linewidth = 1.2) +
+  labs(title = "ER Wait Times with Fitted Exponential Distribution",
+       subtitle = str_glue("MME: λ̂ = {round(lambda_hat, 4)}"),
+       x = "Wait Time (minutes)", y = "Density") +
+  annotate("text", x = 50, y = 0.025, 
+           label = str_glue("Mean = {round(mean(wait_times), 1)} min"),
+           color = "red", size = 5)
+```
+
+## Example 2: Normal Distribution (Two Parameters)
+
+**Setup:** $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$
+
+**Goal:** Find MMEs for $\mu$ and $\sigma^2$.
+
+. . .
+
+**Population moments:**
+
+-   $E(X) = \mu$
+-   $E(X^2) = \mu^2 + \sigma^2$ (variance shortcut formula!)
+
+. . .
+
+**Set equal to sample moments:**
+
+-   $\mu = \bar{X}$
+-   $\mu^2 + \sigma^2 = \frac{1}{n}\sum X_i^2$
+
+## Solving for the Normal MMEs
+
+From the two equations:
+
+$$\hat{\mu} = \bar{X}$$
+
+. . .
+
+$$\hat{\sigma}^2 = \frac{1}{n}\sum X_i^2 - \bar{X}^2 = \frac{1}{n}\sum(X_i - \bar{X})^2$$
+
+. . .
+
+::: callout-warning
+## Note on Bias
+The MME for $\sigma^2$ divides by $n$, not $n-1$. This means the MME is **biased**! 
+
+$$E(\hat{\sigma}^2_{MME}) = \frac{n-1}{n}\sigma^2$$
+
+The usual sample variance $S^2$ with $n-1$ in the denominator is unbiased.
+:::
+
+## Example 3: Gamma Distribution (Two Parameters)
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Gamma}(\alpha, \beta)$
+
+**Moments:**
+
+-   $E(X) = \alpha\beta$
+-   $E(X^2) = \alpha(\alpha+1)\beta^2$
+
+. . .
+
+**MME equations:**
+$$\bar{X} = \alpha\beta$$
+$$\frac{1}{n}\sum X_i^2 = \alpha(\alpha+1)\beta^2$$
+
+. . .
+
+**Solutions (after algebra):**
+$$\hat{\alpha} = \frac{\bar{X}^2}{\frac{1}{n}\sum X_i^2 - \bar{X}^2} \quad \quad \hat{\beta} = \frac{\frac{1}{n}\sum X_i^2 - \bar{X}^2}{\bar{X}}$$
+
+## Medical Application: Surgery Recovery Times
+
+Recovery times after a particular surgery often follow a gamma distribution. Let's estimate the parameters.
+
+```{r}
+# Recovery times (days) for 25 patients
+recovery_times <- c(4.2, 6.8, 5.1, 8.3, 7.2, 4.9, 6.1, 9.5, 5.7, 7.8,
+                    6.4, 8.1, 5.3, 7.5, 6.9, 4.5, 8.7, 5.9, 7.1, 6.2,
+                    9.2, 5.5, 7.4, 6.6, 8.4)
+
+# Calculate sample moments
+x_bar <- mean(recovery_times)
+second_moment <- mean(recovery_times^2)
+
+# MME for gamma parameters
+alpha_hat <- x_bar^2 / (second_moment - x_bar^2)
+beta_hat <- (second_moment - x_bar^2) / x_bar
+
+cat("Sample mean:", round(x_bar, 2), "days\n")
+cat("MME of α:", round(alpha_hat, 2), "\n")
+cat("MME of β:", round(beta_hat, 2), "days")
+```
+
+## Visualizing the Gamma Fit
+
+```{r}
+#| fig-height: 4.5
+tibble(recovery_time = recovery_times) |> 
+  ggplot(aes(x = recovery_time)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, 
+                 fill = "steelblue", alpha = 0.7) +
+  stat_function(fun = dgamma, 
+                args = list(shape = alpha_hat, scale = beta_hat),
+                color = "red", linewidth = 1.2) +
+  labs(title = "Surgery Recovery Times with Fitted Gamma Distribution",
+       subtitle = str_glue("MME: α̂ = {round(alpha_hat, 2)}, β̂ = {round(beta_hat, 2)}"),
+       x = "Recovery Time (days)", y = "Density")
+```
+
+## Your Turn: Method of Moments
+
+**Exercise:** Drug concentrations in blood plasma follow a Uniform[0, $\theta$] distribution. From $n = 15$ measurements, you observe $\bar{x} = 4.2$ mg/L.
+
+Find the MME of $\theta$.
+
+. . .
+
+**Solution:**
+
+For Uniform[0, $\theta$]: $E(X) = \theta/2$
+
+Setting equal to sample mean: $\bar{x} = \theta/2$
+
+Therefore: $\hat{\theta} = 2\bar{x} = 2(4.2) = 8.4$ mg/L
+
+## Properties of Method of Moments Estimators
+
+**Advantages:**
+
+-   Simple to compute (usually just algebra)
+-   Often has closed-form solutions
+-   Usually consistent (converges to true value as $n \to \infty$)
+
+. . .
+
+**Disadvantages:**
+
+-   May not be the most efficient (highest variance)
+-   Can sometimes give impossible values
+-   May be biased
+
+. . .
+
+::: callout-note
+## Coming Up
+Maximum likelihood estimators (Lesson 4) generally have better efficiency properties but require more computation.
+:::
+
+## Example: When MME Gives Impossible Values
+
+**Problem:** $X_1, \ldots, X_n \sim \text{Uniform}[0, \beta]$
+
+The MME is $\hat{\beta} = 2\bar{X}$.
+
+. . .
+
+**Potential issue:** What if some $X_i > 2\bar{X}$?
+
+```{r}
+# Example data where MME fails
+problematic_data <- c(1, 1, 1, 9)  # max = 9
+beta_mme <- 2 * mean(problematic_data)  # = 6
+
+cat("Data:", problematic_data, "\n")
+cat("MME of β:", beta_mme, "\n")
+cat("But max observation is:", max(problematic_data), "\n")
+cat("This is impossible if β =", beta_mme, "!")
+```
+
+The MME suggests $\beta = 6$, but we observed a value of 9!
+
+# Practical Considerations {background-color="#e74c3c"}
+
+## Computing MMEs in R: A Workflow
+
+```{r}
+#| code-line-numbers: "|1-3|5-17|19-23"
+# General workflow for method of moments
+# Step 1: Collect data
+data <- c(2.3, 4.1, 3.8, 5.2, 2.9, 4.5, 3.1, 4.8, 3.5, 4.2)
+
+# Step 2: Compute sample moments
+compute_sample_moments <- function(x, k = 2) {
+  moments <- map_dbl(1:k, \(j) mean(x^j))
+  names(moments) <- paste0("m", 1:k)
+  moments
+}
+
+sample_moments <- compute_sample_moments(data, k = 2)
+cat("First moment (mean):", round(sample_moments["m1"], 3), "\n")
+cat("Second moment:", round(sample_moments["m2"], 3), "\n")
+
+# Step 3: Solve for parameters (depends on distribution)
+# Example: Normal distribution
+mu_hat <- sample_moments["m1"]
+sigma2_hat <- sample_moments["m2"] - sample_moments["m1"]^2
+cat("\nNormal MMEs:\n")
+cat("μ̂ =", round(mu_hat, 3), "\n")
+cat("σ̂² =", round(sigma2_hat, 3))
+```
+
+## Medical Research Application: Drug Clearance
+
+Drug clearance from the body often follows an exponential decay model. A pharmacokinetics study measures the half-life of a new medication.
+
+```{r}
+# Half-lives (hours) from 35 patients
+half_lives <- c(3.2, 4.1, 2.8, 3.5, 4.8, 3.1, 3.9, 2.6, 4.3, 3.7,
+                3.4, 4.0, 2.9, 3.8, 4.5, 3.3, 3.6, 4.2, 3.0, 3.9,
+                2.7, 4.1, 3.5, 3.8, 4.0, 3.2, 3.7, 4.4, 3.1, 3.6,
+                2.8, 4.0, 3.4, 3.9, 3.5)
+
+# Assume gamma distribution; compute MMEs
+x_bar <- mean(half_lives)
+var_x <- var(half_lives) * (length(half_lives) - 1) / length(half_lives)
+
+alpha_mme <- x_bar^2 / var_x
+beta_mme <- var_x / x_bar
+
+cat("Sample statistics:\n")
+cat("  Mean half-life:", round(x_bar, 2), "hours\n")
+cat("  Sample variance:", round(var_x, 3), "\n\n")
+cat("Gamma MMEs:\n")
+cat("  α̂ =", round(alpha_mme, 2), "\n")
+cat("  β̂ =", round(beta_mme, 2), "hours")
+```
+
+## Connecting Moments to Variance
+
+Recall the variance formula: $\text{Var}(X) = E(X^2) - [E(X)]^2$
+
+. . .
+
+This connects moments to variance!
+
+$$\sigma^2 = \mu_2' - (\mu_1')^2$$
+
+where $\mu_k' = E(X^k)$ is the kth raw moment.
+
+. . .
+
+**For sample moments:**
+$$\hat{\sigma}^2_{MME} = \frac{1}{n}\sum X_i^2 - \bar{X}^2 = \frac{1}{n}\sum(X_i - \bar{X})^2$$
+
+This is why the MME for variance divides by $n$, not $n-1$.
+
+## Summary Table: Common MMEs
+
+| Distribution | Parameters | MME Formula |
+|--------------|------------|-------------|
+| Normal | $\mu$, $\sigma^2$ | $\hat{\mu} = \bar{X}$, $\hat{\sigma}^2 = \frac{1}{n}\sum(X_i-\bar{X})^2$ |
+| Exponential | $\lambda$ | $\hat{\lambda} = 1/\bar{X}$ |
+| Gamma | $\alpha$, $\beta$ | $\hat{\alpha} = \bar{X}^2/\hat{\sigma}^2$, $\hat{\beta} = \hat{\sigma}^2/\bar{X}$ |
+| Uniform[0,$\theta$] | $\theta$ | $\hat{\theta} = 2\bar{X}$ |
+| Poisson | $\lambda$ | $\hat{\lambda} = \bar{X}$ |
+
+# Summary and Looking Ahead {background-color="#3498db"}
+
+## Lesson 3 Summary
+
+**Key Concepts:**
+
+1.  **MVUE:** Among unbiased estimators, prefer the one with smallest variance
+    -   $\bar{X}$ is MVUE for $\mu$ in normal distributions
+    -   The corrected maximum is MVUE for uniform upper bound
+
+2.  **Method of Moments:**
+    -   Equate population moments to sample moments
+    -   Solve for unknown parameters
+    -   Simple but may not be most efficient
+
+3.  **Moments:**
+    -   kth population moment: $E(X^k)$
+    -   kth sample moment: $\frac{1}{n}\sum X_i^k$
+
+## Comparing What We've Learned
+
+| Criterion | What It Measures | Ideal Value |
+|-----------|------------------|-------------|
+| Bias | Systematic error | 0 |
+| Variance | Random fluctuation | Small |
+| MSE | Total error | Small |
+| MVUE | Best unbiased | Smallest variance among unbiased |
+
+. . .
+
+**Next lesson:** Maximum Likelihood Estimation—often more efficient than MME!
+
+## Lesson 3 Practice Problems
+
+1.  **(Devore 7.1)** For Uniform[0, $\theta$], compare the MSE of $\hat{\theta}_1 = 2\bar{X}$ and $\hat{\theta}_2 = \frac{n+1}{n}\max(X_i)$ for $n = 5, 10, 20$.
+
+2.  **(Devore 7.2)** Derive the MME for the parameter $\theta$ of the distribution with pdf $f(x; \theta) = (\theta+1)x^\theta$ for $0 \le x \le 1$.
+
+3.  **Medical Application:** Hospital length-of-stay data (days) for 20 patients: 2, 3, 1, 5, 4, 2, 7, 3, 2, 6, 4, 3, 2, 5, 3, 4, 2, 3, 6, 4. Assuming an exponential distribution, find the MME of the rate parameter $\lambda$. What is the estimated mean length of stay?
+
+4.  **Simulation:** Generate 1000 samples of size $n = 25$ from a Gamma(3, 2) distribution. For each sample, compute the MME of $\alpha$ and $\beta$. Compute the bias and variance of each estimator.
+
+## Homework Problems (Devore et al.)
+
+::: nonincremental
+**From Chapter 7:**
+
+-   Exercise 7.5: Bias calculations
+-   Exercise 7.8: MVUE comparison
+-   Exercise 7.25: Method of moments for Weibull
+-   Exercise 7.26: Method of moments for general pdf
+-   Exercise 7.27: MME derivation and calculation
+:::
+
+## Next Lesson Preview
+
+**Lesson 4: Likelihood Theory and Maximum Likelihood Estimation**
+
+-   The likelihood function: $L(\theta) = \prod f(x_i; \theta)$
+-   Maximum likelihood principle
+-   Finding MLEs analytically
+-   Properties of MLEs
+-   Comparison with MMEs
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapters 7.1, 7.2
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape docs/lessons/03_MVUE_Method_of_Moments/03_MVUE_Method_of_Moments.html lessons/03_MVUE_Method_of_Moments/03_MVUE_Method_of_Moments.pdf
+```

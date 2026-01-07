@@ -293,6 +293,7 @@ Each sample gives a **different estimate**, but they cluster around the true val
 
 ```{r}
 #| output-location: slide
+#| code-line-numbers: "|1-5|6-15|16-28"
 # Parameters
 true_effect <- 10  # True mean BP reduction (mmHg)
 true_sd <- 4       # Standard deviation
@@ -590,5 +591,5 @@ Thank you!
 ```{bash}
 #| eval: false
 #| include: false
-decktape docs/lessons/01_Intro_Inference/01_Intro_Inference.html lessons/01_Intro_Inference/01_Intro_Inference.pdf
+decktape reveal --fragments docs/lessons/01_Intro_Inference/01_Intro_Inference.html lessons/01_Intro_Inference/01_Intro_Inference.pdf
 ```

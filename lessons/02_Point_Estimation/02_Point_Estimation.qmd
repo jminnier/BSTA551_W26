@@ -1,6 +1,6 @@
 ---
-title: "BSTA 551: Statistical Inference"
-subtitle: "Lesson 2: Point Estimation; Bias, Variance, and MSE"
+title: "Lesson 2: Point Estimation; Bias, Variance, and MSE"
+subtitle: "BSTA 551: Statistical Inference"
 author: "Jessica Minnier"
 title-slide-attributes:
     data-background-color: "#006a4e"
@@ -850,5 +850,5 @@ Thank you!
 ```{bash}
 #| eval: false
 #| include: false
-decktape docs/lessons/02_Point_Estimation/02_Point_Estimation.html lessons/02_Point_Estimation/02_Point_Estimation.pdf
+decktape reveal --fragments docs/lessons/02_Point_Estimation/02_Point_Estimation.html lessons/02_Point_Estimation/02_Point_Estimation.pdf
 ```

@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jessica Minnier">
+<meta name="dcterms.date" content="2026-01-12">
+
+<title>Lesson 3: Unbiased Estimators, MVUE, Likelihood Theory – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lesson-3-finding-the-best-estimator" id="toc-lesson-3-finding-the-best-estimator" class="nav-link active" data-scroll-target="#lesson-3-finding-the-best-estimator">Lesson 3: Finding the Best Estimator</a>
+  <ul class="collapse">
+  <li><a href="#review-where-we-left-off" id="toc-review-where-we-left-off" class="nav-link" data-scroll-target="#review-where-we-left-off">Review: Where We Left Off</a></li>
+  <li><a href="#motivating-example-estimating-drug-efficacy" id="toc-motivating-example-estimating-drug-efficacy" class="nav-link" data-scroll-target="#motivating-example-estimating-drug-efficacy">Motivating Example: Estimating Drug Efficacy</a></li>
+  </ul></li>
+  <li><a href="#choosing-among-unbiased-estimators" id="toc-choosing-among-unbiased-estimators" class="nav-link" data-scroll-target="#choosing-among-unbiased-estimators">Choosing Among Unbiased Estimators</a>
+  <ul class="collapse">
+  <li><a href="#the-problem-of-multiple-unbiased-estimators" id="toc-the-problem-of-multiple-unbiased-estimators" class="nav-link" data-scroll-target="#the-problem-of-multiple-unbiased-estimators">The Problem of Multiple Unbiased Estimators</a></li>
+  <li><a href="#comparing-two-unbiased-estimators-intuition" id="toc-comparing-two-unbiased-estimators-intuition" class="nav-link" data-scroll-target="#comparing-two-unbiased-estimators-intuition">Comparing Two Unbiased Estimators: Intuition</a></li>
+  <li><a href="#the-principle-minimum-variance-unbiased-estimator" id="toc-the-principle-minimum-variance-unbiased-estimator" class="nav-link" data-scroll-target="#the-principle-minimum-variance-unbiased-estimator">The Principle: Minimum Variance Unbiased Estimator</a></li>
+  <li><a href="#example-uniform-distribution-upper-bound" id="toc-example-uniform-distribution-upper-bound" class="nav-link" data-scroll-target="#example-uniform-distribution-upper-bound">Example: Uniform Distribution Upper Bound</a></li>
+  <li><a href="#calculating-variances" id="toc-calculating-variances" class="nav-link" data-scroll-target="#calculating-variances">Calculating Variances</a></li>
+  <li><a href="#simulation-comparing-the-two-estimators" id="toc-simulation-comparing-the-two-estimators" class="nav-link" data-scroll-target="#simulation-comparing-the-two-estimators">Simulation: Comparing the Two Estimators</a></li>
+  <li><a href="#visualizing-the-comparison" id="toc-visualizing-the-comparison" class="nav-link" data-scroll-target="#visualizing-the-comparison">Visualizing the Comparison</a></li>
+  </ul></li>
+  <li><a href="#introduction-to-likelihood" id="toc-introduction-to-likelihood" class="nav-link" data-scroll-target="#introduction-to-likelihood">Introduction to Likelihood</a>
+  <ul class="collapse">
+  <li><a href="#the-likelihood-function-a-brief-introduction" id="toc-the-likelihood-function-a-brief-introduction" class="nav-link" data-scroll-target="#the-likelihood-function-a-brief-introduction">The Likelihood Function: A Brief Introduction</a></li>
+  <li><a href="#the-log-likelihood-function" id="toc-the-log-likelihood-function" class="nav-link" data-scroll-target="#the-log-likelihood-function">The Log-Likelihood Function</a></li>
+  <li><a href="#example-bernoulli-likelihood" id="toc-example-bernoulli-likelihood" class="nav-link" data-scroll-target="#example-bernoulli-likelihood">Example: Bernoulli Likelihood</a></li>
+  <li><a href="#visualizing-the-log-likelihood" id="toc-visualizing-the-log-likelihood" class="nav-link" data-scroll-target="#visualizing-the-log-likelihood">Visualizing the Log-Likelihood</a></li>
+  </ul></li>
+  <li><a href="#fisher-information" id="toc-fisher-information" class="nav-link" data-scroll-target="#fisher-information">Fisher Information</a>
+  <ul class="collapse">
+  <li><a href="#curvature-and-information" id="toc-curvature-and-information" class="nav-link" data-scroll-target="#curvature-and-information">Curvature and Information</a></li>
+  <li><a href="#fisher-information-definition" id="toc-fisher-information-definition" class="nav-link" data-scroll-target="#fisher-information-definition">Fisher Information: Definition</a></li>
+  <li><a href="#fisher-information-in-a-sample" id="toc-fisher-information-in-a-sample" class="nav-link" data-scroll-target="#fisher-information-in-a-sample">Fisher Information in a Sample</a></li>
+  <li><a href="#example-fisher-information-for-bernoulli" id="toc-example-fisher-information-for-bernoulli" class="nav-link" data-scroll-target="#example-fisher-information-for-bernoulli">Example: Fisher Information for Bernoulli</a></li>
+  <li><a href="#bernoulli-fisher-information-continued" id="toc-bernoulli-fisher-information-continued" class="nav-link" data-scroll-target="#bernoulli-fisher-information-continued">Bernoulli Fisher Information (continued)</a></li>
+  <li><a href="#example-fisher-information-for-normal-known-sigma" id="toc-example-fisher-information-for-normal-known-sigma" class="nav-link" data-scroll-target="#example-fisher-information-for-normal-known-sigma">Example: Fisher Information for Normal (known <span class="math inline">\(\sigma\)</span>)</a></li>
+  <li><a href="#example-fisher-information-for-exponential" id="toc-example-fisher-information-for-exponential" class="nav-link" data-scroll-target="#example-fisher-information-for-exponential">Example: Fisher Information for Exponential</a></li>
+  <li><a href="#your-turn-calculate-fisher-information" id="toc-your-turn-calculate-fisher-information" class="nav-link" data-scroll-target="#your-turn-calculate-fisher-information">Your Turn: Calculate Fisher Information</a></li>
+  </ul></li>
+  <li><a href="#the-cramér-rao-lower-bound" id="toc-the-cramér-rao-lower-bound" class="nav-link" data-scroll-target="#the-cramér-rao-lower-bound">The Cramér-Rao Lower Bound</a>
+  <ul class="collapse">
+  <li><a href="#the-fundamental-inequality" id="toc-the-fundamental-inequality" class="nav-link" data-scroll-target="#the-fundamental-inequality">The Fundamental Inequality</a></li>
+  <li><a href="#why-the-crlb-matters" id="toc-why-the-crlb-matters" class="nav-link" data-scroll-target="#why-the-crlb-matters">Why the CRLB Matters</a></li>
+  <li><a href="#example-is-hatp-efficient-for-bernoulli" id="toc-example-is-hatp-efficient-for-bernoulli" class="nav-link" data-scroll-target="#example-is-hatp-efficient-for-bernoulli">Example: Is <span class="math inline">\(\hat{p}\)</span> Efficient for Bernoulli?</a></li>
+  <li><a href="#example-is-barx-efficient-for-normal-mean" id="toc-example-is-barx-efficient-for-normal-mean" class="nav-link" data-scroll-target="#example-is-barx-efficient-for-normal-mean">Example: Is <span class="math inline">\(\bar{X}\)</span> Efficient for Normal Mean?</a></li>
+  <li><a href="#visualizing-efficiency" id="toc-visualizing-efficiency" class="nav-link" data-scroll-target="#visualizing-efficiency">Visualizing Efficiency</a></li>
+  <li><a href="#efficiency-of-the-sample-median" id="toc-efficiency-of-the-sample-median" class="nav-link" data-scroll-target="#efficiency-of-the-sample-median">Efficiency of the Sample Median</a></li>
+  <li><a href="#medical-application-estimating-treatment-effect" id="toc-medical-application-estimating-treatment-effect" class="nav-link" data-scroll-target="#medical-application-estimating-treatment-effect">Medical Application: Estimating Treatment Effect</a></li>
+  <li><a href="#when-is-the-crlb-not-attained" id="toc-when-is-the-crlb-not-attained" class="nav-link" data-scroll-target="#when-is-the-crlb-not-attained">When is the CRLB Not Attained?</a></li>
+  <li><a href="#when-does-the-crlb-not-apply" id="toc-when-does-the-crlb-not-apply" class="nav-link" data-scroll-target="#when-does-the-crlb-not-apply">When Does the CRLB Not Apply?</a></li>
+  <li><a href="#mvue-summary" id="toc-mvue-summary" class="nav-link" data-scroll-target="#mvue-summary">MVUE Summary</a></li>
+  </ul></li>
+  <li><a href="#method-of-moments" id="toc-method-of-moments" class="nav-link" data-scroll-target="#method-of-moments">Method of Moments</a>
+  <ul class="collapse">
+  <li><a href="#motivation-constructing-estimators" id="toc-motivation-constructing-estimators" class="nav-link" data-scroll-target="#motivation-constructing-estimators">Motivation: Constructing Estimators</a></li>
+  <li><a href="#population-vs.-sample-moments" id="toc-population-vs.-sample-moments" class="nav-link" data-scroll-target="#population-vs.-sample-moments">Population vs.&nbsp;Sample Moments</a></li>
+  <li><a href="#the-method-of-moments-principle" id="toc-the-method-of-moments-principle" class="nav-link" data-scroll-target="#the-method-of-moments-principle">The Method of Moments Principle</a></li>
+  <li><a href="#example-1-exponential-distribution-one-parameter" id="toc-example-1-exponential-distribution-one-parameter" class="nav-link" data-scroll-target="#example-1-exponential-distribution-one-parameter">Example 1: Exponential Distribution (One Parameter)</a></li>
+  <li><a href="#medical-application-hospital-wait-times" id="toc-medical-application-hospital-wait-times" class="nav-link" data-scroll-target="#medical-application-hospital-wait-times">Medical Application: Hospital Wait Times</a></li>
+  <li><a href="#verifying-with-simulation" id="toc-verifying-with-simulation" class="nav-link" data-scroll-target="#verifying-with-simulation">Verifying with Simulation</a></li>
+  <li><a href="#example-2-normal-distribution-two-parameters" id="toc-example-2-normal-distribution-two-parameters" class="nav-link" data-scroll-target="#example-2-normal-distribution-two-parameters">Example 2: Normal Distribution (Two Parameters)</a></li>
+  <li><a href="#solving-for-the-normal-mmes" id="toc-solving-for-the-normal-mmes" class="nav-link" data-scroll-target="#solving-for-the-normal-mmes">Solving for the Normal MMEs</a></li>
+  <li><a href="#example-3-gamma-distribution-two-parameters" id="toc-example-3-gamma-distribution-two-parameters" class="nav-link" data-scroll-target="#example-3-gamma-distribution-two-parameters">Example 3: Gamma Distribution (Two Parameters)</a></li>
+  <li><a href="#medical-application-surgery-recovery-times" id="toc-medical-application-surgery-recovery-times" class="nav-link" data-scroll-target="#medical-application-surgery-recovery-times">Medical Application: Surgery Recovery Times</a></li>
+  <li><a href="#visualizing-the-gamma-fit" id="toc-visualizing-the-gamma-fit" class="nav-link" data-scroll-target="#visualizing-the-gamma-fit">Visualizing the Gamma Fit</a></li>
+  <li><a href="#your-turn-method-of-moments" id="toc-your-turn-method-of-moments" class="nav-link" data-scroll-target="#your-turn-method-of-moments">Your Turn: Method of Moments</a></li>
+  <li><a href="#properties-of-method-of-moments-estimators" id="toc-properties-of-method-of-moments-estimators" class="nav-link" data-scroll-target="#properties-of-method-of-moments-estimators">Properties of Method of Moments Estimators</a></li>
+  <li><a href="#comparing-estimator-properties" id="toc-comparing-estimator-properties" class="nav-link" data-scroll-target="#comparing-estimator-properties">Comparing Estimator Properties</a></li>
+  </ul></li>
+  <li><a href="#summary-and-looking-ahead" id="toc-summary-and-looking-ahead" class="nav-link" data-scroll-target="#summary-and-looking-ahead">Summary and Looking Ahead</a>
+  <ul class="collapse">
+  <li><a href="#lesson-3-summary" id="toc-lesson-3-summary" class="nav-link" data-scroll-target="#lesson-3-summary">Lesson 3 Summary</a></li>
+  <li><a href="#key-formulas-to-remember" id="toc-key-formulas-to-remember" class="nav-link" data-scroll-target="#key-formulas-to-remember">Key Formulas to Remember</a></li>
+  <li><a href="#lesson-3-practice-problems" id="toc-lesson-3-practice-problems" class="nav-link" data-scroll-target="#lesson-3-practice-problems">Lesson 3 Practice Problems</a></li>
+  <li><a href="#homework-problems-devore-et-al." id="toc-homework-problems-devore-et-al." class="nav-link" data-scroll-target="#homework-problems-devore-et-al.">Homework Problems (Devore et al.)</a></li>
+  <li><a href="#next-lesson-preview" id="toc-next-lesson-preview" class="nav-link" data-scroll-target="#next-lesson-preview">Next Lesson Preview</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions?</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="03_MVUE_old.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lesson 3: Unbiased Estimators, MVUE, Likelihood Theory</h1>
+<p class="subtitle lead">BSTA 551: Statistical Inference</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jessica Minnier </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 12, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="lesson-3-finding-the-best-estimator" class="level1">
+<h1>Lesson 3: Finding the Best Estimator</h1>
+<section id="review-where-we-left-off" class="level2">
+<h2 class="anchored" data-anchor-id="review-where-we-left-off">Review: Where We Left Off</h2>
+<p><strong>Key concepts from Lesson 2:</strong></p>
+<ul>
+<li>Point estimators vs.&nbsp;estimates</li>
+<li>Bias: <span class="math inline">\(\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta\)</span></li>
+<li>Unbiasedness: <span class="math inline">\(E(\hat{\theta}) = \theta\)</span></li>
+<li>MSE = Variance + Bias²</li>
+</ul>
+<p>. . .</p>
+<p><strong>Today’s Goals:</strong></p>
+<ul>
+<li>Understand what makes one unbiased estimator better than another</li>
+<li>Learn about Minimum Variance Unbiased Estimators (MVUE)</li>
+<li>Introduce likelihood functions (preview of Lesson 4)</li>
+<li>Define Fisher Information and its role in estimation</li>
+<li>Learn the Cramér-Rao Lower Bound for variance</li>
+</ul>
+</section>
+<section id="motivating-example-estimating-drug-efficacy" class="level2">
+<h2 class="anchored" data-anchor-id="motivating-example-estimating-drug-efficacy">Motivating Example: Estimating Drug Efficacy</h2>
+<p>A clinical trial tests the effectiveness of a new antibiotic. Two researchers propose different estimators for the true response rate <span class="math inline">\(p\)</span>:</p>
+<p>. . .</p>
+<p><strong>Researcher A:</strong> Use <span class="math inline">\(\hat{p}_A = X/n\)</span> (sample proportion)</p>
+<p><strong>Researcher B:</strong> Use <span class="math inline">\(\hat{p}_B = (X + 1)/(n + 2)\)</span> (adjusted proportion)</p>
+<p>. . .</p>
+<p>Both estimators are functions of the same data. <strong>Which should we use?</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Suppose 15 out of 20 patients respond</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span>; x <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>p_hat_A <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>p_hat_B <span class="ot">&lt;-</span> (x <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Researcher A's estimate:"</span>, p_hat_A, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Researcher A's estimate: 0.75 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Researcher B's estimate:"</span>, p_hat_B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Researcher B's estimate: 0.7272727</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="choosing-among-unbiased-estimators" class="level1" data-background-color="#27ae60">
+<h1 data-background-color="#27ae60">Choosing Among Unbiased Estimators</h1>
+<section id="the-problem-of-multiple-unbiased-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-of-multiple-unbiased-estimators">The Problem of Multiple Unbiased Estimators</h2>
+<p>Recall from Lesson 2: There can be <strong>many</strong> unbiased estimators for the same parameter!</p>
+<p>. . .</p>
+<p><strong>Example:</strong> For a symmetric distribution with mean <span class="math inline">\(\mu\)</span>:</p>
+<ul>
+<li>Sample mean <span class="math inline">\(\bar{X}\)</span> is unbiased for <span class="math inline">\(\mu\)</span></li>
+<li>Sample median <span class="math inline">\(\tilde{X}\)</span> is unbiased for <span class="math inline">\(\mu\)</span></li>
+<li>Trimmed means are unbiased for <span class="math inline">\(\mu\)</span></li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+The Key Question
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If two estimators are both unbiased, how do we choose between them?</p>
+</div>
+</div>
+</section>
+<section id="comparing-two-unbiased-estimators-intuition" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-two-unbiased-estimators-intuition">Comparing Two Unbiased Estimators: Intuition</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Answer:</strong> Among unbiased estimators, prefer the one with <strong>smaller variance</strong>.</p>
+</section>
+<section id="the-principle-minimum-variance-unbiased-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="the-principle-minimum-variance-unbiased-estimator">The Principle: Minimum Variance Unbiased Estimator</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition (Devore 7.1)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>Minimum Variance Unbiased Estimator (MVUE)</strong> of a parameter <span class="math inline">\(\theta\)</span> is the estimator <span class="math inline">\(\hat{\theta}\)</span> such that:</p>
+<ol type="1">
+<li><span class="math inline">\(\hat{\theta}\)</span> is unbiased: <span class="math inline">\(E(\hat{\theta}) = \theta\)</span></li>
+<li><span class="math inline">\(\hat{\theta}\)</span> has smaller or equal variance than any other unbiased estimator</li>
+</ol>
+<p>If <span class="math inline">\(\hat{\theta}_1\)</span> and <span class="math inline">\(\hat{\theta}_2\)</span> are both unbiased for <span class="math inline">\(\theta\)</span>, we prefer the one with smaller variance.</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Intuition:</strong> Among estimators that are “correct on average,” we want the most precise one.</p>
+</section>
+<section id="example-uniform-distribution-upper-bound" class="level2">
+<h2 class="anchored" data-anchor-id="example-uniform-distribution-upper-bound">Example: Uniform Distribution Upper Bound</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim \text{Uniform}[0, \theta]\)</span></p>
+<p>Two unbiased estimators for <span class="math inline">\(\theta\)</span>:</p>
+<p>. . .</p>
+<ol type="1">
+<li><p><span class="math inline">\(\hat{\theta}_1 = 2\bar{X}\)</span> (since <span class="math inline">\(E(X_i) = \theta/2\)</span>, so <span class="math inline">\(E(2\bar{X}) = \theta\)</span>)</p></li>
+<li><p><span class="math inline">\(\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_1, \ldots, X_n)\)</span> (corrected maximum)</p></li>
+</ol>
+<p>. . .</p>
+<p><strong>Question:</strong> Which has smaller variance?</p>
+</section>
+<section id="calculating-variances" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-variances">Calculating Variances</h2>
+<p>For <span class="math inline">\(\hat{\theta}_1 = 2\bar{X}\)</span>: <span class="math display">\[\text{Var}(\hat{\theta}_1) = \text{Var}(2\bar{X}) = 4 \cdot \text{Var}(\bar{X}) = 4 \cdot \frac{\sigma^2}{n} = 4 \cdot \frac{\theta^2/12}{n} = \frac{\theta^2}{3n}\]</span></p>
+<p>. . .</p>
+<p>For <span class="math inline">\(\hat{\theta}_2 = \frac{n+1}{n} \cdot \max(X_i)\)</span>, it can be shown that: <span class="math display">\[\text{Var}(\hat{\theta}_2) = \frac{\theta^2}{n(n+2)}\]</span></p>
+<p>. . .</p>
+<p><strong>Comparison:</strong> For <span class="math inline">\(n &gt; 1\)</span>: <span class="math display">\[\frac{\theta^2}{n(n+2)} &lt; \frac{\theta^2}{3n}\]</span></p>
+<p>The corrected maximum <span class="math inline">\(\hat{\theta}_2\)</span> is more efficient!</p>
+</section>
+<section id="simulation-comparing-the-two-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-comparing-the-two-estimators">Simulation: Comparing the Two Estimators</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>theta <span class="ot">&lt;-</span> <span class="dv">10</span>  <span class="co"># True upper bound</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb5-3"><a href="#cb5-3"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb5-4"><a href="#cb5-4"></a></span>
+<span id="cb5-5"><a href="#cb5-5"></a><span class="co"># Simulate both estimators</span></span>
+<span id="cb5-6"><a href="#cb5-6"></a>uniform_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sims) <span class="sc">|&gt;</span> </span>
+<span id="cb5-7"><a href="#cb5-7"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-8"><a href="#cb5-8"></a>    <span class="at">data =</span> <span class="fu">map</span>(sim, \(s) <span class="fu">runif</span>(n, <span class="dv">0</span>, theta)),</span>
+<span id="cb5-9"><a href="#cb5-9"></a>    <span class="at">theta_hat_1 =</span> <span class="fu">map_dbl</span>(data, \(d) <span class="dv">2</span> <span class="sc">*</span> <span class="fu">mean</span>(d)),</span>
+<span id="cb5-10"><a href="#cb5-10"></a>    <span class="at">theta_hat_2 =</span> <span class="fu">map_dbl</span>(data, \(d) (n <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> n <span class="sc">*</span> <span class="fu">max</span>(d))</span>
+<span id="cb5-11"><a href="#cb5-11"></a>  )</span>
+<span id="cb5-12"><a href="#cb5-12"></a></span>
+<span id="cb5-13"><a href="#cb5-13"></a><span class="co"># Compare variances</span></span>
+<span id="cb5-14"><a href="#cb5-14"></a>uniform_sim <span class="sc">|&gt;</span> </span>
+<span id="cb5-15"><a href="#cb5-15"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb5-16"><a href="#cb5-16"></a>    <span class="st">`</span><span class="at">Var(2*X̄)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">var</span>(theta_hat_1),</span>
+<span id="cb5-17"><a href="#cb5-17"></a>    <span class="st">`</span><span class="at">Var(corrected max)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">var</span>(theta_hat_2),</span>
+<span id="cb5-18"><a href="#cb5-18"></a>    <span class="st">`</span><span class="at">Theoretical Var(2*X̄)</span><span class="st">`</span> <span class="ot">=</span> theta<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (<span class="dv">3</span> <span class="sc">*</span> n),</span>
+<span id="cb5-19"><a href="#cb5-19"></a>    <span class="st">`</span><span class="at">Theoretical Var(corrected max)</span><span class="st">`</span> <span class="ot">=</span> theta<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (n <span class="sc">*</span> (n <span class="sc">+</span> <span class="dv">2</span>))</span>
+<span id="cb5-20"><a href="#cb5-20"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb5-21"><a href="#cb5-21"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
+<span id="cb5-22"><a href="#cb5-22"></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">round</span>(value, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  name                           value
+  &lt;chr&gt;                          &lt;dbl&gt;
+1 Var(2*X̄)                       1.67 
+2 Var(corrected max)             0.218
+3 Theoretical Var(2*X̄)           1.67 
+4 Theoretical Var(corrected max) 0.227</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-comparison">Visualizing the Comparison</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The corrected maximum is <strong>more concentrated</strong> around the true value!</p>
+</section>
+</section>
+<section id="introduction-to-likelihood" class="level1" data-background-color="#27ae60">
+<h1 data-background-color="#27ae60">Introduction to Likelihood</h1>
+<section id="the-likelihood-function-a-brief-introduction" class="level2">
+<h2 class="anchored" data-anchor-id="the-likelihood-function-a-brief-introduction">The Likelihood Function: A Brief Introduction</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition (Preview - Full treatment in Lesson 4)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>likelihood function</strong> <span class="math inline">\(L(\theta)\)</span> is the joint probability/density of the observed data, viewed as a function of the parameter <span class="math inline">\(\theta\)</span>:</p>
+<p><span class="math display">\[L(\theta) = \prod_{i=1}^n f(x_i; \theta)\]</span></p>
+<p>where <span class="math inline">\(f\)</span> is the pmf (discrete) or pdf (continuous).</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Key Idea:</strong> The likelihood tells us how “likely” different parameter values are, given our observed data.</p>
+</section>
+<section id="the-log-likelihood-function" class="level2">
+<h2 class="anchored" data-anchor-id="the-log-likelihood-function">The Log-Likelihood Function</h2>
+<p>Taking the logarithm converts products to sums:</p>
+<p><span class="math display">\[\ell(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(x_i; \theta)\]</span></p>
+<p>. . .</p>
+<p><strong>Why use log-likelihood?</strong></p>
+<ul>
+<li>Easier to differentiate (sums vs.&nbsp;products)</li>
+<li>Numerically more stable</li>
+<li>Same maximum as likelihood (since log is monotonic)</li>
+</ul>
+<p>. . .</p>
+<p>The <strong>score function</strong> is the first derivative: <span class="math inline">\(\ell'(\theta) = \frac{d}{d\theta}\ell(\theta)\)</span></p>
+</section>
+<section id="example-bernoulli-likelihood" class="level2">
+<h2 class="anchored" data-anchor-id="example-bernoulli-likelihood">Example: Bernoulli Likelihood</h2>
+<p>For <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli}(p)\)</span> with <span class="math inline">\(x = \sum x_i\)</span> successes:</p>
+<p><strong>Likelihood:</strong> <span class="math display">\[L(p) = p^x(1-p)^{n-x}\]</span></p>
+<p><strong>Log-likelihood:</strong> <span class="math display">\[\ell(p) = x\ln(p) + (n-x)\ln(1-p)\]</span></p>
+<p><strong>Score function:</strong> <span class="math display">\[\ell'(p) = \frac{x}{p} - \frac{n-x}{1-p}\]</span></p>
+</section>
+<section id="visualizing-the-log-likelihood" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-log-likelihood">Visualizing the Log-Likelihood</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The <strong>curvature</strong> of this function contains information about how precisely we can estimate <span class="math inline">\(p\)</span>.</p>
+</section>
+</section>
+<section id="fisher-information" class="level1" data-background-color="#8e44ad">
+<h1 data-background-color="#8e44ad">Fisher Information</h1>
+<section id="curvature-and-information" class="level2">
+<h2 class="anchored" data-anchor-id="curvature-and-information">Curvature and Information</h2>
+<p><strong>Key Observation:</strong> The more curved the log-likelihood is at its peak, the more precisely we can estimate the parameter.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>More curvature = more information = more precise estimates</strong></p>
+</section>
+<section id="fisher-information-definition" class="level2">
+<h2 class="anchored" data-anchor-id="fisher-information-definition">Fisher Information: Definition</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition (Devore 7.4)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(f(x; \theta)\)</span> be a pmf or pdf. The <strong>Fisher Information</strong> in a single observation <span class="math inline">\(X\)</span> is:</p>
+<p><span class="math display">\[I(\theta) = E\left[-\frac{\partial^2}{\partial\theta^2} \ln f(X; \theta)\right] = E[-\ell''(\theta)]\]</span></p>
+<p>Equivalently: <span class="math display">\[I(\theta) = E\left[\left(\frac{\partial}{\partial\theta} \ln f(X; \theta)\right)^2\right] = E[(\ell'(\theta))^2] = \text{Var}(\ell'(\theta))\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Intuition:</strong> Fisher information measures the expected curvature of the log-likelihood.</p>
+</section>
+<section id="fisher-information-in-a-sample" class="level2">
+<h2 class="anchored" data-anchor-id="fisher-information-in-a-sample">Fisher Information in a Sample</h2>
+<p>For a random sample <span class="math inline">\(X_1, \ldots, X_n\)</span>:</p>
+<p><span class="math display">\[I_n(\theta) = n \cdot I(\theta)\]</span></p>
+<p>. . .</p>
+<p><strong>The information is additive!</strong> Each observation contributes the same amount of information.</p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Properties
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><span class="math inline">\(I(\theta) &gt; 0\)</span> (always positive)</li>
+<li>Larger sample size → more information</li>
+<li>Information depends on the distribution, not the data</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="example-fisher-information-for-bernoulli" class="level2">
+<h2 class="anchored" data-anchor-id="example-fisher-information-for-bernoulli">Example: Fisher Information for Bernoulli</h2>
+<p>For <span class="math inline">\(X \sim \text{Bernoulli}(p)\)</span>: <span class="math inline">\(f(x; p) = p^x(1-p)^{1-x}\)</span></p>
+<p><strong>Step 1:</strong> Log-likelihood for single observation: <span class="math display">\[\ln f(x; p) = x\ln(p) + (1-x)\ln(1-p)\]</span></p>
+<p><strong>Step 2:</strong> Second derivative: <span class="math display">\[\frac{\partial^2}{\partial p^2}\ln f(x; p) = -\frac{x}{p^2} - \frac{1-x}{(1-p)^2}\]</span></p>
+</section>
+<section id="bernoulli-fisher-information-continued" class="level2">
+<h2 class="anchored" data-anchor-id="bernoulli-fisher-information-continued">Bernoulli Fisher Information (continued)</h2>
+<p><strong>Step 3:</strong> Take expectation (multiply by -1): <span class="math display">\[I(p) = E\left[\frac{X}{p^2} + \frac{1-X}{(1-p)^2}\right]\]</span></p>
+<p><span class="math display">\[= \frac{E(X)}{p^2} + \frac{1 - E(X)}{(1-p)^2} = \frac{p}{p^2} + \frac{1-p}{(1-p)^2}\]</span></p>
+<p><span class="math display">\[= \frac{1}{p} + \frac{1}{1-p} = \frac{1}{p(1-p)}\]</span></p>
+<p>. . .</p>
+<p><strong>For a sample of size <span class="math inline">\(n\)</span>:</strong> <span class="math display">\[I_n(p) = \frac{n}{p(1-p)}\]</span></p>
+</section>
+<section id="example-fisher-information-for-normal-known-sigma" class="level2">
+<h2 class="anchored" data-anchor-id="example-fisher-information-for-normal-known-sigma">Example: Fisher Information for Normal (known <span class="math inline">\(\sigma\)</span>)</h2>
+<p>For <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\sigma\)</span> known:</p>
+<p><span class="math display">\[f(x; \mu) = \frac{1}{\sqrt{2\pi}\sigma}e^{-(x-\mu)^2/(2\sigma^2)}\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\ln f(x; \mu) = -\frac{1}{2}\ln(2\pi\sigma^2) - \frac{(x-\mu)^2}{2\sigma^2}\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\frac{\partial}{\partial\mu}\ln f = \frac{x-\mu}{\sigma^2}, \quad \frac{\partial^2}{\partial\mu^2}\ln f = -\frac{1}{\sigma^2}\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[I(\mu) = E\left[\frac{1}{\sigma^2}\right] = \frac{1}{\sigma^2}\]</span></p>
+<p><strong>For a sample:</strong> <span class="math inline">\(I_n(\mu) = \frac{n}{\sigma^2}\)</span></p>
+</section>
+<section id="example-fisher-information-for-exponential" class="level2">
+<h2 class="anchored" data-anchor-id="example-fisher-information-for-exponential">Example: Fisher Information for Exponential</h2>
+<p>For <span class="math inline">\(X \sim \text{Exponential}(\lambda)\)</span>: <span class="math inline">\(f(x; \lambda) = \lambda e^{-\lambda x}\)</span></p>
+<p><strong>Log-likelihood:</strong> <span class="math inline">\(\ln f(x; \lambda) = \ln(\lambda) - \lambda x\)</span></p>
+<p>. . .</p>
+<p><strong>Derivatives:</strong> <span class="math display">\[\frac{\partial}{\partial\lambda}\ln f = \frac{1}{\lambda} - x\]</span> <span class="math display">\[\frac{\partial^2}{\partial\lambda^2}\ln f = -\frac{1}{\lambda^2}\]</span></p>
+<p>. . .</p>
+<p><strong>Fisher Information:</strong> <span class="math display">\[I(\lambda) = E\left[\frac{1}{\lambda^2}\right] = \frac{1}{\lambda^2}\]</span></p>
+<p><strong>For a sample:</strong> <span class="math inline">\(I_n(\lambda) = \frac{n}{\lambda^2}\)</span></p>
+</section>
+<section id="your-turn-calculate-fisher-information" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-calculate-fisher-information">Your Turn: Calculate Fisher Information</h2>
+<p><strong>Exercise:</strong> For the Poisson distribution with parameter <span class="math inline">\(\mu\)</span>, where <span class="math inline">\(f(x; \mu) = \frac{e^{-\mu}\mu^x}{x!}\)</span>:</p>
+<ol type="1">
+<li>Find <span class="math inline">\(\ln f(x; \mu)\)</span></li>
+<li>Calculate <span class="math inline">\(\frac{\partial^2}{\partial\mu^2}\ln f(x; \mu)\)</span></li>
+<li>Find <span class="math inline">\(I(\mu)\)</span></li>
+</ol>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<ol type="1">
+<li><span class="math inline">\(\ln f = -\mu + x\ln(\mu) - \ln(x!)\)</span></li>
+<li><span class="math inline">\(\frac{\partial}{\partial\mu}\ln f = -1 + \frac{x}{\mu}\)</span>, <span class="math inline">\(\frac{\partial^2}{\partial\mu^2}\ln f = -\frac{x}{\mu^2}\)</span></li>
+<li><span class="math inline">\(I(\mu) = E\left[\frac{X}{\mu^2}\right] = \frac{E(X)}{\mu^2} = \frac{\mu}{\mu^2} = \frac{1}{\mu}\)</span></li>
+</ol>
+</section>
+</section>
+<section id="the-cramér-rao-lower-bound" class="level1" data-background-color="#e74c3c">
+<h1 data-background-color="#e74c3c">The Cramér-Rao Lower Bound</h1>
+<section id="the-fundamental-inequality" class="level2">
+<h2 class="anchored" data-anchor-id="the-fundamental-inequality">The Fundamental Inequality</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cramér-Rao Inequality (Devore 7.4)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Let <span class="math inline">\(X_1, \ldots, X_n\)</span> be a random sample from <span class="math inline">\(f(x; \theta)\)</span> whose support does not depend on <span class="math inline">\(\theta\)</span>. If <span class="math inline">\(T = t(X_1, \ldots, X_n)\)</span> is an <strong>unbiased</strong> estimator of <span class="math inline">\(\theta\)</span>, then:</p>
+<p><span class="math display">\[\text{Var}(T) \geq \frac{1}{I_n(\theta)} = \frac{1}{n \cdot I(\theta)}\]</span></p>
+<p>The right-hand side is the <strong>Cramér-Rao Lower Bound (CRLB)</strong>.</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>In words:</strong> No unbiased estimator can have variance smaller than <span class="math inline">\(1/I_n(\theta)\)</span>.</p>
+</section>
+<section id="why-the-crlb-matters" class="level2">
+<h2 class="anchored" data-anchor-id="why-the-crlb-matters">Why the CRLB Matters</h2>
+<p>The Cramér-Rao bound tells us:</p>
+<ol type="1">
+<li><strong>The best possible precision</strong> for any unbiased estimator</li>
+<li><strong>Whether an estimator is efficient</strong> (achieves the bound)</li>
+<li><strong>How much we lose</strong> by using a suboptimal estimator</li>
+</ol>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Efficiency Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>An unbiased estimator <span class="math inline">\(T\)</span> is <strong>efficient</strong> if: <span class="math display">\[\text{Var}(T) = \frac{1}{I_n(\theta)}\]</span></p>
+<p>An efficient estimator is the MVUE!</p>
+</div>
+</div>
+</section>
+<section id="example-is-hatp-efficient-for-bernoulli" class="level2">
+<h2 class="anchored" data-anchor-id="example-is-hatp-efficient-for-bernoulli">Example: Is <span class="math inline">\(\hat{p}\)</span> Efficient for Bernoulli?</h2>
+<p>For <span class="math inline">\(X_1, \ldots, X_n \sim \text{Bernoulli}(p)\)</span>:</p>
+<p><strong>Estimator:</strong> <span class="math inline">\(\hat{p} = \bar{X} = \frac{\sum X_i}{n}\)</span></p>
+<p><strong>Variance:</strong> <span class="math inline">\(\text{Var}(\hat{p}) = \frac{p(1-p)}{n}\)</span></p>
+<p>. . .</p>
+<p><strong>Fisher Information:</strong> <span class="math inline">\(I_n(p) = \frac{n}{p(1-p)}\)</span></p>
+<p><strong>CRLB:</strong> <span class="math inline">\(\frac{1}{I_n(p)} = \frac{p(1-p)}{n}\)</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\text{Var}(\hat{p}) = \frac{p(1-p)}{n} = \text{CRLB} \checkmark\]</span></p>
+<p><strong><span class="math inline">\(\hat{p}\)</span> is efficient and is the MVUE of <span class="math inline">\(p\)</span>!</strong></p>
+</section>
+<section id="example-is-barx-efficient-for-normal-mean" class="level2">
+<h2 class="anchored" data-anchor-id="example-is-barx-efficient-for-normal-mean">Example: Is <span class="math inline">\(\bar{X}\)</span> Efficient for Normal Mean?</h2>
+<p>For <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span> with known <span class="math inline">\(\sigma\)</span>:</p>
+<p><strong>Estimator:</strong> <span class="math inline">\(\bar{X}\)</span></p>
+<p><strong>Variance:</strong> <span class="math inline">\(\text{Var}(\bar{X}) = \frac{\sigma^2}{n}\)</span></p>
+<p>. . .</p>
+<p><strong>Fisher Information:</strong> <span class="math inline">\(I_n(\mu) = \frac{n}{\sigma^2}\)</span></p>
+<p><strong>CRLB:</strong> <span class="math inline">\(\frac{1}{I_n(\mu)} = \frac{\sigma^2}{n}\)</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} = \text{CRLB} \checkmark\]</span></p>
+<p><strong><span class="math inline">\(\bar{X}\)</span> is efficient and is the MVUE of <span class="math inline">\(\mu\)</span>!</strong></p>
+</section>
+<section id="visualizing-efficiency" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-efficiency">Visualizing Efficiency</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="efficiency-of-the-sample-median" class="level2">
+<h2 class="anchored" data-anchor-id="efficiency-of-the-sample-median">Efficiency of the Sample Median</h2>
+<p>For normal data, the sample median is unbiased for <span class="math inline">\(\mu\)</span> but has:</p>
+<p><span class="math display">\[\text{Var}(\tilde{X}) \approx \frac{\pi}{2} \cdot \frac{\sigma^2}{n} \approx 1.57 \cdot \frac{\sigma^2}{n}\]</span></p>
+<p>. . .</p>
+<p><strong>Efficiency of median:</strong> <span class="math display">\[\text{Efficiency} = \frac{\text{CRLB}}{\text{Var}(\tilde{X})} = \frac{\sigma^2/n}{1.57 \cdot \sigma^2/n} \approx 0.64\]</span></p>
+<p>. . .</p>
+<p>The median is only about <strong>64% as efficient</strong> as the mean for normal data.</p>
+<p>We need about <strong>1.57 times as many observations</strong> with the median to achieve the same precision as the mean!</p>
+</section>
+<section id="medical-application-estimating-treatment-effect" class="level2">
+<h2 class="anchored" data-anchor-id="medical-application-estimating-treatment-effect">Medical Application: Estimating Treatment Effect</h2>
+<p>A clinical trial measures systolic BP reduction (mmHg). Assume <span class="math inline">\(N(\mu, \sigma^2 = 100)\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>sigma_sq <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># CRLB for μ</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>crlb <span class="ot">&lt;-</span> sigma_sq <span class="sc">/</span> n</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Variance of sample mean</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>var_xbar <span class="ot">&lt;-</span> sigma_sq <span class="sc">/</span> n</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Efficiency check</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CRLB for μ:"</span>, <span class="fu">round</span>(crlb, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CRLB for μ: 3.333 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Var(X̄):"</span>, <span class="fu">round</span>(var_xbar, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Var(X̄): 3.333 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Is X̄ efficient?"</span>, var_xbar <span class="sc">==</span> crlb, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Is X̄ efficient? TRUE </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample data</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>bp_data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">12.3</span>, <span class="fl">8.7</span>, <span class="fl">15.2</span>, <span class="fl">10.1</span>, <span class="fl">7.4</span>, <span class="fl">14.8</span>, <span class="fl">11.2</span>, <span class="fl">9.5</span>, <span class="fl">13.1</span>, <span class="fl">16.2</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>             <span class="fl">8.1</span>, <span class="fl">12.5</span>, <span class="fl">10.8</span>, <span class="fl">14.3</span>, <span class="fl">11.7</span>, <span class="fl">9.2</span>, <span class="fl">15.0</span>, <span class="fl">13.4</span>, <span class="fl">7.9</span>, <span class="fl">12.1</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>             <span class="fl">10.5</span>, <span class="fl">8.3</span>, <span class="fl">14.1</span>, <span class="fl">11.5</span>, <span class="fl">13.8</span>, <span class="fl">9.8</span>, <span class="fl">11.9</span>, <span class="fl">12.7</span>, <span class="fl">10.3</span>, <span class="fl">14.6</span>)</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MVUE of μ (sample mean):"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(bp_data), <span class="dv">2</span>), <span class="st">"mmHg</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MVUE of μ (sample mean): 11.7 mmHg</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Standard Error:"</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(crlb), <span class="dv">2</span>), <span class="st">"mmHg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Standard Error: 1.83 mmHg</code></pre>
+</div>
+</div>
+</section>
+<section id="when-is-the-crlb-not-attained" class="level2">
+<h2 class="anchored" data-anchor-id="when-is-the-crlb-not-attained">When is the CRLB Not Attained?</h2>
+<p>Not all unbiased estimators achieve the CRLB!</p>
+<p><strong>Example:</strong> Uniform[0, <span class="math inline">\(\theta\)</span>] distribution</p>
+<ul>
+<li>Fisher Information: <span class="math inline">\(I(\theta) = 1/\theta^2\)</span></li>
+<li>CRLB: <span class="math inline">\(\theta^2/n\)</span></li>
+</ul>
+<p>. . .</p>
+<p>Two unbiased estimators:</p>
+<ul>
+<li><span class="math inline">\(\hat{\theta}_1 = 2\bar{X}\)</span> has variance <span class="math inline">\(\theta^2/(3n)\)</span></li>
+<li><span class="math inline">\(\hat{\theta}_2 = \frac{n+1}{n}\max(X_i)\)</span> has variance <span class="math inline">\(\theta^2/[n(n+2)]\)</span></li>
+</ul>
+<p>. . .</p>
+<p>Neither achieves CRLB = <span class="math inline">\(\theta^2/n\)</span>! Why?</p>
+<p><strong>The support of Uniform[0, <span class="math inline">\(\theta\)</span>] depends on <span class="math inline">\(\theta\)</span></strong>, violating a regularity condition.</p>
+</section>
+<section id="when-does-the-crlb-not-apply" class="level2">
+<h2 class="anchored" data-anchor-id="when-does-the-crlb-not-apply">When Does the CRLB Not Apply?</h2>
+<p>The Cramér-Rao inequality requires:</p>
+<ol type="1">
+<li>The <strong>support</strong> of <span class="math inline">\(f(x; \theta)\)</span> doesn’t depend on <span class="math inline">\(\theta\)</span></li>
+<li>Certain <strong>regularity conditions</strong> on derivatives</li>
+</ol>
+<p>. . .</p>
+<p><strong>Examples where CRLB doesn’t apply:</strong></p>
+<ul>
+<li>Uniform[0, <span class="math inline">\(\theta\)</span>] - support depends on <span class="math inline">\(\theta\)</span></li>
+<li>Uniform[<span class="math inline">\(\theta\)</span>, <span class="math inline">\(\theta + 1\)</span>] - support depends on <span class="math inline">\(\theta\)</span></li>
+<li>Some discrete distributions with restricted parameter spaces</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Always check regularity conditions before applying the CRLB!</p>
+</div>
+</div>
+</section>
+<section id="mvue-summary" class="level2">
+<h2 class="anchored" data-anchor-id="mvue-summary">MVUE Summary</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Finding the MVUE
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Calculate <span class="math inline">\(I(\theta)\)</span> for the distribution</li>
+<li>Compute CRLB = <span class="math inline">\(1/[n \cdot I(\theta)]\)</span></li>
+<li>Find an unbiased estimator</li>
+<li>Check if its variance equals the CRLB</li>
+<li>If yes → it’s the MVUE!</li>
+</ol>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Key Results:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Distribution</th>
+<th>Parameter</th>
+<th>MVUE</th>
+<th>CRLB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bernoulli(<span class="math inline">\(p\)</span>)</td>
+<td><span class="math inline">\(p\)</span></td>
+<td><span class="math inline">\(\bar{X}\)</span></td>
+<td><span class="math inline">\(p(1-p)/n\)</span></td>
+</tr>
+<tr class="even">
+<td>Normal(<span class="math inline">\(\mu, \sigma^2\)</span>)</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><span class="math inline">\(\bar{X}\)</span></td>
+<td><span class="math inline">\(\sigma^2/n\)</span></td>
+</tr>
+<tr class="odd">
+<td>Exponential(<span class="math inline">\(\lambda\)</span>)</td>
+<td><span class="math inline">\(\lambda\)</span></td>
+<td>See note</td>
+<td><span class="math inline">\(\lambda^2/n\)</span></td>
+</tr>
+<tr class="even">
+<td>Poisson(<span class="math inline">\(\mu\)</span>)</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><span class="math inline">\(\bar{X}\)</span></td>
+<td><span class="math inline">\(\mu/n\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="method-of-moments" class="level1" data-background-color="#3498db">
+<h1 data-background-color="#3498db">Method of Moments</h1>
+<section id="motivation-constructing-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="motivation-constructing-estimators">Motivation: Constructing Estimators</h2>
+<p>We’ve learned to evaluate estimators. Now: <strong>How do we construct them?</strong></p>
+<p>. . .</p>
+<p>Two major constructive methods:</p>
+<ol type="1">
+<li><strong>Method of Moments</strong> (this lesson)</li>
+<li><strong>Maximum Likelihood</strong> (Lesson 4)</li>
+</ol>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Key Idea
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Both methods give us systematic recipes for deriving estimators from any specified distribution.</p>
+</div>
+</div>
+</section>
+<section id="population-vs.-sample-moments" class="level2">
+<h2 class="anchored" data-anchor-id="population-vs.-sample-moments">Population vs.&nbsp;Sample Moments</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definitions (Devore 7.2)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Population Moments:</strong></p>
+<ul>
+<li>1st moment: <span class="math inline">\(E(X) = \mu_1'\)</span></li>
+<li>2nd moment: <span class="math inline">\(E(X^2) = \mu_2'\)</span></li>
+<li>kth moment: <span class="math inline">\(E(X^k) = \mu_k'\)</span></li>
+</ul>
+<p><strong>Sample Moments:</strong></p>
+<ul>
+<li>1st sample moment: <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n X_i = \bar{X}\)</span></li>
+<li>2nd sample moment: <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n X_i^2\)</span></li>
+<li>kth sample moment: <span class="math inline">\(\frac{1}{n}\sum_{i=1}^n X_i^k\)</span></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="the-method-of-moments-principle" class="level2">
+<h2 class="anchored" data-anchor-id="the-method-of-moments-principle">The Method of Moments Principle</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Method of Moments Estimators (MMEs)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To estimate <span class="math inline">\(m\)</span> unknown parameters <span class="math inline">\(\theta_1, \ldots, \theta_m\)</span>:</p>
+<ol type="1">
+<li>Express the first <span class="math inline">\(m\)</span> population moments as functions of the parameters</li>
+<li>Set each population moment equal to its sample counterpart</li>
+<li>Solve the resulting system of equations for <span class="math inline">\(\theta_1, \ldots, \theta_m\)</span></li>
+</ol>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>The idea:</strong> If the population and sample moments should be “close,” we can estimate parameters by equating them.</p>
+</section>
+<section id="example-1-exponential-distribution-one-parameter" class="level2">
+<h2 class="anchored" data-anchor-id="example-1-exponential-distribution-one-parameter">Example 1: Exponential Distribution (One Parameter)</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim \text{Exponential}(\lambda)\)</span> where <span class="math inline">\(\lambda\)</span> is the rate parameter.</p>
+<p><strong>Goal:</strong> Find the MME for <span class="math inline">\(\lambda\)</span>.</p>
+<p>. . .</p>
+<p><strong>Step 1:</strong> Population moment: <span class="math inline">\(E(X) = 1/\lambda\)</span></p>
+<p><strong>Step 2:</strong> Set equal to sample moment: <span class="math inline">\(\frac{1}{\lambda} = \bar{X}\)</span></p>
+<p><strong>Step 3:</strong> Solve: <span class="math inline">\(\hat{\lambda}_{MME} = \frac{1}{\bar{X}}\)</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If the population mean is <span class="math inline">\(1/\lambda\)</span>, and we estimate the population mean with <span class="math inline">\(\bar{X}\)</span>, then we estimate <span class="math inline">\(\lambda\)</span> with <span class="math inline">\(1/\bar{X}\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="medical-application-hospital-wait-times" class="level2">
+<h2 class="anchored" data-anchor-id="medical-application-hospital-wait-times">Medical Application: Hospital Wait Times</h2>
+<p>Emergency room wait times are often modeled with an exponential distribution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wait times (minutes) for 40 patients</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>wait_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">45</span>, <span class="dv">8</span>, <span class="dv">23</span>, <span class="dv">67</span>, <span class="dv">15</span>, <span class="dv">31</span>, <span class="dv">42</span>, <span class="dv">19</span>, <span class="dv">56</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                <span class="dv">28</span>, <span class="dv">11</span>, <span class="dv">38</span>, <span class="dv">22</span>, <span class="dv">49</span>, <span class="dv">17</span>, <span class="dv">33</span>, <span class="dv">25</span>, <span class="dv">41</span>, <span class="dv">14</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                <span class="dv">52</span>, <span class="dv">9</span>, <span class="dv">36</span>, <span class="dv">27</span>, <span class="dv">44</span>, <span class="dv">18</span>, <span class="dv">29</span>, <span class="dv">47</span>, <span class="dv">21</span>, <span class="dv">35</span>,</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                <span class="dv">13</span>, <span class="dv">39</span>, <span class="dv">24</span>, <span class="dv">51</span>, <span class="dv">16</span>, <span class="dv">32</span>, <span class="dv">46</span>, <span class="dv">20</span>, <span class="dv">37</span>, <span class="dv">26</span>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Method of moments estimate for λ (per minute)</span></span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(wait_times)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean wait time:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(wait_times), <span class="dv">2</span>), <span class="st">"minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean wait time: 30.45 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MME of λ:"</span>, <span class="fu">round</span>(lambda_hat, <span class="dv">4</span>), <span class="st">"per minute</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MME of λ: 0.0328 per minute</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MME of λ:"</span>, <span class="fu">round</span>(lambda_hat <span class="sc">*</span> <span class="dv">60</span>, <span class="dv">2</span>), <span class="st">"per hour"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MME of λ: 1.97 per hour</code></pre>
+</div>
+</div>
+</section>
+<section id="verifying-with-simulation" class="level2">
+<h2 class="anchored" data-anchor-id="verifying-with-simulation">Verifying with Simulation</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare empirical distribution to fitted exponential</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">wait_time =</span> wait_times) <span class="sc">|&gt;</span> </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> wait_time)) <span class="sc">+</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">15</span>, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dexp, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">rate =</span> lambda_hat),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"ER Wait Times with Fitted Exponential Distribution"</span>,</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">str_glue</span>(<span class="st">"MME: λ̂ = {round(lambda_hat, 4)}"</span>),</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Wait Time (minutes)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">50</span>, <span class="at">y =</span> <span class="fl">0.025</span>, </span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">str_glue</span>(<span class="st">"Mean = {round(mean(wait_times), 1)} min"</span>),</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="example-2-normal-distribution-two-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="example-2-normal-distribution-two-parameters">Example 2: Normal Distribution (Two Parameters)</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span></p>
+<p><strong>Goal:</strong> Find MMEs for <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>.</p>
+<p>. . .</p>
+<p><strong>Population moments:</strong></p>
+<ul>
+<li><span class="math inline">\(E(X) = \mu\)</span></li>
+<li><span class="math inline">\(E(X^2) = \mu^2 + \sigma^2\)</span> (variance shortcut formula!)</li>
+</ul>
+<p>. . .</p>
+<p><strong>Set equal to sample moments:</strong></p>
+<ul>
+<li><span class="math inline">\(\mu = \bar{X}\)</span></li>
+<li><span class="math inline">\(\mu^2 + \sigma^2 = \frac{1}{n}\sum X_i^2\)</span></li>
+</ul>
+</section>
+<section id="solving-for-the-normal-mmes" class="level2">
+<h2 class="anchored" data-anchor-id="solving-for-the-normal-mmes">Solving for the Normal MMEs</h2>
+<p>From the two equations:</p>
+<p><span class="math display">\[\hat{\mu}_{MME} = \bar{X}\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\hat{\sigma}^2_{MME} = \frac{1}{n}\sum X_i^2 - \bar{X}^2 = \frac{1}{n}\sum(X_i - \bar{X})^2\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note on Bias
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The MME for <span class="math inline">\(\sigma^2\)</span> divides by <span class="math inline">\(n\)</span>, not <span class="math inline">\(n-1\)</span>. This means the MME is <strong>biased</strong>!</p>
+<p><span class="math display">\[E(\hat{\sigma}^2_{MME}) = \frac{n-1}{n}\sigma^2\]</span></p>
+<p>The usual sample variance <span class="math inline">\(S^2\)</span> with <span class="math inline">\(n-1\)</span> in the denominator is unbiased.</p>
+</div>
+</div>
+</section>
+<section id="example-3-gamma-distribution-two-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="example-3-gamma-distribution-two-parameters">Example 3: Gamma Distribution (Two Parameters)</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim \text{Gamma}(\alpha, \beta)\)</span></p>
+<p><strong>Moments:</strong></p>
+<ul>
+<li><span class="math inline">\(E(X) = \alpha\beta\)</span></li>
+<li><span class="math inline">\(E(X^2) = \alpha(\alpha+1)\beta^2\)</span></li>
+</ul>
+<p>. . .</p>
+<p><strong>MME equations:</strong> <span class="math display">\[\bar{X} = \alpha\beta\]</span> <span class="math display">\[\frac{1}{n}\sum X_i^2 = \alpha(\alpha+1)\beta^2\]</span></p>
+<p>. . .</p>
+<p><strong>Solutions (after algebra):</strong> <span class="math display">\[\hat{\alpha} = \frac{\bar{X}^2}{\frac{1}{n}\sum X_i^2 - \bar{X}^2} = \frac{\bar{X}^2}{\hat{\sigma}^2} \quad \quad \hat{\beta} = \frac{\frac{1}{n}\sum X_i^2 - \bar{X}^2}{\bar{X}} = \frac{\hat{\sigma}^2}{\bar{X}}\]</span></p>
+</section>
+<section id="medical-application-surgery-recovery-times" class="level2">
+<h2 class="anchored" data-anchor-id="medical-application-surgery-recovery-times">Medical Application: Surgery Recovery Times</h2>
+<p>Recovery times after surgery often follow a gamma distribution.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recovery times (days) for 25 patients</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>recovery_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">6.8</span>, <span class="fl">5.1</span>, <span class="fl">8.3</span>, <span class="fl">7.2</span>, <span class="fl">4.9</span>, <span class="fl">6.1</span>, <span class="fl">9.5</span>, <span class="fl">5.7</span>, <span class="fl">7.8</span>,</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                    <span class="fl">6.4</span>, <span class="fl">8.1</span>, <span class="fl">5.3</span>, <span class="fl">7.5</span>, <span class="fl">6.9</span>, <span class="fl">4.5</span>, <span class="fl">8.7</span>, <span class="fl">5.9</span>, <span class="fl">7.1</span>, <span class="fl">6.2</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                    <span class="fl">9.2</span>, <span class="fl">5.5</span>, <span class="fl">7.4</span>, <span class="fl">6.6</span>, <span class="fl">8.4</span>)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate sample moments</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>x_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(recovery_times)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>second_moment <span class="ot">&lt;-</span> <span class="fu">mean</span>(recovery_times<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co"># MME for gamma parameters</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>alpha_hat <span class="ot">&lt;-</span> x_bar<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (second_moment <span class="sc">-</span> x_bar<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>beta_hat <span class="ot">&lt;-</span> (second_moment <span class="sc">-</span> x_bar<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> x_bar</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean:"</span>, <span class="fu">round</span>(x_bar, <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean: 6.77 days</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MME of α:"</span>, <span class="fu">round</span>(alpha_hat, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MME of α: 22.56 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MME of β:"</span>, <span class="fu">round</span>(beta_hat, <span class="dv">2</span>), <span class="st">"days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MME of β: 0.3 days</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-gamma-fit" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-gamma-fit">Visualizing the Gamma Fit</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">recovery_time =</span> recovery_times) <span class="sc">|&gt;</span> </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> recovery_time)) <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">10</span>, </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dgamma, </span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape =</span> alpha_hat, <span class="at">scale =</span> beta_hat),</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Surgery Recovery Times with Fitted Gamma Distribution"</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">str_glue</span>(<span class="st">"MME: α̂ = {round(alpha_hat, 2)}, β̂ = {round(beta_hat, 2)}"</span>),</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Recovery Time (days)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="03_MVUE_old_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="your-turn-method-of-moments" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-method-of-moments">Your Turn: Method of Moments</h2>
+<p><strong>Exercise:</strong> Drug concentrations in blood plasma follow a Uniform[0, <span class="math inline">\(\theta\)</span>] distribution. From <span class="math inline">\(n = 15\)</span> measurements, you observe <span class="math inline">\(\bar{x} = 4.2\)</span> mg/L.</p>
+<p>Find the MME of <span class="math inline">\(\theta\)</span>.</p>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<p>For Uniform[0, <span class="math inline">\(\theta\)</span>]: <span class="math inline">\(E(X) = \theta/2\)</span></p>
+<p>Setting equal to sample mean: <span class="math inline">\(\bar{x} = \theta/2\)</span></p>
+<p>Therefore: <span class="math inline">\(\hat{\theta}_{MME} = 2\bar{x} = 2(4.2) = 8.4\)</span> mg/L</p>
+</section>
+<section id="properties-of-method-of-moments-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="properties-of-method-of-moments-estimators">Properties of Method of Moments Estimators</h2>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Simple to compute (usually just algebra)</li>
+<li>Often has closed-form solutions</li>
+<li>Usually consistent (converges to true value as <span class="math inline">\(n \to \infty\)</span>)</li>
+</ul>
+<p>. . .</p>
+<p><strong>Disadvantages:</strong></p>
+<ul>
+<li>May not be efficient (doesn’t achieve CRLB)</li>
+<li>Can sometimes give impossible values</li>
+<li>May be biased</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Coming Up
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Maximum likelihood estimators (Lesson 4) are often more efficient than MMEs.</p>
+</div>
+</div>
+</section>
+<section id="comparing-estimator-properties" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-estimator-properties">Comparing Estimator Properties</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Estimator Type</th>
+<th>Unbiased?</th>
+<th>Efficient?</th>
+<th>Easy to Compute?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>MME</td>
+<td>Sometimes</td>
+<td>Rarely</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>MLE</td>
+<td>Sometimes</td>
+<td>Often (asymptotically)</td>
+<td>Sometimes</td>
+</tr>
+<tr class="odd">
+<td>MVUE</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Depends</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<p><strong>Key takeaway:</strong> No single method always produces the “best” estimator. We need criteria (like CRLB) to evaluate and compare.</p>
+</section>
+</section>
+<section id="summary-and-looking-ahead" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Summary and Looking Ahead</h1>
+<section id="lesson-3-summary" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-3-summary">Lesson 3 Summary</h2>
+<p><strong>Key Concepts:</strong></p>
+<ol type="1">
+<li><strong>Likelihood &amp; Log-Likelihood:</strong>
+<ul>
+<li><span class="math inline">\(L(\theta) = \prod f(x_i; \theta)\)</span>, <span class="math inline">\(\ell(\theta) = \sum \ln f(x_i; \theta)\)</span></li>
+</ul></li>
+<li><strong>Fisher Information:</strong> <span class="math inline">\(I(\theta) = E[-\ell''(\theta)]\)</span>
+<ul>
+<li>Measures curvature of log-likelihood</li>
+<li>Additive across observations: <span class="math inline">\(I_n(\theta) = n \cdot I(\theta)\)</span></li>
+</ul></li>
+<li><strong>Cramér-Rao Lower Bound:</strong>
+<ul>
+<li><span class="math inline">\(\text{Var}(T) \geq 1/I_n(\theta)\)</span> for unbiased <span class="math inline">\(T\)</span></li>
+<li>Efficient estimators achieve the bound</li>
+</ul></li>
+<li><strong>Method of Moments:</strong> Equate population and sample moments</li>
+</ol>
+</section>
+<section id="key-formulas-to-remember" class="level2">
+<h2 class="anchored" data-anchor-id="key-formulas-to-remember">Key Formulas to Remember</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 25%">
+<col style="width: 29%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Distribution</th>
+<th>Parameter</th>
+<th><span class="math inline">\(I(\theta)\)</span></th>
+<th>CRLB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bernoulli</td>
+<td><span class="math inline">\(p\)</span></td>
+<td><span class="math inline">\(\frac{1}{p(1-p)}\)</span></td>
+<td><span class="math inline">\(\frac{p(1-p)}{n}\)</span></td>
+</tr>
+<tr class="even">
+<td>Normal (known <span class="math inline">\(\sigma\)</span>)</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><span class="math inline">\(\frac{1}{\sigma^2}\)</span></td>
+<td><span class="math inline">\(\frac{\sigma^2}{n}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Exponential</td>
+<td><span class="math inline">\(\lambda\)</span></td>
+<td><span class="math inline">\(\frac{1}{\lambda^2}\)</span></td>
+<td><span class="math inline">\(\frac{\lambda^2}{n}\)</span></td>
+</tr>
+<tr class="even">
+<td>Poisson</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td><span class="math inline">\(\frac{1}{\mu}\)</span></td>
+<td><span class="math inline">\(\frac{\mu}{n}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="lesson-3-practice-problems" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-3-practice-problems">Lesson 3 Practice Problems</h2>
+<ol type="1">
+<li><p><strong>(Devore 7.51)</strong> For the geometric distribution <span class="math inline">\(P(X = x) = (1-p)^{x-1}p\)</span>, find Fisher information and the CRLB.</p></li>
+<li><p><strong>(Devore 7.52)</strong> For Poisson(<span class="math inline">\(\mu\)</span>), show that <span class="math inline">\(\bar{X}\)</span> is an efficient estimator.</p></li>
+<li><p><strong>(Devore 7.53)</strong> For Uniform[0, <span class="math inline">\(\theta\)</span>], explain why neither <span class="math inline">\(2\bar{X}\)</span> nor the corrected maximum achieves the CRLB.</p></li>
+<li><p><strong>Medical Application:</strong> In a trial, 72 of 90 patients respond. Calculate Fisher information, CRLB, and verify that <span class="math inline">\(\hat{p} = 72/90\)</span> is efficient.</p></li>
+</ol>
+</section>
+<section id="homework-problems-devore-et-al." class="level2">
+<h2 class="anchored" data-anchor-id="homework-problems-devore-et-al.">Homework Problems (Devore et al.)</h2>
+<div class="nonincremental">
+<p><strong>From Chapter 7:</strong></p>
+<ul>
+<li>Exercise 7.51: Geometric distribution - Fisher information</li>
+<li>Exercise 7.52: Poisson - efficiency</li>
+<li>Exercise 7.54: Exponential - CRLB and efficiency</li>
+<li>Exercise 7.55: Normal - efficient estimator</li>
+<li>Exercise 7.25-27: Method of moments applications</li>
+</ul>
+</div>
+</section>
+<section id="next-lesson-preview" class="level2">
+<h2 class="anchored" data-anchor-id="next-lesson-preview">Next Lesson Preview</h2>
+<p><strong>Lesson 4: Maximum Likelihood Estimation</strong></p>
+<ul>
+<li>Finding the MLE: maximize <span class="math inline">\(L(\theta)\)</span> or <span class="math inline">\(\ell(\theta)\)</span></li>
+<li>Properties: invariance, consistency, asymptotic normality</li>
+<li>MLEs are asymptotically efficient!</li>
+<li>Comparison of MLE vs MME</li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div class="nonincremental">
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Chapters 7.1, 7.2, 7.4</li>
+<li>Chihara and Hesterberg. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapter 6.</li>
+</ul>
+</div>
+</section>
+<section id="questions" class="level2 center" data-background-color="#3498db">
+<h2 class="center anchored" data-background-color="#3498db" data-anchor-id="questions">Questions?</h2>
+<p>Thank you!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
