@@ -1,46 +1,38 @@
 ---
-title: "Homework 1"
-subtitle: "BSTA 551"
-date-modified: "today"
-description: "Due: `r library(here); source(here('class_dates.R')); hw1 %>% format('%m/%d')` at 11pm"
+title: "BSTA 551: Theory of Statistical Inference"
+subtitle: "Homework 1 - Week 1"
+author: "Your Name"
+date: "Due: [Insert Due Date]"
 format: 
-  html: 
-    link-external-newwindow: true
-    toc: true
-  pdf: default 
-editor_options: 
-  chunk_output_type: console
+  pdf:
+    toc: false
+    number-sections: true
+    colorlinks: true
+execute:
+  echo: true
+  warning: false
+  message: false
 ---
 
 ```{r}
-#| label: "setup"
+#| label: setup
 #| include: false
-knitr::opts_chunk$set(echo = TRUE)
-
-library(here)
-source(here("class_dates.R"))
+library(tidyverse)
+set.seed(551)
 ```
 
-::: {.callout-tip appearance="minimal"}
-**Due `r hw1 %>% format("%m/%d")` at 11pm**
-:::
-
-## Directions
-
-**Please turn in this homework on Sakai.** Please submit your homework in pdf format or in html rendered from a qmd (or Rmd) file (please also include source qmd or Rmd). You can type your work on your computer or submit a single file with photos of your written work or any other method that can be turned into a pdf. 
-
-**Try to complete all of the problems listed below at some point this quarter! You may want to save some of them for studying later!** 
-
-*You must show all of your work to receive credit.*
+# Instructions
 
 This homework covers material from Lessons 1-3 (Week 1): sampling distributions, point estimation, bias, variance, MSE, and minimum variance unbiased estimation. 
 
-For simulation problems, set your seed to `set.seed(551)` for reproducibility.
+- Show all work for full credit.
+- For simulation problems, set your seed to `set.seed(551)` for reproducibility.
+- Round numerical answers to 4 decimal places unless otherwise specified.
+- Estimated time: approximately 1 hour.
 
-## Questions
+\newpage
 
-
-### Problem 1: Sampling Distribution of the Sample Mean
+# Problem 1: Sampling Distribution of the Sample Mean
 
 Researchers are studying the birth weights of full-term infants at a large hospital. Let $X_1, X_2, \ldots, X_{n}$ be a random sample of birth weights from a population with mean $\mu = 3400$ grams and standard deviation $\sigma = 450$ grams.
 
@@ -54,7 +46,7 @@ b. How large must the sample size $n$ be so that the standard error of $\bar{X}$
 c. Suppose we define a new statistic $W = \frac{1}{n}\sum_{i=1}^{n} (X_i - 3000)$. Find $E(W)$ and $\text{Var}(W)$ in terms of $\mu$, $\sigma^2$, and $n$. Is $W$ an unbiased estimator of $\mu - 3000$?
 
 
-### Problem 2: Bias, Variance, and MSE
+# Problem 2: Bias, Variance, and MSE
 
 Let $X_1, X_2, \ldots, X_n$ be a random sample from an Exponential distribution with rate parameter $\lambda > 0$ (so that $E(X_i) = 1/\lambda$ and $\text{Var}(X_i) = 1/\lambda^2$).
 
@@ -73,7 +65,7 @@ c. For $n = 12$ and $\lambda = 0.5$:
 d. Write R code to verify your answers from part (c) using simulation with 10,000 replications.
 
 
-### Problem 3: The Bias-Variance Tradeoff
+# Problem 3: The Bias-Variance Tradeoff
 
 A hospital infection control team wants to estimate the proportion $p$ of patients who develop hospital-acquired infections during their stay. Out of $n = 40$ patients, $X$ patients develop an infection where $X \sim \text{Binomial}(n, p)$.
 
@@ -87,7 +79,6 @@ a. Show that $\hat{p}_1$ is unbiased for $p$. What is its variance?
 b. Calculate the expected value of $\hat{p}_2$ and find its bias. Show that the bias shrinks the estimate toward 0.5.
 
 c. For $n = 40$ and $p = 0.05$ (a low infection rate), calculate:
-
    - MSE of $\hat{p}_1$
    - Variance of $\hat{p}_2$ is $\frac{np(1-p)}{(n+2)^2}$. Calculate the MSE of $\hat{p}_2$
    
@@ -96,7 +87,7 @@ c. For $n = 40$ and $p = 0.05$ (a low infection rate), calculate:
 d. Using R, create a plot comparing the MSE of $\hat{p}_1$ and $\hat{p}_2$ across all values of $p$ from 0.01 to 0.99 for $n = 40$. At what range of $p$ values does the add-one estimator outperform the standard estimator?
 
 
-### Problem 4: Sample Variance Estimators
+# Problem 4: Sample Variance Estimators
 
 Let $X_1, X_2, \ldots, X_n$ be a random sample from a distribution with mean $\mu$ and variance $\sigma^2$.
 
@@ -109,13 +100,34 @@ a. It is known that $E(S^2) = \sigma^2$ (i.e., $S^2$ is unbiased). Use this fact
 b. For $n = 8$ and $\sigma^2 = 64$, what is the bias of $\tilde{S}^2$? What percentage of the true variance does this bias represent?
 
 c. Use R to simulate 10,000 samples of size $n = 8$ from a $N(0, 8)$ distribution (so $\sigma^2 = 64$). Calculate $S^2$ and $\tilde{S}^2$ for each sample and verify that:
-
    - The mean of $S^2$ values is approximately 64
    - The mean of $\tilde{S}^2$ values matches your theoretical result from part (a)
 
 
+# Problem 5: Comparing Unbiased Estimators
 
-### Problem 5: Estimating Vaccine Efficacy
+Let $X_1, X_2, \ldots, X_n$ be a random sample from a $N(\mu, \sigma^2)$ distribution.
+
+Consider two unbiased estimators for $\mu$:
+- Sample mean: $\bar{X}$
+- Sample median: $\tilde{X}$ (the middle observation when $n$ is odd)
+
+For normal data, both estimators are unbiased for $\mu$, but their variances differ:
+$$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \quad \text{and} \quad \text{Var}(\tilde{X}) \approx \frac{\pi \sigma^2}{2n}$$
+
+a. For $n = 15$ and $\sigma^2 = 36$, calculate:
+   - $\text{Var}(\bar{X})$
+   - $\text{Var}(\tilde{X})$
+   - The relative efficiency of $\tilde{X}$ compared to $\bar{X}$
+   
+   *Relative efficiency = $\frac{\text{Var}(\bar{X})}{\text{Var}(\tilde{X})}$*
+
+b. A researcher plans to use the sample median instead of the sample mean. How many observations would they need using the sample median to achieve the same standard error as using the sample mean with $n = 15$ observations?
+
+c. Use R to simulate 5,000 samples of size $n = 15$ from $N(100, 36)$. Calculate both the sample mean and sample median for each sample. Compare the empirical variances to your theoretical results from part (a).
+
+
+# Problem 6: Estimating Vaccine Efficacy
 
 In a vaccine trial, researchers want to estimate the efficacy rate $p$ (proportion of vaccinated individuals who develop immunity). 
 
@@ -131,17 +143,15 @@ b. If the true efficacy is $p = 0.80$, calculate:
 
 c. For the full trial, the researchers want the standard error of their efficacy estimate to be at most 0.04. What is the minimum sample size required? Assume $p \approx 0.85$ for planning purposes.
 
-### Problem 7: Devore et al. Section. 7.1 Exercise 22
+\newpage
 
-Return to the problem of estimating the population proportion $p$ and consider another adjusted estimator, namely
+# Submission Guidelines
 
-$$\hat{P} = \frac{X + \sqrt{n/4}}{n + \sqrt{n}}$$
+- Submit your completed homework as a PDF generated from this Quarto document.
+- Include all R code used to solve the problems.
+- Clearly label your answers to each part.
+- Show your work for mathematical derivations.
 
-where $X \sim \text{Binomial}(n, p)$.
+\vspace{1cm}
 
-(The justification for this estimator comes from the Bayesian approach to point estimation.)
-
-a. Determine the mean squared error of this estimator. What is interesting about this MSE?
-
-b. Compare the MSE of this estimator to the MSE of the usual estimator (the sample proportion $\hat{p} = X/n$).
-
+**Good luck!**

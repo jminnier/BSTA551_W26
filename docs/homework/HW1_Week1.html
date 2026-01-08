@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Due: 01/15 at 11pm">
+<meta name="author" content="Your Name">
 
-<title>Homework 1 – Theory of Statistical Inference</title>
+<title>BSTA 551: Theory of Statistical Inference – Theory of Statistical Inference</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -153,45 +153,44 @@ window.Quarto = {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
-  <ul class="collapse">
+  <li><a href="#instructions" id="toc-instructions" class="nav-link active" data-scroll-target="#instructions">Instructions</a></li>
   <li><a href="#problem-1-sampling-distribution-of-the-sample-mean" id="toc-problem-1-sampling-distribution-of-the-sample-mean" class="nav-link" data-scroll-target="#problem-1-sampling-distribution-of-the-sample-mean">Problem 1: Sampling Distribution of the Sample Mean</a></li>
   <li><a href="#problem-2-bias-variance-and-mse" id="toc-problem-2-bias-variance-and-mse" class="nav-link" data-scroll-target="#problem-2-bias-variance-and-mse">Problem 2: Bias, Variance, and MSE</a></li>
   <li><a href="#problem-3-the-bias-variance-tradeoff" id="toc-problem-3-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#problem-3-the-bias-variance-tradeoff">Problem 3: The Bias-Variance Tradeoff</a></li>
   <li><a href="#problem-4-sample-variance-estimators" id="toc-problem-4-sample-variance-estimators" class="nav-link" data-scroll-target="#problem-4-sample-variance-estimators">Problem 4: Sample Variance Estimators</a></li>
-  <li><a href="#problem-5-estimating-vaccine-efficacy" id="toc-problem-5-estimating-vaccine-efficacy" class="nav-link" data-scroll-target="#problem-5-estimating-vaccine-efficacy">Problem 5: Estimating Vaccine Efficacy</a></li>
-  <li><a href="#problem-7-devore-et-al.-section.-7.1-exercise-22" id="toc-problem-7-devore-et-al.-section.-7.1-exercise-22" class="nav-link" data-scroll-target="#problem-7-devore-et-al.-section.-7.1-exercise-22">Problem 7: Devore et al.&nbsp;Section. 7.1 Exercise 22</a></li>
-  </ul></li>
+  <li><a href="#problem-5-comparing-unbiased-estimators" id="toc-problem-5-comparing-unbiased-estimators" class="nav-link" data-scroll-target="#problem-5-comparing-unbiased-estimators">Problem 5: Comparing Unbiased Estimators</a></li>
+  <li><a href="#problem-6-estimating-vaccine-efficacy" id="toc-problem-6-estimating-vaccine-efficacy" class="nav-link" data-scroll-target="#problem-6-estimating-vaccine-efficacy">Problem 6: Estimating Vaccine Efficacy</a></li>
+  <li><a href="#submission-guidelines" id="toc-submission-guidelines" class="nav-link" data-scroll-target="#submission-guidelines">Submission Guidelines</a></li>
   </ul>
-<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_01.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW1_Week1.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Homework 1</h1>
-<p class="subtitle lead">BSTA 551</p>
+<h1 class="title">BSTA 551: Theory of Statistical Inference</h1>
+<p class="subtitle lead">Homework 1 - Week 1</p>
 </div>
 
-<div>
-  <div class="description">
-    Due: 01/15 at 11pm
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
 
-    
-  
     <div>
-    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 7, 2026</p>
+             <p>Your Name </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">Invalid Date</p>
     </div>
   </div>
+  
     
   </div>
   
@@ -200,28 +199,19 @@ window.Quarto = {
 </header>
 
 
-<div class="callout callout-style-simple callout-tip no-icon">
-<div class="callout-body d-flex">
-<div class="callout-icon-container">
-<i class="callout-icon no-icon"></i>
-</div>
-<div class="callout-body-container">
-<p><strong>Due 01/15 at 11pm</strong></p>
-</div>
-</div>
-</div>
-<section id="directions" class="level2">
-<h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf format or in html rendered from a qmd (or Rmd) file (please also include source qmd or Rmd). You can type your work on your computer or submit a single file with photos of your written work or any other method that can be turned into a pdf.</p>
-<p><strong>Try to complete all of the problems listed below at some point this quarter! You may want to save some of them for studying later!</strong></p>
-<p><em>You must show all of your work to receive credit.</em></p>
+<section id="instructions" class="level1">
+<h1>Instructions</h1>
 <p>This homework covers material from Lessons 1-3 (Week 1): sampling distributions, point estimation, bias, variance, MSE, and minimum variance unbiased estimation.</p>
-<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<ul>
+<li>Show all work for full credit.</li>
+<li>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</li>
+<li>Round numerical answers to 4 decimal places unless otherwise specified.</li>
+<li>Estimated time: approximately 1 hour.</li>
+</ul>
+<div style="page-break-after: always;"></div>
 </section>
-<section id="questions" class="level2">
-<h2 class="anchored" data-anchor-id="questions">Questions</h2>
-<section id="problem-1-sampling-distribution-of-the-sample-mean" class="level3">
-<h3 class="anchored" data-anchor-id="problem-1-sampling-distribution-of-the-sample-mean">Problem 1: Sampling Distribution of the Sample Mean</h3>
+<section id="problem-1-sampling-distribution-of-the-sample-mean" class="level1">
+<h1>Problem 1: Sampling Distribution of the Sample Mean</h1>
 <p>Researchers are studying the birth weights of full-term infants at a large hospital. Let <span class="math inline">\(X_1, X_2, \ldots, X_{n}\)</span> be a random sample of birth weights from a population with mean <span class="math inline">\(\mu = 3400\)</span> grams and standard deviation <span class="math inline">\(\sigma = 450\)</span> grams.</p>
 <ol type="a">
 <li><p>For a sample of size <span class="math inline">\(n = 25\)</span>, calculate:</p>
@@ -234,8 +224,8 @@ window.Quarto = {
 <li><p>Suppose we define a new statistic <span class="math inline">\(W = \frac{1}{n}\sum_{i=1}^{n} (X_i - 3000)\)</span>. Find <span class="math inline">\(E(W)\)</span> and <span class="math inline">\(\text{Var}(W)\)</span> in terms of <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma^2\)</span>, and <span class="math inline">\(n\)</span>. Is <span class="math inline">\(W\)</span> an unbiased estimator of <span class="math inline">\(\mu - 3000\)</span>?</p></li>
 </ol>
 </section>
-<section id="problem-2-bias-variance-and-mse" class="level3">
-<h3 class="anchored" data-anchor-id="problem-2-bias-variance-and-mse">Problem 2: Bias, Variance, and MSE</h3>
+<section id="problem-2-bias-variance-and-mse" class="level1">
+<h1>Problem 2: Bias, Variance, and MSE</h1>
 <p>Let <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> be a random sample from an Exponential distribution with rate parameter <span class="math inline">\(\lambda &gt; 0\)</span> (so that <span class="math inline">\(E(X_i) = 1/\lambda\)</span> and <span class="math inline">\(\text{Var}(X_i) = 1/\lambda^2\)</span>).</p>
 <ol type="a">
 <li>Consider the estimator <span class="math inline">\(\hat{\mu} = \bar{X}\)</span> for the population mean <span class="math inline">\(\mu = 1/\lambda\)</span>.
@@ -256,8 +246,8 @@ window.Quarto = {
 <li>Write R code to verify your answers from part (c) using simulation with 10,000 replications.</li>
 </ol>
 </section>
-<section id="problem-3-the-bias-variance-tradeoff" class="level3">
-<h3 class="anchored" data-anchor-id="problem-3-the-bias-variance-tradeoff">Problem 3: The Bias-Variance Tradeoff</h3>
+<section id="problem-3-the-bias-variance-tradeoff" class="level1">
+<h1>Problem 3: The Bias-Variance Tradeoff</h1>
 <p>A hospital infection control team wants to estimate the proportion <span class="math inline">\(p\)</span> of patients who develop hospital-acquired infections during their stay. Out of <span class="math inline">\(n = 40\)</span> patients, <span class="math inline">\(X\)</span> patients develop an infection where <span class="math inline">\(X \sim \text{Binomial}(n, p)\)</span>.</p>
 <p>Two estimators are proposed:</p>
 <ul>
@@ -276,8 +266,8 @@ window.Quarto = {
 <li><p>Using R, create a plot comparing the MSE of <span class="math inline">\(\hat{p}_1\)</span> and <span class="math inline">\(\hat{p}_2\)</span> across all values of <span class="math inline">\(p\)</span> from 0.01 to 0.99 for <span class="math inline">\(n = 40\)</span>. At what range of <span class="math inline">\(p\)</span> values does the add-one estimator outperform the standard estimator?</p></li>
 </ol>
 </section>
-<section id="problem-4-sample-variance-estimators" class="level3">
-<h3 class="anchored" data-anchor-id="problem-4-sample-variance-estimators">Problem 4: Sample Variance Estimators</h3>
+<section id="problem-4-sample-variance-estimators" class="level1">
+<h1>Problem 4: Sample Variance Estimators</h1>
 <p>Let <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> be a random sample from a distribution with mean <span class="math inline">\(\mu\)</span> and variance <span class="math inline">\(\sigma^2\)</span>.</p>
 <p>Consider two estimators for <span class="math inline">\(\sigma^2\)</span>:</p>
 <p><span class="math display">\[S^2 = \frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar{X})^2 \quad \text{and} \quad \tilde{S}^2 = \frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2\]</span></p>
@@ -291,8 +281,25 @@ window.Quarto = {
 </ul></li>
 </ol>
 </section>
-<section id="problem-5-estimating-vaccine-efficacy" class="level3">
-<h3 class="anchored" data-anchor-id="problem-5-estimating-vaccine-efficacy">Problem 5: Estimating Vaccine Efficacy</h3>
+<section id="problem-5-comparing-unbiased-estimators" class="level1">
+<h1>Problem 5: Comparing Unbiased Estimators</h1>
+<p>Let <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> be a random sample from a <span class="math inline">\(N(\mu, \sigma^2)\)</span> distribution.</p>
+<p>Consider two unbiased estimators for <span class="math inline">\(\mu\)</span>: - Sample mean: <span class="math inline">\(\bar{X}\)</span> - Sample median: <span class="math inline">\(\tilde{X}\)</span> (the middle observation when <span class="math inline">\(n\)</span> is odd)</p>
+<p>For normal data, both estimators are unbiased for <span class="math inline">\(\mu\)</span>, but their variances differ: <span class="math display">\[\text{Var}(\bar{X}) = \frac{\sigma^2}{n} \quad \text{and} \quad \text{Var}(\tilde{X}) \approx \frac{\pi \sigma^2}{2n}\]</span></p>
+<ol type="a">
+<li><p>For <span class="math inline">\(n = 15\)</span> and <span class="math inline">\(\sigma^2 = 36\)</span>, calculate:</p>
+<ul>
+<li><span class="math inline">\(\text{Var}(\bar{X})\)</span></li>
+<li><span class="math inline">\(\text{Var}(\tilde{X})\)</span></li>
+<li>The relative efficiency of <span class="math inline">\(\tilde{X}\)</span> compared to <span class="math inline">\(\bar{X}\)</span></li>
+</ul>
+<p><em>Relative efficiency = <span class="math inline">\(\frac{\text{Var}(\bar{X})}{\text{Var}(\tilde{X})}\)</span></em></p></li>
+<li><p>A researcher plans to use the sample median instead of the sample mean. How many observations would they need using the sample median to achieve the same standard error as using the sample mean with <span class="math inline">\(n = 15\)</span> observations?</p></li>
+<li><p>Use R to simulate 5,000 samples of size <span class="math inline">\(n = 15\)</span> from <span class="math inline">\(N(100, 36)\)</span>. Calculate both the sample mean and sample median for each sample. Compare the empirical variances to your theoretical results from part (a).</p></li>
+</ol>
+</section>
+<section id="problem-6-estimating-vaccine-efficacy" class="level1">
+<h1>Problem 6: Estimating Vaccine Efficacy</h1>
 <p>In a vaccine trial, researchers want to estimate the efficacy rate <span class="math inline">\(p\)</span> (proportion of vaccinated individuals who develop immunity).</p>
 <ol type="a">
 <li><p>In a pilot study, <span class="math inline">\(n = 60\)</span> vaccinated individuals are tested, and <span class="math inline">\(X = 51\)</span> show evidence of immunity. Calculate:</p>
@@ -308,20 +315,19 @@ window.Quarto = {
 </ul></li>
 <li><p>For the full trial, the researchers want the standard error of their efficacy estimate to be at most 0.04. What is the minimum sample size required? Assume <span class="math inline">\(p \approx 0.85\)</span> for planning purposes.</p></li>
 </ol>
+<div style="page-break-after: always;"></div>
 </section>
-<section id="problem-7-devore-et-al.-section.-7.1-exercise-22" class="level3">
-<h3 class="anchored" data-anchor-id="problem-7-devore-et-al.-section.-7.1-exercise-22">Problem 7: Devore et al.&nbsp;Section. 7.1 Exercise 22</h3>
-<p>Return to the problem of estimating the population proportion <span class="math inline">\(p\)</span> and consider another adjusted estimator, namely</p>
-<p><span class="math display">\[\hat{P} = \frac{X + \sqrt{n/4}}{n + \sqrt{n}}\]</span></p>
-<p>where <span class="math inline">\(X \sim \text{Binomial}(n, p)\)</span>.</p>
-<p>(The justification for this estimator comes from the Bayesian approach to point estimation.)</p>
-<ol type="a">
-<li><p>Determine the mean squared error of this estimator. What is interesting about this MSE?</p></li>
-<li><p>Compare the MSE of this estimator to the MSE of the usual estimator (the sample proportion <span class="math inline">\(\hat{p} = X/n\)</span>).</p></li>
-</ol>
+<section id="submission-guidelines" class="level1">
+<h1>Submission Guidelines</h1>
+<ul>
+<li>Submit your completed homework as a PDF generated from this Quarto document.</li>
+<li>Include all R code used to solve the problems.</li>
+<li>Clearly label your answers to each part.</li>
+<li>Show your work for mathematical derivations.</li>
+</ul>
+<p><strong>Good luck!</strong></p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -411,11 +417,6 @@ window.Quarto = {
           if (link.dataset.originalHref !== undefined) {
             link.href = link.dataset.originalHref;
           }
-            // target, if specified
-            link.setAttribute("target", "_blank");
-            if (link.getAttribute("rel") === null) {
-              link.setAttribute("rel", "noopener");
-            }
         }
       }
     function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
