@@ -131,7 +131,7 @@ b. If the true efficacy is $p = 0.80$, calculate:
 
 c. For the full trial, the researchers want the standard error of their efficacy estimate to be at most 0.04. What is the minimum sample size required? Assume $p \approx 0.85$ for planning purposes.
 
-### Problem 7: Devore et al. Section. 7.1 Exercise 22
+### Problem 6: Devore et al. Section. 7.1 Exercise 22
 
 Return to the problem of estimating the population proportion $p$ and consider another adjusted estimator, namely
 
