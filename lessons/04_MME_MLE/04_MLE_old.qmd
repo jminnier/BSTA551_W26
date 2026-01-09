@@ -1,0 +1,789 @@
+---
+title: "BSTA 551: Statistical Inference"
+subtitle: "Lesson 4: Likelihood Theory and Maximum Likelihood Estimation"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w2d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 4
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 4: Maximum Likelihood Estimation
+
+## Review: Where We Left Off
+
+**Key concepts from Lesson 3:**
+
+-   MVUE: Best unbiased estimator (smallest variance)
+-   Method of Moments: Equate population moments to sample moments
+-   MMEs are simple but not always most efficient
+
+. . .
+
+**Today's Goals:**
+
+-   Understand the likelihood function and its interpretation
+-   Learn to derive Maximum Likelihood Estimators (MLEs)
+-   Explore properties of MLEs: invariance, consistency, efficiency
+-   Compare MLEs to MMEs
+
+## Motivating Example: Vaccine Efficacy
+
+A clinical trial for a new vaccine enrolls 200 participants. After exposure to the pathogen, 156 remain disease-free.
+
+. . .
+
+**Question:** What is the true efficacy rate $p$ of this vaccine?
+
+. . .
+
+```{r}
+n <- 200
+successes <- 156
+# What value of p makes this outcome most "likely"?
+```
+
+**Intuition:** We should choose the value of $p$ that makes our observed data "most likely" to have occurred.
+
+. . .
+
+This is the essence of **Maximum Likelihood Estimation**.
+
+# The Likelihood Function {background-color="#27ae60"}
+
+## From Probability to Likelihood
+
+**Probability vs. Likelihood: A Key Distinction**
+
+. . .
+
+**Probability** (parameters fixed, data varies):
+
+-   Given a known parameter value $\theta$, how likely are different data outcomes?
+-   Example: If $p = 0.8$, what's $P(X = 156)$ out of 200?
+
+. . .
+
+**Likelihood** (data fixed, parameters vary):
+
+-   Given our observed data, how "likely" are different parameter values?
+-   Example: We observed 156 successes. Which value of $p$ best explains this?
+
+## The Likelihood Function: Definition
+
+::: callout-important
+## Definition (Devore 7.2)
+
+Let $X_1, \ldots, X_n$ have a joint distribution that depends on parameter $\theta$. The **likelihood function** $L(\theta)$ is this joint distribution, regarded as a function of $\theta$ (with observed data held fixed).
+
+For a random sample:
+$$L(\theta) = \prod_{i=1}^n f(x_i; \theta)$$
+
+where $f$ is the pmf (discrete) or pdf (continuous).
+:::
+
+## Visualizing Likelihood: Binomial Example
+
+```{r}
+#| echo: false
+#| fig-height: 5
+# Likelihood function for vaccine trial
+n <- 200
+x <- 156
+
+likelihood_data <- tibble(
+  p = seq(0.01, 0.99, by = 0.001),
+  likelihood = dbinom(x, n, p)
+)
+
+mle_p <- x / n
+
+likelihood_data |> 
+  ggplot(aes(x = p, y = likelihood)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_vline(xintercept = mle_p, color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(x = mle_p, y = dbinom(x, n, mle_p)), color = "red", size = 4) +
+  labs(title = "Likelihood Function for Vaccine Efficacy",
+       subtitle = str_glue("Observed: {x} successes out of {n} participants"),
+       x = "Efficacy Parameter (p)", y = "Likelihood L(p)") +
+  annotate("text", x = mle_p + 0.08, y = dbinom(x, n, mle_p) * 0.9,
+           label = str_glue("MLE: p̂ = {mle_p}"), color = "red", size = 5)
+```
+
+The MLE is the value of $p$ at the **peak** of the likelihood function.
+
+## Maximum Likelihood Estimate: Definition
+
+::: callout-important
+## Definition
+
+The **Maximum Likelihood Estimate (MLE)** $\hat{\theta}$ is the value of $\theta$ that maximizes the likelihood function:
+
+$$\hat{\theta} = \arg\max_\theta L(\theta)$$
+
+The MLE is the parameter value that makes the observed data "most likely."
+:::
+
+. . .
+
+**Notation:**
+
+-   $\hat{\theta}$ is the MLE (estimator, a random variable)
+-   $\hat{\theta}$ is also the mle (estimate, a specific number from data)
+
+## Why Maximum Likelihood?
+
+**Intuitive Appeal:**
+
+-   Choose the parameter that "best explains" our data
+-   The data we observed should be highly probable under the true parameter
+
+. . .
+
+**Theoretical Properties** (more details later):
+
+1.  **Consistent:** $\hat{\theta} \to \theta$ as $n \to \infty$
+2.  **Asymptotically unbiased:** $E(\hat{\theta}) \approx \theta$ for large $n$
+3.  **Asymptotically efficient:** Achieves smallest possible variance for large $n$
+4.  **Invariance:** If $\hat{\theta}$ is MLE of $\theta$, then $g(\hat{\theta})$ is MLE of $g(\theta)$
+
+# The Log-Likelihood Function {background-color="#8e44ad"}
+
+## Why Use Log-Likelihood?
+
+The likelihood function is often a **product** of many terms:
+$$L(\theta) = \prod_{i=1}^n f(x_i; \theta)$$
+
+. . .
+
+Taking the logarithm converts products to **sums**:
+$$\ell(\theta) = \ln L(\theta) = \sum_{i=1}^n \ln f(x_i; \theta)$$
+
+. . .
+
+**Key property:** Since $\ln$ is monotonically increasing:
+$$\arg\max_\theta L(\theta) = \arg\max_\theta \ell(\theta)$$
+
+Maximizing the log-likelihood gives the same answer!
+
+## Advantages of Log-Likelihood
+
+**Computational:**
+
+-   Sums are easier to differentiate than products
+-   Avoids numerical underflow (very small products)
+
+. . .
+
+**Mathematical:**
+
+-   $\ell'(\theta) = 0$ is often easier to solve
+-   Second derivative test is more tractable
+
+. . .
+
+```{r}
+#| echo: false
+#| fig-height: 4
+# Compare likelihood and log-likelihood
+likelihood_data |> 
+  mutate(log_likelihood = log(likelihood)) |> 
+  select(p, likelihood, log_likelihood) |> 
+  pivot_longer(-p, names_to = "type", values_to = "value") |> 
+  mutate(type = case_when(
+    type == "likelihood" ~ "Likelihood L(p)",
+    type == "log_likelihood" ~ "Log-Likelihood ℓ(p)"
+  )) |> 
+  ggplot(aes(x = p, y = value)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_vline(xintercept = mle_p, color = "red", linetype = "dashed") +
+  facet_wrap(~type, scales = "free_y") +
+  labs(title = "Likelihood vs. Log-Likelihood", 
+       subtitle = "Both maximize at the same point",
+       x = "Parameter (p)", y = "Value")
+```
+
+## The General MLE Recipe
+
+::: callout-tip
+## Finding the MLE
+
+1.  **Write down the likelihood:** $L(\theta) = \prod f(x_i; \theta)$
+
+2.  **Take the logarithm:** $\ell(\theta) = \sum \ln f(x_i; \theta)$
+
+3.  **Differentiate:** Find $\ell'(\theta) = \frac{d\ell}{d\theta}$
+
+4.  **Solve:** Set $\ell'(\theta) = 0$ and solve for $\hat{\theta}$
+
+5.  **Verify:** Check that $\ell''(\hat{\theta}) < 0$ (maximum, not minimum)
+:::
+
+# MLE Examples {background-color="#e74c3c"}
+
+## Example 1: Bernoulli Distribution
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Bernoulli}(p)$ (iid)
+
+Let $x = \sum x_i$ be the number of successes.
+
+. . .
+
+**Step 1 - Likelihood:**
+$$L(p) = \prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^x(1-p)^{n-x}$$
+
+. . .
+
+**Step 2 - Log-likelihood:**
+$$\ell(p) = x\ln(p) + (n-x)\ln(1-p)$$
+
+## Example 1: Bernoulli (continued)
+
+**Step 3 - Differentiate:**
+$$\ell'(p) = \frac{x}{p} - \frac{n-x}{1-p}$$
+
+. . .
+
+**Step 4 - Solve:**
+$$\frac{x}{p} = \frac{n-x}{1-p}$$
+$$x(1-p) = p(n-x)$$
+$$x - xp = np - xp$$
+$$x = np$$
+$$\hat{p} = \frac{x}{n}$$
+
+. . .
+
+**The MLE is the sample proportion!** This matches our intuition.
+
+## Simulation: Verifying the Bernoulli MLE
+
+```{r}
+#| code-line-numbers: "|1-3|5-12|14-18"
+true_p <- 0.65
+n <- 50
+n_sims <- 5000
+
+# Simulate many samples and compute MLE
+mle_sim <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    successes = rbinom(n_sims, size = n, prob = true_p),
+    mle = successes / n
+  )
+
+# Check unbiasedness and variance
+mle_sim |> 
+  summarize(
+    `True p` = true_p,
+    `Mean of MLEs` = mean(mle),
+    `Bias` = mean(mle) - true_p,
+    `Variance of MLEs` = var(mle),
+    `Theoretical Var` = true_p * (1 - true_p) / n
+  ) |> 
+  pivot_longer(everything()) |> 
+  mutate(value = round(value, 5))
+```
+
+## Example 2: Exponential Distribution
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Exponential}(\lambda)$ where $\lambda$ is the rate parameter.
+
+**Medical Context:** Time until symptom relief (hours) for patients taking a new pain medication.
+
+. . .
+
+**Step 1 - Likelihood:**
+$$L(\lambda) = \prod_{i=1}^n \lambda e^{-\lambda x_i} = \lambda^n e^{-\lambda \sum x_i}$$
+
+**Step 2 - Log-likelihood:**
+$$\ell(\lambda) = n\ln(\lambda) - \lambda \sum x_i$$
+
+## Example 2: Exponential (continued)
+
+**Step 3 - Differentiate:**
+$$\ell'(\lambda) = \frac{n}{\lambda} - \sum x_i$$
+
+. . .
+
+**Step 4 - Solve:**
+$$\frac{n}{\lambda} = \sum x_i$$
+$$\hat{\lambda} = \frac{n}{\sum x_i} = \frac{1}{\bar{X}}$$
+
+. . .
+
+**Note:** This is the same as the MME! (Not always the case.)
+
+## Medical Application: Pain Relief Duration
+
+```{r}
+# Time to pain relief (hours) for 30 patients
+relief_times <- c(2.1, 3.5, 1.8, 4.2, 2.7, 1.5, 3.8, 2.3, 4.1, 2.9,
+                  1.9, 3.2, 2.5, 3.9, 2.1, 4.5, 1.7, 3.4, 2.8, 3.1,
+                  2.4, 3.7, 1.6, 4.0, 2.6, 3.3, 2.0, 3.6, 2.2, 3.0)
+
+# MLE of rate parameter
+lambda_mle <- 1 / mean(relief_times)
+
+cat("Sample mean relief time:", round(mean(relief_times), 2), "hours\n")
+cat("MLE of λ:", round(lambda_mle, 4), "per hour\n")
+cat("Estimated median relief time:", round(log(2) / lambda_mle, 2), "hours")
+```
+
+## Visualizing the Exponential MLE
+
+```{r}
+#| fig-height: 4.5
+tibble(time = relief_times) |> 
+  ggplot(aes(x = time)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 12,
+                 fill = "steelblue", alpha = 0.7) +
+  stat_function(fun = dexp, args = list(rate = lambda_mle),
+                color = "red", linewidth = 1.2) +
+  labs(title = "Time to Pain Relief with Fitted Exponential",
+       subtitle = str_glue("MLE: λ̂ = {round(lambda_mle, 4)}"),
+       x = "Time to Relief (hours)", y = "Density") +
+  annotate("text", x = 4, y = 0.3, 
+           label = str_glue("Mean = {round(1/lambda_mle, 2)} hours"),
+           color = "red", size = 5)
+```
+
+## Example 3: Normal Distribution (Two Parameters)
+
+**Setup:** $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$
+
+. . .
+
+**Likelihood:**
+$$L(\mu, \sigma) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} e^{-(x_i-\mu)^2/(2\sigma^2)}$$
+
+**Log-likelihood:**
+$$\ell(\mu, \sigma) = -\frac{n}{2}\ln(2\pi) - n\ln(\sigma) - \frac{1}{2\sigma^2}\sum(x_i - \mu)^2$$
+
+## Normal MLEs: The Result
+
+Taking partial derivatives and solving:
+
+$$\hat{\mu} = \bar{X}$$
+
+$$\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2$$
+
+. . .
+
+::: callout-warning
+## Important Note
+The MLE of $\sigma^2$ divides by $n$, not $n-1$!
+
+This means the MLE is **biased**: $E(\hat{\sigma}^2_{MLE}) = \frac{n-1}{n}\sigma^2$
+
+The bias is small for large $n$, and we can correct it if desired.
+:::
+
+## Your Turn: Deriving the Normal MLE
+
+**Exercise:** Verify that $\hat{\mu} = \bar{X}$ is the MLE for $\mu$ (treating $\sigma$ as known).
+
+**Steps:**
+
+1.  Write $\ell(\mu) = -\frac{n}{2}\ln(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum(x_i - \mu)^2$
+
+2.  Differentiate: $\ell'(\mu) = ?$
+
+3.  Set equal to zero and solve for $\hat{\mu}$
+
+. . .
+
+**Solution:**
+$$\ell'(\mu) = \frac{1}{\sigma^2}\sum(x_i - \mu) = \frac{n\bar{x} - n\mu}{\sigma^2}$$
+Setting to zero: $n\bar{x} = n\mu$, so $\hat{\mu} = \bar{X}$ ✓
+
+## Example 4: Uniform Distribution (A Complication)
+
+**Setup:** $X_1, \ldots, X_n \sim \text{Uniform}[0, \theta]$
+
+**Likelihood:**
+$$L(\theta) = \prod_{i=1}^n \frac{1}{\theta} \cdot \mathbf{1}(0 \le x_i \le \theta) = \frac{1}{\theta^n} \cdot \mathbf{1}(\max(x_i) \le \theta)$$
+
+. . .
+
+**The problem:** We can't use calculus! The likelihood is:
+
+-   $L(\theta) = 0$ if $\theta < \max(x_i)$
+-   $L(\theta) = 1/\theta^n$ if $\theta \ge \max(x_i)$
+
+The function decreases as $\theta$ increases (when positive).
+
+## Uniform MLE: Graphical Solution
+
+```{r}
+#| echo: false
+#| fig-height: 5
+# Uniform likelihood
+set.seed(42)
+sample_data <- runif(10, 0, 5)
+x_max <- max(sample_data)
+
+uniform_lik <- tibble(
+  theta = seq(0, 8, by = 0.01),
+  likelihood = ifelse(theta < x_max, 0, 1/theta^10)
+)
+
+uniform_lik |> 
+  ggplot(aes(x = theta, y = likelihood)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_vline(xintercept = x_max, color = "red", linetype = "dashed", linewidth = 1) +
+  geom_point(aes(x = x_max, y = 1/x_max^10), color = "red", size = 4) +
+  labs(title = "Likelihood Function for Uniform[0, θ]",
+       subtitle = "Maximum occurs at the boundary!",
+       x = "θ", y = "Likelihood L(θ)") +
+  annotate("text", x = x_max + 0.5, y = 1/x_max^10 * 0.8,
+           label = str_glue("MLE: θ̂ = max(Xᵢ) = {round(x_max, 2)}"),
+           color = "red", size = 5)
+```
+
+**The MLE is** $\hat{\theta} = \max(X_1, \ldots, X_n)$
+
+# Properties of MLEs {background-color="#3498db"}
+
+## Property 1: Invariance Principle
+
+::: callout-important
+## MLE Invariance Principle (Devore 7.2)
+
+If $\hat{\theta}$ is the MLE of $\theta$, then for any function $g(\cdot)$:
+
+$$\widehat{g(\theta)} = g(\hat{\theta})$$
+
+The MLE of a function of a parameter is that function of the MLE.
+:::
+
+. . .
+
+**Example:** If $\hat{\mu} = \bar{X}$ and $\hat{\sigma} = \sqrt{\frac{1}{n}\sum(X_i-\bar{X})^2}$ are MLEs for normal parameters, then:
+
+-   MLE of $\sigma^2$ is $\hat{\sigma}^2$
+-   MLE of the coefficient of variation $\sigma/\mu$ is $\hat{\sigma}/\hat{\mu}$
+
+## Applying Invariance: Medical Example
+
+A clinical trial measures cholesterol levels (mg/dL). Assume normal distribution.
+
+```{r}
+cholesterol <- c(195, 210, 185, 220, 175, 230, 200, 188, 215, 205,
+                 192, 218, 182, 225, 198, 212, 190, 208, 178, 222)
+
+# MLEs for μ and σ
+mu_mle <- mean(cholesterol)
+sigma_mle <- sqrt(mean((cholesterol - mu_mle)^2))  # Note: dividing by n
+
+# By invariance, MLE of P(X > 240) is:
+prob_high <- 1 - pnorm(240, mean = mu_mle, sd = sigma_mle)
+
+cat("MLE of μ:", round(mu_mle, 2), "mg/dL\n")
+cat("MLE of σ:", round(sigma_mle, 2), "mg/dL\n")
+cat("MLE of P(cholesterol > 240):", round(prob_high, 4))
+```
+
+## Property 2: Consistency
+
+::: callout-important
+## Theorem
+Under general regularity conditions, MLEs are **consistent**:
+
+$$\hat{\theta} \xrightarrow{P} \theta \quad \text{as } n \to \infty$$
+
+The MLE converges in probability to the true parameter value.
+:::
+
+. . .
+
+**Intuition:** With more data, our estimate gets closer to the truth.
+
+## Demonstrating Consistency
+
+```{r}
+#| fig-height: 4.5
+true_lambda <- 0.5
+sample_sizes <- c(10, 30, 100, 300, 1000)
+
+consistency_sim <- map_dfr(sample_sizes, function(n) {
+  tibble(
+    n = n,
+    sim = 1:1000,
+    mle = map_dbl(sim, \(s) 1 / mean(rexp(n, rate = true_lambda)))
+  )
+})
+
+consistency_sim |> 
+  ggplot(aes(x = mle, fill = factor(n))) +
+  geom_histogram(bins = 40, alpha = 0.7) +
+  geom_vline(xintercept = true_lambda, color = "red", linewidth = 1.2) +
+  facet_wrap(~n, scales = "free_y", labeller = label_both) +
+  labs(title = "Consistency of Exponential MLE",
+       subtitle = "Distribution concentrates around true λ = 0.5 as n increases",
+       x = "MLE of λ", y = "Frequency") +
+  theme(legend.position = "none")
+```
+
+## Property 3: Asymptotic Normality & Efficiency
+
+::: callout-important
+## Theorem (Devore 7.4)
+Under regularity conditions, for large $n$:
+
+1.  $\hat{\theta}$ is **approximately unbiased**: $E(\hat{\theta}) \approx \theta$
+
+2.  $\hat{\theta}$ is **approximately normal**: $\hat{\theta} \dot{\sim} N(\theta, \text{Var}(\hat{\theta}))$
+
+3.  $\hat{\theta}$ is **asymptotically efficient**: It achieves (approximately) the smallest possible variance among all unbiased estimators.
+:::
+
+. . .
+
+**In practice:** For large samples, the MLE is approximately the MVUE!
+
+## Comparing MLE and MME
+
+When do they agree? When do they differ?
+
+| Distribution | MLE | MME | Same? |
+|--------------|-----|-----|-------|
+| Bernoulli($p$) | $\bar{X}$ | $\bar{X}$ | ✓ |
+| Exponential($\lambda$) | $1/\bar{X}$ | $1/\bar{X}$ | ✓ |
+| Normal($\mu$, $\sigma^2$) | $\bar{X}$, $\frac{1}{n}\sum(X_i-\bar{X})^2$ | $\bar{X}$, $\frac{1}{n}\sum(X_i-\bar{X})^2$ | ✓ |
+| Uniform[0, $\theta$] | $\max(X_i)$ | $2\bar{X}$ | ✗ |
+| Weibull | Numerical | Different | ✗ |
+
+## When MLE ≠ MME: Which is Better?
+
+For Uniform[0, $\theta$]:
+
+```{r}
+theta <- 10
+n <- 20
+n_sims <- 5000
+
+uniform_comparison <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    data = map(sim, \(s) runif(n, 0, theta)),
+    mle = map_dbl(data, max),
+    mme = map_dbl(data, \(d) 2 * mean(d))
+  )
+
+uniform_comparison |> 
+  summarize(
+    `MLE Bias` = mean(mle) - theta,
+    `MME Bias` = mean(mme) - theta,
+    `MLE Variance` = var(mle),
+    `MME Variance` = var(mme),
+    `MLE MSE` = mean((mle - theta)^2),
+    `MME MSE` = mean((mme - theta)^2)
+  ) |> 
+  pivot_longer(everything()) |> 
+  mutate(value = round(value, 4))
+```
+
+**The MLE has smaller MSE** despite being biased!
+
+## Visualizing MLE vs MME
+
+```{r}
+#| echo: false
+#| fig-height: 5
+uniform_comparison |> 
+  select(mle, mme) |> 
+  pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
+  mutate(Estimator = toupper(Estimator)) |> 
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(bins = 40, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = theta, color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "MLE vs MME for Uniform[0, θ]",
+       subtitle = str_glue("True θ = {theta}; MLE is biased but has lower variance"),
+       x = "Estimate", y = "Frequency") +
+  scale_fill_manual(values = c("steelblue", "darkgreen")) +
+  theme(legend.position = "top")
+```
+
+## Computing MLEs in R
+
+**Using built-in functions:**
+
+```{r}
+# For distributions with known MLEs
+normal_data <- rnorm(100, mean = 50, sd = 10)
+cat("Normal MLE for μ:", mean(normal_data), "\n")
+cat("Normal MLE for σ:", sd(normal_data) * sqrt((100-1)/100))
+```
+
+. . .
+
+**Using optimization for complex cases:**
+
+```{r}
+# General approach: maximize log-likelihood
+neg_log_lik <- function(lambda, data) {
+  -sum(dexp(data, rate = lambda, log = TRUE))
+}
+
+exp_data <- rexp(50, rate = 0.5)
+result <- optimize(neg_log_lik, interval = c(0.01, 5), data = exp_data)
+cat("\nExponential MLE for λ:", round(result$minimum, 4))
+```
+
+## Medical Application: Survival Analysis
+
+Cancer survival times are often modeled with exponential or Weibull distributions.
+
+```{r}
+# Survival times (months) for 40 patients
+survival_times <- c(8.2, 15.3, 12.1, 6.8, 22.5, 9.4, 18.7, 11.3, 7.5, 25.1,
+                    14.2, 10.8, 5.3, 19.6, 13.4, 8.9, 16.2, 11.7, 6.1, 21.3,
+                    12.8, 9.1, 17.5, 7.8, 24.2, 10.3, 14.9, 8.4, 20.1, 11.9,
+                    6.5, 18.3, 13.1, 9.7, 15.8, 7.2, 22.8, 12.4, 8.1, 19.2)
+
+# Fit exponential distribution
+lambda_mle <- 1 / mean(survival_times)
+
+# Estimated survival probability at 12 months
+surv_12 <- exp(-lambda_mle * 12)
+
+cat("MLE of λ:", round(lambda_mle, 4), "per month\n")
+cat("Estimated median survival:", round(log(2)/lambda_mle, 1), "months\n")
+cat("Estimated P(survive > 12 months):", round(surv_12, 3))
+```
+
+## Fitting More Complex Models
+
+```{r}
+#| message: false
+# Using MASS package for Weibull MLE
+library(MASS)
+
+# Fit Weibull distribution to survival data
+weibull_fit <- fitdistr(survival_times, "weibull")
+print(weibull_fit)
+
+# Compare fits
+cat("\nExponential mean:", round(1/lambda_mle, 2), "months\n")
+cat("Weibull mean:", round(weibull_fit$estimate["scale"] * 
+    gamma(1 + 1/weibull_fit$estimate["shape"]), 2), "months")
+```
+
+## Your Turn: MLE Practice
+
+**Exercise:** A diagnostic test is administered to 80 patients. 64 test positive. Assuming the number positive follows a Binomial distribution, find:
+
+1.  The MLE of the sensitivity $p$
+2.  The MLE of the odds of a positive result, $p/(1-p)$
+3.  The MLE of $P(\text{at least 60 positive in next 80 patients})$
+
+. . .
+
+**Solutions:**
+
+1.  $\hat{p} = 64/80 = 0.80$
+2.  By invariance: $\widehat{p/(1-p)} = 0.80/0.20 = 4.0$
+3.  By invariance: $\widehat{P(X \ge 60)} = P(X \ge 60 | p = 0.80)$
+
+```{r}
+1 - pbinom(59, size = 80, prob = 0.80)  # P(X >= 60)
+```
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## MLE Summary Table
+
+| Aspect | Description |
+|--------|-------------|
+| **Definition** | $\hat{\theta} = \arg\max L(\theta)$ |
+| **Method** | Maximize likelihood (or log-likelihood) |
+| **Invariance** | MLE of $g(\theta)$ is $g(\hat{\theta})$ |
+| **Consistency** | $\hat{\theta} \to \theta$ as $n \to \infty$ |
+| **Efficiency** | Approximately MVUE for large $n$ |
+| **Bias** | May be biased for small $n$ |
+
+## Lesson 4 Summary
+
+**Key Concepts:**
+
+1.  **Likelihood Function:** $L(\theta) = \prod f(x_i; \theta)$
+    -   Probability of observed data as function of parameters
+
+2.  **Log-Likelihood:** $\ell(\theta) = \sum \ln f(x_i; \theta)$
+    -   Easier to maximize; same solution
+
+3.  **MLE Properties:**
+    -   Invariance, consistency, asymptotic normality
+    -   Approximately unbiased and efficient for large $n$
+
+4.  **MLE vs MME:**
+    -   Often the same; MLE usually more efficient when different
+
+## Lesson 4 Practice Problems
+
+1.  **(Devore 7.25)** Derive the MLE for the parameter $\theta$ of the pdf $f(x; \theta) = (\theta+1)x^\theta$, $0 \le x \le 1$.
+
+2.  **(Devore 7.31)** For normal measurement errors with known mean 0, derive the MLE of the variance $\sigma^2$.
+
+3.  **(Devore 7.34)** For the shifted exponential $f(x; \lambda, \theta) = \lambda e^{-\lambda(x-\theta)}$, $x \ge \theta$, find the MLEs of both parameters.
+
+4.  **Medical Application:** In a vaccine trial, 45 out of 50 participants develop antibodies. Find the MLE of the seroconversion rate and construct an approximate 95% CI using the asymptotic normality of the MLE.
+
+## Homework Problems (Devore et al.)
+
+::: nonincremental
+**From Chapter 7:**
+
+-   Exercise 7.27: MLE derivation and application
+-   Exercise 7.29: Poisson MLE
+-   Exercise 7.31: Normal variance MLE
+-   Exercise 7.32: Gamma MLE equations
+-   Exercise 7.35: Exponential with censoring
+:::
+
+## Looking Ahead
+
+**Upcoming Topics:**
+
+-   Sufficient statistics (Chapter 7.3)
+-   Fisher Information (Chapter 7.4)
+-   Large-sample properties of MLEs
+-   Confidence intervals (Chapter 8)
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 7.2
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape docs/lessons/04_MLE/04_MLE.html lessons/04_MLE/04_MLE.pdf
+```
