@@ -1,0 +1,1632 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jessica Minnier">
+<meta name="dcterms.date" content="2026-01-07">
+
+<title>Lesson 2: Point Estimation; Bias, Variance, and MSE – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lesson-2-point-estimation" id="toc-lesson-2-point-estimation" class="nav-link active" data-scroll-target="#lesson-2-point-estimation">Lesson 2: Point Estimation</a>
+  <ul class="collapse">
+  <li><a href="#review-where-we-left-off" id="toc-review-where-we-left-off" class="nav-link" data-scroll-target="#review-where-we-left-off">Review: Where We Left Off</a></li>
+  </ul></li>
+  <li><a href="#point-estimation-core-concepts" id="toc-point-estimation-core-concepts" class="nav-link" data-scroll-target="#point-estimation-core-concepts">Point Estimation: Core Concepts</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-point-estimator-devore-7.1" id="toc-what-is-a-point-estimator-devore-7.1" class="nav-link" data-scroll-target="#what-is-a-point-estimator-devore-7.1">What is a Point Estimator? (Devore 7.1)</a></li>
+  <li><a href="#key-distinction-estimator-vs.-estimate" id="toc-key-distinction-estimator-vs.-estimate" class="nav-link" data-scroll-target="#key-distinction-estimator-vs.-estimate">Key Distinction: Estimator vs.&nbsp;Estimate</a></li>
+  <li><a href="#the-sampling-distribution-revisited" id="toc-the-sampling-distribution-revisited" class="nav-link" data-scroll-target="#the-sampling-distribution-revisited">The Sampling Distribution (Revisited)</a></li>
+  <li><a href="#what-makes-a-good-estimator" id="toc-what-makes-a-good-estimator" class="nav-link" data-scroll-target="#what-makes-a-good-estimator">What Makes a Good Estimator?</a></li>
+  </ul></li>
+  <li><a href="#bias-measuring-accuracy" id="toc-bias-measuring-accuracy" class="nav-link" data-scroll-target="#bias-measuring-accuracy">Bias: Measuring Accuracy</a>
+  <ul class="collapse">
+  <li><a href="#bias-formal-definition" id="toc-bias-formal-definition" class="nav-link" data-scroll-target="#bias-formal-definition">Bias: Formal Definition</a></li>
+  <li><a href="#worked-example-proving-sample-mean-is-unbiased" id="toc-worked-example-proving-sample-mean-is-unbiased" class="nav-link" data-scroll-target="#worked-example-proving-sample-mean-is-unbiased">Worked Example: Proving Sample Mean is Unbiased</a></li>
+  <li><a href="#worked-example-sample-proportion" id="toc-worked-example-sample-proportion" class="nav-link" data-scroll-target="#worked-example-sample-proportion">Worked Example: Sample Proportion</a></li>
+  <li><a href="#concrete-calculation-bias-of-sample-proportion" id="toc-concrete-calculation-bias-of-sample-proportion" class="nav-link" data-scroll-target="#concrete-calculation-bias-of-sample-proportion">Concrete Calculation: Bias of Sample Proportion</a></li>
+  <li><a href="#simulation-verifying-unbiasedness" id="toc-simulation-verifying-unbiasedness" class="nav-link" data-scroll-target="#simulation-verifying-unbiasedness">Simulation: Verifying Unbiasedness</a></li>
+  <li><a href="#a-biased-estimator-the-maximum" id="toc-a-biased-estimator-the-maximum" class="nav-link" data-scroll-target="#a-biased-estimator-the-maximum">A Biased Estimator: The Maximum</a></li>
+  <li><a href="#calculating-the-bias-mathematically" id="toc-calculating-the-bias-mathematically" class="nav-link" data-scroll-target="#calculating-the-bias-mathematically">Calculating the Bias Mathematically</a></li>
+  <li><a href="#your-turn-calculate-bias" id="toc-your-turn-calculate-bias" class="nav-link" data-scroll-target="#your-turn-calculate-bias">Your Turn: Calculate Bias</a></li>
+  <li><a href="#simulation-visualizing-the-biased-estimator" id="toc-simulation-visualizing-the-biased-estimator" class="nav-link" data-scroll-target="#simulation-visualizing-the-biased-estimator">Simulation: Visualizing the Biased Estimator</a></li>
+  <li><a href="#visualizing-the-biased-estimator" id="toc-visualizing-the-biased-estimator" class="nav-link" data-scroll-target="#visualizing-the-biased-estimator">Visualizing the Biased Estimator</a></li>
+  <li><a href="#correcting-the-bias" id="toc-correcting-the-bias" class="nav-link" data-scroll-target="#correcting-the-bias">Correcting the Bias</a></li>
+  <li><a href="#your-turn-apply-the-correction" id="toc-your-turn-apply-the-correction" class="nav-link" data-scroll-target="#your-turn-apply-the-correction">Your Turn: Apply the Correction</a></li>
+  </ul></li>
+  <li><a href="#standard-error-measuring-precision" id="toc-standard-error-measuring-precision" class="nav-link" data-scroll-target="#standard-error-measuring-precision">Standard Error: Measuring Precision</a>
+  <ul class="collapse">
+  <li><a href="#standard-error-definition" id="toc-standard-error-definition" class="nav-link" data-scroll-target="#standard-error-definition">Standard Error: Definition</a></li>
+  <li><a href="#worked-example-standard-error-of-sample-mean" id="toc-worked-example-standard-error-of-sample-mean" class="nav-link" data-scroll-target="#worked-example-standard-error-of-sample-mean">Worked Example: Standard Error of Sample Mean</a></li>
+  <li><a href="#your-turn-calculate-standard-error" id="toc-your-turn-calculate-standard-error" class="nav-link" data-scroll-target="#your-turn-calculate-standard-error">Your Turn: Calculate Standard Error</a></li>
+  <li><a href="#the-problem-with-unknown-parameters" id="toc-the-problem-with-unknown-parameters" class="nav-link" data-scroll-target="#the-problem-with-unknown-parameters">The Problem with Unknown Parameters</a></li>
+  <li><a href="#example-estimated-standard-error" id="toc-example-estimated-standard-error" class="nav-link" data-scroll-target="#example-estimated-standard-error">Example: Estimated Standard Error</a></li>
+  </ul></li>
+  <li><a href="#mean-squared-error" id="toc-mean-squared-error" class="nav-link" data-scroll-target="#mean-squared-error">Mean Squared Error</a>
+  <ul class="collapse">
+  <li><a href="#mean-squared-error-combining-bias-and-variance" id="toc-mean-squared-error-combining-bias-and-variance" class="nav-link" data-scroll-target="#mean-squared-error-combining-bias-and-variance">Mean Squared Error: Combining Bias and Variance</a></li>
+  <li><a href="#proving-the-mse-formula" id="toc-proving-the-mse-formula" class="nav-link" data-scroll-target="#proving-the-mse-formula">Proving the MSE Formula</a></li>
+  <li><a href="#worked-example-computing-mse" id="toc-worked-example-computing-mse" class="nav-link" data-scroll-target="#worked-example-computing-mse">Worked Example: Computing MSE</a></li>
+  <li><a href="#your-turn-calculate-mse" id="toc-your-turn-calculate-mse" class="nav-link" data-scroll-target="#your-turn-calculate-mse">Your Turn: Calculate MSE</a></li>
+  </ul></li>
+  <li><a href="#the-bias-variance-tradeoff" id="toc-the-bias-variance-tradeoff" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff">The Bias-Variance Tradeoff</a>
+  <ul class="collapse">
+  <li><a href="#the-bias-variance-tradeoff-1" id="toc-the-bias-variance-tradeoff-1" class="nav-link" data-scroll-target="#the-bias-variance-tradeoff-1">The Bias-Variance Tradeoff</a></li>
+  <li><a href="#comparing-proportion-estimators-theory" id="toc-comparing-proportion-estimators-theory" class="nav-link" data-scroll-target="#comparing-proportion-estimators-theory">Comparing Proportion Estimators: Theory</a></li>
+  <li><a href="#your-turn-calculate-bias-of-add-two-estimator" id="toc-your-turn-calculate-bias-of-add-two-estimator" class="nav-link" data-scroll-target="#your-turn-calculate-bias-of-add-two-estimator">Your Turn: Calculate Bias of Add-Two Estimator</a></li>
+  <li><a href="#simulation-comparing-the-estimators" id="toc-simulation-comparing-the-estimators" class="nav-link" data-scroll-target="#simulation-comparing-the-estimators">Simulation: Comparing the Estimators</a></li>
+  <li><a href="#visualizing-the-tradeoff" id="toc-visualizing-the-tradeoff" class="nav-link" data-scroll-target="#visualizing-the-tradeoff">Visualizing the Tradeoff</a></li>
+  <li><a href="#mse-comparison-across-different-true-values" id="toc-mse-comparison-across-different-true-values" class="nav-link" data-scroll-target="#mse-comparison-across-different-true-values">MSE Comparison Across Different True Values</a></li>
+  <li><a href="#medical-application-disease-prevalence" id="toc-medical-application-disease-prevalence" class="nav-link" data-scroll-target="#medical-application-disease-prevalence">Medical Application: Disease Prevalence</a></li>
+  <li><a href="#sample-variance-why-n-1" id="toc-sample-variance-why-n-1" class="nav-link" data-scroll-target="#sample-variance-why-n-1">Sample Variance: Why n-1?</a></li>
+  <li><a href="#simulation-comparing-variance-estimators" id="toc-simulation-comparing-variance-estimators" class="nav-link" data-scroll-target="#simulation-comparing-variance-estimators">Simulation: Comparing Variance Estimators</a></li>
+  <li><a href="#your-turn-comprehensive-example" id="toc-your-turn-comprehensive-example" class="nav-link" data-scroll-target="#your-turn-comprehensive-example">Your Turn: Comprehensive Example</a></li>
+  </ul></li>
+  <li><a href="#summary-and-looking-ahead" id="toc-summary-and-looking-ahead" class="nav-link" data-scroll-target="#summary-and-looking-ahead">Summary and Looking Ahead</a>
+  <ul class="collapse">
+  <li><a href="#putting-it-all-together-estimator-summary" id="toc-putting-it-all-together-estimator-summary" class="nav-link" data-scroll-target="#putting-it-all-together-estimator-summary">Putting It All Together: Estimator Summary</a></li>
+  <li><a href="#lesson-2-summary" id="toc-lesson-2-summary" class="nav-link" data-scroll-target="#lesson-2-summary">Lesson 2 Summary</a></li>
+  <li><a href="#lesson-2-practice-problems" id="toc-lesson-2-practice-problems" class="nav-link" data-scroll-target="#lesson-2-practice-problems">Lesson 2 Practice Problems</a></li>
+  <li><a href="#next-week-preview" id="toc-next-week-preview" class="nav-link" data-scroll-target="#next-week-preview">Next Week Preview</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions?</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="02_Point_Estimation.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lesson 2: Point Estimation; Bias, Variance, and MSE</h1>
+<p class="subtitle lead">BSTA 551: Statistical Inference</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jessica Minnier </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">January 7, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="lesson-2-point-estimation" class="level1">
+<h1>Lesson 2: Point Estimation</h1>
+<section id="review-where-we-left-off" class="level2">
+<h2 class="anchored" data-anchor-id="review-where-we-left-off">Review: Where We Left Off</h2>
+<p><strong>Key concepts from Lesson 1:</strong></p>
+<ul>
+<li>Population vs.&nbsp;sample; parameters vs.&nbsp;statistics</li>
+<li>Sampling distributions</li>
+<li><span class="math inline">\(E(\bar{X}) = \mu\)</span> and <span class="math inline">\(\text{Var}(\bar{X}) = \sigma^2/n\)</span></li>
+<li>Numerical optimization with <code>optimize()</code></li>
+</ul>
+<p>. . .</p>
+<p><strong>Today’s Goals:</strong></p>
+<ul>
+<li>Define point estimators formally</li>
+<li>Understand bias and how to calculate it</li>
+<li>Learn about standard error and precision</li>
+<li>Introduce Mean Squared Error (MSE)</li>
+<li>Explore the bias-variance tradeoff</li>
+</ul>
+</section>
+</section>
+<section id="point-estimation-core-concepts" class="level1" data-background-color="#27ae60">
+<h1 data-background-color="#27ae60">Point Estimation: Core Concepts</h1>
+<section id="what-is-a-point-estimator-devore-7.1" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-point-estimator-devore-7.1">What is a Point Estimator? (Devore 7.1)</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definitions
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>A <strong>parameter</strong> is a fixed (but unknown) characteristic of a population (e.g., <span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>, <span class="math inline">\(p\)</span>)</li>
+<li>An <strong>estimator</strong> is a rule/formula for calculating an estimate from sample data</li>
+<li>An <strong>estimate</strong> is the actual number you calculate from a specific sample</li>
+</ul>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Example:</strong></p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 46%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Concept</th>
+<th>Symbol</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Parameter</td>
+<td><span class="math inline">\(\mu\)</span></td>
+<td>True mean BP reduction</td>
+</tr>
+<tr class="even">
+<td>Estimator</td>
+<td><span class="math inline">\(\bar{X} = \frac{1}{n}\sum X_i\)</span></td>
+<td>The formula “sample mean”</td>
+</tr>
+<tr class="odd">
+<td>Estimate</td>
+<td><span class="math inline">\(\bar{x} = 11.2\)</span></td>
+<td>The number from our data</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="key-distinction-estimator-vs.-estimate" class="level2">
+<h2 class="anchored" data-anchor-id="key-distinction-estimator-vs.-estimate">Key Distinction: Estimator vs.&nbsp;Estimate</h2>
+<p><strong>Estimator:</strong> A random variable (before data is collected)</p>
+<ul>
+<li><span class="math inline">\(\bar{X}\)</span> is a function of random variables <span class="math inline">\(X_1, \ldots, X_n\)</span></li>
+<li>Has a sampling distribution</li>
+<li>Can calculate <span class="math inline">\(E(\bar{X})\)</span>, <span class="math inline">\(\text{Var}(\bar{X})\)</span></li>
+</ul>
+<p>. . .</p>
+<p><strong>Estimate:</strong> A specific number (after data is collected)</p>
+<ul>
+<li><span class="math inline">\(\bar{x} = 11.2\)</span> is a specific value</li>
+<li>Just one realization from the sampling distribution</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Think of it like this: the estimator is the recipe; the estimate is what you get when you cook it with specific ingredients.</p>
+</div>
+</div>
+</section>
+<section id="the-sampling-distribution-revisited" class="level2">
+<h2 class="anchored" data-anchor-id="the-sampling-distribution-revisited">The Sampling Distribution (Revisited)</h2>
+<p>Different samples give different estimates. The <strong>sampling distribution</strong> describes this variability.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Sample</th>
+<th style="text-align: right;">Sample Mean (x̄)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">9.90</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">10.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">10.03</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10.85</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">9.17</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">9.31</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<p>Each sample gives a <strong>different estimate</strong>, but they cluster around the true value <span class="math inline">\(\mu = 10\)</span>.</p>
+</section>
+<section id="what-makes-a-good-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="what-makes-a-good-estimator">What Makes a Good Estimator?</h2>
+<p>We want estimators that are:</p>
+<ol type="1">
+<li><strong>Accurate</strong> (unbiased): On average, hits the true value</li>
+<li><strong>Precise</strong> (low variance): Estimates are clustered together</li>
+<li><strong>Efficient</strong>: Best combination of accuracy and precision</li>
+</ol>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Point_Estimation_files/figure-revealjs/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="bias-measuring-accuracy" class="level1" data-background-color="#8e44ad">
+<h1 data-background-color="#8e44ad">Bias: Measuring Accuracy</h1>
+<section id="bias-formal-definition" class="level2">
+<h2 class="anchored" data-anchor-id="bias-formal-definition">Bias: Formal Definition</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>bias</strong> of an estimator <span class="math inline">\(\hat{\theta}\)</span> is: <span class="math display">\[\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta\]</span></p>
+<p>An estimator is <strong>unbiased</strong> if <span class="math inline">\(\text{Bias}(\hat{\theta}) = 0\)</span>, i.e., <span class="math inline">\(E(\hat{\theta}) = \theta\)</span>.</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li>Bias measures systematic error</li>
+<li>Positive bias = tends to overestimate</li>
+<li>Negative bias = tends to underestimate</li>
+<li>Zero bias = correct on average</li>
+</ul>
+</section>
+<section id="worked-example-proving-sample-mean-is-unbiased" class="level2">
+<h2 class="anchored" data-anchor-id="worked-example-proving-sample-mean-is-unbiased">Worked Example: Proving Sample Mean is Unbiased</h2>
+<p><strong>Claim:</strong> The sample mean <span class="math inline">\(\bar{X}\)</span> is an unbiased estimator of <span class="math inline">\(\mu\)</span>.</p>
+<p><strong>Proof:</strong> We need to show <span class="math inline">\(E(\bar{X}) = \mu\)</span>.</p>
+<p>. . .</p>
+<p><span class="math display">\[\text{Bias}(\bar{X}) = E(\bar{X}) - \mu\]</span></p>
+<p>. . .</p>
+<p>We already showed that <span class="math inline">\(E(\bar{X}) = \mu\)</span>, so:</p>
+<p><span class="math display">\[\text{Bias}(\bar{X}) = \mu - \mu = 0 \checkmark\]</span></p>
+<p>. . .</p>
+<p><strong>Conclusion:</strong> The sample mean is unbiased for estimating the population mean.</p>
+</section>
+<section id="worked-example-sample-proportion" class="level2">
+<h2 class="anchored" data-anchor-id="worked-example-sample-proportion">Worked Example: Sample Proportion</h2>
+<p><strong>Setup:</strong> In a vaccine trial, <span class="math inline">\(X\)</span> patients out of <span class="math inline">\(n\)</span> develop immunity. The estimator is <span class="math inline">\(\hat{p} = X/n\)</span>.</p>
+<p><strong>Claim:</strong> <span class="math inline">\(\hat{p}\)</span> is unbiased for the true immunity rate <span class="math inline">\(p\)</span>.</p>
+<p>. . .</p>
+<p><strong>Proof:</strong> Since <span class="math inline">\(X \sim \text{Binomial}(n, p)\)</span>, we know <span class="math inline">\(E(X) = np\)</span>.</p>
+<p><span class="math display">\[E(\hat{p}) = E\left(\frac{X}{n}\right) = \frac{1}{n} E(X) = \frac{1}{n} \cdot np = p\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\text{Bias}(\hat{p}) = E(\hat{p}) - p = p - p = 0 \checkmark\]</span></p>
+</section>
+<section id="concrete-calculation-bias-of-sample-proportion" class="level2">
+<h2 class="anchored" data-anchor-id="concrete-calculation-bias-of-sample-proportion">Concrete Calculation: Bias of Sample Proportion</h2>
+<p><strong>Data:</strong> In a study of 80 patients, 52 showed improvement.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">52</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample proportion:"</span>, p_hat, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample proportion: 0.65 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"If true p = 0.65, what is the bias of this single estimate?</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>If true p = 0.65, what is the bias of this single estimate?</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observed - True ="</span>, p_hat <span class="sc">-</span> <span class="fl">0.65</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed - True = 0</code></pre>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Important distinction:</strong></p>
+<ul>
+<li>A single estimate can be above or below the true value</li>
+<li><strong>Bias</strong> refers to the average behavior across many samples</li>
+<li>An unbiased estimator still gives wrong answers for individual samples!</li>
+</ul>
+</section>
+<section id="simulation-verifying-unbiasedness" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-verifying-unbiasedness">Simulation: Verifying Unbiasedness</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify that sample proportion is unbiased</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>true_p <span class="ot">&lt;-</span> <span class="fl">0.65</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>n_patients <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>n_simulations <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>proportion_simulation <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_simulations) <span class="sc">|&gt;</span> </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">successes =</span> <span class="fu">rbinom</span>(n_simulations, <span class="at">size =</span> n_patients, <span class="at">prob =</span> true_p),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_hat =</span> successes <span class="sc">/</span> n_patients</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>proportion_simulation <span class="sc">|&gt;</span> </span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">true_p =</span> true_p,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_of_estimates =</span> <span class="fu">mean</span>(p_hat),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">empirical_bias =</span> <span class="fu">mean</span>(p_hat) <span class="sc">-</span> true_p</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  true_p mean_of_estimates empirical_bias
+   &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;
+1   0.65             0.650      -0.000182</code></pre>
+</div>
+</div>
+<p>The bias is essentially zero (just simulation noise)!</p>
+</section>
+<section id="a-biased-estimator-the-maximum" class="level2">
+<h2 class="anchored" data-anchor-id="a-biased-estimator-the-maximum">A Biased Estimator: The Maximum</h2>
+<p><strong>Problem:</strong> Estimate the upper bound <span class="math inline">\(\theta\)</span> of a Uniform[0, <span class="math inline">\(\theta\)</span>] distribution.</p>
+<p><strong>Natural idea:</strong> Use the largest observation: <span class="math inline">\(\hat{\theta} = \max(X_1, \ldots, X_n)\)</span></p>
+<p>. . .</p>
+<p><strong>Think about it:</strong> Can this estimator ever <em>overestimate</em> <span class="math inline">\(\theta\)</span>?</p>
+<p>. . .</p>
+<p><strong>No!</strong> The sample maximum is always ≤ the population maximum.</p>
+<p>This means the estimator is <strong>biased low</strong>.</p>
+</section>
+<section id="calculating-the-bias-mathematically" class="level2">
+<h2 class="anchored" data-anchor-id="calculating-the-bias-mathematically">Calculating the Bias Mathematically</h2>
+<p>For <span class="math inline">\(X_1, \ldots, X_n \sim \text{Uniform}[0, \theta]\)</span>, it can be shown that:</p>
+<p><span class="math display">\[E(\max(X_1, \ldots, X_n)) = \frac{n}{n+1} \theta\]</span></p>
+<p>. . .</p>
+<p><strong>Bias calculation:</strong></p>
+<p><span class="math display">\[\text{Bias} = E(\hat{\theta}) - \theta = \frac{n}{n+1}\theta - \theta = -\frac{\theta}{n+1}\]</span></p>
+<p>. . .</p>
+<p><strong>Example:</strong> If <span class="math inline">\(\theta = 10\)</span> and <span class="math inline">\(n = 5\)</span>:</p>
+<p><span class="math display">\[\text{Bias} = -\frac{10}{6} = -1.67\]</span></p>
+<p>The estimator underestimates by about 1.67 on average.</p>
+</section>
+<section id="your-turn-calculate-bias" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-calculate-bias">Your Turn: Calculate Bias</h2>
+<p><strong>Exercise:</strong> A lab instrument has a maximum detection limit <span class="math inline">\(\theta\)</span>. We take <span class="math inline">\(n = 9\)</span> measurements from Uniform[0, <span class="math inline">\(\theta\)</span>] and use the maximum as our estimate.</p>
+<ol type="1">
+<li>If <span class="math inline">\(\theta = 100\)</span>, what is <span class="math inline">\(E(\hat{\theta})\)</span>?</li>
+<li>What is the bias?</li>
+<li>By what percentage does this estimator underestimate on average?</li>
+</ol>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<ol type="1">
+<li><span class="math inline">\(E(\hat{\theta}) = \frac{9}{10} \times 100 = 90\)</span></li>
+<li><span class="math inline">\(\text{Bias} = 90 - 100 = -10\)</span></li>
+<li>Underestimates by <span class="math inline">\(\frac{10}{100} = 10\%\)</span></li>
+</ol>
+</section>
+<section id="simulation-visualizing-the-biased-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-visualizing-the-biased-estimator">Simulation: Visualizing the Biased Estimator</h2>
+<div class="cell" data-output-location="slide">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>true_theta <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>max_simulation <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sims) <span class="sc">|&gt;</span> </span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_estimate =</span> <span class="fu">map_dbl</span>(sim, \(s) <span class="fu">max</span>(<span class="fu">runif</span>(n, <span class="dv">0</span>, true_theta)))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate empirical bias</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>max_simulation <span class="sc">|&gt;</span> </span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">theoretical_E =</span> n <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">*</span> true_theta,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">empirical_mean =</span> <span class="fu">mean</span>(max_estimate),</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">theoretical_bias =</span> <span class="sc">-</span>true_theta <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">1</span>),</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">empirical_bias =</span> <span class="fu">mean</span>(max_estimate) <span class="sc">-</span> true_theta</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 4
+  theoretical_E empirical_mean theoretical_bias empirical_bias
+          &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;
+1            90           90.3              -10          -9.70</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-biased-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-biased-estimator">Visualizing the Biased Estimator</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Point_Estimation_files/figure-revealjs/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="correcting-the-bias" class="level2">
+<h2 class="anchored" data-anchor-id="correcting-the-bias">Correcting the Bias</h2>
+<p><strong>Idea:</strong> Multiply by a correction factor to “un-bias” the estimator.</p>
+<p>Since <span class="math inline">\(E(\max) = \frac{n}{n+1}\theta\)</span>, we can define:</p>
+<p><span class="math display">\[\hat{\theta}_{\text{unbiased}} = \frac{n+1}{n} \cdot \max(X_1, \ldots, X_n)\]</span></p>
+<p>. . .</p>
+<p><strong>Check:</strong></p>
+<p><span class="math display">\[E(\hat{\theta}_{\text{unbiased}}) = \frac{n+1}{n} \cdot E(\max) = \frac{n+1}{n} \cdot \frac{n}{n+1}\theta = \theta \checkmark\]</span></p>
+</section>
+<section id="your-turn-apply-the-correction" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-apply-the-correction">Your Turn: Apply the Correction</h2>
+<p><strong>Exercise:</strong> Using the lab instrument example with <span class="math inline">\(n = 9\)</span> and <span class="math inline">\(\theta = 100\)</span>:</p>
+<ol type="1">
+<li>If you observe <span class="math inline">\(\max = 92\)</span>, what is the biased estimate?</li>
+<li>What is the unbiased estimate?</li>
+</ol>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<ol type="1">
+<li>Biased estimate: <span class="math inline">\(\hat{\theta}_b = 92\)</span></li>
+<li>Unbiased estimate: <span class="math inline">\(\hat{\theta}_u = \frac{10}{9} \times 92 = 102.2\)</span></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>observed_max <span class="ot">&lt;-</span> <span class="dv">92</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">9</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>biased_est <span class="ot">&lt;-</span> observed_max</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>unbiased_est <span class="ot">&lt;-</span> (n <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> n <span class="sc">*</span> observed_max</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Biased estimate:"</span>, biased_est, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Biased estimate: 92 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unbiased estimate:"</span>, <span class="fu">round</span>(unbiased_est, <span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unbiased estimate: 102.2</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="standard-error-measuring-precision" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Standard Error: Measuring Precision</h1>
+<section id="standard-error-definition" class="level2">
+<h2 class="anchored" data-anchor-id="standard-error-definition">Standard Error: Definition</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>standard error</strong> of an estimator is its standard deviation: <span class="math display">\[SE(\hat{\theta}) = \sqrt{\text{Var}(\hat{\theta})}\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Key Standard Errors:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Estimator</th>
+<th>Standard Error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Sample mean <span class="math inline">\(\bar{X}\)</span></td>
+<td><span class="math inline">\(\frac{\sigma}{\sqrt{n}}\)</span></td>
+</tr>
+<tr class="even">
+<td>Sample proportion <span class="math inline">\(\hat{p}\)</span></td>
+<td><span class="math inline">\(\sqrt{\frac{p(1-p)}{n}}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="worked-example-standard-error-of-sample-mean" class="level2">
+<h2 class="anchored" data-anchor-id="worked-example-standard-error-of-sample-mean">Worked Example: Standard Error of Sample Mean</h2>
+<p><strong>Problem:</strong> In a blood pressure study, the population SD is <span class="math inline">\(\sigma = 15\)</span> mmHg. Calculate the standard error of <span class="math inline">\(\bar{X}\)</span> for sample sizes <span class="math inline">\(n = 25\)</span> and <span class="math inline">\(n = 100\)</span>.</p>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<p>For <span class="math inline">\(n = 25\)</span>: <span class="math display">\[SE(\bar{X}) = \frac{15}{\sqrt{25}} = \frac{15}{5} = 3 \text{ mmHg}\]</span></p>
+<p>For <span class="math inline">\(n = 100\)</span>: <span class="math display">\[SE(\bar{X}) = \frac{15}{\sqrt{100}} = \frac{15}{10} = 1.5 \text{ mmHg}\]</span></p>
+<p>. . .</p>
+<p><strong>Interpretation:</strong> With 100 patients, our estimate is twice as precise as with 25 patients.</p>
+</section>
+<section id="your-turn-calculate-standard-error" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-calculate-standard-error">Your Turn: Calculate Standard Error</h2>
+<p><strong>Exercise:</strong> A survey measures patient satisfaction on a 0-100 scale. The population standard deviation is <span class="math inline">\(\sigma = 20\)</span>.</p>
+<ol type="1">
+<li>What is the SE of <span class="math inline">\(\bar{X}\)</span> for <span class="math inline">\(n = 16\)</span> patients?</li>
+<li>What sample size is needed to achieve <span class="math inline">\(SE = 2\)</span>?</li>
+</ol>
+<p>. . .</p>
+<p><strong>Solutions:</strong></p>
+<ol type="1">
+<li><p><span class="math inline">\(SE = \frac{20}{\sqrt{16}} = \frac{20}{4} = 5\)</span></p></li>
+<li><p>We need <span class="math inline">\(\frac{20}{\sqrt{n}} = 2\)</span>, so <span class="math inline">\(\sqrt{n} = 10\)</span>, thus <span class="math inline">\(n = 100\)</span></p></li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Problem 1</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>se_n16 <span class="ot">&lt;-</span> sigma <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="dv">16</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Problem 2</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>n_needed <span class="ot">&lt;-</span> (sigma <span class="sc">/</span> <span class="dv">2</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SE for n=16:"</span>, se_n16, <span class="st">"</span><span class="sc">\n</span><span class="st">Sample size for SE=2:"</span>, n_needed)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE for n=16: 5 
+Sample size for SE=2: 100</code></pre>
+</div>
+</div>
+</section>
+<section id="the-problem-with-unknown-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="the-problem-with-unknown-parameters">The Problem with Unknown Parameters</h2>
+<p><strong>Issue:</strong> Standard errors often involve unknown parameters!</p>
+<ul>
+<li>SE of <span class="math inline">\(\bar{X}\)</span> requires knowing <span class="math inline">\(\sigma\)</span></li>
+<li>SE of <span class="math inline">\(\hat{p}\)</span> requires knowing <span class="math inline">\(p\)</span></li>
+</ul>
+<p>. . .</p>
+<p><strong>Solution:</strong> <strong>Estimated standard error</strong> — substitute estimates for unknown parameters</p>
+<p><span class="math display">\[\widehat{SE}(\bar{X}) = \frac{s}{\sqrt{n}}\]</span></p>
+<p><span class="math display">\[\widehat{SE}(\hat{p}) = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\]</span></p>
+</section>
+<section id="example-estimated-standard-error" class="level2">
+<h2 class="anchored" data-anchor-id="example-estimated-standard-error">Example: Estimated Standard Error</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Blood pressure data from 25 patients</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>bp_reductions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">10</span>, <span class="dv">7</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">16</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">7</span>, <span class="dv">12</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>                   <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">13</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(bp_reductions)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>x_bar <span class="ot">&lt;-</span> <span class="fu">mean</span>(bp_reductions)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(bp_reductions)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimated standard error</span></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>se_estimated <span class="ot">&lt;-</span> s <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">Statistic =</span> <span class="fu">c</span>(<span class="st">"Sample Mean"</span>, <span class="st">"Sample SD"</span>, <span class="st">"Sample Size"</span>, <span class="st">"Estimated SE"</span>),</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(x_bar, <span class="fu">round</span>(s, <span class="dv">2</span>), n, <span class="fu">round</span>(se_estimated, <span class="dv">2</span>))</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  Statistic    Value
+  &lt;chr&gt;        &lt;dbl&gt;
+1 Sample Mean  11.3 
+2 Sample SD     2.64
+3 Sample Size  25   
+4 Estimated SE  0.53</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="mean-squared-error" class="level1" data-background-color="#e74c3c">
+<h1 data-background-color="#e74c3c">Mean Squared Error</h1>
+<section id="mean-squared-error-combining-bias-and-variance" class="level2">
+<h2 class="anchored" data-anchor-id="mean-squared-error-combining-bias-and-variance">Mean Squared Error: Combining Bias and Variance</h2>
+<p>What if we have to choose between a biased estimator with low variance and an unbiased estimator with high variance?</p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Definition: Mean Squared Error
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\text{MSE}(\hat{\theta}) = E[(\hat{\theta} - \theta)^2]\]</span></p>
+<p><strong>Key Formula:</strong> <span class="math display">\[\text{MSE} = \text{Variance} + \text{Bias}^2\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>MSE captures total error</strong> — both systematic (bias) and random (variance).</p>
+</section>
+<section id="proving-the-mse-formula" class="level2">
+<h2 class="anchored" data-anchor-id="proving-the-mse-formula">Proving the MSE Formula</h2>
+<p><span class="math display">\[\text{MSE}(\hat{\theta}) = E[(\hat{\theta} - \theta)^2]\]</span></p>
+<p>. . .</p>
+<p>Add and subtract <span class="math inline">\(E(\hat{\theta})\)</span>:</p>
+<p><span class="math display">\[= E[(\hat{\theta} - E(\hat{\theta}) + E(\hat{\theta}) - \theta)^2]\]</span></p>
+<p>. . .</p>
+<p>Expand the square:</p>
+<p><span class="math display">\[= E[(\hat{\theta} - E(\hat{\theta}))^2] + 2E[(\hat{\theta} - E(\hat{\theta}))](E(\hat{\theta}) - \theta) + (E(\hat{\theta}) - \theta)^2\]</span></p>
+<p>. . .</p>
+<p>The middle term equals zero because <span class="math inline">\(E[\hat{\theta} - E(\hat{\theta})] = 0\)</span>:</p>
+<p><span class="math display">\[= \text{Var}(\hat{\theta}) + [\text{Bias}(\hat{\theta})]^2\]</span></p>
+</section>
+<section id="worked-example-computing-mse" class="level2">
+<h2 class="anchored" data-anchor-id="worked-example-computing-mse">Worked Example: Computing MSE</h2>
+<p><strong>Setup:</strong> Estimating <span class="math inline">\(\theta\)</span> from Uniform[0, <span class="math inline">\(\theta\)</span>] with <span class="math inline">\(n = 9\)</span> and <span class="math inline">\(\theta = 100\)</span>.</p>
+<p><strong>Biased estimator:</strong> <span class="math inline">\(\hat{\theta}_b = \max(X_i)\)</span></p>
+<p>From theory:</p>
+<ul>
+<li><span class="math inline">\(E(\hat{\theta}_b) = \frac{9}{10}(100) = 90\)</span></li>
+<li><span class="math inline">\(\text{Var}(\hat{\theta}_b) = \frac{n \theta^2}{(n+1)^2(n+2)} = \frac{9 \times 100^2}{100 \times 11} = 81.82\)</span></li>
+</ul>
+<p>. . .</p>
+<p><span class="math display">\[\text{Bias} = 90 - 100 = -10\]</span> <span class="math display">\[\text{MSE} = 81.82 + (-10)^2 = 81.82 + 100 = 181.82\]</span></p>
+</section>
+<section id="your-turn-calculate-mse" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-calculate-mse">Your Turn: Calculate MSE</h2>
+<p><strong>Exercise:</strong> For the <strong>unbiased</strong> estimator <span class="math inline">\(\hat{\theta}_u = \frac{n+1}{n}\max(X_i)\)</span> with <span class="math inline">\(n = 9\)</span> and <span class="math inline">\(\theta = 100\)</span>:</p>
+<ol type="1">
+<li>What is the bias?</li>
+<li>If <span class="math inline">\(\text{Var}(\hat{\theta}_u) = 101.01\)</span>, what is the MSE?</li>
+<li>Which estimator has lower MSE: biased or unbiased?</li>
+</ol>
+<p>. . .</p>
+<p><strong>Solutions:</strong></p>
+<ol type="1">
+<li>Bias = 0 (it’s unbiased!)</li>
+<li><span class="math inline">\(\text{MSE} = 101.01 + 0^2 = 101.01\)</span></li>
+<li>Unbiased has lower MSE (101.01 &lt; 181.82)</li>
+</ol>
+<p>But this isn’t always the case!</p>
+</section>
+</section>
+<section id="the-bias-variance-tradeoff" class="level1" data-background-color="#8e44ad">
+<h1 data-background-color="#8e44ad">The Bias-Variance Tradeoff</h1>
+<section id="the-bias-variance-tradeoff-1" class="level2">
+<h2 class="anchored" data-anchor-id="the-bias-variance-tradeoff-1">The Bias-Variance Tradeoff</h2>
+<p>Sometimes a <strong>biased</strong> estimator has <strong>lower MSE</strong> than an unbiased one!</p>
+<p>. . .</p>
+<p><strong>Example:</strong> Estimating a proportion <span class="math inline">\(p\)</span> with <span class="math inline">\(n = 20\)</span> observations</p>
+<p><strong>Estimator 1:</strong> Standard: <span class="math inline">\(\hat{p}_1 = \frac{X}{n}\)</span> (unbiased)</p>
+<p><strong>Estimator 2:</strong> “Add-two”: <span class="math inline">\(\hat{p}_2 = \frac{X + 2}{n + 4}\)</span> (biased toward 0.5)</p>
+</section>
+<section id="comparing-proportion-estimators-theory" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-proportion-estimators-theory">Comparing Proportion Estimators: Theory</h2>
+<p>For <span class="math inline">\(\hat{p}_1 = X/n\)</span> (standard):</p>
+<ul>
+<li>Bias = 0</li>
+<li>Variance = <span class="math inline">\(\frac{p(1-p)}{n}\)</span></li>
+<li>MSE = <span class="math inline">\(\frac{p(1-p)}{n}\)</span></li>
+</ul>
+<p>. . .</p>
+<p>For <span class="math inline">\(\hat{p}_2 = \frac{X+2}{n+4}\)</span> (add-two):</p>
+<ul>
+<li>Bias = <span class="math inline">\(\frac{2 - 4p}{n+4}\)</span></li>
+<li>Variance = <span class="math inline">\(\frac{np(1-p)}{(n+4)^2}\)</span></li>
+<li>MSE = Variance + Bias²</li>
+</ul>
+</section>
+<section id="your-turn-calculate-bias-of-add-two-estimator" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-calculate-bias-of-add-two-estimator">Your Turn: Calculate Bias of Add-Two Estimator</h2>
+<p><strong>Exercise:</strong> For <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(p = 0.3\)</span>:</p>
+<ol type="1">
+<li>Calculate the bias of <span class="math inline">\(\hat{p}_2 = \frac{X+2}{n+4}\)</span></li>
+</ol>
+<p><strong>Hint:</strong> <span class="math inline">\(E(X) = np\)</span> for binomial, so <span class="math inline">\(E(\hat{p}_2) = \frac{np + 2}{n + 4}\)</span></p>
+<p>. . .</p>
+<p><strong>Solution:</strong></p>
+<p><span class="math display">\[E(\hat{p}_2) = \frac{20(0.3) + 2}{24} = \frac{8}{24} = 0.333\]</span></p>
+<p><span class="math display">\[\text{Bias} = 0.333 - 0.3 = 0.033\]</span></p>
+<p>The add-two estimator is biased <strong>toward 0.5</strong> (and 0.333 is closer to 0.5 than 0.3 is).</p>
+</section>
+<section id="simulation-comparing-the-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-comparing-the-estimators">Simulation: Comparing the Estimators</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1"></a>true_p <span class="ot">&lt;-</span> <span class="fl">0.3</span></span>
+<span id="cb19-2"><a href="#cb19-2"></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb19-3"><a href="#cb19-3"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb19-4"><a href="#cb19-4"></a></span>
+<span id="cb19-5"><a href="#cb19-5"></a><span class="co"># Simulate both estimators</span></span>
+<span id="cb19-6"><a href="#cb19-6"></a>comparison_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sims) <span class="sc">|&gt;</span> </span>
+<span id="cb19-7"><a href="#cb19-7"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-8"><a href="#cb19-8"></a>    <span class="at">x =</span> <span class="fu">rbinom</span>(n_sims, <span class="at">size =</span> n, <span class="at">prob =</span> true_p),</span>
+<span id="cb19-9"><a href="#cb19-9"></a>    <span class="at">p_hat_standard =</span> x <span class="sc">/</span> n,</span>
+<span id="cb19-10"><a href="#cb19-10"></a>    <span class="at">p_hat_addtwo =</span> (x <span class="sc">+</span> <span class="dv">2</span>) <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">4</span>)</span>
+<span id="cb19-11"><a href="#cb19-11"></a>  )</span>
+<span id="cb19-12"><a href="#cb19-12"></a></span>
+<span id="cb19-13"><a href="#cb19-13"></a><span class="co"># Compare MSE</span></span>
+<span id="cb19-14"><a href="#cb19-14"></a>comparison_sim <span class="sc">|&gt;</span> </span>
+<span id="cb19-15"><a href="#cb19-15"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb19-16"><a href="#cb19-16"></a>    <span class="st">`</span><span class="at">Standard Bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(p_hat_standard) <span class="sc">-</span> true_p,</span>
+<span id="cb19-17"><a href="#cb19-17"></a>    <span class="st">`</span><span class="at">Add-Two Bias</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(p_hat_addtwo) <span class="sc">-</span> true_p,</span>
+<span id="cb19-18"><a href="#cb19-18"></a>    <span class="st">`</span><span class="at">Standard Variance</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">var</span>(p_hat_standard),</span>
+<span id="cb19-19"><a href="#cb19-19"></a>    <span class="st">`</span><span class="at">Add-Two Variance</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">var</span>(p_hat_addtwo),</span>
+<span id="cb19-20"><a href="#cb19-20"></a>    <span class="st">`</span><span class="at">Standard MSE</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>((p_hat_standard <span class="sc">-</span> true_p)<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb19-21"><a href="#cb19-21"></a>    <span class="st">`</span><span class="at">Add-Two MSE</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>((p_hat_addtwo <span class="sc">-</span> true_p)<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb19-22"><a href="#cb19-22"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb19-23"><a href="#cb19-23"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Metric"</span>, <span class="at">values_to =</span> <span class="st">"Value"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb19-24"><a href="#cb19-24"></a>  <span class="fu">mutate</span>(<span class="at">Value =</span> <span class="fu">round</span>(Value, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  Metric              Value
+  &lt;chr&gt;               &lt;dbl&gt;
+1 Standard Bias     0.00049
+2 Add-Two Bias      0.0337 
+3 Standard Variance 0.0104 
+4 Add-Two Variance  0.00722
+5 Standard MSE      0.0104 
+6 Add-Two MSE       0.00835</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-tradeoff" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-the-tradeoff">Visualizing the Tradeoff</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Point_Estimation_files/figure-revealjs/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="mse-comparison-across-different-true-values" class="level2">
+<h2 class="anchored" data-anchor-id="mse-comparison-across-different-true-values">MSE Comparison Across Different True Values</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="02_Point_Estimation_files/figure-revealjs/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key Insight:</strong> The “best” estimator depends on the true parameter value!</p>
+</section>
+<section id="medical-application-disease-prevalence" class="level2">
+<h2 class="anchored" data-anchor-id="medical-application-disease-prevalence">Medical Application: Disease Prevalence</h2>
+<p><strong>Scenario:</strong> Estimating prevalence of a rare disease (<span class="math inline">\(p \approx 0.05\)</span>) vs.&nbsp;a common condition (<span class="math inline">\(p \approx 0.5\)</span>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare MSE at different prevalence levels</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>mse_at_p <span class="ot">&lt;-</span> <span class="cf">function</span>(p, n) {</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  mse_std <span class="ot">&lt;-</span> p <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>p) <span class="sc">/</span> n</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>  bias_add2 <span class="ot">&lt;-</span> (<span class="dv">2</span> <span class="sc">-</span> <span class="dv">4</span><span class="sc">*</span>p) <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">4</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  var_add2 <span class="ot">&lt;-</span> n <span class="sc">*</span> p <span class="sc">*</span> (<span class="dv">1</span><span class="sc">-</span>p) <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">4</span>)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>  mse_add2 <span class="ot">&lt;-</span> var_add2 <span class="sc">+</span> bias_add2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">p =</span> p, <span class="at">MSE_Standard =</span> mse_std, <span class="at">MSE_AddTwo =</span> mse_add2,</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>         <span class="at">Better =</span> <span class="fu">ifelse</span>(mse_std <span class="sc">&lt;</span> mse_add2, <span class="st">"Standard"</span>, <span class="st">"Add-Two"</span>))</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="fu">bind_rows</span>(</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mse_at_p</span>(<span class="fl">0.05</span>, n),</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mse_at_p</span>(<span class="fl">0.50</span>, n)</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> </span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">5</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 4
+      p MSE_Standard MSE_AddTwo Better  
+  &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt; &lt;chr&gt;   
+1  0.05      0.00095    0.00193 Standard
+2  0.5       0.005      0.00429 Add-Two </code></pre>
+</div>
+</div>
+</section>
+<section id="sample-variance-why-n-1" class="level2">
+<h2 class="anchored" data-anchor-id="sample-variance-why-n-1">Sample Variance: Why n-1?</h2>
+<p>Two formulas for sample variance:</p>
+<p><span class="math display">\[S^2 = \frac{\sum(X_i - \bar{X})^2}{n-1} \quad \text{vs.} \quad \tilde{S}^2 = \frac{\sum(X_i - \bar{X})^2}{n}\]</span></p>
+<p>. . .</p>
+<p><strong>Question:</strong> Why do we divide by <span class="math inline">\(n-1\)</span> instead of <span class="math inline">\(n\)</span>?</p>
+<p><strong>Answer:</strong> Dividing by <span class="math inline">\(n\)</span> gives a biased estimator!</p>
+</section>
+<section id="simulation-comparing-variance-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="simulation-comparing-variance-estimators">Simulation: Comparing Variance Estimators</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>true_variance <span class="ot">&lt;-</span> <span class="dv">100</span>  <span class="co"># σ² = 100</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>variance_sim <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sims) <span class="sc">|&gt;</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">sample_data =</span> <span class="fu">map</span>(sim, \(s) <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fu">sqrt</span>(true_variance))),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">s2_n_minus_1 =</span> <span class="fu">map_dbl</span>(sample_data, var),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">s2_n =</span> <span class="fu">map_dbl</span>(sample_data, \(x) <span class="fu">sum</span>((x <span class="sc">-</span> <span class="fu">mean</span>(x))<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> n)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>variance_sim <span class="sc">|&gt;</span> </span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">True σ²</span><span class="st">`</span> <span class="ot">=</span> true_variance,</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">E[S² with n-1]</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(s2_n_minus_1),</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">E[S² with n]</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(s2_n),</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bias (n-1)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(s2_n_minus_1) <span class="sc">-</span> true_variance,</span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Bias (n)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">mean</span>(s2_n) <span class="sc">-</span> true_variance</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span> </span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.numeric), \(x) <span class="fu">round</span>(x, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  `True σ²` `E[S² with n-1]` `E[S² with n]` `Bias (n-1)` `Bias (n)`
+      &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;
+1       100             100.           90.1         0.15      -9.86</code></pre>
+</div>
+</div>
+</section>
+<section id="your-turn-comprehensive-example" class="level2">
+<h2 class="anchored" data-anchor-id="your-turn-comprehensive-example">Your Turn: Comprehensive Example</h2>
+<p><strong>Exercise:</strong> A clinical trial measures cholesterol reduction. Based on <span class="math inline">\(n = 36\)</span> patients:</p>
+<ul>
+<li>Sample mean: <span class="math inline">\(\bar{x} = 25\)</span> mg/dL</li>
+<li>Sample SD: <span class="math inline">\(s = 12\)</span> mg/dL</li>
+</ul>
+<p>Calculate:</p>
+<ol type="1">
+<li>The estimated standard error of <span class="math inline">\(\bar{X}\)</span></li>
+<li>If the true mean reduction is <span class="math inline">\(\mu = 24\)</span>, and we repeated this trial many times, what would be the expected MSE of <span class="math inline">\(\bar{X}\)</span>?</li>
+</ol>
+<p>. . .</p>
+<p><strong>Solutions:</strong></p>
+<ol type="1">
+<li><p><span class="math inline">\(\widehat{SE} = \frac{12}{\sqrt{36}} = 2\)</span> mg/dL</p></li>
+<li><p><span class="math inline">\(\bar{X}\)</span> is unbiased, so <span class="math inline">\(\text{MSE} = \text{Var}(\bar{X}) = \frac{\sigma^2}{n} \approx \frac{144}{36} = 4\)</span></p></li>
+</ol>
+</section>
+</section>
+<section id="summary-and-looking-ahead" class="level1" data-background-color="#3498db">
+<h1 data-background-color="#3498db">Summary and Looking Ahead</h1>
+<section id="putting-it-all-together-estimator-summary" class="level2">
+<h2 class="anchored" data-anchor-id="putting-it-all-together-estimator-summary">Putting It All Together: Estimator Summary</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 56%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Formula</th>
+<th>Interpretation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bias</td>
+<td><span class="math inline">\(E(\hat{\theta}) - \theta\)</span></td>
+<td>Systematic error</td>
+</tr>
+<tr class="even">
+<td>Variance</td>
+<td><span class="math inline">\(E[(\hat{\theta} - E(\hat{\theta}))^2]\)</span></td>
+<td>Random variability</td>
+</tr>
+<tr class="odd">
+<td>Std Error</td>
+<td><span class="math inline">\(\sqrt{\text{Var}(\hat{\theta})}\)</span></td>
+<td>Typical deviation</td>
+</tr>
+<tr class="even">
+<td>MSE</td>
+<td><span class="math inline">\(\text{Var} + \text{Bias}^2\)</span></td>
+<td>Total error</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Guidelines for Choosing Estimators
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Unbiasedness is desirable but not always essential</li>
+<li>Lower variance/SE means more precision</li>
+<li>MSE provides a single criterion combining both</li>
+<li>Sometimes biased estimators have lower MSE!</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="lesson-2-summary" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-2-summary">Lesson 2 Summary</h2>
+<p><strong>Key Concepts:</strong></p>
+<ol type="1">
+<li><strong>Point Estimators:</strong> Rules for calculating estimates from data
+<ul>
+<li>Estimator = random variable; estimate = specific value</li>
+</ul></li>
+<li><strong>Bias:</strong> <span class="math inline">\(\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta\)</span>
+<ul>
+<li>Unbiased if <span class="math inline">\(E(\hat{\theta}) = \theta\)</span></li>
+<li>Can sometimes correct biased estimators</li>
+</ul></li>
+<li><strong>Standard Error:</strong> <span class="math inline">\(SE(\hat{\theta}) = \sqrt{\text{Var}(\hat{\theta})}\)</span>
+<ul>
+<li>Measures precision of the estimator</li>
+</ul></li>
+<li><strong>Mean Squared Error:</strong> <span class="math inline">\(\text{MSE} = \text{Var} + \text{Bias}^2\)</span>
+<ul>
+<li>Captures total estimation error</li>
+<li>Bias-variance tradeoff: sometimes biased is better!</li>
+</ul></li>
+</ol>
+</section>
+<section id="lesson-2-practice-problems" class="level2">
+<h2 class="anchored" data-anchor-id="lesson-2-practice-problems">Lesson 2 Practice Problems</h2>
+<ol type="1">
+<li><p>For a Uniform[0, <span class="math inline">\(\theta\)</span>] distribution with <span class="math inline">\(n = 20\)</span> observations and <span class="math inline">\(\theta = 50\)</span>, calculate:</p>
+<ul>
+<li>The expected value of the maximum</li>
+<li>The bias of using the maximum as an estimator</li>
+<li>The corrected unbiased estimator</li>
+</ul></li>
+<li><p>Using simulation, compare the MSE of the standard proportion estimator vs.&nbsp;the add-two estimator for <span class="math inline">\(n = 10\)</span> and <span class="math inline">\(p = 0.1, 0.3, 0.5\)</span>.</p></li>
+<li><p>For a sample of size <span class="math inline">\(n\)</span> from Exponential(<span class="math inline">\(\lambda\)</span>), the MLE is <span class="math inline">\(\hat{\lambda} = 1/\bar{X}\)</span>. It can be shown that <span class="math inline">\(E(\hat{\lambda}) = \frac{n}{n-1}\lambda\)</span>. Calculate the bias and propose an unbiased estimator.</p></li>
+</ol>
+</section>
+<section id="next-week-preview" class="level2">
+<h2 class="anchored" data-anchor-id="next-week-preview">Next Week Preview</h2>
+<p><strong>Week 2: Minimum Variance Unbiased Estimators</strong></p>
+<ul>
+<li>Among all unbiased estimators, which has smallest variance?</li>
+<li>The Cramér-Rao lower bound</li>
+<li>Efficiency of estimators</li>
+<li>Introduction to Maximum Likelihood Estimation</li>
+</ul>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div class="nonincremental">
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Chapter 7.1</li>
+<li>Chihara and Hesterberg. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapter 6.</li>
+</ul>
+</div>
+</section>
+<section id="questions" class="level2 center" data-background-color="#3498db">
+<h2 class="center anchored" data-background-color="#3498db" data-anchor-id="questions">Questions?</h2>
+<p>Thank you!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+
+<script>
+  // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+  // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+  // slide changes (different for each slide format).
+  (function () {
+    // dispatch for htmlwidgets
+    function fireSlideEnter() {
+      const event = window.document.createEvent("Event");
+      event.initEvent("slideenter", true, true);
+      window.document.dispatchEvent(event);
+    }
+
+    function fireSlideChanged(previousSlide, currentSlide) {
+      fireSlideEnter();
+
+      // dispatch for shiny
+      if (window.jQuery) {
+        if (previousSlide) {
+          window.jQuery(previousSlide).trigger("hidden");
+        }
+        if (currentSlide) {
+          window.jQuery(currentSlide).trigger("shown");
+        }
+      }
+    }
+
+    // hookup for slidy
+    if (window.w3c_slidy) {
+      window.w3c_slidy.add_observer(function (slide_num) {
+        // slide_num starts at position 1
+        fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+      });
+    }
+
+  })();
+</script>
+
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
