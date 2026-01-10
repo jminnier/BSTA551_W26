@@ -1151,29 +1151,29 @@
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#review-where-we-left-off",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#review-where-we-left-off",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
-    "section": "",
-    "text": "Key concepts from Lesson 1:\n\nPopulation vs. sample; parameters vs. statistics\nSampling distributions\n\\(E(\\bar{X}) = \\mu\\) and \\(\\text{Var}(\\bar{X}) = \\sigma^2/n\\)\nNumerical optimization with optimize()\n\n. . .\nToday’s Goals:\n\nDefine point estimators formally\nUnderstand bias and how to calculate it\nLearn about standard error and precision\nIntroduce Mean Squared Error (MSE)\nExplore the bias-variance tradeoff"
+    "section": "Review: Where We Left Off",
+    "text": "Review: Where We Left Off\nKey concepts from Lesson 1:\n\nPopulation vs. sample; parameters vs. statistics\nSampling distributions\n\\(E(\\bar{X}) = \\mu\\) and \\(\\text{Var}(\\bar{X}) = \\sigma^2/n\\)\nNumerical optimization with optimize()\n\n\nToday’s Goals:\n\nDefine point estimators formally\nUnderstand bias and how to calculate it\nLearn about standard error and precision\nIntroduce Mean Squared Error (MSE)\nExplore the bias-variance tradeoff"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#what-is-a-point-estimator-devore-7.1",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#what-is-a-point-estimator-devore-7.1",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "What is a Point Estimator? (Devore 7.1)",
-    "text": "What is a Point Estimator? (Devore 7.1)\n\n\n\n\n\n\nDefinitions\n\n\n\n\nA parameter is a fixed (but unknown) characteristic of a population (e.g., \\(\\mu\\), \\(\\sigma\\), \\(p\\))\nAn estimator is a rule/formula for calculating an estimate from sample data\nAn estimate is the actual number you calculate from a specific sample\n\n\n\n. . .\nExample:\n\n\n\n\n\n\n\n\nConcept\nSymbol\nExample\n\n\n\n\nParameter\n\\(\\mu\\)\nTrue mean BP reduction\n\n\nEstimator\n\\(\\bar{X} = \\frac{1}{n}\\sum X_i\\)\nThe formula “sample mean”\n\n\nEstimate\n\\(\\bar{x} = 11.2\\)\nThe number from our data"
+    "text": "What is a Point Estimator? (Devore 7.1)\n\n\n\n\n\n\nDefinitions\n\n\n\nA parameter is a fixed (but unknown) characteristic of a population (e.g., \\(\\mu\\), \\(\\sigma\\), \\(p\\))\nAn estimator is a rule/formula for calculating an estimate from sample data\nAn estimate is the actual number you calculate from a specific sample\n\n\n\n\n\nExample:\n\n\n\n\n\n\n\n\nConcept\nSymbol\nExample\n\n\n\n\nParameter\n\\(\\mu\\)\nTrue mean BP reduction\n\n\nEstimator\n\\(\\bar{X} = \\frac{1}{n}\\sum X_i\\)\nThe formula “sample mean”\n\n\nEstimate\n\\(\\bar{x} = 11.2\\)\nThe number from our data"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#key-distinction-estimator-vs.-estimate",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#key-distinction-estimator-vs.-estimate",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Key Distinction: Estimator vs. Estimate",
-    "text": "Key Distinction: Estimator vs. Estimate\nEstimator: A random variable (before data is collected)\n\n\\(\\bar{X}\\) is a function of random variables \\(X_1, \\ldots, X_n\\)\nHas a sampling distribution\nCan calculate \\(E(\\bar{X})\\), \\(\\text{Var}(\\bar{X})\\)\n\n. . .\nEstimate: A specific number (after data is collected)\n\n\\(\\bar{x} = 11.2\\) is a specific value\nJust one realization from the sampling distribution\n\n. . .\n\n\n\n\n\n\nTip\n\n\n\nThink of it like this: the estimator is the recipe; the estimate is what you get when you cook it with specific ingredients."
+    "text": "Key Distinction: Estimator vs. Estimate\nEstimator: A random variable (before data is collected)\n\n\\(\\bar{X}\\) is a function of random variables \\(X_1, \\ldots, X_n\\)\nHas a sampling distribution\nCan calculate \\(E(\\bar{X})\\), \\(\\text{Var}(\\bar{X})\\)\n\n\nEstimate: A specific number (after data is collected)\n\n\\(\\bar{x} = 11.2\\) is a specific value\nJust one realization from the sampling distribution\n\n\n\n\n\n\n\n\n\nTip\n\n\nThink of it like this: the estimator is the recipe; the estimate is what you get when you cook it with specific ingredients."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-sampling-distribution-revisited",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-sampling-distribution-revisited",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "The Sampling Distribution (Revisited)",
-    "text": "The Sampling Distribution (Revisited)\nDifferent samples give different estimates. The sampling distribution describes this variability.\n\n\n\n\n\nSample\nSample Mean (x̄)\n\n\n\n\n1\n9.90\n\n\n2\n10.31\n\n\n3\n10.03\n\n\n4\n10.85\n\n\n5\n9.17\n\n\n6\n9.31\n\n\n\n\n\n. . .\nEach sample gives a different estimate, but they cluster around the true value \\(\\mu = 10\\)."
+    "text": "The Sampling Distribution (Revisited)\nDifferent samples give different estimates. The sampling distribution describes this variability.\n\n\n\n\n\nSample\nSample Mean (x̄)\n\n\n\n\n1\n9.90\n\n\n2\n10.31\n\n\n3\n10.03\n\n\n4\n10.85\n\n\n5\n9.17\n\n\n6\n9.31\n\n\n\n\n\n\nEach sample gives a different estimate, but they cluster around the true value \\(\\mu = 10\\)."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#what-makes-a-good-estimator",
@@ -1187,63 +1187,63 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#bias-formal-definition",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Bias: Formal Definition",
-    "text": "Bias: Formal Definition\n\n\n\n\n\n\nDefinition\n\n\n\nThe bias of an estimator \\(\\hat{\\theta}\\) is: \\[\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\]\nAn estimator is unbiased if \\(\\text{Bias}(\\hat{\\theta}) = 0\\), i.e., \\(E(\\hat{\\theta}) = \\theta\\).\n\n\n. . .\nInterpretation:\n\nBias measures systematic error\nPositive bias = tends to overestimate\nNegative bias = tends to underestimate\nZero bias = correct on average"
+    "text": "Bias: Formal Definition\n\n\n\n\n\n\nDefinition\n\n\nThe bias of an estimator \\(\\hat{\\theta}\\) is: \\[\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\]\nAn estimator is unbiased if \\(\\text{Bias}(\\hat{\\theta}) = 0\\), i.e., \\(E(\\hat{\\theta}) = \\theta\\).\n\n\n\n\nInterpretation:\n\nBias measures systematic error\nPositive bias = tends to overestimate\nNegative bias = tends to underestimate\nZero bias = correct on average"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-proving-sample-mean-is-unbiased",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-proving-sample-mean-is-unbiased",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Worked Example: Proving Sample Mean is Unbiased",
-    "text": "Worked Example: Proving Sample Mean is Unbiased\nClaim: The sample mean \\(\\bar{X}\\) is an unbiased estimator of \\(\\mu\\).\nProof: We need to show \\(E(\\bar{X}) = \\mu\\).\n. . .\n\\[\\text{Bias}(\\bar{X}) = E(\\bar{X}) - \\mu\\]\n. . .\nWe already showed that \\(E(\\bar{X}) = \\mu\\), so:\n\\[\\text{Bias}(\\bar{X}) = \\mu - \\mu = 0 \\checkmark\\]\n. . .\nConclusion: The sample mean is unbiased for estimating the population mean."
+    "text": "Worked Example: Proving Sample Mean is Unbiased\nClaim: The sample mean \\(\\bar{X}\\) is an unbiased estimator of \\(\\mu\\).\nProof: We need to show \\(E(\\bar{X}) = \\mu\\).\n\n\\[\\text{Bias}(\\bar{X}) = E(\\bar{X}) - \\mu\\]\n\n\nWe already showed that \\(E(\\bar{X}) = \\mu\\), so:\n\\[\\text{Bias}(\\bar{X}) = \\mu - \\mu = 0 \\checkmark\\]\n\n\nConclusion: The sample mean is unbiased for estimating the population mean."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-sample-proportion",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-sample-proportion",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Worked Example: Sample Proportion",
-    "text": "Worked Example: Sample Proportion\nSetup: In a vaccine trial, \\(X\\) patients out of \\(n\\) develop immunity. The estimator is \\(\\hat{p} = X/n\\).\nClaim: \\(\\hat{p}\\) is unbiased for the true immunity rate \\(p\\).\n. . .\nProof: Since \\(X \\sim \\text{Binomial}(n, p)\\), we know \\(E(X) = np\\).\n\\[E(\\hat{p}) = E\\left(\\frac{X}{n}\\right) = \\frac{1}{n} E(X) = \\frac{1}{n} \\cdot np = p\\]\n. . .\n\\[\\text{Bias}(\\hat{p}) = E(\\hat{p}) - p = p - p = 0 \\checkmark\\]"
+    "text": "Worked Example: Sample Proportion\nSetup: In a vaccine trial, \\(X\\) patients out of \\(n\\) develop immunity. The estimator is \\(\\hat{p} = X/n\\).\nClaim: \\(\\hat{p}\\) is unbiased for the true immunity rate \\(p\\).\n\nProof: Since \\(X \\sim \\text{Binomial}(n, p)\\), we know \\(E(X) = np\\).\n\\[E(\\hat{p}) = E\\left(\\frac{X}{n}\\right) = \\frac{1}{n} E(X) = \\frac{1}{n} \\cdot np = p\\]\n\n\n\\[\\text{Bias}(\\hat{p}) = E(\\hat{p}) - p = p - p = 0 \\checkmark\\]"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#concrete-calculation-bias-of-sample-proportion",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#concrete-calculation-bias-of-sample-proportion",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Concrete Calculation: Bias of Sample Proportion",
-    "text": "Concrete Calculation: Bias of Sample Proportion\nData: In a study of 80 patients, 52 showed improvement.\n\nn &lt;- 80\nx &lt;- 52\np_hat &lt;- x / n\n\ncat(\"Sample proportion:\", p_hat, \"\\n\")\n\nSample proportion: 0.65 \n\ncat(\"If true p = 0.65, what is the bias of this single estimate?\\n\")\n\nIf true p = 0.65, what is the bias of this single estimate?\n\ncat(\"Observed - True =\", p_hat - 0.65)\n\nObserved - True = 0\n\n\n. . .\nImportant distinction:\n\nA single estimate can be above or below the true value\nBias refers to the average behavior across many samples\nAn unbiased estimator still gives wrong answers for individual samples!"
+    "text": "Concrete Calculation: Bias of Sample Proportion\nData: In a study of 80 patients, 52 showed improvement.\n\nn &lt;- 80\nx &lt;- 52\np_hat &lt;- x / n\n\ncat(\"Sample proportion:\", p_hat, \"\\n\")\n\nSample proportion: 0.65 \n\ncat(\"If true p = 0.65, what is the bias of this single estimate?\\n\")\n\nIf true p = 0.65, what is the bias of this single estimate?\n\ncat(\"Observed - True =\", p_hat - 0.65)\n\nObserved - True = 0\n\n\n\nImportant distinction:\n\nA single estimate can be above or below the true value\nBias refers to the average behavior across many samples\nAn unbiased estimator still gives wrong answers for individual samples!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-verifying-unbiasedness",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-verifying-unbiasedness",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Simulation: Verifying Unbiasedness",
-    "text": "Simulation: Verifying Unbiasedness\n\n# Verify that sample proportion is unbiased\ntrue_p &lt;- 0.65\nn_patients &lt;- 80\nn_simulations &lt;- 10000\n\nproportion_simulation &lt;- tibble(sim = 1:n_simulations) |&gt; \n  mutate(\n    successes = rbinom(n_simulations, size = n_patients, prob = true_p),\n    p_hat = successes / n_patients\n  )\n\nproportion_simulation |&gt; \n  summarize(\n    true_p = true_p,\n    mean_of_estimates = mean(p_hat),\n    empirical_bias = mean(p_hat) - true_p\n  )\n\n# A tibble: 1 × 3\n  true_p mean_of_estimates empirical_bias\n   &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;\n1   0.65             0.650      -0.000182\n\n\nThe bias is essentially zero (just simulation noise)!"
+    "text": "Simulation: Verifying Unbiasedness\n\n# Verify that sample proportion is unbiased\ntrue_p &lt;- 0.65\nn_patients &lt;- 80\nn_simulations &lt;- 10000\n\nproportion_simulation &lt;- tibble(sim = 1:n_simulations) |&gt; \n  mutate(\n    successes = rbinom(n_simulations, size = n_patients, prob = true_p),\n    p_hat = successes / n_patients\n  )\n\nproportion_simulation |&gt; \n  summarize(\n    true_p = true_p,\n    mean_of_estimates = mean(p_hat),\n    empirical_bias = mean(p_hat) - true_p\n  )\n\n# A tibble: 1 × 3\n  true_p mean_of_estimates empirical_bias\n   &lt;dbl&gt;             &lt;dbl&gt;          &lt;dbl&gt;\n1   0.65             0.650      -0.000183\n\n\nThe bias is essentially zero (just simulation noise)!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#a-biased-estimator-the-maximum",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#a-biased-estimator-the-maximum",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "A Biased Estimator: The Maximum",
-    "text": "A Biased Estimator: The Maximum\nProblem: Estimate the upper bound \\(\\theta\\) of a Uniform[0, \\(\\theta\\)] distribution.\nNatural idea: Use the largest observation: \\(\\hat{\\theta} = \\max(X_1, \\ldots, X_n)\\)\n. . .\nThink about it: Can this estimator ever overestimate \\(\\theta\\)?\n. . .\nNo! The sample maximum is always ≤ the population maximum.\nThis means the estimator is biased low."
+    "text": "A Biased Estimator: The Maximum\nProblem: Estimate the upper bound \\(\\theta\\) of a Uniform[0, \\(\\theta\\)] distribution.\nNatural idea: Use the largest observation: \\(\\hat{\\theta} = \\max(X_1, \\ldots, X_n)\\)\n\nThink about it: Can this estimator ever overestimate \\(\\theta\\)?\n\n\nNo! The sample maximum is always ≤ the population maximum.\nThis means the estimator is biased low."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#calculating-the-bias-mathematically",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#calculating-the-bias-mathematically",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Calculating the Bias Mathematically",
-    "text": "Calculating the Bias Mathematically\nFor \\(X_1, \\ldots, X_n \\sim \\text{Uniform}[0, \\theta]\\), it can be shown that:\n\\[E(\\max(X_1, \\ldots, X_n)) = \\frac{n}{n+1} \\theta\\]\n. . .\nBias calculation:\n\\[\\text{Bias} = E(\\hat{\\theta}) - \\theta = \\frac{n}{n+1}\\theta - \\theta = -\\frac{\\theta}{n+1}\\]\n. . .\nExample: If \\(\\theta = 10\\) and \\(n = 5\\):\n\\[\\text{Bias} = -\\frac{10}{6} = -1.67\\]\nThe estimator underestimates by about 1.67 on average."
+    "text": "Calculating the Bias Mathematically\nFor \\(X_1, \\ldots, X_n \\sim \\text{Uniform}[0, \\theta]\\), it can be shown that:\n\\[E(\\max(X_1, \\ldots, X_n)) = \\frac{n}{n+1} \\theta\\]\n\nBias calculation:\n\\[\\text{Bias} = E(\\hat{\\theta}) - \\theta = \\frac{n}{n+1}\\theta - \\theta = -\\frac{\\theta}{n+1}\\]\n\n\nExample: If \\(\\theta = 10\\) and \\(n = 5\\):\n\\[\\text{Bias} = -\\frac{10}{6} = -1.67\\]\nThe estimator underestimates by about 1.67 on average."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-bias",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-bias",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Calculate Bias",
-    "text": "Your Turn: Calculate Bias\nExercise: A lab instrument has a maximum detection limit \\(\\theta\\). We take \\(n = 9\\) measurements from Uniform[0, \\(\\theta\\)] and use the maximum as our estimate.\n\nIf \\(\\theta = 100\\), what is \\(E(\\hat{\\theta})\\)?\nWhat is the bias?\nBy what percentage does this estimator underestimate on average?\n\n. . .\nSolution:\n\n\\(E(\\hat{\\theta}) = \\frac{9}{10} \\times 100 = 90\\)\n\\(\\text{Bias} = 90 - 100 = -10\\)\nUnderestimates by \\(\\frac{10}{100} = 10\\%\\)"
+    "text": "Your Turn: Calculate Bias\nExercise: A lab instrument has a maximum detection limit \\(\\theta\\). We take \\(n = 9\\) measurements from Uniform[0, \\(\\theta\\)] and use the maximum as our estimate.\n\nIf \\(\\theta = 100\\), what is \\(E(\\hat{\\theta})\\)?\nWhat is the bias?\nBy what percentage does this estimator underestimate on average?\n\n\nSolution:\n\n\\(E(\\hat{\\theta}) = \\frac{9}{10} \\times 100 = 90\\)\n\\(\\text{Bias} = 90 - 100 = -10\\)\nUnderestimates by \\(\\frac{10}{100} = 10\\%\\)"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-visualizing-the-biased-estimator",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-visualizing-the-biased-estimator",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Simulation: Visualizing the Biased Estimator",
-    "text": "Simulation: Visualizing the Biased Estimator\n\ntrue_theta &lt;- 100\nn &lt;- 9\nn_sims &lt;- 5000\n\nmax_simulation &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    max_estimate = map_dbl(sim, \\(s) max(runif(n, 0, true_theta)))\n  )\n\n# Calculate empirical bias\nmax_simulation |&gt; \n  summarize(\n    theoretical_E = n / (n + 1) * true_theta,\n    empirical_mean = mean(max_estimate),\n    theoretical_bias = -true_theta / (n + 1),\n    empirical_bias = mean(max_estimate) - true_theta\n  )\n\n# A tibble: 1 × 4\n  theoretical_E empirical_mean theoretical_bias empirical_bias\n          &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;\n1            90           90.3              -10          -9.70"
+    "text": "Simulation: Visualizing the Biased Estimator\n\ntrue_theta &lt;- 100\nn &lt;- 9\nn_sims &lt;- 5000\n\nmax_simulation &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    max_estimate = map_dbl(sim, \\(s) max(runif(n, 0, true_theta)))\n  )\n\n# Calculate empirical bias\nmax_simulation |&gt; \n  summarize(\n    theoretical_E = n / (n + 1) * true_theta,\n    empirical_mean = mean(max_estimate),\n    theoretical_bias = -true_theta / (n + 1),\n    empirical_bias = mean(max_estimate) - true_theta\n  )"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#visualizing-the-biased-estimator",
@@ -1257,42 +1257,42 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#correcting-the-bias",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Correcting the Bias",
-    "text": "Correcting the Bias\nIdea: Multiply by a correction factor to “un-bias” the estimator.\nSince \\(E(\\max) = \\frac{n}{n+1}\\theta\\), we can define:\n\\[\\hat{\\theta}_{\\text{unbiased}} = \\frac{n+1}{n} \\cdot \\max(X_1, \\ldots, X_n)\\]\n. . .\nCheck:\n\\[E(\\hat{\\theta}_{\\text{unbiased}}) = \\frac{n+1}{n} \\cdot E(\\max) = \\frac{n+1}{n} \\cdot \\frac{n}{n+1}\\theta = \\theta \\checkmark\\]"
+    "text": "Correcting the Bias\nIdea: Multiply by a correction factor to “un-bias” the estimator.\nSince \\(E(\\max) = \\frac{n}{n+1}\\theta\\), we can define:\n\\[\\hat{\\theta}_{\\text{unbiased}} = \\frac{n+1}{n} \\cdot \\max(X_1, \\ldots, X_n)\\]\n\nCheck:\n\\[E(\\hat{\\theta}_{\\text{unbiased}}) = \\frac{n+1}{n} \\cdot E(\\max) = \\frac{n+1}{n} \\cdot \\frac{n}{n+1}\\theta = \\theta \\checkmark\\]"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-apply-the-correction",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-apply-the-correction",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Apply the Correction",
-    "text": "Your Turn: Apply the Correction\nExercise: Using the lab instrument example with \\(n = 9\\) and \\(\\theta = 100\\):\n\nIf you observe \\(\\max = 92\\), what is the biased estimate?\nWhat is the unbiased estimate?\n\n. . .\nSolution:\n\nBiased estimate: \\(\\hat{\\theta}_b = 92\\)\nUnbiased estimate: \\(\\hat{\\theta}_u = \\frac{10}{9} \\times 92 = 102.2\\)\n\n\nobserved_max &lt;- 92\nn &lt;- 9\n\nbiased_est &lt;- observed_max\nunbiased_est &lt;- (n + 1) / n * observed_max\n\ncat(\"Biased estimate:\", biased_est, \"\\n\")\n\nBiased estimate: 92 \n\ncat(\"Unbiased estimate:\", round(unbiased_est, 1))\n\nUnbiased estimate: 102.2"
+    "text": "Your Turn: Apply the Correction\nExercise: Using the lab instrument example with \\(n = 9\\) and \\(\\theta = 100\\):\n\nIf you observe \\(\\max = 92\\), what is the biased estimate?\nWhat is the unbiased estimate?\n\n\nSolution:\n\nBiased estimate: \\(\\hat{\\theta}_b = 92\\)\nUnbiased estimate: \\(\\hat{\\theta}_u = \\frac{10}{9} \\times 92 = 102.2\\)\n\n\nobserved_max &lt;- 92\nn &lt;- 9\n\nbiased_est &lt;- observed_max\nunbiased_est &lt;- (n + 1) / n * observed_max\n\ncat(\"Biased estimate:\", biased_est, \"\\n\")\n\nBiased estimate: 92 \n\ncat(\"Unbiased estimate:\", round(unbiased_est, 1))\n\nUnbiased estimate: 102.2"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#standard-error-definition",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#standard-error-definition",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Standard Error: Definition",
-    "text": "Standard Error: Definition\n\n\n\n\n\n\nDefinition\n\n\n\nThe standard error of an estimator is its standard deviation: \\[SE(\\hat{\\theta}) = \\sqrt{\\text{Var}(\\hat{\\theta})}\\]\n\n\n. . .\nKey Standard Errors:\n\n\n\nEstimator\nStandard Error\n\n\n\n\nSample mean \\(\\bar{X}\\)\n\\(\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample proportion \\(\\hat{p}\\)\n\\(\\sqrt{\\frac{p(1-p)}{n}}\\)"
+    "text": "Standard Error: Definition\n\n\n\n\n\n\nDefinition\n\n\nThe standard error of an estimator is its standard deviation: \\[SE(\\hat{\\theta}) = \\sqrt{\\text{Var}(\\hat{\\theta})}\\]\n\n\n\n\nKey Standard Errors:\n\n\n\nEstimator\nStandard Error\n\n\n\n\nSample mean \\(\\bar{X}\\)\n\\(\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample proportion \\(\\hat{p}\\)\n\\(\\sqrt{\\frac{p(1-p)}{n}}\\)"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-standard-error-of-sample-mean",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-standard-error-of-sample-mean",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Worked Example: Standard Error of Sample Mean",
-    "text": "Worked Example: Standard Error of Sample Mean\nProblem: In a blood pressure study, the population SD is \\(\\sigma = 15\\) mmHg. Calculate the standard error of \\(\\bar{X}\\) for sample sizes \\(n = 25\\) and \\(n = 100\\).\n. . .\nSolution:\nFor \\(n = 25\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{25}} = \\frac{15}{5} = 3 \\text{ mmHg}\\]\nFor \\(n = 100\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{100}} = \\frac{15}{10} = 1.5 \\text{ mmHg}\\]\n. . .\nInterpretation: With 100 patients, our estimate is twice as precise as with 25 patients."
+    "text": "Worked Example: Standard Error of Sample Mean\nProblem: In a blood pressure study, the population SD is \\(\\sigma = 15\\) mmHg. Calculate the standard error of \\(\\bar{X}\\) for sample sizes \\(n = 25\\) and \\(n = 100\\).\n\nSolution:\nFor \\(n = 25\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{25}} = \\frac{15}{5} = 3 \\text{ mmHg}\\]\nFor \\(n = 100\\): \\[SE(\\bar{X}) = \\frac{15}{\\sqrt{100}} = \\frac{15}{10} = 1.5 \\text{ mmHg}\\]\n\n\nInterpretation: With 100 patients, our estimate is twice as precise as with 25 patients."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-standard-error",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-standard-error",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Calculate Standard Error",
-    "text": "Your Turn: Calculate Standard Error\nExercise: A survey measures patient satisfaction on a 0-100 scale. The population standard deviation is \\(\\sigma = 20\\).\n\nWhat is the SE of \\(\\bar{X}\\) for \\(n = 16\\) patients?\nWhat sample size is needed to achieve \\(SE = 2\\)?\n\n. . .\nSolutions:\n\n\\(SE = \\frac{20}{\\sqrt{16}} = \\frac{20}{4} = 5\\)\nWe need \\(\\frac{20}{\\sqrt{n}} = 2\\), so \\(\\sqrt{n} = 10\\), thus \\(n = 100\\)\n\n\nsigma &lt;- 20\n# Problem 1\nse_n16 &lt;- sigma / sqrt(16)\n# Problem 2\nn_needed &lt;- (sigma / 2)^2\n\ncat(\"SE for n=16:\", se_n16, \"\\nSample size for SE=2:\", n_needed)\n\nSE for n=16: 5 \nSample size for SE=2: 100"
+    "text": "Your Turn: Calculate Standard Error\nExercise: A survey measures patient satisfaction on a 0-100 scale. The population standard deviation is \\(\\sigma = 20\\).\n\nWhat is the SE of \\(\\bar{X}\\) for \\(n = 16\\) patients?\nWhat sample size is needed to achieve \\(SE = 2\\)?\n\n\nSolutions:\n\n\\(SE = \\frac{20}{\\sqrt{16}} = \\frac{20}{4} = 5\\)\nWe need \\(\\frac{20}{\\sqrt{n}} = 2\\), so \\(\\sqrt{n} = 10\\), thus \\(n = 100\\)\n\n\nsigma &lt;- 20\n# Problem 1\nse_n16 &lt;- sigma / sqrt(16)\n# Problem 2\nn_needed &lt;- (sigma / 2)^2\n\ncat(\"SE for n=16:\", se_n16, \"\\nSample size for SE=2:\", n_needed)\n\nSE for n=16: 5 \nSample size for SE=2: 100"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-problem-with-unknown-parameters",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-problem-with-unknown-parameters",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "The Problem with Unknown Parameters",
-    "text": "The Problem with Unknown Parameters\nIssue: Standard errors often involve unknown parameters!\n\nSE of \\(\\bar{X}\\) requires knowing \\(\\sigma\\)\nSE of \\(\\hat{p}\\) requires knowing \\(p\\)\n\n. . .\nSolution: Estimated standard error — substitute estimates for unknown parameters\n\\[\\widehat{SE}(\\bar{X}) = \\frac{s}{\\sqrt{n}}\\]\n\\[\\widehat{SE}(\\hat{p}) = \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]"
+    "text": "The Problem with Unknown Parameters\nIssue: Standard errors often involve unknown parameters!\n\nSE of \\(\\bar{X}\\) requires knowing \\(\\sigma\\)\nSE of \\(\\hat{p}\\) requires knowing \\(p\\)\n\n\nSolution: Estimated standard error — substitute estimates for unknown parameters\n\\[\\widehat{SE}(\\bar{X}) = \\frac{s}{\\sqrt{n}}\\]\n\\[\\widehat{SE}(\\hat{p}) = \\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#example-estimated-standard-error",
@@ -1306,49 +1306,49 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#mean-squared-error-combining-bias-and-variance",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Mean Squared Error: Combining Bias and Variance",
-    "text": "Mean Squared Error: Combining Bias and Variance\nWhat if we have to choose between a biased estimator with low variance and an unbiased estimator with high variance?\n. . .\n\n\n\n\n\n\nDefinition: Mean Squared Error\n\n\n\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\nKey Formula: \\[\\text{MSE} = \\text{Variance} + \\text{Bias}^2\\]\n\n\n. . .\nMSE captures total error — both systematic (bias) and random (variance)."
+    "text": "Mean Squared Error: Combining Bias and Variance\nWhat if we have to choose between a biased estimator with low variance and an unbiased estimator with high variance?\n\n\n\n\n\n\n\nDefinition: Mean Squared Error\n\n\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\nKey Formula: \\[\\text{MSE} = \\text{Variance} + \\text{Bias}^2\\]\n\n\n\n\n\nMSE captures total error — both systematic (bias) and random (variance)."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#proving-the-mse-formula",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#proving-the-mse-formula",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Proving the MSE Formula",
-    "text": "Proving the MSE Formula\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\n. . .\nAdd and subtract \\(E(\\hat{\\theta})\\):\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}) + E(\\hat{\\theta}) - \\theta)^2]\\]\n. . .\nExpand the square:\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}))^2] + 2E[(\\hat{\\theta} - E(\\hat{\\theta}))](E(\\hat{\\theta}) - \\theta) + (E(\\hat{\\theta}) - \\theta)^2\\]\n. . .\nThe middle term equals zero because \\(E[\\hat{\\theta} - E(\\hat{\\theta})] = 0\\):\n\\[= \\text{Var}(\\hat{\\theta}) + [\\text{Bias}(\\hat{\\theta})]^2\\]"
+    "text": "Proving the MSE Formula\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2]\\]\n\nAdd and subtract \\(E(\\hat{\\theta})\\):\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}) + E(\\hat{\\theta}) - \\theta)^2]\\]\n\n\nExpand the square:\n\\[= E[(\\hat{\\theta} - E(\\hat{\\theta}))^2] + 2E[(\\hat{\\theta} - E(\\hat{\\theta}))](E(\\hat{\\theta}) - \\theta) + (E(\\hat{\\theta}) - \\theta)^2\\]\n\n\nThe middle term equals zero because \\(E[\\hat{\\theta} - E(\\hat{\\theta})] = 0\\):\n\\[= \\text{Var}(\\hat{\\theta}) + [\\text{Bias}(\\hat{\\theta})]^2\\]"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-computing-mse",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#worked-example-computing-mse",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Worked Example: Computing MSE",
-    "text": "Worked Example: Computing MSE\nSetup: Estimating \\(\\theta\\) from Uniform[0, \\(\\theta\\)] with \\(n = 9\\) and \\(\\theta = 100\\).\nBiased estimator: \\(\\hat{\\theta}_b = \\max(X_i)\\)\nFrom theory:\n\n\\(E(\\hat{\\theta}_b) = \\frac{9}{10}(100) = 90\\)\n\\(\\text{Var}(\\hat{\\theta}_b) = \\frac{n \\theta^2}{(n+1)^2(n+2)} = \\frac{9 \\times 100^2}{100 \\times 11} = 81.82\\)\n\n. . .\n\\[\\text{Bias} = 90 - 100 = -10\\] \\[\\text{MSE} = 81.82 + (-10)^2 = 81.82 + 100 = 181.82\\]"
+    "text": "Worked Example: Computing MSE\nSetup: Estimating \\(\\theta\\) from Uniform[0, \\(\\theta\\)] with \\(n = 9\\) and \\(\\theta = 100\\).\nBiased estimator: \\(\\hat{\\theta}_b = \\max(X_i)\\)\nFrom theory:\n\n\\(E(\\hat{\\theta}_b) = \\frac{9}{10}(100) = 90\\)\n\\(\\text{Var}(\\hat{\\theta}_b) = \\frac{n \\theta^2}{(n+1)^2(n+2)} = \\frac{9 \\times 100^2}{100 \\times 11} = 81.82\\)\n\n\n\\[\\text{Bias} = 90 - 100 = -10\\] \\[\\text{MSE} = 81.82 + (-10)^2 = 81.82 + 100 = 181.82\\]"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-mse",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-mse",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Calculate MSE",
-    "text": "Your Turn: Calculate MSE\nExercise: For the unbiased estimator \\(\\hat{\\theta}_u = \\frac{n+1}{n}\\max(X_i)\\) with \\(n = 9\\) and \\(\\theta = 100\\):\n\nWhat is the bias?\nIf \\(\\text{Var}(\\hat{\\theta}_u) = 101.01\\), what is the MSE?\nWhich estimator has lower MSE: biased or unbiased?\n\n. . .\nSolutions:\n\nBias = 0 (it’s unbiased!)\n\\(\\text{MSE} = 101.01 + 0^2 = 101.01\\)\nUnbiased has lower MSE (101.01 &lt; 181.82)\n\nBut this isn’t always the case!"
+    "text": "Your Turn: Calculate MSE\nExercise: For the unbiased estimator \\(\\hat{\\theta}_u = \\frac{n+1}{n}\\max(X_i)\\) with \\(n = 9\\) and \\(\\theta = 100\\):\n\nWhat is the bias?\nIf \\(\\text{Var}(\\hat{\\theta}_u) = 101.01\\), what is the MSE?\nWhich estimator has lower MSE: biased or unbiased?\n\n\nSolutions:\n\nBias = 0 (it’s unbiased!)\n\\(\\text{MSE} = 101.01 + 0^2 = 101.01\\)\nUnbiased has lower MSE (101.01 &lt; 181.82)\n\nBut this isn’t always the case!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-bias-variance-tradeoff-1",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#the-bias-variance-tradeoff-1",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "The Bias-Variance Tradeoff",
-    "text": "The Bias-Variance Tradeoff\nSometimes a biased estimator has lower MSE than an unbiased one!\n. . .\nExample: Estimating a proportion \\(p\\) with \\(n = 20\\) observations\nEstimator 1: Standard: \\(\\hat{p}_1 = \\frac{X}{n}\\) (unbiased)\nEstimator 2: “Add-two”: \\(\\hat{p}_2 = \\frac{X + 2}{n + 4}\\) (biased toward 0.5)"
+    "text": "The Bias-Variance Tradeoff\nSometimes a biased estimator has lower MSE than an unbiased one!\n\nExample: Estimating a proportion \\(p\\) with \\(n = 20\\) observations\nEstimator 1: Standard: \\(\\hat{p}_1 = \\frac{X}{n}\\) (unbiased)\nEstimator 2: “Add-two”: \\(\\hat{p}_2 = \\frac{X + 2}{n + 4}\\) (biased toward 0.5)"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#comparing-proportion-estimators-theory",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#comparing-proportion-estimators-theory",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Comparing Proportion Estimators: Theory",
-    "text": "Comparing Proportion Estimators: Theory\nFor \\(\\hat{p}_1 = X/n\\) (standard):\n\nBias = 0\nVariance = \\(\\frac{p(1-p)}{n}\\)\nMSE = \\(\\frac{p(1-p)}{n}\\)\n\n. . .\nFor \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\) (add-two):\n\nBias = \\(\\frac{2 - 4p}{n+4}\\)\nVariance = \\(\\frac{np(1-p)}{(n+4)^2}\\)\nMSE = Variance + Bias²"
+    "text": "Comparing Proportion Estimators: Theory\nFor \\(\\hat{p}_1 = X/n\\) (standard):\n\nBias = 0\nVariance = \\(\\frac{p(1-p)}{n}\\)\nMSE = \\(\\frac{p(1-p)}{n}\\)\n\n\nFor \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\) (add-two):\n\nBias = \\(\\frac{2 - 4p}{n+4}\\)\nVariance = \\(\\frac{np(1-p)}{(n+4)^2}\\)\nMSE = Variance + Bias²"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-bias-of-add-two-estimator",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-calculate-bias-of-add-two-estimator",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Calculate Bias of Add-Two Estimator",
-    "text": "Your Turn: Calculate Bias of Add-Two Estimator\nExercise: For \\(n = 20\\) and \\(p = 0.3\\):\n\nCalculate the bias of \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\)\n\nHint: \\(E(X) = np\\) for binomial, so \\(E(\\hat{p}_2) = \\frac{np + 2}{n + 4}\\)\n. . .\nSolution:\n\\[E(\\hat{p}_2) = \\frac{20(0.3) + 2}{24} = \\frac{8}{24} = 0.333\\]\n\\[\\text{Bias} = 0.333 - 0.3 = 0.033\\]\nThe add-two estimator is biased toward 0.5 (and 0.333 is closer to 0.5 than 0.3 is)."
+    "text": "Your Turn: Calculate Bias of Add-Two Estimator\nExercise: For \\(n = 20\\) and \\(p = 0.3\\):\n\nCalculate the bias of \\(\\hat{p}_2 = \\frac{X+2}{n+4}\\)\n\nHint: \\(E(X) = np\\) for binomial, so \\(E(\\hat{p}_2) = \\frac{np + 2}{n + 4}\\)\n\nSolution:\n\\[E(\\hat{p}_2) = \\frac{20(0.3) + 2}{24} = \\frac{8}{24} = 0.333\\]\n\\[\\text{Bias} = 0.333 - 0.3 = 0.033\\]\nThe add-two estimator is biased toward 0.5 (and 0.333 is closer to 0.5 than 0.3 is)."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-comparing-the-estimators",
@@ -1369,7 +1369,7 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#mse-comparison-across-different-true-values",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "MSE Comparison Across Different True Values",
-    "text": "MSE Comparison Across Different True Values\n\n\n\n\n\n\n\n\n\nKey Insight: The “best” estimator depends on the true parameter value!"
+    "text": "MSE Comparison Across Different True Values\n\nKey Insight: The “best” estimator depends on the true parameter value!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#medical-application-disease-prevalence",
@@ -1383,7 +1383,7 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#sample-variance-why-n-1",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Sample Variance: Why n-1?",
-    "text": "Sample Variance: Why n-1?\nTwo formulas for sample variance:\n\\[S^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n-1} \\quad \\text{vs.} \\quad \\tilde{S}^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n}\\]\n. . .\nQuestion: Why do we divide by \\(n-1\\) instead of \\(n\\)?\nAnswer: Dividing by \\(n\\) gives a biased estimator!"
+    "text": "Sample Variance: Why n-1?\nTwo formulas for sample variance:\n\\[S^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n-1} \\quad \\text{vs.} \\quad \\tilde{S}^2 = \\frac{\\sum(X_i - \\bar{X})^2}{n}\\]\n\nQuestion: Why do we divide by \\(n-1\\) instead of \\(n\\)?\nAnswer: Dividing by \\(n\\) gives a biased estimator!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-comparing-variance-estimators",
@@ -1397,14 +1397,14 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#your-turn-comprehensive-example",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Your Turn: Comprehensive Example",
-    "text": "Your Turn: Comprehensive Example\nExercise: A clinical trial measures cholesterol reduction. Based on \\(n = 36\\) patients:\n\nSample mean: \\(\\bar{x} = 25\\) mg/dL\nSample SD: \\(s = 12\\) mg/dL\n\nCalculate:\n\nThe estimated standard error of \\(\\bar{X}\\)\nIf the true mean reduction is \\(\\mu = 24\\), and we repeated this trial many times, what would be the expected MSE of \\(\\bar{X}\\)?\n\n. . .\nSolutions:\n\n\\(\\widehat{SE} = \\frac{12}{\\sqrt{36}} = 2\\) mg/dL\n\\(\\bar{X}\\) is unbiased, so \\(\\text{MSE} = \\text{Var}(\\bar{X}) = \\frac{\\sigma^2}{n} \\approx \\frac{144}{36} = 4\\)"
+    "text": "Your Turn: Comprehensive Example\nExercise: A clinical trial measures cholesterol reduction. Based on \\(n = 36\\) patients:\n\nSample mean: \\(\\bar{x} = 25\\) mg/dL\nSample SD: \\(s = 12\\) mg/dL\n\nCalculate:\n\nThe estimated standard error of \\(\\bar{X}\\)\nIf the true mean reduction is \\(\\mu = 24\\), and we repeated this trial many times, what would be the expected MSE of \\(\\bar{X}\\)?\n\n\nSolutions:\n\n\\(\\widehat{SE} = \\frac{12}{\\sqrt{36}} = 2\\) mg/dL\n\\(\\bar{X}\\) is unbiased, so \\(\\text{MSE} = \\text{Var}(\\bar{X}) = \\frac{\\sigma^2}{n} \\approx \\frac{144}{36} = 4\\)"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#putting-it-all-together-estimator-summary",
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#putting-it-all-together-estimator-summary",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "Putting It All Together: Estimator Summary",
-    "text": "Putting It All Together: Estimator Summary\n\n\n\n\n\n\n\n\nProperty\nFormula\nInterpretation\n\n\n\n\nBias\n\\(E(\\hat{\\theta}) - \\theta\\)\nSystematic error\n\n\nVariance\n\\(E[(\\hat{\\theta} - E(\\hat{\\theta}))^2]\\)\nRandom variability\n\n\nStd Error\n\\(\\sqrt{\\text{Var}(\\hat{\\theta})}\\)\nTypical deviation\n\n\nMSE\n\\(\\text{Var} + \\text{Bias}^2\\)\nTotal error\n\n\n\n. . .\n\n\n\n\n\n\nGuidelines for Choosing Estimators\n\n\n\n\nUnbiasedness is desirable but not always essential\nLower variance/SE means more precision\nMSE provides a single criterion combining both\nSometimes biased estimators have lower MSE!"
+    "text": "Putting It All Together: Estimator Summary\n\n\n\n\n\n\n\n\nProperty\nFormula\nInterpretation\n\n\n\n\nBias\n\\(E(\\hat{\\theta}) - \\theta\\)\nSystematic error\n\n\nVariance\n\\(E[(\\hat{\\theta} - E(\\hat{\\theta}))^2]\\)\nRandom variability\n\n\nStd Error\n\\(\\sqrt{\\text{Var}(\\hat{\\theta})}\\)\nTypical deviation\n\n\nMSE\n\\(\\text{Var} + \\text{Bias}^2\\)\nTotal error\n\n\n\n\n\n\n\n\n\n\nGuidelines for Choosing Estimators\n\n\n\nUnbiasedness is desirable but not always essential\nLower variance/SE means more precision\nMSE provides a single criterion combining both\nSometimes biased estimators have lower MSE!"
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#lesson-2-summary",
@@ -1432,7 +1432,7 @@
     "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#references",
     "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
     "section": "References",
-    "text": "References\n\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 7.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 7.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
   },
   {
     "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#questions",
@@ -1641,92 +1641,92 @@
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#welcome-to-statistical-inference",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#welcome-to-statistical-inference",
     "title": "BSTA 551: Statistical Inference",
-    "section": "",
-    "text": "Course Focus: How do we learn about populations from samples?\n\n\nPoint Estimation (Weeks 1-4): What’s our best guess for a parameter?\nConfidence Intervals (Weeks 5-6): What’s a plausible range?\nHypothesis Testing (Weeks 7-9): Can we make decisions from data?\nTwo-Sample Methods (Week 10): Comparing groups"
+    "section": "Welcome to Statistical Inference!",
+    "text": "Welcome to Statistical Inference!\nCourse Focus: How do we learn about populations from samples?\n\nPoint Estimation (Weeks 1-4): What’s our best guess for a parameter?\nConfidence Intervals (Weeks 5-6): What’s a plausible range?\nHypothesis Testing (Weeks 7-9): Can we make decisions from data?\nTwo-Sample Methods (Week 10): Comparing groups"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#todays-goals",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#todays-goals",
     "title": "BSTA 551: Statistical Inference",
-    "section": "",
-    "text": "Understand the fundamental problem of statistical inference\nDistinguish between populations and samples, parameters and statistics\nUse R to simulate sampling distributions\nReview key properties of expected value and variance"
+    "section": "Today’s Goals",
+    "text": "Today’s Goals\n\nUnderstand the fundamental problem of statistical inference\nDistinguish between populations and samples, parameters and statistics\nUse R to simulate sampling distributions\nReview key properties of expected value and variance"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#motivating-example-clinical-trial",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#motivating-example-clinical-trial",
     "title": "BSTA 551: Statistical Inference",
-    "section": "",
-    "text": "A pharmaceutical company is testing a new blood pressure medication.\nThe Question: What is the true average reduction in systolic blood pressure?\n. . .\nWhat we have: Data from 25 patients in a trial\n\n# Actual blood pressure reductions (mmHg) from 25 patients\nbp_reductions &lt;- c(12, 8, 15, 10, 7, 14, 11, 9, 13, 16,\n                   8, 12, 10, 14, 11, 9, 15, 13, 7, 12,\n                   10, 8, 14, 11, 13)\n\n# What's our estimate of the true mean reduction?\nmean(bp_reductions)\n\n[1] 11.28\n\n\n. . .\nThis “estimate” is the observed value of the (random variable) sample mean statistic: \\(\\bar{X} = \\sum_{i=1}^n X_i\\)\n. . .\nBut how reliable is this estimate? Would we get the same answer with different patients?"
+    "section": "Motivating Example: Clinical Trial",
+    "text": "Motivating Example: Clinical Trial\nA pharmaceutical company is testing a new blood pressure medication.\nThe Question: What is the true average reduction in systolic blood pressure?\n\nWhat we have: Data from 25 patients in a trial\n\n# Actual blood pressure reductions (mmHg) from 25 patients\nbp_reductions &lt;- c(12, 8, 15, 10, 7, 14, 11, 9, 13, 16,\n                   8, 12, 10, 14, 11, 9, 15, 13, 7, 12,\n                   10, 8, 14, 11, 13)\n\n# What's our estimate of the true mean reduction?\nmean(bp_reductions)\n\n[1] 11.28\n\n\n\n\nThis “estimate” is the observed value of the (random variable) sample mean statistic: \\(\\bar{X} = \\sum_{i=1}^n X_i\\)\n\n\nBut how reliable is this estimate? Would we get the same answer with different patients?"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#the-big-picture-population-vs-sample",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#the-big-picture-population-vs-sample",
     "title": "BSTA 551: Statistical Inference",
     "section": "The Big Picture: Population vs Sample",
-    "text": "The Big Picture: Population vs Sample\n\n\n\n\n\n\n\n\n\n\nKey insight: We use sample data to make inferences about population parameters."
+    "text": "The Big Picture: Population vs Sample\n\n\nKey insight: We use sample data to make inferences about population parameters."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#key-terminology-devore-6.1",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#key-terminology-devore-6.1",
     "title": "BSTA 551: Statistical Inference",
     "section": "Key Terminology (Devore 6.1)",
-    "text": "Key Terminology (Devore 6.1)\n\n\n\n\n\n\nDefinitions\n\n\n\n\nPopulation: The entire collection of individuals or measurements of interest\nSample: A subset of the population that we actually observe\nParameter: A numerical characteristic of the population (e.g., \\(\\mu\\), \\(\\sigma\\), \\(p\\))\nStatistic: A numerical characteristic computed from sample data (e.g., \\(\\bar{X}\\), \\(S\\), \\(\\hat{p}\\))\n\n\n\n. . .\nThe Central Challenge: Parameters are fixed but unknown; statistics are known but random."
+    "text": "Key Terminology (Devore 6.1)\n\n\n\n\n\n\nDefinitions\n\n\n\nPopulation: The entire collection of individuals or measurements of interest\nSample: A subset of the population that we actually observe\nParameter: A numerical characteristic of the population (e.g., \\(\\mu\\), \\(\\sigma\\), \\(p\\))\nStatistic: A numerical characteristic computed from sample data (e.g., \\(\\bar{X}\\), \\(S\\), \\(\\hat{p}\\))\n\n\n\n\n\nThe Central Challenge: Parameters are fixed but unknown; statistics are known but random."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#parameters-vs.-statistics",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#parameters-vs.-statistics",
     "title": "BSTA 551: Statistical Inference",
     "section": "Parameters vs. Statistics",
-    "text": "Parameters vs. Statistics\n\n\n\n\n\n\n\n\nConcept\nPopulation (Parameter)\nSample (Statistic)\n\n\n\n\nMean\n\\(\\mu\\)\n\\(\\bar{X} = \\frac{1}{n}\\sum X_i\\)\n\n\nVariance\n\\(\\sigma^2\\)\n\\(S^2 = \\frac{1}{n-1}\\sum(X_i - \\bar{X})^2\\)\n\n\nProportion\n\\(p\\)\n\\(\\hat{p} = X/n\\)\n\n\nMaximum\n\\(\\theta\\) (upper bound)\n\\(\\max(X_1, \\ldots, X_n)\\)\n\n\n\n. . .\nKey Point: Parameters use Greek letters; statistics use Roman letters or “hats.”"
+    "text": "Parameters vs. Statistics\n\n\n\n\n\n\n\n\nConcept\nPopulation (Parameter)\nSample (Statistic)\n\n\n\n\nMean\n\\(\\mu\\)\n\\(\\bar{X} = \\frac{1}{n}\\sum X_i\\)\n\n\nVariance\n\\(\\sigma^2\\)\n\\(S^2 = \\frac{1}{n-1}\\sum(X_i - \\bar{X})^2\\)\n\n\nProportion\n\\(p\\)\n\\(\\hat{p} = X/n\\)\n\n\nMaximum\n\\(\\theta\\) (upper bound)\n\\(\\max(X_1, \\ldots, X_n)\\)\n\n\n\n\nKey Point: Parameters use Greek letters; statistics use Roman letters or “hats.”"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#the-sampling-process-devore-6.2",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#the-sampling-process-devore-6.2",
     "title": "BSTA 551: Statistical Inference",
     "section": "The Sampling Process (Devore 6.2)",
-    "text": "The Sampling Process (Devore 6.2)\nRandom Sampling Assumptions:\n\nEach observation \\(X_i\\) is a random variable\nThe \\(X_i\\) are independent of each other\nEach \\(X_i\\) has the same distribution (identically distributed)\n\n. . .\nTogether: \\(X_1, X_2, \\ldots, X_n\\) are i.i.d. (independent and identically distributed)\n. . .\n\n\n\n\n\n\nWhy This Matters\n\n\n\nThe i.i.d. assumption allows us to derive the properties of statistics mathematically."
+    "text": "The Sampling Process (Devore 6.2)\nRandom Sampling Assumptions:\n\nEach observation \\(X_i\\) is a random variable\nThe \\(X_i\\) are independent of each other\nEach \\(X_i\\) has the same distribution (identically distributed)\n\n\nTogether: \\(X_1, X_2, \\ldots, X_n\\) are i.i.d. (independent and identically distributed)\n\n\n\n\n\n\n\n\nWhy This Matters\n\n\nThe i.i.d. assumption allows us to derive the properties of statistics mathematically."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#review-expected-value",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#review-expected-value",
     "title": "BSTA 551: Statistical Inference",
     "section": "Review: Expected Value",
-    "text": "Review: Expected Value\nThe expected value \\(E(X)\\) is the long-run average of a random variable.\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\n\\(E(c) = c\\) for any constant \\(c\\)\n\\(E(cX) = c \\cdot E(X)\\)\n\\(E(X + Y) = E(X) + E(Y)\\)\n\\(E\\left(\\sum_{i=1}^n X_i\\right) = \\sum_{i=1}^n E(X_i)\\)"
+    "text": "Review: Expected Value\nThe expected value \\(E(X)\\) is the long-run average of a random variable.\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\\(E(c) = c\\) for any constant \\(c\\)\n\\(E(cX) = c \\cdot E(X)\\)\n\\(E(X + Y) = E(X) + E(Y)\\)\n\\(E\\left(\\sum_{i=1}^n X_i\\right) = \\sum_{i=1}^n E(X_i)\\)"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#worked-example-expected-value-of-sample-mean",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#worked-example-expected-value-of-sample-mean",
     "title": "BSTA 551: Statistical Inference",
     "section": "Worked Example: Expected Value of Sample Mean",
-    "text": "Worked Example: Expected Value of Sample Mean\nProblem: If \\(X_1, X_2, \\ldots, X_n\\) are iid observations from a population with mean \\(\\mu\\), what is \\(E(\\bar{X})\\)?\n. . .\nSolution: Let’s work through this step by step.\n\\[E(\\bar{X}) = E\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n. . .\n\\[= \\frac{1}{n} E\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2: constants come out)}\\]\n. . .\n\\[= \\frac{1}{n} \\sum_{i=1}^n E(X_i) \\quad \\text{(Property 4: sum of expectations)}\\]\n. . .\n\\[= \\frac{1}{n} \\cdot n\\mu = \\mu \\quad \\text{(Each } E(X_i) = \\mu \\text{)}\\]"
+    "text": "Worked Example: Expected Value of Sample Mean\nProblem: If \\(X_1, X_2, \\ldots, X_n\\) are iid observations from a population with mean \\(\\mu\\), what is \\(E(\\bar{X})\\)?\n\nSolution: Let’s work through this step by step.\n\\[E(\\bar{X}) = E\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n\n\n\\[= \\frac{1}{n} E\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2: constants come out)}\\]\n\n\n\\[= \\frac{1}{n} \\sum_{i=1}^n E(X_i) \\quad \\text{(Property 4: sum of expectations)}\\]\n\n\n\\[= \\frac{1}{n} \\cdot n\\mu = \\mu \\quad \\text{(Each } E(X_i) = \\mu \\text{)}\\]"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#your-turn-calculate-expected-value",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#your-turn-calculate-expected-value",
     "title": "BSTA 551: Statistical Inference",
     "section": "Your Turn: Calculate Expected Value",
-    "text": "Your Turn: Calculate Expected Value\nExercise: A hospital measures the recovery time (in days) for patients after surgery. Let \\(X_1, X_2, X_3\\) be recovery times for 3 patients. The population mean recovery time is \\(\\mu = 5\\) days.\nQuestions:\n\nWhat is \\(E(X_1)\\)?\nWhat is \\(E(X_1 + X_2 + X_3)\\)?\nWhat is \\(E(\\bar{X})\\) where \\(\\bar{X} = \\frac{X_1 + X_2 + X_3}{3}\\)?\n\n. . .\nAnswers:\n\n\\(E(X_1) = \\mu = 5\\) days\n\\(E(X_1 + X_2 + X_3) = 5 + 5 + 5 = 15\\) days\n\\(E(\\bar{X}) = \\frac{15}{3} = 5\\) days"
+    "text": "Your Turn: Calculate Expected Value\nExercise: A hospital measures the recovery time (in days) for patients after surgery. Let \\(X_1, X_2, X_3\\) be recovery times for 3 patients. The population mean recovery time is \\(\\mu = 5\\) days.\nQuestions:\n\nWhat is \\(E(X_1)\\)?\nWhat is \\(E(X_1 + X_2 + X_3)\\)?\nWhat is \\(E(\\bar{X})\\) where \\(\\bar{X} = \\frac{X_1 + X_2 + X_3}{3}\\)?\n\n\nAnswers:\n\n\\(E(X_1) = \\mu = 5\\) days\n\\(E(X_1 + X_2 + X_3) = 5 + 5 + 5 = 15\\) days\n\\(E(\\bar{X}) = \\frac{15}{3} = 5\\) days"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#review-variance",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#review-variance",
     "title": "BSTA 551: Statistical Inference",
     "section": "Review: Variance",
-    "text": "Review: Variance\nVariance measures the spread of a distribution: \\(\\text{Var}(X) = E[(X - \\mu)^2]\\)\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\n\\(\\text{Var}(c) = 0\\) for any constant\n\\(\\text{Var}(cX) = c^2 \\cdot \\text{Var}(X)\\)\nIf \\(X\\) and \\(Y\\) are independent: \\(\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)\\)"
+    "text": "Review: Variance\nVariance measures the spread of a distribution: \\(\\text{Var}(X) = E[(X - \\mu)^2]\\)\n\n\n\n\n\n\nKey Properties We’ll Use Today\n\n\n\n\\(\\text{Var}(c) = 0\\) for any constant\n\\(\\text{Var}(cX) = c^2 \\cdot \\text{Var}(X)\\)\nIf \\(X\\) and \\(Y\\) are independent: \\(\\text{Var}(X + Y) = \\text{Var}(X) + \\text{Var}(Y)\\)"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#worked-example-variance-of-sample-mean",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#worked-example-variance-of-sample-mean",
     "title": "BSTA 551: Statistical Inference",
     "section": "Worked Example: Variance of Sample Mean",
-    "text": "Worked Example: Variance of Sample Mean\nProblem: If \\(X_1, \\ldots, X_n\\) are independent observations with variance \\(\\sigma^2\\), what is \\(\\text{Var}(\\bar{X})\\)?\n. . .\n\\[\\text{Var}(\\bar{X}) = \\text{Var}\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n. . .\n\\[= \\frac{1}{n^2} \\text{Var}\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2)}\\]\n. . .\n\\[= \\frac{1}{n^2} \\sum_{i=1}^n \\text{Var}(X_i) \\quad \\text{(Property 3: independence)}\\]\n. . .\n\\[= \\frac{1}{n^2} \\cdot n\\sigma^2 = \\frac{\\sigma^2}{n}\\]\n\n\n\n\n\n\nKey Result\n\n\n\nThe variance of \\(\\bar{X}\\) decreases as sample size \\(n\\) increases!"
+    "text": "Worked Example: Variance of Sample Mean\nProblem: If \\(X_1, \\ldots, X_n\\) are independent observations with variance \\(\\sigma^2\\), what is \\(\\text{Var}(\\bar{X})\\)?\n\n\\[\\text{Var}(\\bar{X}) = \\text{Var}\\left(\\frac{1}{n}\\sum_{i=1}^n X_i\\right)\\]\n\n\n\\[= \\frac{1}{n^2} \\text{Var}\\left(\\sum_{i=1}^n X_i\\right) \\quad \\text{(Property 2)}\\]\n\n\n\\[= \\frac{1}{n^2} \\sum_{i=1}^n \\text{Var}(X_i) \\quad \\text{(Property 3: independence)}\\]\n\n\n\\[= \\frac{1}{n^2} \\cdot n\\sigma^2 = \\frac{\\sigma^2}{n}\\]\n\n\n\n\n\n\nKey Result\n\n\nThe variance of \\(\\bar{X}\\) decreases as sample size \\(n\\) increases!"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#what-is-a-sampling-distribution",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#what-is-a-sampling-distribution",
     "title": "BSTA 551: Statistical Inference",
     "section": "What is a Sampling Distribution?",
-    "text": "What is a Sampling Distribution?\nDifferent samples give different values of a statistic. The sampling distribution describes this variability.\n\n\n\n\n\nSample\nSample Mean (x̄)\n\n\n\n\n1\n9.90\n\n\n2\n10.31\n\n\n3\n10.03\n\n\n4\n10.85\n\n\n5\n9.17\n\n\n6\n9.31\n\n\n\n\n\n. . .\nEach sample gives a different estimate, but they cluster around the true value \\(\\mu = 10\\)."
+    "text": "What is a Sampling Distribution?\nDifferent samples give different values of a statistic. The sampling distribution describes this variability.\n\n\n\n\n\nSample\nSample Mean (x̄)\n\n\n\n\n1\n9.90\n\n\n2\n10.31\n\n\n3\n10.03\n\n\n4\n10.85\n\n\n5\n9.17\n\n\n6\n9.31\n\n\n\n\n\n\nEach sample gives a different estimate, but they cluster around the true value \\(\\mu = 10\\)."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#simulation-building-a-sampling-distribution",
@@ -1754,28 +1754,28 @@
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#why-optimization-matters-in-statistics",
     "title": "BSTA 551: Statistical Inference",
     "section": "Why Optimization Matters in Statistics",
-    "text": "Why Optimization Matters in Statistics\nMany statistical methods require finding the “best” value of a parameter.\nExamples:\n\nMaximum Likelihood: Find the parameter value that makes the observed data most probable\nLeast Squares: Find the parameter value that minimizes prediction errors\nMinimum Variance: Find the estimator with the smallest spread\n\n. . .\nThe Problem: How do we find maximums and minimums numerically?"
+    "text": "Why Optimization Matters in Statistics\nMany statistical methods require finding the “best” value of a parameter.\nExamples:\n\nMaximum Likelihood: Find the parameter value that makes the observed data most probable\nLeast Squares: Find the parameter value that minimizes prediction errors\nMinimum Variance: Find the estimator with the smallest spread\n\n\nThe Problem: How do we find maximums and minimums numerically?"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#optimization-the-graphical-intuition",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#optimization-the-graphical-intuition",
     "title": "BSTA 551: Statistical Inference",
     "section": "Optimization: The Graphical Intuition",
-    "text": "Optimization: The Graphical Intuition\n\n\n\n\n\n\n\n\n\nThe maximum occurs where the function reaches its peak."
+    "text": "Optimization: The Graphical Intuition\n\nThe maximum occurs where the function reaches its peak."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#concrete-example-finding-the-best-estimate",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#concrete-example-finding-the-best-estimate",
     "title": "BSTA 551: Statistical Inference",
     "section": "Concrete Example: Finding the Best Estimate",
-    "text": "Concrete Example: Finding the Best Estimate\nScenario: In a clinical trial, 7 out of 10 patients respond to treatment. What’s the best estimate of the true response rate \\(p\\)?\n. . .\nApproach: Find the value of \\(p\\) that makes observing “7 out of 10” most likely.\nThe probability of observing exactly 7 successes in 10 trials is: \\[P(X = 7) = \\binom{10}{7} p^7 (1-p)^3\\]\n. . .\nQuestion: For what value of \\(p\\) is this probability largest?"
+    "text": "Concrete Example: Finding the Best Estimate\nScenario: In a clinical trial, 7 out of 10 patients respond to treatment. What’s the best estimate of the true response rate \\(p\\)?\n\nApproach: Find the value of \\(p\\) that makes observing “7 out of 10” most likely.\nThe probability of observing exactly 7 successes in 10 trials is: \\[P(X = 7) = \\binom{10}{7} p^7 (1-p)^3\\]\n\n\nQuestion: For what value of \\(p\\) is this probability largest?"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#grid-search-a-simple-numerical-approach",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#grid-search-a-simple-numerical-approach",
     "title": "BSTA 551: Statistical Inference",
     "section": "Grid Search: A Simple Numerical Approach",
-    "text": "Grid Search: A Simple Numerical Approach\nIdea: Try many values and see which gives the largest result.\n\n# Try different values of p\ngrid_search &lt;- tibble(p = seq(0.01, 0.99, by = 0.01)) |&gt; \n  mutate(\n    likelihood = dbinom(7, size = 10, prob = p)\n  )\n\n# Find the maximum\ngrid_search |&gt; \n  slice_max(likelihood, n = 1)\n\n# A tibble: 1 × 2\n      p likelihood\n  &lt;dbl&gt;      &lt;dbl&gt;\n1   0.7      0.267\n\n\n. . .\nThe maximum likelihood estimate is \\(\\hat{p} = 0.70 = \\frac{7}{10}\\). This makes intuitive sense!"
+    "text": "Grid Search: A Simple Numerical Approach\nIdea: Try many values and see which gives the largest result.\n\n# Try different values of p\ngrid_search &lt;- tibble(p = seq(0.01, 0.99, by = 0.01)) |&gt; \n  mutate(\n    likelihood = dbinom(7, size = 10, prob = p)\n  )\n\n# Find the maximum\ngrid_search |&gt; \n  slice_max(likelihood, n = 1)\n\n# A tibble: 1 × 2\n      p likelihood\n  &lt;dbl&gt;      &lt;dbl&gt;\n1   0.7      0.267\n\n\n\nThe maximum likelihood estimate is \\(\\hat{p} = 0.70 = \\frac{7}{10}\\). This makes intuitive sense!"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#using-rs-optimizer",
@@ -1789,14 +1789,14 @@
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#how-numerical-optimization-works",
     "title": "BSTA 551: Statistical Inference",
     "section": "How Numerical Optimization Works",
-    "text": "How Numerical Optimization Works\n\n\n\n\n\n\n\n\n\nKey idea: The algorithm evaluates the function at different points and iteratively narrows in on the maximum."
+    "text": "How Numerical Optimization Works\n\nKey idea: The algorithm evaluates the function at different points and iteratively narrows in on the maximum."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#your-turn-numerical-optimization",
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#your-turn-numerical-optimization",
     "title": "BSTA 551: Statistical Inference",
     "section": "Your Turn: Numerical Optimization",
-    "text": "Your Turn: Numerical Optimization\nExercise: A diagnostic test correctly identifies a disease in 18 out of 25 patients who have it. Find the maximum likelihood estimate for the test’s sensitivity \\(p\\).\n\n# Fill in the blanks:\nlikelihood_fn &lt;- function(p) {\n  dbinom(___, size = ___, prob = p)  # What goes here?\n}\n\nresult &lt;- optimize(\n  f = function(p) -likelihood_fn(p),\n  interval = c(0, 1)\n)\n\nresult$minimum  # This is the MLE\n\n. . .\n\n# Solution:\nlikelihood_fn &lt;- function(p) {\n  dbinom(18, size = 25, prob = p)\n}\n\nresult &lt;- optimize(f = function(p) -likelihood_fn(p), interval = c(0, 1))\ncat(\"MLE of sensitivity:\", result$minimum)  # Should be 18/25 = 0.72\n\nMLE of sensitivity: 0.7200103"
+    "text": "Your Turn: Numerical Optimization\nExercise: A diagnostic test correctly identifies a disease in 18 out of 25 patients who have it. Find the maximum likelihood estimate for the test’s sensitivity \\(p\\).\n\n# Fill in the blanks:\nlikelihood_fn &lt;- function(p) {\n  dbinom(___, size = ___, prob = p)  # What goes here?\n}\n\nresult &lt;- optimize(\n  f = function(p) -likelihood_fn(p),\n  interval = c(0, 1)\n)\n\nresult$minimum  # This is the MLE\n\n\n\n# Solution:\nlikelihood_fn &lt;- function(p) {\n  dbinom(18, size = 25, prob = p)\n}\n\nresult &lt;- optimize(f = function(p) -likelihood_fn(p), interval = c(0, 1))\ncat(\"MLE of sensitivity:\", result$minimum)  # Should be 18/25 = 0.72\n\nMLE of sensitivity: 0.7200103"
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#when-optimization-gets-harder",
@@ -1831,7 +1831,7 @@
     "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#references",
     "title": "BSTA 551: Statistical Inference",
     "section": "References",
-    "text": "References\n\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapters 6.1, 6.2\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapters 6.1, 6.2\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
   },
   {
     "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#questions",
@@ -3895,36 +3895,36 @@
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#review-where-we-left-off",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#review-where-we-left-off",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
-    "section": "",
-    "text": "Key concepts from Lesson 3:\n\nMVUE: Best unbiased estimator (smallest variance)\nLikelihood function and log-likelihood\nFisher Information: \\(I(\\theta) = E[-\\ell''(\\theta)]\\)\nCramér-Rao Lower Bound: \\(\\text{Var}(T) \\geq 1/I_n(\\theta)\\)\nEfficient estimators achieve the CRLB\n\n. . .\nToday’s Goals:\n\nLearn to construct estimators systematically\nMethod of Moments: Simple, intuitive approach\nMaximum Likelihood: Powerful, principled approach\nCompare the two methods"
+    "section": "Review: Where We Left Off",
+    "text": "Review: Where We Left Off\nKey concepts from Lesson 3:\n\nMVUE: Best unbiased estimator (smallest variance)\nLikelihood function and log-likelihood\nFisher Information: \\(I(\\theta) = E[-\\ell''(\\theta)]\\)\nCramér-Rao Lower Bound: \\(\\text{Var}(T) \\geq 1/I_n(\\theta)\\)\nEfficient estimators achieve the CRLB\n\n\nToday’s Goals:\n\nLearn to construct estimators systematically\nMethod of Moments: Simple, intuitive approach\nMaximum Likelihood: Powerful, principled approach\nCompare the two methods"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#motivating-question",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#motivating-question",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
-    "section": "",
-    "text": "We’ve learned how to evaluate estimators (bias, variance, efficiency).\nBut how do we construct them in the first place?\n. . .\nTwo major methods:\n\nMethod of Moments (MME): Match population and sample moments\nMaximum Likelihood (MLE): Find parameter that makes data most “likely”\n\n. . .\n\n\n\n\n\n\nKey Insight\n\n\n\nBoth methods give us systematic recipes for deriving estimators from any specified distribution."
+    "section": "Motivating Question",
+    "text": "Motivating Question\nWe’ve learned how to evaluate estimators (bias, variance, efficiency).\nBut how do we construct them in the first place?\n\nTwo major methods:\n\nMethod of Moments (MME): Match population and sample moments\nMaximum Likelihood (MLE): Find parameter that makes data most “likely”\n\n\n\n\n\n\n\n\n\nKey Insight\n\n\nBoth methods give us systematic recipes for deriving estimators from any specified distribution."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#population-vs.-sample-moments",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#population-vs.-sample-moments",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Population vs. Sample Moments",
-    "text": "Population vs. Sample Moments\n\n\n\n\n\n\nDefinitions (Devore 7.2)\n\n\n\nPopulation Moments:\n\n1st moment: \\(E(X) = \\mu_1'\\)\n2nd moment: \\(E(X^2) = \\mu_2'\\)\nkth moment: \\(E(X^k) = \\mu_k'\\)\n\nSample Moments:\n\n1st sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i = \\bar{X}\\)\n2nd sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i^2\\)\nkth sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i^k\\)"
+    "text": "Population vs. Sample Moments\n\n\n\n\n\n\nDefinitions (Devore 7.2)\n\n\nPopulation Moments:\n\n1st moment: \\(E(X) = \\mu_1'\\)\n2nd moment: \\(E(X^2) = \\mu_2'\\)\nkth moment: \\(E(X^k) = \\mu_k'\\)\n\nSample Moments:\n\n1st sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i = \\bar{X}\\)\n2nd sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i^2\\)\nkth sample moment: \\(\\frac{1}{n}\\sum_{i=1}^n X_i^k\\)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#the-method-of-moments-principle",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#the-method-of-moments-principle",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "The Method of Moments Principle",
-    "text": "The Method of Moments Principle\n\n\n\n\n\n\nMethod of Moments Estimators (MMEs)\n\n\n\nTo estimate \\(m\\) unknown parameters \\(\\theta_1, \\ldots, \\theta_m\\):\n\nExpress the first \\(m\\) population moments as functions of the parameters\nSet each population moment equal to its sample counterpart\nSolve the resulting system of equations for \\(\\theta_1, \\ldots, \\theta_m\\)\n\n\n\n. . .\nThe idea: If the population and sample moments should be “close,” we can estimate parameters by equating them."
+    "text": "The Method of Moments Principle\n\n\n\n\n\n\nMethod of Moments Estimators (MMEs)\n\n\nTo estimate \\(m\\) unknown parameters \\(\\theta_1, \\ldots, \\theta_m\\):\n\nExpress the first \\(m\\) population moments as functions of the parameters\nSet each population moment equal to its sample counterpart\nSolve the resulting system of equations for \\(\\theta_1, \\ldots, \\theta_m\\)\n\n\n\n\n\nThe idea: If the population and sample moments should be “close,” we can estimate parameters by equating them."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-exponential-distribution-one-parameter",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-exponential-distribution-one-parameter",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 1: Exponential Distribution (One Parameter)",
-    "text": "Example 1: Exponential Distribution (One Parameter)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Exponential}(\\lambda)\\) where \\(\\lambda\\) is the rate parameter.\nGoal: Find the MME for \\(\\lambda\\).\n. . .\nStep 1: Population moment: \\(E(X) = 1/\\lambda\\)\nStep 2: Set equal to sample moment: \\(\\frac{1}{\\lambda} = \\bar{X}\\)\nStep 3: Solve: \\(\\hat{\\lambda}_{MME} = \\frac{1}{\\bar{X}}\\)\n. . .\n\n\n\n\n\n\nIntuition\n\n\n\nIf the population mean is \\(1/\\lambda\\), and we estimate the population mean with \\(\\bar{X}\\), then we estimate \\(\\lambda\\) with \\(1/\\bar{X}\\)."
+    "text": "Example 1: Exponential Distribution (One Parameter)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Exponential}(\\lambda)\\) where \\(\\lambda\\) is the rate parameter.\nGoal: Find the MME for \\(\\lambda\\).\n\nStep 1: Population moment: \\(E(X) = 1/\\lambda\\)\nStep 2: Set equal to sample moment: \\(\\frac{1}{\\lambda} = \\bar{X}\\)\nStep 3: Solve: \\(\\hat{\\lambda}_{MME} = \\frac{1}{\\bar{X}}\\)\n\n\n\n\n\n\n\n\nIntuition\n\n\nIf the population mean is \\(1/\\lambda\\), and we estimate the population mean with \\(\\bar{X}\\), then we estimate \\(\\lambda\\) with \\(1/\\bar{X}\\)."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#medical-application-hospital-wait-times",
@@ -3952,21 +3952,21 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-2-normal-distribution-two-parameters",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 2: Normal Distribution (Two Parameters)",
-    "text": "Example 2: Normal Distribution (Two Parameters)\nSetup: \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\)\nGoal: Find MMEs for \\(\\mu\\) and \\(\\sigma^2\\).\n. . .\nPopulation moments:\n\n\\(E(X) = \\mu\\)\n\\(E(X^2) = \\mu^2 + \\sigma^2\\) (variance shortcut formula!)\n\n. . .\nSet equal to sample moments:\n\n\\(\\mu = \\bar{X}\\)\n\\(\\mu^2 + \\sigma^2 = \\frac{1}{n}\\sum X_i^2\\)"
+    "text": "Example 2: Normal Distribution (Two Parameters)\nSetup: \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\)\nGoal: Find MMEs for \\(\\mu\\) and \\(\\sigma^2\\).\n\nPopulation moments:\n\n\\(E(X) = \\mu\\)\n\\(E(X^2) = \\mu^2 + \\sigma^2\\) (variance shortcut formula!)\n\n\n\nSet equal to sample moments:\n\n\\(\\mu = \\bar{X}\\)\n\\(\\mu^2 + \\sigma^2 = \\frac{1}{n}\\sum X_i^2\\)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#solving-for-the-normal-mmes",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#solving-for-the-normal-mmes",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Solving for the Normal MMEs",
-    "text": "Solving for the Normal MMEs\nFrom the two equations:\n\\[\\hat{\\mu}_{MME} = \\bar{X}\\]\n. . .\n\\[\\hat{\\sigma}^2_{MME} = \\frac{1}{n}\\sum X_i^2 - \\bar{X}^2 = \\frac{1}{n}\\sum(X_i - \\bar{X})^2\\]\n. . .\n\n\n\n\n\n\nNote on Bias\n\n\n\nThe MME for \\(\\sigma^2\\) divides by \\(n\\), not \\(n-1\\). This means the MME is biased!\n\\[E(\\hat{\\sigma}^2_{MME}) = \\frac{n-1}{n}\\sigma^2\\]\nThe usual sample variance \\(S^2\\) with \\(n-1\\) in the denominator is unbiased."
+    "text": "Solving for the Normal MMEs\nFrom the two equations:\n\\[\\hat{\\mu}_{MME} = \\bar{X}\\]\n\n\\[\\hat{\\sigma}^2_{MME} = \\frac{1}{n}\\sum X_i^2 - \\bar{X}^2 = \\frac{1}{n}\\sum(X_i - \\bar{X})^2\\]\n\n\n\n\n\n\n\n\nNote on Bias\n\n\nThe MME for \\(\\sigma^2\\) divides by \\(n\\), not \\(n-1\\). This means the MME is biased!\n\\[E(\\hat{\\sigma}^2_{MME}) = \\frac{n-1}{n}\\sigma^2\\]\nThe usual sample variance \\(S^2\\) with \\(n-1\\) in the denominator is unbiased."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-3-gamma-distribution-two-parameters",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-3-gamma-distribution-two-parameters",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 3: Gamma Distribution (Two Parameters)",
-    "text": "Example 3: Gamma Distribution (Two Parameters)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Gamma}(\\alpha, \\beta)\\)\nMoments:\n\n\\(E(X) = \\alpha\\beta\\)\n\\(E(X^2) = \\alpha(\\alpha+1)\\beta^2\\)\n\n. . .\nMME equations: \\[\\bar{X} = \\alpha\\beta\\] \\[\\frac{1}{n}\\sum X_i^2 = \\alpha(\\alpha+1)\\beta^2\\]\n. . .\nSolutions (after algebra): \\[\\hat{\\alpha} = \\frac{\\bar{X}^2}{\\frac{1}{n}\\sum X_i^2 - \\bar{X}^2} = \\frac{\\bar{X}^2}{\\hat{\\sigma}^2} \\quad \\quad \\hat{\\beta} = \\frac{\\frac{1}{n}\\sum X_i^2 - \\bar{X}^2}{\\bar{X}} = \\frac{\\hat{\\sigma}^2}{\\bar{X}}\\]"
+    "text": "Example 3: Gamma Distribution (Two Parameters)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Gamma}(\\alpha, \\beta)\\)\nMoments:\n\n\\(E(X) = \\alpha\\beta\\)\n\\(E(X^2) = \\alpha(\\alpha+1)\\beta^2\\)\n\n\nMME equations: \\[\\bar{X} = \\alpha\\beta\\] \\[\\frac{1}{n}\\sum X_i^2 = \\alpha(\\alpha+1)\\beta^2\\]\n\n\nSolutions (after algebra): \\[\\hat{\\alpha} = \\frac{\\bar{X}^2}{\\frac{1}{n}\\sum X_i^2 - \\bar{X}^2} = \\frac{\\bar{X}^2}{\\hat{\\sigma}^2} \\quad \\quad \\hat{\\beta} = \\frac{\\frac{1}{n}\\sum X_i^2 - \\bar{X}^2}{\\bar{X}} = \\frac{\\hat{\\sigma}^2}{\\bar{X}}\\]"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#medical-application-surgery-recovery-times",
@@ -3994,35 +3994,35 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#your-turn-method-of-moments",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Your Turn: Method of Moments",
-    "text": "Your Turn: Method of Moments\nExercise: Drug concentrations in blood plasma follow a Uniform[0, \\(\\theta\\)] distribution. From \\(n = 15\\) measurements, you observe \\(\\bar{x} = 4.2\\) mg/L.\nFind the MME of \\(\\theta\\).\n. . .\nSolution:\nFor Uniform[0, \\(\\theta\\)]: \\(E(X) = \\theta/2\\)\nSetting equal to sample mean: \\(\\bar{x} = \\theta/2\\)\nTherefore: \\(\\hat{\\theta}_{MME} = 2\\bar{x} = 2(4.2) = 8.4\\) mg/L"
+    "text": "Your Turn: Method of Moments\nExercise: Drug concentrations in blood plasma follow a Uniform[0, \\(\\theta\\)] distribution. From \\(n = 15\\) measurements, you observe \\(\\bar{x} = 4.2\\) mg/L.\nFind the MME of \\(\\theta\\).\n\nSolution:\nFor Uniform[0, \\(\\theta\\)]: \\(E(X) = \\theta/2\\)\nSetting equal to sample mean: \\(\\bar{x} = \\theta/2\\)\nTherefore: \\(\\hat{\\theta}_{MME} = 2\\bar{x} = 2(4.2) = 8.4\\) mg/L"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#properties-of-method-of-moments-estimators",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#properties-of-method-of-moments-estimators",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Properties of Method of Moments Estimators",
-    "text": "Properties of Method of Moments Estimators\nAdvantages:\n\nSimple to compute (usually just algebra)\nOften has closed-form solutions\nUsually consistent (converges to true value as \\(n \\to \\infty\\))\n\n. . .\nDisadvantages:\n\nMay not be efficient (doesn’t achieve CRLB)\nCan sometimes give impossible values\nMay be biased\n\n. . .\n\n\n\n\n\n\nComing Up Next\n\n\n\nMaximum likelihood estimators are often more efficient than MMEs."
+    "text": "Properties of Method of Moments Estimators\nAdvantages:\n\nSimple to compute (usually just algebra)\nOften has closed-form solutions\nUsually consistent (converges to true value as \\(n \\to \\infty\\))\n\n\nDisadvantages:\n\nMay not be efficient (doesn’t achieve CRLB)\nCan sometimes give impossible values\nMay be biased\n\n\n\n\n\n\n\n\n\nComing Up Next\n\n\nMaximum likelihood estimators are often more efficient than MMEs."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#motivating-example-vaccine-efficacy",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#motivating-example-vaccine-efficacy",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Motivating Example: Vaccine Efficacy",
-    "text": "Motivating Example: Vaccine Efficacy\nA clinical trial for a new vaccine enrolls 200 participants. After exposure to the pathogen, 156 remain disease-free.\n. . .\nQuestion: What is the true efficacy rate \\(p\\) of this vaccine?\n. . .\n\nn &lt;- 200\nsuccesses &lt;- 156\n# What value of p makes this outcome most \"likely\"?\n\nIntuition: We should choose the value of \\(p\\) that makes our observed data “most likely” to have occurred.\n. . .\nThis is the essence of Maximum Likelihood Estimation."
+    "text": "Motivating Example: Vaccine Efficacy\nA clinical trial for a new vaccine enrolls 200 participants. After exposure to the pathogen, 156 remain disease-free.\n\nQuestion: What is the true efficacy rate \\(p\\) of this vaccine?\n\n\n\nn &lt;- 200\nsuccesses &lt;- 156\n# What value of p makes this outcome most \"likely\"?\n\nIntuition: We should choose the value of \\(p\\) that makes our observed data “most likely” to have occurred.\n\n\nThis is the essence of Maximum Likelihood Estimation."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#from-probability-to-likelihood",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#from-probability-to-likelihood",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "From Probability to Likelihood",
-    "text": "From Probability to Likelihood\nProbability vs. Likelihood: A Key Distinction\n. . .\nProbability (parameters fixed, data varies):\n\nGiven a known parameter value \\(\\theta\\), how likely are different data outcomes?\nExample: If \\(\\theta = 0.8\\) for \\(X~\\)Binomial(200,\\(\\theta\\)), what’s \\(P(X = 156)\\)?\n\n. . .\nLikelihood (data fixed, parameters vary):\n\nGiven our observed data, how “likely” are different parameter values?\nExample: We observed 156 successes. Which value of \\(p\\) best explains this?"
+    "text": "From Probability to Likelihood\nProbability vs. Likelihood: A Key Distinction\n\nProbability (parameters fixed, data varies):\n\nGiven a known parameter value \\(\\theta\\), how likely are different data outcomes?\nExample: If \\(\\theta = 0.8\\) for \\(X~\\)Binomial(200,\\(\\theta\\)), what’s \\(P(X = 156)\\)?\n\n\n\nLikelihood (data fixed, parameters vary):\n\nGiven our observed data, how “likely” are different parameter values?\nExample: We observed 156 successes. Which value of \\(p\\) best explains this?"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#the-likelihood-function-definition",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#the-likelihood-function-definition",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "The Likelihood Function: Definition",
-    "text": "The Likelihood Function: Definition\n\n\n\n\n\n\nDefinition (Devore 7.2)\n\n\n\nLet \\(X_1, \\ldots, X_n\\) have a joint distribution that depends on parameter \\(\\theta\\). The likelihood function \\(L(\\theta)\\) is this joint distribution, regarded as a function of \\(\\theta\\) (with observed data held fixed).\nFor a random sample: \\[L(\\theta) = \\prod_{i=1}^n f(x_i; \\theta)\\]\nwhere \\(f\\) is the pmf (discrete) or pdf (continuous)."
+    "text": "The Likelihood Function: Definition\n\n\n\n\n\n\nDefinition (Devore 7.2)\n\n\nLet \\(X_1, \\ldots, X_n\\) have a joint distribution that depends on parameter \\(\\theta\\). The likelihood function \\(L(\\theta)\\) is this joint distribution, regarded as a function of \\(\\theta\\) (with observed data held fixed).\nFor a random sample: \\[L(\\theta) = \\prod_{i=1}^n f(x_i; \\theta)\\]\nwhere \\(f\\) is the pmf (discrete) or pdf (continuous)."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#visualizing-likelihood-code",
@@ -4036,35 +4036,35 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#visualizing-likelihood-result",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Visualizing Likelihood: Result",
-    "text": "Visualizing Likelihood: Result\n\n\n\n\n\n\n\n\n\nThe MLE is the value of \\(p\\) at the peak of the likelihood function."
+    "text": "Visualizing Likelihood: Result\n\nThe MLE is the value of \\(p\\) at the peak of the likelihood function."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#maximum-likelihood-estimate-definition",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#maximum-likelihood-estimate-definition",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Maximum Likelihood Estimate: Definition",
-    "text": "Maximum Likelihood Estimate: Definition\n\n\n\n\n\n\nDefinition\n\n\n\nThe Maximum Likelihood Estimate (MLE) \\(\\hat{\\theta}\\) is the value of \\(\\theta\\) that maximizes the likelihood function:\n\\[\\hat{\\theta} = \\arg\\max_\\theta L(\\theta)\\]\nThe MLE is the parameter value that makes the observed data “most likely.”\n\n\n. . .\nNotation:\n\n\\(\\hat{\\theta}\\) is the MLE (estimator, a random variable)\n\\(\\hat{\\theta}\\) is also the observed mle (estimate, a specific number from data)"
+    "text": "Maximum Likelihood Estimate: Definition\n\n\n\n\n\n\nDefinition\n\n\nThe Maximum Likelihood Estimate (MLE) \\(\\hat{\\theta}\\) is the value of \\(\\theta\\) that maximizes the likelihood function:\n\\[\\hat{\\theta} = \\arg\\max_\\theta L(\\theta)\\]\nThe MLE is the parameter value that makes the observed data “most likely.”\n\n\n\n\nNotation:\n\n\\(\\hat{\\theta}\\) is the MLE (estimator, a random variable)\n\\(\\hat{\\theta}\\) is also the observed mle (estimate, a specific number from data)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#why-maximum-likelihood",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#why-maximum-likelihood",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Why Maximum Likelihood?",
-    "text": "Why Maximum Likelihood?\nIntuitive Appeal:\n\nChoose the parameter that “best explains” our data\nThe data we observed should be highly probable under the true parameter\n\n. . .\nTheoretical Properties (more details later):\n\nConsistent: \\(\\hat{\\theta} \\to \\theta\\) as \\(n \\to \\infty\\)\nAsymptotically unbiased: \\(E(\\hat{\\theta}) \\approx \\theta\\) for large \\(n\\)\nAsymptotically efficient: Achieves smallest possible variance for large \\(n\\)\nInvariance: If \\(\\hat{\\theta}\\) is MLE of \\(\\theta\\), then \\(g(\\hat{\\theta})\\) is MLE of \\(g(\\theta)\\)"
+    "text": "Why Maximum Likelihood?\nIntuitive Appeal:\n\nChoose the parameter that “best explains” our data\nThe data we observed should be highly probable under the true parameter\n\n\nTheoretical Properties (more details later):\n\nConsistent: \\(\\hat{\\theta} \\to \\theta\\) as \\(n \\to \\infty\\)\nAsymptotically unbiased: \\(E(\\hat{\\theta}) \\approx \\theta\\) for large \\(n\\)\nAsymptotically efficient: Achieves smallest possible variance for large \\(n\\)\nInvariance: If \\(\\hat{\\theta}\\) is MLE of \\(\\theta\\), then \\(g(\\hat{\\theta})\\) is MLE of \\(g(\\theta)\\)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#why-use-log-likelihood",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#why-use-log-likelihood",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Why Use Log-Likelihood?",
-    "text": "Why Use Log-Likelihood?\nThe likelihood function is often a product of many terms: \\[L(\\theta) = \\prod_{i=1}^n f(x_i; \\theta)\\]\n. . .\nTaking the logarithm converts products to sums: \\[\\ell(\\theta) = \\ln L(\\theta) = \\sum_{i=1}^n \\ln f(x_i; \\theta)\\]\n. . .\nKey property: Since \\(\\ln\\) is monotonically increasing: \\[\\arg\\max_\\theta L(\\theta) = \\arg\\max_\\theta \\ell(\\theta)\\]\nMaximizing the log-likelihood gives the same answer!"
+    "text": "Why Use Log-Likelihood?\nThe likelihood function is often a product of many terms: \\[L(\\theta) = \\prod_{i=1}^n f(x_i; \\theta)\\]\n\nTaking the logarithm converts products to sums: \\[\\ell(\\theta) = \\ln L(\\theta) = \\sum_{i=1}^n \\ln f(x_i; \\theta)\\]\n\n\nKey property: Since \\(\\ln\\) is monotonically increasing: \\[\\arg\\max_\\theta L(\\theta) = \\arg\\max_\\theta \\ell(\\theta)\\]\nMaximizing the log-likelihood gives the same answer!"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#advantages-of-log-likelihood",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#advantages-of-log-likelihood",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Advantages of Log-Likelihood",
-    "text": "Advantages of Log-Likelihood\nComputational:\n\nSums are easier to differentiate than products\nAvoids numerical underflow (very small products)\n\n. . .\nMathematical:\n\n\\(\\ell'(\\theta) = 0\\) is often easier to solve\nSecond derivative test is more tractable"
+    "text": "Advantages of Log-Likelihood\nComputational:\n\nSums are easier to differentiate than products\nAvoids numerical underflow (very small products)\n\n\nMathematical:\n\n\\(\\ell'(\\theta) = 0\\) is often easier to solve\nSecond derivative test is more tractable"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#likelihood-vs.-log-likelihood-code",
@@ -4085,21 +4085,21 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#the-general-mle-recipe",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "The General MLE Recipe",
-    "text": "The General MLE Recipe\n\n\n\n\n\n\nFinding the MLE\n\n\n\n\nWrite down the likelihood: \\(L(\\theta) = \\prod f(x_i; \\theta)\\)\nTake the logarithm: \\(\\ell(\\theta) = \\sum \\ln f(x_i; \\theta)\\)\nDifferentiate: Find \\(\\ell'(\\theta) = \\frac{d\\ell}{d\\theta}\\)\nSolve: Set \\(\\ell'(\\theta) = 0\\) and solve for \\(\\hat{\\theta}\\)\nVerify: Check that \\(\\ell''(\\hat{\\theta}) &lt; 0\\) (maximum, not minimum)"
+    "text": "The General MLE Recipe\n\n\n\n\n\n\nFinding the MLE\n\n\n\nWrite down the likelihood: \\(L(\\theta) = \\prod f(x_i; \\theta)\\)\nTake the logarithm: \\(\\ell(\\theta) = \\sum \\ln f(x_i; \\theta)\\)\nDifferentiate: Find \\(\\ell'(\\theta) = \\frac{d\\ell}{d\\theta}\\)\nSolve: Set \\(\\ell'(\\theta) = 0\\) and solve for \\(\\hat{\\theta}\\)\nVerify: Check that \\(\\ell''(\\hat{\\theta}) &lt; 0\\) (maximum, not minimum)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-bernoulli-distribution",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-bernoulli-distribution",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 1: Bernoulli Distribution",
-    "text": "Example 1: Bernoulli Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Bernoulli}(p)\\) (iid)\nLet \\(x = \\sum x_i\\) be the number of successes.\n. . .\nStep 1 - Likelihood: \\[L(p) = \\prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^x(1-p)^{n-x}\\]\n. . .\nStep 2 - Log-likelihood: \\[\\ell(p) = x\\ln(p) + (n-x)\\ln(1-p)\\]"
+    "text": "Example 1: Bernoulli Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Bernoulli}(p)\\) (iid)\nLet \\(x = \\sum x_i\\) be the number of successes.\n\nStep 1 - Likelihood: \\[L(p) = \\prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^x(1-p)^{n-x}\\]\n\n\nStep 2 - Log-likelihood: \\[\\ell(p) = x\\ln(p) + (n-x)\\ln(1-p)\\]"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-bernoulli-continued",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-1-bernoulli-continued",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 1: Bernoulli (continued)",
-    "text": "Example 1: Bernoulli (continued)\nStep 3 - Differentiate: \\[\\ell'(p) = \\frac{x}{p} - \\frac{n-x}{1-p}\\]\n. . .\nStep 4 - Solve: \\[\\frac{x}{p} = \\frac{n-x}{1-p}\\] \\[x(1-p) = p(n-x)\\] \\[x - xp = np - xp\\] \\[x = np\\] \\[\\hat{p} = \\frac{x}{n}\\]\n. . .\nThe MLE is the sample proportion! This matches our intuition."
+    "text": "Example 1: Bernoulli (continued)\nStep 3 - Differentiate: \\[\\ell'(p) = \\frac{x}{p} - \\frac{n-x}{1-p}\\]\n\nStep 4 - Solve: \\[\\frac{x}{p} = \\frac{n-x}{1-p}\\] \\[x(1-p) = p(n-x)\\] \\[x - xp = np - xp\\] \\[x = np\\] \\[\\hat{p} = \\frac{x}{n}\\]\n\n\nThe MLE is the sample proportion! This matches our intuition."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#simulation-verifying-the-bernoulli-mle",
@@ -4113,28 +4113,28 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-2-exponential-distribution",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 2: Exponential Distribution",
-    "text": "Example 2: Exponential Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Exponential}(\\lambda)\\)\n. . .\nLikelihood: \\[L(\\lambda) = \\prod_{i=1}^n \\lambda e^{-\\lambda x_i} = \\lambda^n e^{-\\lambda \\sum x_i}\\]\n. . .\nLog-likelihood: \\[\\ell(\\lambda) = n\\ln(\\lambda) - \\lambda \\sum x_i\\]\n. . .\nSolve: \\[\\ell'(\\lambda) = \\frac{n}{\\lambda} - \\sum x_i = 0 \\Rightarrow \\hat{\\lambda} = \\frac{n}{\\sum x_i} = \\frac{1}{\\bar{X}}\\]\n. . .\nSame as MME! This is common for exponential family distributions."
+    "text": "Example 2: Exponential Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Exponential}(\\lambda)\\)\n\nLikelihood: \\[L(\\lambda) = \\prod_{i=1}^n \\lambda e^{-\\lambda x_i} = \\lambda^n e^{-\\lambda \\sum x_i}\\]\n\n\nLog-likelihood: \\[\\ell(\\lambda) = n\\ln(\\lambda) - \\lambda \\sum x_i\\]\n\n\nSolve: \\[\\ell'(\\lambda) = \\frac{n}{\\lambda} - \\sum x_i = 0 \\Rightarrow \\hat{\\lambda} = \\frac{n}{\\sum x_i} = \\frac{1}{\\bar{X}}\\]\n\n\nSame as MME! This is common for exponential family distributions."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-3-normal-distribution",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-3-normal-distribution",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 3: Normal Distribution",
-    "text": "Example 3: Normal Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\), both unknown\n. . .\nLog-likelihood: \\[\\ell(\\mu, \\sigma^2) = -\\frac{n}{2}\\ln(2\\pi) - \\frac{n}{2}\\ln(\\sigma^2) - \\frac{1}{2\\sigma^2}\\sum(x_i - \\mu)^2\\]\n. . .\nPartial derivatives: \\[\\frac{\\partial \\ell}{\\partial \\mu} = \\frac{1}{\\sigma^2}\\sum(x_i - \\mu) = 0 \\Rightarrow \\hat{\\mu} = \\bar{X}\\]\n\\[\\frac{\\partial \\ell}{\\partial \\sigma^2} = -\\frac{n}{2\\sigma^2} + \\frac{1}{2\\sigma^4}\\sum(x_i - \\mu)^2 = 0 \\Rightarrow \\hat{\\sigma}^2 = \\frac{1}{n}\\sum(x_i - \\bar{X})^2\\]"
+    "text": "Example 3: Normal Distribution\nSetup: \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\), both unknown\n\nLog-likelihood: \\[\\ell(\\mu, \\sigma^2) = -\\frac{n}{2}\\ln(2\\pi) - \\frac{n}{2}\\ln(\\sigma^2) - \\frac{1}{2\\sigma^2}\\sum(x_i - \\mu)^2\\]\n\n\nPartial derivatives: \\[\\frac{\\partial \\ell}{\\partial \\mu} = \\frac{1}{\\sigma^2}\\sum(x_i - \\mu) = 0 \\Rightarrow \\hat{\\mu} = \\bar{X}\\]\n\\[\\frac{\\partial \\ell}{\\partial \\sigma^2} = -\\frac{n}{2\\sigma^2} + \\frac{1}{2\\sigma^4}\\sum(x_i - \\mu)^2 = 0 \\Rightarrow \\hat{\\sigma}^2 = \\frac{1}{n}\\sum(x_i - \\bar{X})^2\\]"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#important-note-on-normal-mle",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#important-note-on-normal-mle",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Important Note on Normal MLE",
-    "text": "Important Note on Normal MLE\n\\[\\hat{\\sigma}^2_{MLE} = \\frac{1}{n}\\sum(x_i - \\bar{X})^2\\]\n. . .\n\n\n\n\n\n\nBias Alert!\n\n\n\nThe MLE divides by \\(n\\), not \\(n-1\\):\n\\[E(\\hat{\\sigma}^2_{MLE}) = \\frac{n-1}{n}\\sigma^2 \\neq \\sigma^2\\]\nThe MLE is biased for \\(\\sigma^2\\)!\n\n\n. . .\nHowever, for large \\(n\\), this bias becomes negligible: \\[\\frac{n-1}{n} \\to 1 \\text{ as } n \\to \\infty\\]"
+    "text": "Important Note on Normal MLE\n\\[\\hat{\\sigma}^2_{MLE} = \\frac{1}{n}\\sum(x_i - \\bar{X})^2\\]\n\n\n\n\n\n\n\nBias Alert!\n\n\nThe MLE divides by \\(n\\), not \\(n-1\\):\n\\[E(\\hat{\\sigma}^2_{MLE}) = \\frac{n-1}{n}\\sigma^2 \\neq \\sigma^2\\]\nThe MLE is biased for \\(\\sigma^2\\)!\n\n\n\n\n\nHowever, for large \\(n\\), this bias becomes negligible: \\[\\frac{n-1}{n} \\to 1 \\text{ as } n \\to \\infty\\]"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#when-calculus-isnt-enough",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#when-calculus-isnt-enough",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "When Calculus Isn’t Enough",
-    "text": "When Calculus Isn’t Enough\nNot all MLEs have closed-form solutions!\n. . .\nExamples requiring numerical optimization:\n\nGamma distribution (shape and rate parameters)\nWeibull distribution\nBeta distribution\nMixed models, GLMs, many real-world applications\n\n. . .\n\n\n\n\n\n\nThe General Approach\n\n\n\n\nWrite down the log-likelihood function \\(\\ell(\\theta)\\)\nUse numerical optimization to find \\(\\hat{\\theta} = \\arg\\max \\ell(\\theta)\\)\nIn R: minimize the negative log-likelihood (since optim minimizes)"
+    "text": "When Calculus Isn’t Enough\nNot all MLEs have closed-form solutions!\n\nExamples requiring numerical optimization:\n\nGamma distribution (shape and rate parameters)\nWeibull distribution\nBeta distribution\nMixed models, GLMs, many real-world applications\n\n\n\n\n\n\n\n\n\nThe General Approach\n\n\n\nWrite down the log-likelihood function \\(\\ell(\\theta)\\)\nUse numerical optimization to find \\(\\hat{\\theta} = \\arg\\max \\ell(\\theta)\\)\nIn R: minimize the negative log-likelihood (since optim minimizes)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-exponential-mle-calculus-vs.-numerical",
@@ -4155,7 +4155,7 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-gamma-mle-numerical-only",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example: Gamma MLE — Numerical Only",
-    "text": "Example: Gamma MLE — Numerical Only\nThe Gamma distribution has no closed-form MLE for the shape parameter \\(\\alpha\\).\nLog-likelihood for Gamma(\\(\\alpha\\), \\(\\beta\\)): \\[\\ell(\\alpha, \\beta) = n\\alpha\\ln(\\beta) - n\\ln\\Gamma(\\alpha) + (\\alpha-1)\\sum\\ln(x_i) - \\beta\\sum x_i\\]\n. . .\nSetting \\(\\partial\\ell/\\partial\\alpha = 0\\) involves the digamma function \\(\\psi(\\alpha)\\) — no closed-form solution!"
+    "text": "Example: Gamma MLE — Numerical Only\nThe Gamma distribution has no closed-form MLE for the shape parameter \\(\\alpha\\).\nLog-likelihood for Gamma(\\(\\alpha\\), \\(\\beta\\)): \\[\\ell(\\alpha, \\beta) = n\\alpha\\ln(\\beta) - n\\ln\\Gamma(\\alpha) + (\\alpha-1)\\sum\\ln(x_i) - \\beta\\sum x_i\\]\n\nSetting \\(\\partial\\ell/\\partial\\alpha = 0\\) involves the digamma function \\(\\psi(\\alpha)\\) — no closed-form solution!"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#gamma-mle-numerical-optimization-in-r-12",
@@ -4190,14 +4190,14 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#numerical-optimization-practical-tips",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Numerical Optimization: Practical Tips",
-    "text": "Numerical Optimization: Practical Tips\n\n\n\n\n\n\nBest Practices\n\n\n\n\nGood starting values matter! Use MME estimates as initial guesses\nCheck convergence: Look at result$convergence (0 = success)\nUse appropriate bounds: For parameters that must be positive, use method = \"L-BFGS-B\" with lower bounds\nMultiple starting points: Try different initial values to avoid local maxima\nVerify your result: Compare with fitdistr() or plot the log-likelihood\n\n\n\n. . .\n\n# Always check convergence!\ncat(\"Convergence code:\", result$convergence, \n    ifelse(result$convergence == 0, \"(success)\", \"(failed)\"))\n\nConvergence code: 0 (success)"
+    "text": "Numerical Optimization: Practical Tips\n\n\n\n\n\n\nBest Practices\n\n\n\nGood starting values matter! Use MME estimates as initial guesses\nCheck convergence: Look at result$convergence (0 = success)\nUse appropriate bounds: For parameters that must be positive, use method = \"L-BFGS-B\" with lower bounds\nMultiple starting points: Try different initial values to avoid local maxima\nVerify your result: Compare with fitdistr() or plot the log-likelihood\n\n\n\n\n\n\n# Always check convergence!\ncat(\"Convergence code:\", result$convergence, \n    ifelse(result$convergence == 0, \"(success)\", \"(failed)\"))\n\nConvergence code: 0 (success)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#example-4-uniform-distribution-boundary-solution",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#example-4-uniform-distribution-boundary-solution",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Example 4: Uniform Distribution (Boundary Solution)",
-    "text": "Example 4: Uniform Distribution (Boundary Solution)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Uniform}[0, \\theta]\\)\nLikelihood: \\[L(\\theta) = \\prod_{i=1}^n \\frac{1}{\\theta} \\cdot I(0 \\le x_i \\le \\theta) = \\frac{1}{\\theta^n} \\cdot I(\\max(x_i) \\le \\theta)\\]\n. . .\nKey insight: \\(L(\\theta) = 0\\) if \\(\\theta &lt; \\max(x_i)\\)\n. . .\nFor \\(\\theta \\ge \\max(x_i)\\): \\(L(\\theta) = 1/\\theta^n\\) is decreasing in \\(\\theta\\)\n. . .\nMLE: \\(\\hat{\\theta} = \\max(X_1, \\ldots, X_n)\\)\nDerivative method fails! This is a boundary maximum."
+    "text": "Example 4: Uniform Distribution (Boundary Solution)\nSetup: \\(X_1, \\ldots, X_n \\sim \\text{Uniform}[0, \\theta]\\)\nLikelihood: \\[L(\\theta) = \\prod_{i=1}^n \\frac{1}{\\theta} \\cdot I(0 \\le x_i \\le \\theta) = \\frac{1}{\\theta^n} \\cdot I(\\max(x_i) \\le \\theta)\\]\n\nKey insight: \\(L(\\theta) = 0\\) if \\(\\theta &lt; \\max(x_i)\\)\n\n\nFor \\(\\theta \\ge \\max(x_i)\\): \\(L(\\theta) = 1/\\theta^n\\) is decreasing in \\(\\theta\\)\n\n\nMLE: \\(\\hat{\\theta} = \\max(X_1, \\ldots, X_n)\\)\nDerivative method fails! This is a boundary maximum."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#mle-vs-mme-for-uniform-12",
@@ -4232,35 +4232,35 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#property-1-invariance",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Property 1: Invariance",
-    "text": "Property 1: Invariance\n\n\n\n\n\n\nInvariance Property\n\n\n\nIf \\(\\hat{\\theta}\\) is the MLE of \\(\\theta\\), then for any function \\(g\\):\n\\[\\widehat{g(\\theta)} = g(\\hat{\\theta})\\]\nThe MLE of \\(g(\\theta)\\) is simply \\(g\\) applied to the MLE of \\(\\theta\\).\n\n\n. . .\nExample: If \\(\\hat{p} = 0.78\\) is the MLE for a proportion, then:\n\nMLE of odds \\(= p/(1-p)\\): \\(\\hat{\\text{odds}} = 0.78/0.22 = 3.55\\)\nMLE of \\(\\log(p)\\): \\(\\widehat{\\log p} = \\log(0.78) = -0.248\\)"
+    "text": "Property 1: Invariance\n\n\n\n\n\n\nInvariance Property\n\n\nIf \\(\\hat{\\theta}\\) is the MLE of \\(\\theta\\), then for any function \\(g\\):\n\\[\\widehat{g(\\theta)} = g(\\hat{\\theta})\\]\nThe MLE of \\(g(\\theta)\\) is simply \\(g\\) applied to the MLE of \\(\\theta\\).\n\n\n\n\nExample: If \\(\\hat{p} = 0.78\\) is the MLE for a proportion, then:\n\nMLE of odds \\(= p/(1-p)\\): \\(\\hat{\\text{odds}} = 0.78/0.22 = 3.55\\)\nMLE of \\(\\log(p)\\): \\(\\widehat{\\log p} = \\log(0.78) = -0.248\\)"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#property-2-consistency-the-big-picture",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#property-2-consistency-the-big-picture",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Property 2: Consistency — The Big Picture",
-    "text": "Property 2: Consistency — The Big Picture\n\n\n\n\n\n\nWhat Does Consistency Mean?\n\n\n\nAn estimator \\(\\hat{\\theta}\\) is consistent for \\(\\theta\\) if, as we collect more and more data, our estimate gets closer and closer to the true value.\nIn plain English: With enough data, we can estimate \\(\\theta\\) as accurately as we want.\n\n\n. . .\nThink of it like this:\n\nWith \\(n = 10\\) observations, your estimate might be off by a lot\nWith \\(n = 100\\) observations, your estimate is probably closer\nWith \\(n = 1000\\) observations, your estimate is very close\nAs \\(n \\to \\infty\\), your estimate essentially equals the truth"
+    "text": "Property 2: Consistency — The Big Picture\n\n\n\n\n\n\nWhat Does Consistency Mean?\n\n\nAn estimator \\(\\hat{\\theta}\\) is consistent for \\(\\theta\\) if, as we collect more and more data, our estimate gets closer and closer to the true value.\nIn plain English: With enough data, we can estimate \\(\\theta\\) as accurately as we want.\n\n\n\n\nThink of it like this:\n\nWith \\(n = 10\\) observations, your estimate might be off by a lot\nWith \\(n = 100\\) observations, your estimate is probably closer\nWith \\(n = 1000\\) observations, your estimate is very close\nAs \\(n \\to \\infty\\), your estimate essentially equals the truth"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-a-medical-analogy",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-a-medical-analogy",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Consistency: A Medical Analogy",
-    "text": "Consistency: A Medical Analogy\nImagine estimating the true cure rate \\(p\\) of a new drug:\n\n\n\nSample Size\nYour Estimate\nHow Close?\n\n\n\n\n\\(n = 10\\)\n\\(\\hat{p} = 0.60\\)\nCould be quite far off\n\n\n\\(n = 100\\)\n\\(\\hat{p} = 0.72\\)\nGetting closer\n\n\n\\(n = 1,000\\)\n\\(\\hat{p} = 0.748\\)\nVery close\n\n\n\\(n = 10,000\\)\n\\(\\hat{p} = 0.7502\\)\nAlmost exactly right\n\n\n\n. . .\nIf the true cure rate is \\(p = 0.75\\), a consistent estimator will eventually “find” this value.\n. . .\n\n\n\n\n\n\nKey Insight\n\n\n\nConsistency is about what happens as sample size grows—it’s a long-run guarantee about the behavior of an estimator."
+    "text": "Consistency: A Medical Analogy\nImagine estimating the true cure rate \\(p\\) of a new drug:\n\n\n\nSample Size\nYour Estimate\nHow Close?\n\n\n\n\n\\(n = 10\\)\n\\(\\hat{p} = 0.60\\)\nCould be quite far off\n\n\n\\(n = 100\\)\n\\(\\hat{p} = 0.72\\)\nGetting closer\n\n\n\\(n = 1,000\\)\n\\(\\hat{p} = 0.748\\)\nVery close\n\n\n\\(n = 10,000\\)\n\\(\\hat{p} = 0.7502\\)\nAlmost exactly right\n\n\n\n\nIf the true cure rate is \\(p = 0.75\\), a consistent estimator will eventually “find” this value.\n\n\n\n\n\n\n\n\nKey Insight\n\n\nConsistency is about what happens as sample size grows—it’s a long-run guarantee about the behavior of an estimator."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-formal-statement",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-formal-statement",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Consistency: Formal Statement",
-    "text": "Consistency: Formal Statement\n\n\n\n\n\n\nTheorem: MLEs are Consistent\n\n\n\nUnder general regularity conditions, the MLE \\(\\hat{\\theta}\\) satisfies:\n\\[\\hat{\\theta} \\xrightarrow{P} \\theta \\quad \\text{as } n \\to \\infty\\]\nTranslation: For any tolerance \\(\\epsilon &gt; 0\\), no matter how small:\n\\[P(|\\hat{\\theta} - \\theta| &lt; \\epsilon) \\to 1 \\quad \\text{as } n \\to \\infty\\]\nThe probability that our estimate is within \\(\\epsilon\\) of the truth approaches 100%.\n\n\n. . .\nWhat this does NOT mean:\n\nIt does NOT mean \\(\\hat{\\theta}\\) is unbiased\nIt does NOT mean \\(\\hat{\\theta}\\) is exactly right for any finite \\(n\\)\nIt’s a statement about the limiting behavior as \\(n\\) grows"
+    "text": "Consistency: Formal Statement\n\n\n\n\n\n\nTheorem: MLEs are Consistent\n\n\nUnder general regularity conditions, the MLE \\(\\hat{\\theta}\\) satisfies:\n\\[\\hat{\\theta} \\xrightarrow{P} \\theta \\quad \\text{as } n \\to \\infty\\]\nTranslation: For any tolerance \\(\\epsilon &gt; 0\\), no matter how small:\n\\[P(|\\hat{\\theta} - \\theta| &lt; \\epsilon) \\to 1 \\quad \\text{as } n \\to \\infty\\]\nThe probability that our estimate is within \\(\\epsilon\\) of the truth approaches 100%.\n\n\n\n\nWhat this does NOT mean:\n\nIt does NOT mean \\(\\hat{\\theta}\\) is unbiased\nIt does NOT mean \\(\\hat{\\theta}\\) is exactly right for any finite \\(n\\)\nIt’s a statement about the limiting behavior as \\(n\\) grows"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-via-mse-0",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#consistency-via-mse-0",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Consistency via MSE → 0",
-    "text": "Consistency via MSE → 0\n\n\n\n\n\n\nAlternative Characterization\n\n\n\nAn estimator \\(\\hat{\\theta}\\) is consistent if its Mean Squared Error goes to zero:\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2] \\to 0 \\quad \\text{as } n \\to \\infty\\]\n\n\n. . .\nWhy does this work? Recall: \\(\\text{MSE} = \\text{Variance} + \\text{Bias}^2\\)\nFor consistency via MSE → 0, we need both:\n\n\\(\\text{Var}(\\hat{\\theta}) \\to 0\\) (estimates become more precise)\n\\(\\text{Bias}(\\hat{\\theta}) \\to 0\\) (estimates become centered on truth)\n\n. . .\n\n\n\n\n\n\nTip\n\n\n\nThis is often the easiest way to prove consistency — just show that MSE → 0!"
+    "text": "Consistency via MSE → 0\n\n\n\n\n\n\nAlternative Characterization\n\n\nAn estimator \\(\\hat{\\theta}\\) is consistent if its Mean Squared Error goes to zero:\n\\[\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2] \\to 0 \\quad \\text{as } n \\to \\infty\\]\n\n\n\n\nWhy does this work? Recall: \\(\\text{MSE} = \\text{Variance} + \\text{Bias}^2\\)\nFor consistency via MSE → 0, we need both:\n\n\\(\\text{Var}(\\hat{\\theta}) \\to 0\\) (estimates become more precise)\n\\(\\text{Bias}(\\hat{\\theta}) \\to 0\\) (estimates become centered on truth)\n\n\n\n\n\n\n\n\n\nTip\n\n\nThis is often the easiest way to prove consistency — just show that MSE → 0!"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#visualizing-consistency-setup",
@@ -4309,14 +4309,14 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#visualizing-mse-0-result",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Visualizing MSE → 0: Result",
-    "text": "Visualizing MSE → 0: Result\n\n\n\n\n\n\n\n\n\nMSE is dominated by variance (bias is negligible), and both → 0 as n → ∞"
+    "text": "Visualizing MSE → 0: Result\n\nMSE is dominated by variance (bias is negligible), and both → 0 as n → ∞"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#property-3-asymptotic-normality-efficiency",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#property-3-asymptotic-normality-efficiency",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Property 3: Asymptotic Normality & Efficiency",
-    "text": "Property 3: Asymptotic Normality & Efficiency\n\n\n\n\n\n\nTheorem (Devore 7.4)\n\n\n\nUnder regularity conditions, for large \\(n\\):\n\n\\(\\hat{\\theta}\\) is approximately unbiased: \\(E(\\hat{\\theta}) \\approx \\theta\\)\n\\(\\hat{\\theta}\\) is approximately normal: \\(\\hat{\\theta} \\dot{\\sim} N\\left(\\theta, \\frac{1}{nI(\\theta)}\\right)\\)\n\\(\\hat{\\theta}\\) is asymptotically efficient: Achieves the Cramér-Rao lower bound\n\n\n\n. . .\nIn practice: For large samples, the MLE is approximately the MVUE!"
+    "text": "Property 3: Asymptotic Normality & Efficiency\n\n\n\n\n\n\nTheorem (Devore 7.4)\n\n\nUnder regularity conditions, for large \\(n\\):\n\n\\(\\hat{\\theta}\\) is approximately unbiased: \\(E(\\hat{\\theta}) \\approx \\theta\\)\n\\(\\hat{\\theta}\\) is approximately normal: \\(\\hat{\\theta} \\dot{\\sim} N\\left(\\theta, \\frac{1}{nI(\\theta)}\\right)\\)\n\\(\\hat{\\theta}\\) is asymptotically efficient: Achieves the Cramér-Rao lower bound\n\n\n\n\n\nIn practice: For large samples, the MLE is approximately the MVUE!"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#comparing-mle-and-mme",
@@ -4330,14 +4330,14 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#comparing-estimator-properties",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Comparing Estimator Properties",
-    "text": "Comparing Estimator Properties\n\n\n\nProperty\nMME\nMLE\n\n\n\n\nComputation\nUsually simple algebra\nMay require optimization\n\n\nBias\nSometimes unbiased\nOften biased for small \\(n\\)\n\n\nEfficiency\nRarely efficient\nAsymptotically efficient\n\n\nConsistency\nUsually consistent\nAlways consistent\n\n\nInvariance\nNo\nYes\n\n\n\n. . .\n\n\n\n\n\n\nGeneral Guidance\n\n\n\n\nUse MME for quick, rough estimates or simple distributions\nUse MLE for final analysis and complex distributions\nMLE is generally preferred when computationally feasible"
+    "text": "Comparing Estimator Properties\n\n\n\nProperty\nMME\nMLE\n\n\n\n\nComputation\nUsually simple algebra\nMay require optimization\n\n\nBias\nSometimes unbiased\nOften biased for small \\(n\\)\n\n\nEfficiency\nRarely efficient\nAsymptotically efficient\n\n\nConsistency\nUsually consistent\nAlways consistent\n\n\nInvariance\nNo\nYes\n\n\n\n\n\n\n\n\n\n\nGeneral Guidance\n\n\n\nUse MME for quick, rough estimates or simple distributions\nUse MLE for final analysis and complex distributions\nMLE is generally preferred when computationally feasible"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#computing-mles-in-r",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#computing-mles-in-r",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Computing MLEs in R",
-    "text": "Computing MLEs in R\nUsing built-in functions:\n\n# For distributions with known MLEs\nnormal_data &lt;- rnorm(100, mean = 50, sd = 10)\ncat(\"Normal MLE for μ:\", mean(normal_data), \"\\n\")\n\nNormal MLE for μ: 50.91004 \n\ncat(\"Normal MLE for σ:\", sd(normal_data) * sqrt((100-1)/100))\n\nNormal MLE for σ: 9.881601\n\n\n. . .\nUsing optimization for complex cases:\n\n# General approach: maximize log-likelihood\nneg_log_lik &lt;- function(lambda, data) {\n  -sum(dexp(data, rate = lambda, log = TRUE))\n}\n\nexp_data &lt;- rexp(50, rate = 0.5)\nresult &lt;- optimize(neg_log_lik, interval = c(0.01, 5), data = exp_data)\ncat(\"\\nExponential MLE for λ:\", round(result$minimum, 4))\n\n\nExponential MLE for λ: 0.4593"
+    "text": "Computing MLEs in R\nUsing built-in functions:\n\n# For distributions with known MLEs\nnormal_data &lt;- rnorm(100, mean = 50, sd = 10)\ncat(\"Normal MLE for μ:\", mean(normal_data), \"\\n\")\n\nNormal MLE for μ: 50.91004 \n\ncat(\"Normal MLE for σ:\", sd(normal_data) * sqrt((100-1)/100))\n\nNormal MLE for σ: 9.881601\n\n\n\nUsing optimization for complex cases:\n\n# General approach: maximize log-likelihood\nneg_log_lik &lt;- function(lambda, data) {\n  -sum(dexp(data, rate = lambda, log = TRUE))\n}\n\nexp_data &lt;- rexp(50, rate = 0.5)\nresult &lt;- optimize(neg_log_lik, interval = c(0.01, 5), data = exp_data)\ncat(\"\\nExponential MLE for λ:\", round(result$minimum, 4))\n\n\nExponential MLE for λ: 0.4593"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#using-fitdistr-for-common-distributions",
@@ -4358,14 +4358,14 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#your-turn-mle-practice",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Your Turn: MLE Practice",
-    "text": "Your Turn: MLE Practice\nExercise: A diagnostic test is administered to 80 patients. 64 test positive. Assuming the number positive follows a Binomial distribution, find:\n\nThe MLE of the sensitivity \\(p\\)\nThe MLE of the odds of a positive result, \\(p/(1-p)\\)\nThe MLE of \\(P(\\text{at least 60 positive in next 80 patients})\\)\n\n. . .\nSolutions:\n\n\\(\\hat{p} = 64/80 = 0.80\\)\nBy invariance: \\(\\widehat{p/(1-p)} = 0.80/0.20 = 4.0\\)\nBy invariance: \\(\\widehat{P(X \\ge 60)} = P(X \\ge 60 | p = 0.80)\\)\n\n\n1 - pbinom(59, size = 80, prob = 0.80)  # P(X &gt;= 60)\n\n[1] 0.8933956"
+    "text": "Your Turn: MLE Practice\nExercise: A diagnostic test is administered to 80 patients. 64 test positive. Assuming the number positive follows a Binomial distribution, find:\n\nThe MLE of the sensitivity \\(p\\)\nThe MLE of the odds of a positive result, \\(p/(1-p)\\)\nThe MLE of \\(P(\\text{at least 60 positive in next 80 patients})\\)\n\n\nSolutions:\n\n\\(\\hat{p} = 64/80 = 0.80\\)\nBy invariance: \\(\\widehat{p/(1-p)} = 0.80/0.20 = 4.0\\)\nBy invariance: \\(\\widehat{P(X \\ge 60)} = P(X \\ge 60 | p = 0.80)\\)\n\n\n1 - pbinom(59, size = 80, prob = 0.80)  # P(X &gt;= 60)\n\n[1] 0.8933956"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#lesson-4-summary",
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#lesson-4-summary",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "Lesson 4 Summary",
-    "text": "Lesson 4 Summary\nTwo Methods for Constructing Estimators:\n\nMethod of Moments:\n\nEquate population and sample moments\nSimple but not always efficient\n\nMaximum Likelihood:\n\nMaximize \\(L(\\theta)\\) or \\(\\ell(\\theta)\\)\nProperties: invariance, consistency, asymptotic efficiency\n\n\n. . .\nKey Insight: MLEs are asymptotically MVUE—they achieve the Cramér-Rao bound for large samples!"
+    "text": "Lesson 4 Summary\nTwo Methods for Constructing Estimators:\n\nMethod of Moments:\n\nEquate population and sample moments\nSimple but not always efficient\n\nMaximum Likelihood:\n\nMaximize \\(L(\\theta)\\) or \\(\\ell(\\theta)\\)\nProperties: invariance, consistency, asymptotic efficiency\n\n\n\nKey Insight: MLEs are asymptotically MVUE—they achieve the Cramér-Rao bound for large samples!"
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#mle-and-mme-summary-table",
@@ -4393,7 +4393,7 @@
     "href": "lessons/04_MME_MLE/04_MME_MLE.html#references",
     "title": "Lesson 4: Method of Moments and Maximum Likelihood Estimation",
     "section": "References",
-    "text": "References\n\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 7.2\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 7.2\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
   },
   {
     "objectID": "lessons/04_MME_MLE/04_MME_MLE.html#questions",
@@ -5913,5 +5913,19 @@
     "title": "BSTA 551: Theory of Statistical Inference",
     "section": "",
     "text": "BSTA 551: Theory of Statistical Inference\n\nWinter 2026\n \nThis is course introduces a theoretical foundation of Biostatistics for masters level students focusing on statistical inference. We will study methods of estimation (point and interval), as well as hypothesis testing. Some simulation and boostrap methods for estimation and testing will be included along with more theoretical asympototic and finite sample inference methods.\nPrerequisites: BSTA 550 Probability, familiarity with R.\n \n\n\n\n\n\n\n\nInstructor\n Dr. Jessica Minnier\n (see Sakai)\n minnier@ohsu.edu\n\n\nOffice Hours\nCharles  TBD\nCharles  TBD\nJessica  M/W 12pm-12:30pm after class\n\n\nCourse details\n Mondays, Wednesdays\n Jan 5 - March 18\n 10 AM - 12 PM\n In-person (see Sakai for room)\n\n\nContact\nE-mail or OHSU Teams is the best way to get in contact with me.\n\n\n\n\n\n\n\n\n View the source on GitHub"
+  },
+  {
+    "objectID": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-visualizing-the-biased-estimator-output",
+    "href": "lessons/02_Point_Estimation/02_Point_Estimation.html#simulation-visualizing-the-biased-estimator-output",
+    "title": "Lesson 2: Point Estimation; Bias, Variance, and MSE",
+    "section": "Simulation: Visualizing the Biased Estimator",
+    "text": "Simulation: Visualizing the Biased Estimator\n\n# A tibble: 1 × 4\n  theoretical_E empirical_mean theoretical_bias empirical_bias\n          &lt;dbl&gt;          &lt;dbl&gt;            &lt;dbl&gt;          &lt;dbl&gt;\n1            90           90.3              -10          -9.70"
+  },
+  {
+    "objectID": "lessons/01_Intro_Inference/01_Intro_Inference.html#simulation-building-a-sampling-distribution-output",
+    "href": "lessons/01_Intro_Inference/01_Intro_Inference.html#simulation-building-a-sampling-distribution-output",
+    "title": "BSTA 551: Statistical Inference",
+    "section": "Simulation: Building a Sampling Distribution",
+    "text": "Simulation: Building a Sampling Distribution"
   }
 ]
