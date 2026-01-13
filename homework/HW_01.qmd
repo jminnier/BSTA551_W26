@@ -37,6 +37,8 @@ This homework covers material from Lessons 1-3 (Week 1): sampling distributions,
 
 For simulation problems, set your seed to `set.seed(551)` for reproducibility.
 
+For the qmd of this Homework page, see this [github link](https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_01.qmd)
+
 ## Questions
 
 
