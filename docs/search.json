@@ -389,7 +389,7 @@
     "href": "lessons/05_Sufficiency/05_Sufficient_Statistics.html#questions",
     "title": "Lesson 5: Sufficient Statistics",
     "section": "Questions?",
-    "text": "Questions?\nThank you!\nNext Lesson: Fisher Information and Large-Sample Properties"
+    "text": "Questions?\nThank you!"
   },
   {
     "objectID": "lessons/05_Sufficiency/05_Sufficient_Statistics.html#finding-sufficient-statistics-the-factorization-theorem",
@@ -438,7 +438,7 @@
     "href": "lessons/05_Sufficiency/05_Sufficient_Statistics.html#simulation-rao-blackwell-improvement",
     "title": "Lesson 5: Sufficient Statistics",
     "section": "Simulation: Rao-Blackwell Improvement",
-    "text": "Simulation: Rao-Blackwell Improvement\n\n\nCode\nset.seed(42)\nmu_true &lt;- 1.5; n &lt;- 10; n_sims &lt;- 5000\n\npoisson_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    data = map(sim, \\(s) rpois(n, mu_true)),\n    T_sum = map_dbl(data, sum),\n    crude_U = map_dbl(data, \\(d) as.numeric(d[1] == 0)),\n    improved_U = (1 - 1/n)^T_sum\n  )\n\npoisson_sim |&gt; \n  select(crude_U, improved_U) |&gt; \n  pivot_longer(everything(), names_to = \"Estimator\", values_to = \"Estimate\") |&gt; \n  mutate(Estimator = ifelse(Estimator == \"crude_U\", \"Crude: I(X₁=0)\", \"Improved: (1-1/n)^T\")) |&gt; \n  ggplot(aes(x = Estimate, fill = Estimator)) +\n  geom_histogram(bins = 25, alpha = 0.6, position = \"identity\") +\n  geom_vline(xintercept = exp(-mu_true), color = \"red\", linetype = \"dashed\", linewidth = 1.2) +\n  labs(title = \"Rao-Blackwell: Variance Reduction Through Sufficiency\",\n       subtitle = paste0(\"True e^(-μ) = \", round(exp(-mu_true), 3)), x = \"Estimate\", y = \"Frequency\") +\n  scale_fill_manual(values = c(\"orange\", \"steelblue\")) +\n  theme(legend.position = \"top\")"
+    "text": "Simulation: Rao-Blackwell Improvement\n\n\nCode\nset.seed(42)\nmu_true &lt;- 1.5; n &lt;- 10; n_sims &lt;- 5000\n\npoisson_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    data = map(sim, \\(s) rpois(n, mu_true)),\n    T_sum = map_dbl(data, sum),\n    crude_U = map_dbl(data, \\(d) as.numeric(d[1] == 0)),\n    improved_U = (1 - 1/n)^T_sum\n  )\n\npoisson_sim |&gt; \n  select(crude_U, improved_U) |&gt; \n  pivot_longer(everything(), names_to = \"Estimator\", values_to = \"Estimate\") |&gt; \n  mutate(Estimator = ifelse(Estimator == \"crude_U\", \"Crude: I(X_1=0)\", \"Improved: (1-1/n)^T\")) |&gt; \n  ggplot(aes(x = Estimate, fill = Estimator)) +\n  geom_histogram(bins = 25, alpha = 0.6, position = \"identity\") +\n  geom_vline(xintercept = exp(-mu_true), color = \"red\", linetype = \"dashed\", linewidth = 1.2) +\n  labs(title = \"Rao-Blackwell: Variance Reduction Through Sufficiency\",\n       subtitle = paste0(\"True e^(-μ) = \", round(exp(-mu_true), 3)), x = \"Estimate\", y = \"Frequency\") +\n  scale_fill_manual(values = c(\"orange\", \"steelblue\")) +\n  theme(legend.position = \"top\")"
   },
   {
     "objectID": "lessons/05_Sufficiency/05_Sufficient_Statistics.html#key-implication",

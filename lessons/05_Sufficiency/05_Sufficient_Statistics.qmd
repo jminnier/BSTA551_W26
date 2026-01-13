@@ -352,7 +352,7 @@ poisson_sim <- tibble(sim = 1:n_sims) |>
 poisson_sim |> 
   select(crude_U, improved_U) |> 
   pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
-  mutate(Estimator = ifelse(Estimator == "crude_U", "Crude: I(X₁=0)", "Improved: (1-1/n)^T")) |> 
+  mutate(Estimator = ifelse(Estimator == "crude_U", "Crude: I(X_1=0)", "Improved: (1-1/n)^T")) |> 
   ggplot(aes(x = Estimate, fill = Estimator)) +
   geom_histogram(bins = 25, alpha = 0.6, position = "identity") +
   geom_vline(xintercept = exp(-mu_true), color = "red", linetype = "dashed", linewidth = 1.2) +
@@ -570,10 +570,8 @@ Once we find a complete sufficient statistic, any unbiased function of it is aut
 
 Thank you!
 
-Next Lesson: Fisher Information and Large-Sample Properties
-
 ```{bash}
 #| eval: false
 #| include: false
-decktape reveal --fragments docs/lessons/05_Sufficient_Statistics/05_Sufficient_Statistics.html lessons/05_Sufficient_Statistics/05_Sufficient_Statistics.pdf
+decktape reveal --fragments docs/lessons/05_Sufficiency/05_Sufficient_Statistics.html lessons/05_Sufficiency/05_Sufficient_Statistics.pdf
 ```

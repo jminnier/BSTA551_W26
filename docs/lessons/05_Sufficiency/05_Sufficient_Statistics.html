@@ -660,7 +660,7 @@ Jessica Minnier
 <span id="cb5-12"><a></a>poisson_sim <span class="sc">|&gt;</span> </span>
 <span id="cb5-13"><a></a>  <span class="fu">select</span>(crude_U, improved_U) <span class="sc">|&gt;</span> </span>
 <span id="cb5-14"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"Estimator"</span>, <span class="at">values_to =</span> <span class="st">"Estimate"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb5-15"><a></a>  <span class="fu">mutate</span>(<span class="at">Estimator =</span> <span class="fu">ifelse</span>(Estimator <span class="sc">==</span> <span class="st">"crude_U"</span>, <span class="st">"Crude: I(X₁=0)"</span>, <span class="st">"Improved: (1-1/n)^T"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb5-15"><a></a>  <span class="fu">mutate</span>(<span class="at">Estimator =</span> <span class="fu">ifelse</span>(Estimator <span class="sc">==</span> <span class="st">"crude_U"</span>, <span class="st">"Crude: I(X_1=0)"</span>, <span class="st">"Improved: (1-1/n)^T"</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb5-16"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Estimate, <span class="at">fill =</span> Estimator)) <span class="sc">+</span></span>
 <span id="cb5-17"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">25</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
 <span id="cb5-18"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">exp</span>(<span class="sc">-</span>mu_true), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
@@ -944,7 +944,6 @@ Jessica Minnier
 <section id="questions" class="slide level2 center" data-background-color="#3498db">
 <h2>Questions?</h2>
 <p>Thank you!</p>
-<p>Next Lesson: Fisher Information and Large-Sample Properties</p>
 
 
 </section></section>
