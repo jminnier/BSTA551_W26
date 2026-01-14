@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -69,6 +104,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -125,7 +189,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-fisher-information-and-crlb" id="toc-problem-1-fisher-information-and-crlb" class="nav-link" data-scroll-target="#problem-1-fisher-information-and-crlb">Problem 1: Fisher Information and CRLB</a></li>
+  <li><a href="#problem-2-method-of-moments-shifted-exponential-distribution" id="toc-problem-2-method-of-moments-shifted-exponential-distribution" class="nav-link" data-scroll-target="#problem-2-method-of-moments-shifted-exponential-distribution">Problem 2: Method of Moments (Shifted Exponential Distribution)</a></li>
+  <li><a href="#problem-3-maximum-likelihood-estimation-devore-7.25" id="toc-problem-3-maximum-likelihood-estimation-devore-7.25" class="nav-link" data-scroll-target="#problem-3-maximum-likelihood-estimation-devore-7.25">Problem 3: Maximum Likelihood Estimation (Devore 7.25)</a></li>
+  <li><a href="#problem-4-sufficient-statistics-medical-application" id="toc-problem-4-sufficient-statistics-medical-application" class="nav-link" data-scroll-target="#problem-4-sufficient-statistics-medical-application">Problem 4: Sufficient Statistics (Medical Application)</a></li>
+  <li><a href="#problem-5-mle-for-normal-variance-devore-7.31-modified" id="toc-problem-5-mle-for-normal-variance-devore-7.31-modified" class="nav-link" data-scroll-target="#problem-5-mle-for-normal-variance-devore-7.31-modified">Problem 5: MLE for Normal Variance (Devore 7.31 Modified)</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_02.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -152,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 13, 2026</p>
+      <p class="date-modified">January 14, 2026</p>
     </div>
   </div>
     
@@ -165,14 +236,81 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="directions" class="level2">
 <h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p>Please turn in this homework on Sakai.</p>
-<p>Please submit your homework in pdf format. You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.</p>
+<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf format or in html rendered from a qmd (or Rmd) file (please also include source qmd or Rmd). You can type your work on your computer or submit a single file with photos of your written work or any other method that can be turned into a pdf.</p>
 <p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 3, 4, and 5: MVUE and the Cramér-Rao Lower Bound, Method of Moments and Maximum Likelihood Estimation, and Sufficient Statistics. Show all work for full credit. For problems requiring R, include your code and output.</p>
+<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_02.qmd">github link</a></p>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-fisher-information-and-crlb" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-fisher-information-and-crlb">Problem 1: Fisher Information and CRLB</h3>
+<p>A clinical trial is testing a new treatment for hypertension. The time (in days) until a patient achieves target blood pressure is modeled as an Exponential distribution with rate parameter <span class="math inline">\(\lambda\)</span> (where <span class="math inline">\(E(X) = 1/\lambda\)</span>).</p>
+<p>In a pilot study, the following times (in days) were observed for <span class="math inline">\(n = 8\)</span> patients: <span class="math display">\[X = \{12, 8, 15, 6, 10, 14, 9, 11\}\]</span></p>
+<p><strong>(a)</strong> Calculate the Fisher Information <span class="math inline">\(I(\lambda)\)</span> for a single observation from an Exponential(<span class="math inline">\(\lambda\)</span>) distribution. Show your derivation using the definition <span class="math inline">\(I(\lambda) = E[-\ell''(\lambda)]\)</span>.</p>
+<p><strong>(b)</strong> State the Cramér-Rao Lower Bound (CRLB) for unbiased estimators of <span class="math inline">\(\lambda\)</span> based on a sample of size <span class="math inline">\(n\)</span>.</p>
+<p><strong>(c)</strong> The MLE of <span class="math inline">\(\lambda\)</span> is <span class="math inline">\(\hat{\lambda} = 1/\bar{X}\)</span>. This estimator is biased. Find an unbiased estimator of <span class="math inline">\(\lambda\)</span> and compute its variance. Does this unbiased estimator achieve the CRLB?</p>
+<p><strong>(d)</strong> Using R, compute the MLE <span class="math inline">\(\hat{\lambda}\)</span> from the pilot study data. Also compute the CRLB at this estimated value. Interpret what this bound tells us about estimation precision.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pilot study data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>bp_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-2-method-of-moments-shifted-exponential-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-method-of-moments-shifted-exponential-distribution">Problem 2: Method of Moments (Shifted Exponential Distribution)</h3>
+<p>The time (in hours) from hospital admission to discharge for patients undergoing a minor outpatient procedure can be modeled with a shifted (two-parameter) Exponential distribution. This accounts for a minimum required observation time <span class="math inline">\(\theta\)</span> plus additional random waiting time. The pdf is: <span class="math display">\[f(x; \lambda, \theta) = \lambda e^{-\lambda(x - \theta)}, \quad x \geq \theta, \quad \lambda &gt; 0, \quad \theta &gt; 0\]</span></p>
+<p>For this distribution: <span class="math display">\[E(X) = \theta + \frac{1}{\lambda}, \quad \text{Var}(X) = \frac{1}{\lambda^2}\]</span></p>
+<p><strong>(a)</strong> Derive the Method of Moments estimators <span class="math inline">\(\tilde{\lambda}\)</span> and <span class="math inline">\(\tilde{\theta}\)</span> in terms of the sample mean <span class="math inline">\(\bar{X}\)</span> and sample standard deviation <span class="math inline">\(S\)</span>.</p>
+<p><strong>(b)</strong> The following discharge times (in hours) were recorded for <span class="math inline">\(n = 10\)</span> patients: <span class="math display">\[3.2, \; 4.1, \; 2.8, \; 5.3, \; 3.5, \; 4.8, \; 3.1, \; 6.2, \; 4.4, \; 3.9\]</span></p>
+<p>Using R, calculate the MME estimates <span class="math inline">\(\tilde{\lambda}\)</span> and <span class="math inline">\(\tilde{\theta}\)</span>. Verify that your estimate of <span class="math inline">\(\theta\)</span> is less than the minimum observed value (a necessary condition for validity).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Discharge times (hours)</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>discharge_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.2</span>, <span class="fl">4.1</span>, <span class="fl">2.8</span>, <span class="fl">5.3</span>, <span class="fl">3.5</span>, <span class="fl">4.8</span>, <span class="fl">3.1</span>, <span class="fl">6.2</span>, <span class="fl">4.4</span>, <span class="fl">3.9</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-3-maximum-likelihood-estimation-devore-7.25" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-maximum-likelihood-estimation-devore-7.25">Problem 3: Maximum Likelihood Estimation (Devore 7.25)</h3>
+<p>Let <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> be a random sample from a distribution with pdf: <span class="math display">\[f(x; \theta) = (\theta + 1)x^\theta, \quad 0 \le x \le 1, \quad \theta &gt; -1\]</span></p>
+<p><strong>(a)</strong> Derive the maximum likelihood estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span>.</p>
+<p><strong>(b)</strong> For a sample of size <span class="math inline">\(n = 5\)</span> with observations <span class="math inline">\(x_1 = 0.92, x_2 = 0.79, x_3 = 0.85, x_4 = 0.95, x_5 = 0.88\)</span>, compute the MLE <span class="math inline">\(\hat{\theta}\)</span>.</p>
+<p><strong>(c)</strong> Use the invariance property of MLEs to find the MLE of <span class="math inline">\(\tau(\theta) = \frac{\theta + 1}{\theta + 2}\)</span>, which represents <span class="math inline">\(E(X)\)</span> for this distribution.</p>
+</section>
+<section id="problem-4-sufficient-statistics-medical-application" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-sufficient-statistics-medical-application">Problem 4: Sufficient Statistics (Medical Application)</h3>
+<p>A researcher is studying the number of adverse events reported per patient in a drug trial. The number of adverse events <span class="math inline">\(X\)</span> follows a Poisson(<span class="math inline">\(\mu\)</span>) distribution.</p>
+<p><strong>(a)</strong> For a random sample <span class="math inline">\(X_1, \ldots, X_n\)</span> from Poisson(<span class="math inline">\(\mu\)</span>), use the Neyman Factorization Theorem to show that <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is a sufficient statistic for <span class="math inline">\(\mu\)</span>.</p>
+<p><strong>(b)</strong> Show that the MLE <span class="math inline">\(\hat{\mu} = \bar{X}\)</span> is a function of the sufficient statistic <span class="math inline">\(T\)</span>.</p>
+<p><strong>(c)</strong> In a clinical trial with <span class="math inline">\(n = 50\)</span> patients, suppose the following summary statistics are recorded: <span class="math display">\[\sum_{i=1}^{50} X_i = 72\]</span></p>
+<p>A colleague suggests using a different estimator: <span class="math inline">\(\tilde{\mu} = \frac{\text{number of patients with } X_i &gt; 0}{n}\)</span>.</p>
+<p>Using R simulation, demonstrate that conditioning on the sufficient statistic <span class="math inline">\(T\)</span> (via Rao-Blackwell) would improve <span class="math inline">\(\tilde{\mu}\)</span>. Generate 1000 samples from Poisson(<span class="math inline">\(\mu = 1.5\)</span>) with <span class="math inline">\(n = 50\)</span>, compute both estimators, and compare their MSEs.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your simulation code here</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>mu_true <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Hint: For each simulation:</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Generate n Poisson(mu) observations</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Compute mu_hat = mean(X)  (MLE, based on sufficient statistic)</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Compute mu_tilde = mean(X &gt; 0)  (proportion with events)</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Compare MSEs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-5-mle-for-normal-variance-devore-7.31-modified" class="level3">
+<h3 class="anchored" data-anchor-id="problem-5-mle-for-normal-variance-devore-7.31-modified">Problem 5: MLE for Normal Variance (Devore 7.31 Modified)</h3>
+<p>Measurement errors in a laboratory instrument are assumed to follow a Normal distribution with known mean <span class="math inline">\(\mu = 0\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>. A sample of <span class="math inline">\(n\)</span> measurements yields observations <span class="math inline">\(X_1, \ldots, X_n\)</span>.</p>
+<p><strong>(a)</strong> Derive the MLE of <span class="math inline">\(\sigma^2\)</span>.</p>
+<p><strong>(b)</strong> Is this MLE unbiased? If not, find the bias.</p>
+<p><strong>(c)</strong> A technician takes <span class="math inline">\(n = 15\)</span> measurements and records: <span class="math display">\[\sum_{i=1}^{15} X_i^2 = 4.8\]</span></p>
+<p>Calculate the MLE of <span class="math inline">\(\sigma^2\)</span> and provide an unbiased estimate.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
