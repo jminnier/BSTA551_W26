@@ -5091,266 +5091,266 @@
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#where-weve-been-the-journey-so-far",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#where-weve-been-the-journey-so-far",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Where We’ve Been: The Journey So Far",
     "text": "Where We’ve Been: The Journey So Far\n\n\n\n\n\n\nToday: Tie it all together and review key concepts."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-central-problem-of-statistical-inference",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-central-problem-of-statistical-inference",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Central Problem of Statistical Inference",
     "text": "The Central Problem of Statistical Inference\nWe observe data \\(X_1, X_2, \\ldots, X_n\\) from some distribution with unknown parameter \\(\\theta\\). Usually they are identically and independently distributed (i.i.d.), so they make a “random sample.”\nThe Question: How do we learn about \\(\\theta\\) from the data?"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-two-key-questions-in-point-estimation",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-two-key-questions-in-point-estimation",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Two Key Questions in Point Estimation",
     "text": "The Two Key Questions in Point Estimation\nQuestion 1: How do we construct estimators?\n\nMethod of Moments (MME)\nMaximum Likelihood (MLE)\n\n\nQuestion 2: How do we evaluate estimators?\n\nBias (accuracy)\nVariance (precision)\nMean Squared Error (overall quality)\nEfficiency (comparison to optimal)\n\n\n\nQuestion 3: How do we find the best estimator?\n\nMVUE: Minimum Variance Unbiased Estimator\nSufficient statistics: Data reduction without information loss"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-fundamental-tradeoff-bias-vs.-variance",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-fundamental-tradeoff-bias-vs.-variance",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Fundamental Tradeoff: Bias vs. Variance",
     "text": "The Fundamental Tradeoff: Bias vs. Variance\n\n\n\n\n\n\nKey Definitions\n\n\n\nBias: \\(\\text{Bias}(\\hat{\\theta}) = E(\\hat{\\theta}) - \\theta\\) (systematic error)\nVariance: \\(\\text{Var}(\\hat{\\theta}) = E[(\\hat{\\theta} - E(\\hat{\\theta}))^2]\\) (random error)\nMSE: \\(\\text{MSE}(\\hat{\\theta}) = E[(\\hat{\\theta} - \\theta)^2] = \\text{Var}(\\hat{\\theta}) + \\text{Bias}^2\\)\n\n\n\n\n\nThe key insight: MSE = Variance + Bias²\nThis means a biased estimator can be better than an unbiased one if its variance is low enough!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visual-intuition-bias-and-variance",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visual-intuition-bias-and-variance",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Visual Intuition: Bias and Variance",
     "text": "Visual Intuition: Bias and Variance"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#medical-example-estimating-treatment-effect",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#medical-example-estimating-treatment-effect",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Medical Example: Estimating Treatment Effect",
     "text": "Medical Example: Estimating Treatment Effect\nScenario: Estimating the true cure rate \\(p\\) of a new cancer treatment.\nTwo estimators:\n\nStandard: \\(\\hat{p}_1 = X/n\\) (sample proportion, unbiased)\nAdd-Two: \\(\\hat{p}_2 = (X + 2)/(n + 4)\\) (biased toward 0.5)\n\n\n\n\n\n\n\n\nUnderstanding the “Add-Two” Estimator: The Intuition\n\n\nWhat does it do? It acts like you observed 2 extra successes and 2 extra failures before seeing the data.\n\\[\\hat{p}_2 = \\frac{X + 2}{n + 4} = \\frac{\\text{successes} + 2}{\\text{trials} + 4}\\]\nWhy +2 in numerator and +4 in denominator?\n\nAdding 2 successes and 2 failures = adding 4 total “pseudo-observations”\nThis “pulls” the estimate toward \\(2/4 = 0.5\\) (the middle)\nThe pull is stronger when \\(n\\) is small, weaker when \\(n\\) is large"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#what-properties-do-we-want-in-an-estimator",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#what-properties-do-we-want-in-an-estimator",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "What Properties Do We Want in an Estimator?",
     "text": "What Properties Do We Want in an Estimator?\n\n\n\n\n\n\n\n\nProperty\nDefinition\nWhy It Matters\n\n\n\n\nUnbiased\n\\(E(\\hat{\\theta}) = \\theta\\)\nNo systematic error\n\n\nLow Variance\n\\(\\text{Var}(\\hat{\\theta})\\) small\nPrecise estimates\n\n\nConsistent\n\\(\\hat{\\theta} \\xrightarrow{P} \\theta\\)\nWorks with enough data\n\n\nEfficient\nAchieves CRLB\nBest among unbiased\n\n\n\n\n\n\n\n\n\n\nThe Hierarchy of Goals\n\n\n\nConsistency is the bare minimum\nUnbiasedness is nice but not essential as long as bias shrinks as \\(n\\to\\infty\\)\nEfficiency (low variance) is what really matters for precision"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#two-systematic-methods-mme-and-mle",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#two-systematic-methods-mme-and-mle",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Two Systematic Methods: MME and MLE",
     "text": "Two Systematic Methods: MME and MLE\nMethod of Moments (MME):\n\nMatch population moments to sample moments\nSimple algebra, often intuitive\nNot always optimal\n\n\nMaximum Likelihood (MLE):\n\nFind \\(\\theta\\) that maximizes \\(P(\\text{data} | \\theta)\\)\nMore complex, but has optimal properties\nAsymptotically efficient, unbiased, Normally distributed!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mme-recipe",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mme-recipe",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The MME Recipe",
     "text": "The MME Recipe\n\n\n\n\n\n\nMethod of Moments: The Algorithm\n\n\n\nExpress the first \\(k\\) population moments as functions of \\(\\theta\\): \\(E(X), E(X^2), \\ldots\\)\nSet each equal to its sample counterpart: \\(\\bar{X}, \\frac{1}{n}\\sum X_i^2, \\ldots\\)\nSolve for \\(\\theta\\)\n\n\n\n\n\nExample: Exponential(\\(\\lambda\\))\n\nPopulation moment: \\(E(X) = 1/\\lambda\\)\nSet equal: \\(1/\\lambda = \\bar{X}\\)\nSolve: \\(\\hat{\\lambda}_{MME} = 1/\\bar{X}\\)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mle-recipe",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mle-recipe",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The MLE Recipe",
     "text": "The MLE Recipe\n\n\n\n\n\n\nMaximum Likelihood: The Algorithm\n\n\n\nWrite the likelihood: \\(L(\\theta) = \\prod_{i=1}^n f(x_i; \\theta)\\)\nTake the log: \\(\\ell(\\theta) = \\sum_{i=1}^n \\ln f(x_i; \\theta)\\)\nDifferentiate and set to zero: \\(\\ell'(\\theta) = 0\\)\nSolve for \\(\\hat{\\theta}\\)\n\n\n\n\n\nIntuition: The MLE asks “What parameter value makes our observed data most probable?”"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visual-intuition-what-does-the-mle-do",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visual-intuition-what-does-the-mle-do",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Visual Intuition: What Does the MLE Do?",
     "text": "Visual Intuition: What Does the MLE Do?\n\nThe MLE finds where the likelihood is highest — the most “likely” parameter value."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#when-do-mme-and-mle-agree",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#when-do-mme-and-mle-agree",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "When Do MME and MLE Agree?",
     "text": "When Do MME and MLE Agree?\n\n\n\nDistribution\nMLE\nMME\nSame?\n\n\n\n\nBernoulli(\\(p\\))\n\\(\\bar{X}\\)\n\\(\\bar{X}\\)\n✓\n\n\nNormal(\\(\\mu\\), known \\(\\sigma^2\\))\n\\(\\bar{X}\\)\n\\(\\bar{X}\\)\n✓\n\n\nExponential(\\(\\lambda\\))\n\\(1/\\bar{X}\\)\n\\(1/\\bar{X}\\)\n✓\n\n\nPoisson(\\(\\mu\\))\n\\(\\bar{X}\\)\n\\(\\bar{X}\\)\n✓\n\n\nUniform[0, \\(\\theta\\)]\n\\(\\max(X_i)\\)\n\\(2\\bar{X}\\)\n✗\n\n\n\n\n\n\n\n\n\n\nKey Insight\n\n\nWhen they differ, the MLE is usually preferred (especially for large \\(n\\)) because it’s asymptotically efficient."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#mle-properties-why-its-often-the-best-choice",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#mle-properties-why-its-often-the-best-choice",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "MLE Properties: Why It’s Often the Best Choice",
     "text": "MLE Properties: Why It’s Often the Best Choice\n\n\n\n\n\n\nThree Key Properties of MLEs (Devore 7.2)\n\n\n\nInvariance: If \\(\\hat{\\theta}\\) is the MLE of \\(\\theta\\), then \\(g(\\hat{\\theta})\\) is the MLE of \\(g(\\theta)\\)\nConsistency: \\(\\hat{\\theta}_{MLE} \\xrightarrow{P} \\theta\\) as \\(n \\to \\infty\\)\nAsymptotic Efficiency: For large \\(n\\), \\(\\hat{\\theta}_{MLE} \\dot\\sim N\\left(\\theta, \\frac{1}{nI(\\theta)}\\right)\\)\n\n\n\n\n\nIn plain English:\n\nYou can transform MLEs freely (invariance)\nMLEs “work” given enough data (consistency)\nMLEs are approximately the best for large samples (efficiency)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#consistency-what-does-it-really-mean",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#consistency-what-does-it-really-mean",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Consistency: What Does It Really Mean?",
     "text": "Consistency: What Does It Really Mean?\n\n\n\n\n\n\nDefinition: Consistency (Devore 7.1, Chihara 6.3.4)\n\n\nAn estimator \\(\\hat{\\theta}_n\\) is consistent if: \\[P(|\\hat{\\theta}_n - \\theta| &lt; \\epsilon) \\to 1 \\quad \\text{as } n \\to \\infty\\]\nfor any \\(\\epsilon &gt; 0\\), no matter how small.\n\n\n\n\nIntuition: With enough data, your estimate will be arbitrarily close to the truth.\nAlternative criterion: \\(\\text{MSE}(\\hat{\\theta}_n) \\to 0\\) as \\(n \\to \\infty\\)\n\n\nThis requires:\n\nVariance \\(\\to 0\\) (estimates get more precise)\nBias \\(\\to 0\\) (estimates get more accurate)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visualizing-consistency",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visualizing-consistency",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Visualizing Consistency",
     "text": "Visualizing Consistency\n\nAs \\(n\\) increases, the distribution “shrinks” around the truth!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mvue-minimum-variance-unbiased-estimator",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-mvue-minimum-variance-unbiased-estimator",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The MVUE: Minimum Variance Unbiased Estimator",
     "text": "The MVUE: Minimum Variance Unbiased Estimator\n\n\n\n\n\n\nDefinition (Devore 7.1)\n\n\nThe MVUE of \\(\\theta\\) is the estimator that:\n\nIs unbiased: \\(E(\\hat{\\theta}) = \\theta\\)\nHas smaller variance than any other unbiased estimator\n\n\n\n\n\nWhy not just minimize MSE?\n\nMSE depends on the true \\(\\theta\\) (which we don’t know!)\nA biased estimator might be better at some \\(\\theta\\) values, worse at others\nMVUE provides a clean, universal optimality criterion"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-cramér-rao-lower-bound-crlb",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-cramér-rao-lower-bound-crlb",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Cramér-Rao Lower Bound (CRLB)",
     "text": "The Cramér-Rao Lower Bound (CRLB)\n\n\n\n\n\n\nTheorem: CRLB (Devore 7.4)\n\n\nFor any unbiased estimator \\(T\\) of \\(\\theta\\): \\[\\text{Var}(T) \\geq \\frac{1}{nI(\\theta)}\\]\nwhere \\(I(\\theta)\\) is the Fisher Information: \\[I(\\theta) = E\\left[-\\frac{\\partial^2}{\\partial \\theta^2} \\ln f(X; \\theta)\\right]\\]\n\n\n\n\nInterpretation:\n\nThe CRLB is a floor — no unbiased estimator can do better\nIf an estimator achieves the CRLB, it’s the MVUE\nFisher Information measures the “curvature” of the log-likelihood"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#fisher-information-the-intuition",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#fisher-information-the-intuition",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Fisher Information: The Intuition",
     "text": "Fisher Information: The Intuition\nKey Insight: Fisher Information measures how much the log-likelihood changes as \\(\\theta\\) changes.\n\nHigh Fisher Information:\n\nSharp, peaked likelihood → easy to pinpoint \\(\\theta\\)\nSmall variance possible\n\nLow Fisher Information:\n\nFlat likelihood → hard to distinguish \\(\\theta\\) values\nLarge variance unavoidable"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#efficiency-how-close-to-optimal",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#efficiency-how-close-to-optimal",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Efficiency: How Close to Optimal?",
     "text": "Efficiency: How Close to Optimal?\n\n\n\n\n\n\nDefinition: Efficiency\n\n\nAn unbiased estimator \\(T\\) is efficient if: \\[\\text{Var}(T) = \\frac{1}{nI(\\theta)} = \\text{CRLB}\\]\nMore generally, the efficiency of \\(T\\) is: \\[\\text{Efficiency}(T) = \\frac{\\text{CRLB}}{\\text{Var}(T)} \\leq 1\\]\n\n\n\n\nExample: Sample median for normal data\n\nVariance ≈ \\(1.57 \\cdot \\sigma^2/n\\)\nCRLB = \\(\\sigma^2/n\\)\nEfficiency = \\(1/1.57 \\approx 0.64\\) (64% efficient)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#key-results-efficient-estimators",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#key-results-efficient-estimators",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Key Results: Efficient Estimators",
     "text": "Key Results: Efficient Estimators\n\n\n\n\n\n\n\n\n\n\nDistribution\nParameter\nMVUE\nCRLB\nEfficient?\n\n\n\n\nBernoulli(\\(p\\))\n\\(p\\)\n\\(\\bar{X}\\)\n\\(\\frac{p(1-p)}{n}\\)\n✓\n\n\nNormal(\\(\\mu\\), known \\(\\sigma^2\\))\n\\(\\mu\\)\n\\(\\bar{X}\\)\n\\(\\frac{\\sigma^2}{n}\\)\n✓\n\n\nPoisson(\\(\\mu\\))\n\\(\\mu\\)\n\\(\\bar{X}\\)\n\\(\\frac{\\mu}{n}\\)\n✓\n\n\nExponential(\\(\\lambda\\))\n\\(\\lambda\\)\n\\(\\frac{n-1}{\\sum X_i}\\)\n\\(\\frac{\\lambda^2}{n}\\)\n✗\n\n\n\n\n\n\n\n\n\n\nNote on Exponential(\\(\\lambda\\)): Why No Efficient Unbiased Estimator Exists\n\n\nFor the exponential distribution with rate parameter \\(\\lambda\\):\n\nMLE: \\(\\hat{\\lambda}_{MLE} = 1/\\bar{X}\\) is biased — \\(E(1/\\bar{X}) = \\frac{n\\lambda}{n-1} \\neq \\lambda\\)\nMVUE: The bias-corrected estimator \\(\\hat{\\lambda}_{MVUE} = \\frac{n-1}{\\sum X_i} = \\frac{n-1}{n} \\cdot \\frac{1}{\\bar{X}}\\)\nVariance of MVUE: \\(\\text{Var}(\\hat{\\lambda}_{MVUE}) = \\frac{\\lambda^2}{n-2}\\) (for \\(n &gt; 2\\))\nCRLB: \\(\\frac{\\lambda^2}{n}\\)\n\nSince \\(\\frac{\\lambda^2}{n-2} &gt; \\frac{\\lambda^2}{n}\\), the MVUE does not achieve the CRLB. No unbiased estimator can!\nAlternatively: For the mean parameter \\(\\mu = 1/\\lambda\\), the sample mean \\(\\bar{X}\\) is the efficient MVUE.\n\n\n\n\n\n\n\n\n\n\n\nNote on Uniform[0, \\(\\theta\\)]\n\n\nFor Uniform[0, \\(\\theta\\)], the CRLB doesn’t apply (support depends on \\(\\theta\\)), yet efficient estimation is still possible via \\(\\frac{n+1}{n}\\max(X_i)\\)."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-sufficiency-matters-the-central-concept",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-sufficiency-matters-the-central-concept",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Why Sufficiency Matters: The Central Concept",
     "text": "Why Sufficiency Matters: The Central Concept\nStudents often ask: “Why do we need sufficient statistics?”\n\nAnswer: Sufficient statistics answer a fundamental question:\n\nWhat is the minimum amount of information we need to keep from our data to estimate \\(\\theta\\)?\n\n\n\nIf a statistic \\(T\\) is sufficient, then:\n\nWe can throw away the raw data and just keep \\(T\\)\nWe lose no information about \\(\\theta\\)\nAll optimal estimators will be functions of \\(T\\)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#intuition-what-does-sufficient-really-mean",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#intuition-what-does-sufficient-really-mean",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Intuition: What Does “Sufficient” Really Mean?",
     "text": "Intuition: What Does “Sufficient” Really Mean?\nScenario: You observe \\(n\\) coin flips and want to estimate \\(p\\) (probability of heads).\n\nRaw data: H, T, H, H, T, H, T, T, H, H (10 flips)\nSummary: 6 heads out of 10\n\n\nQuestion: Does knowing the exact sequence (HTHHTHTTHH) tell you more about \\(p\\) than just knowing “6 out of 10”?\n\n\nAnswer: No! The total number of heads captures all the information about \\(p\\).\nThis is why \\(T = \\sum X_i\\) is sufficient for \\(p\\) in the Bernoulli model."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#formal-definition-of-sufficiency",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#formal-definition-of-sufficiency",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Formal Definition of Sufficiency",
     "text": "Formal Definition of Sufficiency\n\n\n\n\n\n\nDefinition (Devore 7.3)\n\n\nA statistic \\(T = t(X_1, \\ldots, X_n)\\) is sufficient for \\(\\theta\\) if:\n\\[P(X_1 = x_1, \\ldots, X_n = x_n \\mid T = t) \\text{ does not depend on } \\theta\\]\n\n\n\n\nIn words: Given the value of \\(T\\), the conditional distribution of the data doesn’t involve \\(\\theta\\).\nIntuition: Once you know \\(T\\), learning the raw data tells you nothing new about \\(\\theta\\)."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-neyman-factorization-theorem",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-neyman-factorization-theorem",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Neyman Factorization Theorem",
     "text": "The Neyman Factorization Theorem\nComputing conditional distributions is hard. The factorization theorem gives us a shortcut!\n\n\n\n\n\n\nTheorem (Neyman-Fisher Factorization)\n\n\n\\(T\\) is sufficient for \\(\\theta\\) if and only if the joint pdf/pmf can be written as: \\[f(x_1, \\ldots, x_n; \\theta) = g(T; \\theta) \\cdot h(x_1, \\ldots, x_n)\\]\nwhere:\n\n\\(g\\) involves \\(\\theta\\) and depends on data only through \\(T\\)\n\\(h\\) depends on data but not on \\(\\theta\\)\n\n\n\n\n\nStrategy: Look for parts involving \\(\\theta\\) and group them with a function of the data."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#example-finding-the-sufficient-statistic-for-poisson",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#example-finding-the-sufficient-statistic-for-poisson",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Example: Finding the Sufficient Statistic for Poisson",
     "text": "Example: Finding the Sufficient Statistic for Poisson\nSetup: \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} \\text{Poisson}(\\mu)\\)\nJoint pmf: \\[f(x_1, \\ldots, x_n; \\mu) = \\prod_{i=1}^n \\frac{e^{-\\mu}\\mu^{x_i}}{x_i!} = \\frac{e^{-n\\mu}\\mu^{\\sum x_i}}{\\prod x_i!}\\]\n\nFactor it: \\[= \\underbrace{e^{-n\\mu}\\mu^T}_{g(T; \\mu)} \\cdot \\underbrace{\\frac{1}{\\prod x_i!}}_{h(x_1, \\ldots, x_n)}\\]\nwhere \\(T = \\sum x_i\\).\n\n\n\n\n\n\n\n\nResult\n\n\n\\(T = \\sum_{i=1}^n X_i\\) is sufficient for \\(\\mu\\)."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#example-uniform0-θ-a-surprising-result",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#example-uniform0-θ-a-surprising-result",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Example: Uniform[0, θ] — A Surprising Result",
     "text": "Example: Uniform[0, θ] — A Surprising Result\nSetup: \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} \\text{Uniform}[0, \\theta]\\)\nJoint pdf: \\[f(x_1, \\ldots, x_n; \\theta) = \\frac{1}{\\theta^n} \\cdot I(0 \\leq \\min(x_i)) \\cdot I(\\max(x_i) \\leq \\theta)\\]\n\nFactor it: \\[= \\underbrace{\\frac{1}{\\theta^n} I(\\max(x_i) \\leq \\theta)}_{g(T; \\theta)} \\cdot \\underbrace{I(\\min(x_i) \\geq 0)}_{h(\\mathbf{x})}\\]\n\n\n\n\n\n\n\n\nKey Result\n\n\n\\(T = \\max(X_i)\\) is sufficient for \\(\\theta\\).\nNotice: \\(\\bar{X}\\) is NOT sufficient for the uniform distribution!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-isnt-barx-sufficient-for-uniform",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-isnt-barx-sufficient-for-uniform",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Why Isn’t \\(\\bar{X}\\) Sufficient for Uniform?",
     "text": "Why Isn’t \\(\\bar{X}\\) Sufficient for Uniform?\n\n# Two datasets with same mean but different information about θ\ndata_A &lt;- c(2, 4, 6, 8)   # mean = 5, max = 8\ndata_B &lt;- c(1, 4, 5, 10)  # mean = 5, max = 10\n\ncat(\"Dataset A: mean =\", mean(data_A), \", max =\", max(data_A), \"\\n\")\n\nDataset A: mean = 5 , max = 8 \n\ncat(\"Dataset B: mean =\", mean(data_B), \", max =\", max(data_B), \"\\n\")\n\nDataset B: mean = 5 , max = 10 \n\n\n\nBoth have \\(\\bar{X} = 5\\), but:\n\nDataset A tells us \\(\\theta \\geq 8\\)\nDataset B tells us \\(\\theta \\geq 10\\)\n\nKnowing only \\(\\bar{X}\\) loses critical information about \\(\\theta\\)!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#sufficient-statistics-summary-table",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#sufficient-statistics-summary-table",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Sufficient Statistics: Summary Table",
     "text": "Sufficient Statistics: Summary Table\n\n\n\n\n\n\n\n\nDistribution\nParameter(s)\nSufficient Statistic(s)\n\n\n\n\nBernoulli(\\(p\\))\n\\(p\\)\n\\(\\sum X_i\\)\n\n\nPoisson(\\(\\mu\\))\n\\(\\mu\\)\n\\(\\sum X_i\\)\n\n\nExponential(\\(\\lambda\\))\n\\(\\lambda\\)\n\\(\\sum X_i\\)\n\n\nNormal(\\(\\mu\\), known \\(\\sigma^2\\))\n\\(\\mu\\)\n\\(\\bar{X}\\)\n\n\nNormal(\\(\\mu\\), \\(\\sigma^2\\))\n\\((\\mu, \\sigma^2)\\)\n\\((\\bar{X}, S^2)\\) or \\((\\sum X_i, \\sum X_i^2)\\)\n\n\nUniform[0, \\(\\theta\\)]\n\\(\\theta\\)\n\\(\\max(X_i)\\)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-sufficiency-matters-the-big-picture",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-sufficiency-matters-the-big-picture",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Why Sufficiency Matters: The Big Picture",
     "text": "Why Sufficiency Matters: The Big Picture\n\n\n\n\n\n\nThree Key Connections\n\n\n\nMLEs are functions of sufficient statistics\n\nYou don’t lose anything by working with \\(T\\) instead of raw data\n\nMVUEs are functions of sufficient statistics (Rao-Blackwell)\n\nThe best unbiased estimator depends only on \\(T\\)\n\nIf \\(T\\) is complete and sufficient, any unbiased function of \\(T\\) is the MVUE (Lehmann-Scheffé)\n\nFinding the MVUE becomes much easier!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-rao-blackwell-theorem-improving-estimators",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-rao-blackwell-theorem-improving-estimators",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Rao-Blackwell Theorem: Improving Estimators",
     "text": "The Rao-Blackwell Theorem: Improving Estimators\n\n\n\n\n\n\nTheorem (Rao-Blackwell)\n\n\nIf \\(U\\) is any unbiased estimator of \\(\\tau(\\theta)\\) and \\(T\\) is sufficient for \\(\\theta\\), then: \\[U^* = E(U \\mid T)\\]\nis also unbiased, and \\(\\text{Var}(U^*) \\leq \\text{Var}(U)\\).\n\n\n\n\nIn plain English: Conditioning on a sufficient statistic never hurts and usually helps.\nPractical implication: If your estimator doesn’t use all the information in \\(T\\), you can always improve it!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#medical-example-rao-blackwell-in-action",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#medical-example-rao-blackwell-in-action",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Medical Example: Rao-Blackwell in Action",
     "text": "Medical Example: Rao-Blackwell in Action\nProblem: Estimate \\(e^{-\\mu} = P(\\text{no defects})\\) for Poisson(\\(\\mu\\)) data.\nCrude estimator: \\(U = I(X_1 = 0)\\) (is the first observation zero?)\n\n\nCode\nset.seed(42)\nmu_true &lt;- 1.5\nn &lt;- 10\nn_sims &lt;- 5000\n\n# Simulation\nrb_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    data = map(sim, \\(s) rpois(n, mu_true)),\n    T_sum = map_dbl(data, sum),\n    crude_U = map_dbl(data, \\(d) as.numeric(d[1] == 0)),\n    improved_U = (1 - 1/n)^T_sum\n  )\n\nrb_sim |&gt; \n  summarize(\n    `True e^(-μ)` = exp(-mu_true),\n    `Crude: E[U]` = mean(crude_U),\n    `Crude: Var` = var(crude_U),\n    `Improved: E[U*]` = mean(improved_U),\n    `Improved: Var` = var(improved_U)\n  ) |&gt; \n  pivot_longer(everything()) |&gt; \n  mutate(value = round(value, 4))\n\n\n# A tibble: 5 × 2\n  name             value\n  &lt;chr&gt;            &lt;dbl&gt;\n1 True e^(-μ)     0.223 \n2 Crude: E[U]     0.214 \n3 Crude: Var      0.168 \n4 Improved: E[U*] 0.223 \n5 Improved: Var   0.0082\n\n\nThe Rao-Blackwell estimator has much lower variance!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visualization-rao-blackwell-improvement",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#visualization-rao-blackwell-improvement",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Visualization: Rao-Blackwell Improvement",
     "text": "Visualization: Rao-Blackwell Improvement"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#completeness-the-final-piece",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#completeness-the-final-piece",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Completeness: The Final Piece",
     "text": "Completeness: The Final Piece\n\n\n\n\n\n\nDefinition: Complete Statistic\n\n\n\\(T\\) is complete if for any function \\(g\\): \\[E_\\theta[g(T)] = 0 \\text{ for all } \\theta \\implies P_\\theta(g(T) = 0) = 1 \\text{ for all } \\theta\\]\n\n\n\n\nIntuition: The only unbiased estimator of zero based on \\(T\\) is the zero function itself.\n\n\n\n\n\n\n\n\nLehmann-Scheffé Theorem\n\n\nIf \\(T\\) is complete and sufficient, and \\(h(T)\\) is unbiased for \\(\\tau(\\theta)\\), then \\(h(T)\\) is the unique MVUE of \\(\\tau(\\theta)\\)."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-complete-picture-how-everything-connects",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#the-complete-picture-how-everything-connects",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "The Complete Picture: How Everything Connects",
     "text": "The Complete Picture: How Everything Connects"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#decision-tree-finding-the-best-estimator",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#decision-tree-finding-the-best-estimator",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Decision Tree: Finding the Best Estimator",
     "text": "Decision Tree: Finding the Best Estimator\n\n\n\n\n\n\n\n\n(Note: Claude AI put these flow charts together for me, thanks Claude!)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#summary-key-formulas-to-remember",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#summary-key-formulas-to-remember",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Summary: Key Formulas to Remember",
     "text": "Summary: Key Formulas to Remember\n\n\n\nConcept\nFormula\n\n\n\n\nBias\n\\(E(\\hat{\\theta}) - \\theta\\)\n\n\nMSE\n\\(\\text{Var}(\\hat{\\theta}) + \\text{Bias}^2\\)\n\n\nStandard Error\n\\(\\sqrt{\\text{Var}(\\hat{\\theta})}\\)\n\n\nFisher Information\n\\(I(\\theta) = E[-\\ell''(\\theta)]\\)\n\n\nCRLB\n\\(\\frac{1}{nI(\\theta)}\\)\n\n\nEfficiency\n\\(\\frac{\\text{CRLB}}{\\text{Var}(\\hat{\\theta})}\\)\n\n\nConsistency\n\\(\\text{MSE} \\to 0\\) as \\(n \\to \\infty\\)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#summary-key-results-by-distribution",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#summary-key-results-by-distribution",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Summary: Key Results by Distribution",
     "text": "Summary: Key Results by Distribution\n\n\n\n\n\n\n\n\n\n\nDistribution\nMLE\nMME\nSufficient Stat\nMVUE of Mean\n\n\n\n\nBernoulli(\\(p\\))\n\\(\\bar{X}\\)\n\\(\\bar{X}\\)\n\\(\\sum X_i\\)\n\\(\\bar{X}\\)\n\n\nPoisson(\\(\\mu\\))\n\\(\\bar{X}\\)\n\\(\\bar{X}\\)\n\\(\\sum X_i\\)\n\\(\\bar{X}\\)\n\n\nExponential(\\(\\lambda\\))\n\\(1/\\bar{X}\\)\n\\(1/\\bar{X}\\)\n\\(\\sum X_i\\)\n\\(\\bar{X}\\) (for mean)\n\n\nNormal(\\(\\mu\\), \\(\\sigma^2\\))\n\\(\\bar{X}\\), \\(\\frac{1}{n}\\sum(X_i-\\bar{X})^2\\)\nSame\n\\((\\bar{X}, S^2)\\)\n\\(\\bar{X}\\)\n\n\nUniform[0, \\(\\theta\\)]\n\\(\\max(X_i)\\)\n\\(2\\bar{X}\\)\n\\(\\max(X_i)\\)\n\\(\\frac{n+1}{n}\\max(X_i)\\)"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#common-misconceptions-to-avoid",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#common-misconceptions-to-avoid",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Common Misconceptions to Avoid",
     "text": "Common Misconceptions to Avoid\n\n\n\n\n\n\nPitfall 1: “Unbiased is always better”\n\n\nReality: A biased estimator with low variance can have lower MSE!\n\n\n\n\n\n\n\n\n\n\nPitfall 2: “MLE = Sufficient Statistic”\n\n\nReality: MLE is a function of sufficient statistics, not the sufficient statistic itself.\n\n\n\n\n\n\n\n\n\n\n\nPitfall 3: “\\(\\bar{X}\\) is always sufficient”\n\n\nReality: \\(\\bar{X}\\) is sufficient for location parameters (normal, exponential) but NOT for scale parameters like in Uniform[0, \\(\\theta\\)]."
   },
@@ -5399,14 +5399,14 @@
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#references",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#references",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "References",
     "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapters 6-7.\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 6."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#questions",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#questions",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Questions?",
     "text": "Questions?\nThank you!"
   },
@@ -6001,21 +6001,21 @@
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-does-the-add-two-estimator-help",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#why-does-the-add-two-estimator-help",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Why Does the Add-Two Estimator Help?",
     "text": "Why Does the Add-Two Estimator Help?\nThe Problem with Standard Estimator:\n\nIf you observe 0 successes in 10 trials, \\(\\hat{p}_1 = 0/10 = 0\\)\nBut is the true \\(p\\) really exactly 0? Probably not!\nSmall samples give extreme estimates that are likely wrong\n\n\nHow Add-Two Helps:\n\nWith 0 successes in 10 trials: \\(\\hat{p}_2 = (0+2)/(10+4) = 2/14 \\approx 0.14\\)\nThis is more “conservative” — it hedges against extreme estimates\nShrinkage toward 0.5 reduces variance at the cost of small bias\n\n\n\n\n\n\n\n\n\nBayesian Connection\n\n\nThe add-two estimator is the posterior mean under a Uniform(0,1) prior on \\(p\\). It incorporates prior belief that extreme values of \\(p\\) (near 0 or 1) are less likely."
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#comparing-the-two-estimators-simulation",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#comparing-the-two-estimators-simulation",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "Comparing the Two Estimators: Simulation",
     "text": "Comparing the Two Estimators: Simulation\nFor \\(p = 0.2\\) (a fairly extreme value), let’s compare the two estimators:\n\n\nCode\n# Compare standard estimator vs. \"add-two\" estimator\ntrue_p &lt;- 0.2  # True cure rate (rare disease)\nn &lt;- 25\nn_sims &lt;- 5000\n\nprop_sim &lt;- tibble(sim = 1:n_sims) |&gt; \n  mutate(\n    x = rbinom(n_sims, size = n, prob = true_p),\n    p_standard = x / n,                    # Unbiased\n    p_addtwo = (x + 2) / (n + 4)           # Biased toward 0.5\n  )\n\n# Compare properties\nprop_sim |&gt; \n  summarize(\n    `Standard: Mean` = mean(p_standard),\n    `Standard: Bias` = mean(p_standard) - true_p,\n    `Standard: Variance` = var(p_standard),\n    `Standard: MSE` = mean((p_standard - true_p)^2),\n    `Add-Two: Mean` = mean(p_addtwo),\n    `Add-Two: Bias` = mean(p_addtwo) - true_p,\n    `Add-Two: Variance` = var(p_addtwo),\n    `Add-Two: MSE` = mean((p_addtwo - true_p)^2)\n  ) |&gt; \n  pivot_longer(everything()) |&gt; \n  separate(name, into = c(\"Estimator\", \"Metric\"), sep = \": \") |&gt; \n  pivot_wider(names_from = Estimator, values_from = value) |&gt; \n  mutate(across(where(is.numeric), ~round(., 5)))\n\n\n# A tibble: 4 × 3\n  Metric   Standard `Add-Two`\n  &lt;chr&gt;       &lt;dbl&gt;     &lt;dbl&gt;\n1 Mean      0.199     0.241  \n2 Bias     -0.00101   0.0405 \n3 Variance  0.0065    0.00483\n4 MSE       0.0065    0.00647\n\n\nAt \\(p = 0.2\\), the MSEs are similar — we’re in the “crossover” region where neither dominates!"
   },
   {
     "objectID": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#when-does-add-two-win-mse-comparison",
     "href": "lessons/06_Review_Point_Estimation/06_Review_Point_Estimation.html#when-does-add-two-win-mse-comparison",
-    "title": "BSTA 551: Statistical Inference",
+    "title": "Lesson 6 Review: Point Estimation",
     "section": "When Does Add-Two Win? MSE Comparison",
     "text": "When Does Add-Two Win? MSE Comparison\n\nKey insight: The add-two estimator wins near \\(p = 0.5\\) where its bias is small, but loses at extreme \\(p\\) values where shrinkage toward 0.5 hurts!"
   },
