@@ -223,7 +223,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 14, 2026</p>
+      <p class="date-modified">January 15, 2026</p>
     </div>
   </div>
     
@@ -287,7 +287,7 @@ window.Quarto = {
 <p><strong>(b)</strong> Show that the MLE <span class="math inline">\(\hat{\mu} = \bar{X}\)</span> is a function of the sufficient statistic <span class="math inline">\(T\)</span>.</p>
 <p><strong>(c)</strong> In a clinical trial with <span class="math inline">\(n = 50\)</span> patients, suppose the following summary statistics are recorded: <span class="math display">\[\sum_{i=1}^{50} X_i = 72\]</span></p>
 <p>A colleague suggests using a different estimator: <span class="math inline">\(\tilde{\mu} = \frac{\text{number of patients with } X_i &gt; 0}{n}\)</span>.</p>
-<p>Using R simulation, demonstrate that conditioning on the sufficient statistic <span class="math inline">\(T\)</span> (via Rao-Blackwell) would improve <span class="math inline">\(\tilde{\mu}\)</span>. Generate 1000 samples from Poisson(<span class="math inline">\(\mu = 1.5\)</span>) with <span class="math inline">\(n = 50\)</span>, compute both estimators, and compare their MSEs.</p>
+<p>Using R simulation, generate 1000 samples from Poisson(<span class="math inline">\(\mu = 1.5\)</span>) with <span class="math inline">\(n = 50\)</span> and compare the bias, variance and MSE of <span class="math inline">\(\hat{\mu}\)</span> and <span class="math inline">\(\tilde{\mu}\)</span>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Your simulation code here</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>

@@ -1,0 +1,721 @@
+---
+title: "Homework 1"
+subtitle: "BSTA 551"
+date-modified: "today"
+description: "Due: `r library(here); source(here('class_dates.R')); hw1 %>% format('%m/%d')` at 11pm"
+format: 
+  html: 
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: setup
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+
+*Note*: These solutions provide much more detail and additional discussion than would be expected from your solutions. As long as you work through completing a problem and arrive at a reasonable solution, you will receive full credit.
+
+
+## Problem 1: Sampling Distribution of the Sample Mean
+
+Researchers are studying the birth weights of full-term infants at a large hospital. Let $X_1, X_2, \ldots, X_{n}$ be a random sample of birth weights from a population with mean $\mu = 3400$ grams and standard deviation $\sigma = 450$ grams.
+
+### Part (a)
+
+For a sample of size $n = 25$, calculate $E(\bar{X})$, $\text{Var}(\bar{X})$, and $SE(\bar{X})$.
+
+**Solution:**
+
+Using the properties of the sample mean from a random sample that we explored in class:
+
+$$E(\bar{X}) = \mu = 3400 \text{ grams}$$
+
+$$\text{Var}(\bar{X}) = \frac{\sigma^2}{n} = \frac{450^2}{25} = \frac{202500}{25} = 8100 \text{ grams}^2$$
+
+$$SE(\bar{X}) = \sqrt{\text{Var}(\bar{X})} = \frac{\sigma}{\sqrt{n}} = \frac{450}{\sqrt{25}} = \frac{450}{5} = 90 \text{ grams}$$
+
+```{r}
+mu <- 3400
+sigma <- 450
+n <- 25
+
+E_Xbar <- mu
+Var_Xbar <- sigma^2 / n
+SE_Xbar <- sigma / sqrt(n)
+
+tibble(
+  Quantity = c("$E(\\bar{X})$", "$\\text{Var}(\\bar{X})$", "$SE(\\bar{X})$"),
+  Value = c(E_Xbar, Var_Xbar, SE_Xbar),
+  Units = c("grams", "grams$^2$", "grams")
+) |> knitr::kable(escape = FALSE)
+```
+
+### Part (b)
+
+How large must the sample size $n$ be so that the standard error of $\bar{X}$ is at most 50 grams?
+
+**Solution:**
+
+We need $SE(\bar{X}) \leq 50$:
+
+$$\frac{\sigma}{\sqrt{n}} \leq 50$$
+
+$$\sqrt{n} \geq \frac{\sigma}{50} = \frac{450}{50} = 9$$
+
+$$n \geq 81$$
+
+```{r}
+target_SE <- 50
+n_required <- (sigma / target_SE)^2
+cat("Minimum sample size required:", ceiling(n_required), "\n")
+cat("Verification: SE with n =", ceiling(n_required), "is", sigma/sqrt(ceiling(n_required)), "grams")
+```
+
+**Answer:** The sample size must be at least $n = 81$.
+
+### Part (c)
+
+Suppose we define a new statistic $W = \frac{1}{n}\sum_{i=1}^{n} (X_i - 3000)$. Find $E(W)$ and $\text{Var}(W)$.
+
+**Solution:**
+
+First, simplify $W$:
+
+$$W = \frac{1}{n}\sum_{i=1}^{n} (X_i - 3000) = \frac{1}{n}\sum_{i=1}^{n} X_i - \frac{1}{n}\sum_{i=1}^{n} 3000 = \bar{X} - 3000$$
+
+Now find the expected value:
+
+$$E(W) = E(\bar{X} - 3000) = E(\bar{X}) - 3000 = \mu - 3000$$
+
+For the variance (constants don't affect variance):
+
+$$\text{Var}(W) = \text{Var}(\bar{X} - 3000) = \text{Var}(\bar{X}) = \frac{\sigma^2}{n}$$
+
+**Is $W$ an unbiased estimator of $\mu - 3000$?**
+
+Yes! Since $E(W) = \mu - 3000$, the estimator $W$ is unbiased for $\mu - 3000$.
+
+```{r}
+# With our parameters:
+E_W <- mu - 3000
+Var_W <- sigma^2 / n
+
+cat("E(W) = μ - 3000 =", E_W, "grams\n")
+cat("Var(W) = σ²/n =", Var_W, "grams²\n")
+cat("W is an unbiased estimator of μ - 3000 since E(W) = μ - 3000")
+```
+
+---
+
+## Problem 2: Bias, Variance, and MSE
+
+Let $X_1, X_2, \ldots, X_n$ be a random sample from an Exponential distribution with rate parameter $\lambda > 0$ (so that $E(X_i) = 1/\lambda$ and $\text{Var}(X_i) = 1/\lambda^2$).
+
+### Part (a)
+
+Show that $\hat{\mu} = \bar{X}$ is unbiased for $\mu = 1/\lambda$ and calculate $\text{Var}(\hat{\mu})$.
+
+**Solution:**
+
+**Unbiasedness:**
+
+$$E(\hat{\mu}) = E(\bar{X}) = E\left(\frac{1}{n}\sum_{i=1}^{n} X_i\right) = \frac{1}{n}\sum_{i=1}^{n} E(X_i) = \frac{1}{n} \cdot n \cdot \frac{1}{\lambda} = \frac{1}{\lambda} = \mu$$
+
+Since $E(\hat{\mu}) = \mu$, the estimator $\bar{X}$ is **unbiased** for $\mu = 1/\lambda$.
+
+**Variance:**
+
+$$\text{Var}(\hat{\mu}) = \text{Var}(\bar{X}) = \frac{\text{Var}(X_i)}{n} = \frac{1/\lambda^2}{n} = \frac{1}{n\lambda^2}$$
+
+### Part (b)
+
+For $\hat{\lambda} = 1/\bar{X}$, given that $E(1/\bar{X}) = \frac{n\lambda}{n-1}$ for $n > 1$, calculate the bias and propose an unbiased modification.
+
+**Solution:**
+
+**Bias of $\hat{\lambda}$:**
+
+$$\text{Bias}(\hat{\lambda}) = E(\hat{\lambda}) - \lambda = \frac{n\lambda}{n-1} - \lambda = \frac{n\lambda - (n-1)\lambda}{n-1} = \frac{\lambda}{n-1}$$
+
+The bias is positive, meaning $\hat{\lambda} = 1/\bar{X}$ systematically **overestimates** $\lambda$.
+
+**Unbiased modification:**
+
+To create an unbiased estimator, we need to multiply by a correction factor:
+
+$$\tilde{\lambda} = \frac{n-1}{n} \cdot \frac{1}{\bar{X}} = \frac{n-1}{n\bar{X}}$$
+
+Verification:
+
+$$E(\tilde{\lambda}) = \frac{n-1}{n} \cdot E\left(\frac{1}{\bar{X}}\right) = \frac{n-1}{n} \cdot \frac{n\lambda}{n-1} = \lambda \checkmark$$
+
+### Part (c)
+
+For $n = 12$ and $\lambda = 0.5$, calculate the bias and MSE of $\hat{\lambda} = 1/\bar{X}$.
+
+**Solution:**
+
+```{r}
+n <- 12
+lambda <- 0.5
+
+# Bias
+bias_lambda_hat <- lambda / (n - 1)
+cat("Bias of λ̂ =", bias_lambda_hat, "\n")
+
+# Variance (given formula)
+var_lambda_hat <- (n^2 * lambda^2) / ((n - 1)^2 * (n - 2))
+
+cat("Variance of λ̂ =", round(var_lambda_hat, 6), "\n")
+
+# MSE = Variance + Bias²
+mse_lambda_hat <- var_lambda_hat + bias_lambda_hat^2
+
+cat("MSE of λ̂ =", round(mse_lambda_hat, 6), "\n")
+```
+
+**Theoretical calculations:**
+
+$$\text{Bias}(\hat{\lambda}) = \frac{\lambda}{n-1} = \frac{0.5}{11} = \frac{1}{22} \approx 0.04545$$
+
+$$\text{Var}(\hat{\lambda}) = \frac{n^2\lambda^2}{(n-1)^2(n-2)} = \frac{144 \times 0.25}{121 \times 10} = \frac{36}{1210} \approx 0.02975$$
+
+$$\text{MSE}(\hat{\lambda}) = \text{Var}(\hat{\lambda}) + [\text{Bias}(\hat{\lambda})]^2 = 0.02975 + 0.04545^2 \approx 0.02975 + 0.00207 \approx 0.03182$$
+
+### Part (d)
+
+R simulation to verify the results from part (c).
+
+**Solution:**
+
+```{r}
+set.seed(551)
+n_sims <- 10000
+n <- 12
+lambda <- 0.5
+
+# Simulate
+sim_results <- tibble(sim = 1:n_sims) |>
+  mutate(
+    # Generate n exponential observations for each simulation
+    data = map(sim, \(s) rexp(n, rate = lambda)),
+    # Calculate sample mean
+    xbar = map_dbl(data, mean),
+    # Calculate λ̂ = 1/X̄
+    lambda_hat = 1 / xbar
+  )
+
+# Calculate simulated statistics
+sim_mean <- mean(sim_results$lambda_hat)
+sim_bias <- sim_mean - lambda
+sim_var <- var(sim_results$lambda_hat)
+sim_mse <- mean((sim_results$lambda_hat - lambda)^2)
+
+# Theoretical values
+theo_bias <- lambda / (n - 1)
+theo_var <- (n^2 * lambda^2) / ((n - 1)^2 * (n - 2))
+theo_mse <- theo_var + theo_bias^2
+
+# Comparison table
+tibble(
+  Quantity = c("$E(\\hat{\\lambda})$", "Bias", "Variance", "MSE"),
+  Theoretical = c(lambda + theo_bias, theo_bias, theo_var, theo_mse),
+  Simulated = c(sim_mean, sim_bias, sim_var, sim_mse)
+) |>
+  mutate(across(where(is.numeric), \(x) round(x, 5))) |>
+  knitr::kable(escape = FALSE)
+```
+
+```{r}
+#| fig-height: 4
+#| fig-width: 8
+
+# Visualization
+ggplot(sim_results, aes(x = lambda_hat)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50, 
+                 fill = "steelblue", alpha = 0.7, color = "white") +
+  geom_vline(xintercept = lambda, color = "darkgreen", linewidth = 1.2, linetype = "solid") +
+  geom_vline(xintercept = sim_mean, color = "darkred", linewidth = 1.2, linetype = "dashed") +
+  annotate("text", x = lambda - 0.03, y = 3, 
+           label = paste("True~lambda ==", lambda), parse = TRUE,
+           color = "darkgreen", hjust = 1) +
+  annotate("text", x = sim_mean + 0.03, y = 2.5, 
+           label = paste("E(hat(lambda)) %~~%", round(sim_mean, 3)), parse = TRUE,
+           color = "darkred", hjust = 0) +
+  labs(
+    title = expression("Sampling Distribution of"~hat(lambda) == 1/bar(X)),
+    subtitle = bquote(n == .(n) ~ ", " ~ lambda == .(lambda) ~ ", 10,000 simulations"),
+    x = expression(hat(lambda)),
+    y = "Density"
+  ) +
+  theme_minimal()
+```
+
+The simulation confirms our theoretical results: $\hat{\lambda} = 1/\bar{X}$ is biased upward by approximately $\lambda/(n-1) \approx 0.045$.
+
+---
+
+## Problem 3: The Bias-Variance Tradeoff
+
+A hospital infection control team wants to estimate the proportion $p$ of patients who develop hospital-acquired infections.
+
+- Standard estimator: $\hat{p}_1 = \frac{X}{n}$
+- "Add-one" estimator: $\hat{p}_2 = \frac{X + 1}{n + 2}$
+
+### Part (a)
+
+Show that $\hat{p}_1$ is unbiased for $p$ and find its variance.
+
+**Solution:**
+
+Since $X \sim \text{Binomial}(n, p)$, we have $E(X) = np$.
+
+$$E(\hat{p}_1) = E\left(\frac{X}{n}\right) = \frac{E(X)}{n} = \frac{np}{n} = p$$
+
+Since $E(\hat{p}_1) = p$, the estimator $\hat{p}_1$ is **unbiased**.
+
+**Variance:**
+
+$$\text{Var}(\hat{p}_1) = \text{Var}\left(\frac{X}{n}\right) = \frac{\text{Var}(X)}{n^2} = \frac{np(1-p)}{n^2} = \frac{p(1-p)}{n}$$
+
+### Part (b)
+
+Calculate $E(\hat{p}_2)$ and find its bias.
+
+**Solution:**
+
+$$E(\hat{p}_2) = E\left(\frac{X + 1}{n + 2}\right) = \frac{E(X) + 1}{n + 2} = \frac{np + 1}{n + 2}$$
+
+**Bias:**
+
+$$\text{Bias}(\hat{p}_2) = E(\hat{p}_2) - p = \frac{np + 1}{n + 2} - p = \frac{np + 1 - p(n + 2)}{n + 2} = \frac{np + 1 - np - 2p}{n + 2} = \frac{1 - 2p}{n + 2}$$
+
+**Interpretation:**
+
+- When $p < 0.5$: Bias $= \frac{1-2p}{n+2} > 0$, so $\hat{p}_2$ overestimates $p$ (pulls toward 0.5)
+- When $p > 0.5$: Bias $= \frac{1-2p}{n+2} < 0$, so $\hat{p}_2$ underestimates $p$ (pulls toward 0.5)
+- When $p = 0.5$: Bias $= 0$
+
+The add-one estimator **shrinks estimates toward 0.5**.
+
+### Part (c)
+
+For $n = 40$ and $p = 0.05$, calculate MSE of both estimators.
+
+**Solution:**
+
+```{r}
+n <- 40
+p <- 0.05
+
+# Standard estimator p̂₁ = X/n
+var_p1 <- p * (1 - p) / n
+mse_p1 <- var_p1  # unbiased, so MSE = Variance
+
+# Add-one estimator p̂₂ = (X+1)/(n+2)
+bias_p2 <- (1 - 2*p) / (n + 2)
+var_p2 <- n * p * (1 - p) / (n + 2)^2
+mse_p2 <- var_p2 + bias_p2^2
+
+tibble(
+  Estimator = c("$\\hat{p}_1 = X/n$ (standard)", 
+                "$\\hat{p}_2 = (X+1)/(n+2)$ (add-one)"),
+  Bias = c(0, bias_p2),
+  Variance = c(var_p1, var_p2),
+  MSE = c(mse_p1, mse_p2)
+) |>
+  mutate(across(where(is.numeric), \(x) round(x, 6))) |>
+  knitr::kable(escape = FALSE)
+```
+
+**Comparison:**
+
+- MSE($\hat{p}_1$) = $\frac{0.05 \times 0.95}{40} = 0.0011875$
+- MSE($\hat{p}_2$) = $0.001077 + 0.0214^2 \approx 0.001077 + 0.000459 = 0.001536$
+
+For $p = 0.05$, the **standard estimator $\hat{p}_1$ is preferred** (lower MSE).
+
+### Part (d)
+
+Plot comparing MSE across all values of $p$.
+
+**Solution:**
+
+```{r}
+#| fig-height: 5
+#| fig-width: 9
+
+n <- 40
+
+mse_comparison <- tibble(p = seq(0.01, 0.99, by = 0.01)) |>
+  mutate(
+    # Standard estimator
+    mse_p1 = p * (1 - p) / n,
+    # Add-one estimator
+    bias_p2 = (1 - 2*p) / (n + 2),
+    var_p2 = n * p * (1 - p) / (n + 2)^2,
+    mse_p2 = var_p2 + bias_p2^2
+  )
+
+# Find crossover points
+mse_comparison <- mse_comparison |>
+  mutate(p2_better = mse_p2 < mse_p1)
+
+crossover_low <- mse_comparison |> filter(p2_better) |> pull(p) |> min()
+crossover_high <- mse_comparison |> filter(p2_better) |> pull(p) |> max()
+
+# Plot
+mse_comparison |>
+  pivot_longer(cols = c(mse_p1, mse_p2), names_to = "Estimator", values_to = "MSE") |>
+  mutate(Estimator = factor(Estimator, 
+                            levels = c("mse_p1", "mse_p2"),
+                            labels = c("p1", "p2"))) |>
+  ggplot(aes(x = p, y = MSE, color = Estimator)) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(xintercept = c(crossover_low, crossover_high), linetype = "dashed", alpha = 0.5) +
+  annotate("rect", xmin = crossover_low, xmax = crossover_high, ymin = 0, ymax = Inf,
+           alpha = 0.1, fill = "green") +
+  annotate("text", x = 0.5, y = 0.0055, label = "Add-one estimator wins", color = "darkgreen") +
+  scale_color_manual(
+    values = c("p1" = "steelblue", "p2" = "darkred"),
+    labels = c(
+      "p1" = expression(hat(p)[1] == X/n ~ "(standard)"),
+      "p2" = expression(hat(p)[2] == (X+1)/(n+2) ~ "(add-one)")
+    )
+  ) +
+  labs(
+    title = "MSE Comparison: Standard vs. Add-One Estimator",
+    subtitle = bquote(n == 40 ~ ". Add-one wins for" ~ p %in% ~ 
+                      "(" * .(round(crossover_low, 2)) * ", " * .(round(crossover_high, 2)) * ")"),
+    x = expression("True Proportion (" * p * ")"),
+    y = "Mean Squared Error"
+  ) +
+  theme(legend.position = "top")
+
+cat("The add-one estimator outperforms the standard estimator for p ∈ (", 
+    round(crossover_low, 2), ",", round(crossover_high, 2), ")\n")
+```
+
+**Answer:** The add-one estimator has lower MSE for $p$ approximately in the range $(0.10, 0.90)$. For extreme values of $p$ (near 0 or 1), the standard estimator is preferred.
+
+**Additional info:** Why does this work? The add-one estimator introduces bias but reduces variance for moderate values of $p$ and so it has lower MSE. Interestingly, this is actually the posterior mean under a uniform Beta(1,1) prior for a Bayesian analysis. This is equivalent to starting with a "prior belief" of observing 1 success and 1 failure before collecting data, and this "regularization" (shrinkage toward 0.5) prevents extreme estimates (like $\hat{p} = 0$ or $\hat{p} = 1$) that can occur with small samples.
+
+The add-one estimator is a bias-variance tradeoff that pays off when the true proportion is moderate. It's a form of shrinkage estimation that sacrifices unbiasedness for improved overall accuracy (lower MSE) in the "middle" of the parameter space.
+
+---
+
+## Problem 4: Sample Variance Estimators
+
+Consider two estimators for $\sigma^2$:
+
+$$S^2 = \frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar{X})^2 \quad \text{and} \quad \tilde{S}^2 = \frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2$$
+
+### Part (a)
+
+Find $E(\tilde{S}^2)$ and calculate its bias.
+
+**Solution:**
+
+Note that $\tilde{S}^2 = \frac{n-1}{n} S^2$ since:
+
+$$\tilde{S}^2 = \frac{1}{n}\sum_{i=1}^{n}(X_i - \bar{X})^2 = \frac{n-1}{n} \cdot \frac{1}{n-1}\sum_{i=1}^{n}(X_i - \bar{X})^2 = \frac{n-1}{n} S^2$$
+
+Therefore:
+
+$$E(\tilde{S}^2) = E\left(\frac{n-1}{n} S^2\right) = \frac{n-1}{n} E(S^2) = \frac{n-1}{n} \sigma^2$$
+
+**Bias:**
+
+$$\text{Bias}(\tilde{S}^2) = E(\tilde{S}^2) - \sigma^2 = \frac{n-1}{n}\sigma^2 - \sigma^2 = \frac{(n-1) - n}{n}\sigma^2 = -\frac{\sigma^2}{n}$$
+
+The bias is **negative**, meaning $\tilde{S}^2$ systematically **underestimates** $\sigma^2$.
+
+### Part (b)
+
+For $n = 8$ and $\sigma^2 = 64$, calculate the bias.
+
+**Solution:**
+
+```{r}
+n <- 8
+sigma_sq <- 64
+
+bias_S2_tilde <- -sigma_sq / n
+E_S2_tilde <- (n - 1) / n * sigma_sq
+
+cat("E(S̃²) =", E_S2_tilde, "\n")
+cat("Bias(S̃²) =", bias_S2_tilde, "\n")
+cat("Percentage of true variance:", abs(bias_S2_tilde) / sigma_sq * 100, "%\n")
+```
+
+**Answer:**
+
+- $E(\tilde{S}^2) = \frac{7}{8} \times 64 = 56$
+- Bias$(\tilde{S}^2) = -\frac{64}{8} = -8$
+- This bias represents $\frac{8}{64} \times 100\% = 12.5\%$ of the true variance.
+
+### Part (c)
+
+R simulation to verify.
+
+**Solution:**
+
+```{r}
+set.seed(551)
+n_sims <- 10000
+n <- 8
+sigma <- 8  # so σ² = 64
+
+sim_variance <- tibble(sim = 1:n_sims) |>
+  mutate(
+    data = map(sim, \(s) rnorm(n, mean = 0, sd = sigma)),
+    S2 = map_dbl(data, var),  # Uses n-1 divisor
+    S2_tilde = map_dbl(data, \(x) sum((x - mean(x))^2) / n)  # Uses n divisor
+  )
+
+# Summary statistics
+sim_summary <- tibble(
+  Estimator = c("S² (n-1 divisor)", "S̃² (n divisor)"),
+  `Theoretical E()` = c(sigma^2, (n-1)/n * sigma^2),
+  `Simulated Mean` = c(mean(sim_variance$S2), mean(sim_variance$S2_tilde)),
+  `Theoretical Bias` = c(0, -sigma^2/n),
+  `Simulated Bias` = c(mean(sim_variance$S2) - sigma^2, mean(sim_variance$S2_tilde) - sigma^2)
+)
+
+sim_summary |>
+  mutate(across(where(is.numeric), \(x) round(x, 3))) |>
+  knitr::kable()
+```
+
+```{r}
+#| fig-height: 4
+#| fig-width: 9
+
+sim_variance |>
+  pivot_longer(cols = c(S2, S2_tilde), names_to = "Estimator", values_to = "Value") |>
+  mutate(Estimator = ifelse(Estimator == "S2", "S² (n-1 divisor)", "S̃² (n divisor)")) |>
+  ggplot(aes(x = Value, fill = Estimator)) +
+  geom_histogram(bins = 50, alpha = 0.7, position = "identity", color = "white") +
+  geom_vline(xintercept = sigma^2, color = "black", linewidth = 1.2, linetype = "solid") +
+  annotate("text", x = sigma^2 + 5, y = 800, label = paste("σ² =", sigma^2), hjust = 0) +
+  facet_wrap(~Estimator, ncol = 2) +
+  scale_fill_manual(values = c("steelblue", "coral")) +
+  labs(
+    title = "Sampling Distribution of Variance Estimators",
+    subtitle = paste("n =", n, ", σ² =", sigma^2, ", 10,000 simulations"),
+    x = "Estimated Variance",
+    y = "Count"
+  ) +
+  theme(legend.position = "none")
+```
+
+The simulation confirms that $S^2$ is centered at $\sigma^2 = 64$, while $\tilde{S}^2$ is centered at approximately 56, showing the negative bias.
+
+---
+
+## Problem 5: Estimating Vaccine Efficacy
+
+### Part (a)
+
+In a pilot study, $n = 60$ vaccinated individuals are tested, and $X = 51$ show immunity.
+
+**Solution:**
+
+```{r}
+n <- 60
+x <- 51
+
+# Point estimate
+p_hat <- x / n
+
+# Estimated standard error
+se_hat <- sqrt(p_hat * (1 - p_hat) / n)
+
+cat("Point estimate p̂ =", p_hat, "\n")
+cat("Estimated standard error SE(p̂) =", round(se_hat, 4), "\n")
+```
+
+**Calculations:**
+
+$$\hat{p} = \frac{X}{n} = \frac{51}{60} = 0.85$$
+
+$$\widehat{SE}(\hat{p}) = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}} = \sqrt{\frac{0.85 \times 0.15}{60}} = \sqrt{\frac{0.1275}{60}} = \sqrt{0.002125} \approx 0.0461$$
+
+### Part (b)
+
+If the true efficacy is $p = 0.80$, calculate the theoretical MSE and SE.
+
+**Solution:**
+
+```{r}
+p_true <- 0.80
+n <- 60
+
+# Since p̂ is unbiased, MSE = Variance
+var_p_hat <- p_true * (1 - p_true) / n
+mse_p_hat <- var_p_hat  # unbiased
+se_p_hat <- sqrt(var_p_hat)
+
+cat("Theoretical Variance =", round(var_p_hat, 6), "\n")
+cat("Theoretical MSE =", round(mse_p_hat, 6), "\n")
+cat("Theoretical SE =", round(se_p_hat, 4), "\n")
+```
+
+**Calculations:**
+
+$$\text{Var}(\hat{p}) = \frac{p(1-p)}{n} = \frac{0.80 \times 0.20}{60} = \frac{0.16}{60} = 0.002\overline{6}$$
+
+Since $\hat{p}$ is unbiased:
+$$\text{MSE}(\hat{p}) = \text{Var}(\hat{p}) = 0.002\overline{6}$$
+
+$$SE(\hat{p}) = \sqrt{\text{Var}(\hat{p})} = \sqrt{0.002\overline{6}} \approx 0.0516$$
+
+### Part (c)
+
+Find minimum sample size for $SE \leq 0.04$, assuming $p \approx 0.85$.
+
+**Solution:**
+
+We need:
+$$SE(\hat{p}) = \sqrt{\frac{p(1-p)}{n}} \leq 0.04$$
+
+$$\frac{p(1-p)}{n} \leq 0.0016$$
+
+$$n \geq \frac{p(1-p)}{0.0016}$$
+
+```{r}
+p_plan <- 0.85
+target_se <- 0.04
+
+n_required <- p_plan * (1 - p_plan) / (target_se^2)
+
+cat("Minimum sample size required:", ceiling(n_required), "\n")
+cat("Verification: SE with n =", ceiling(n_required), "is", 
+    round(sqrt(p_plan * (1 - p_plan) / ceiling(n_required)), 4), "\n")
+```
+
+**Calculation:**
+
+$$n \geq \frac{0.85 \times 0.15}{0.04^2} = \frac{0.1275}{0.0016} = 79.6875$$
+
+**Answer:** The minimum sample size required is $n = 80$.
+
+---
+
+## Problem 6: Devore et al. Section 7.1 Exercise 22
+
+Consider the adjusted estimator:
+
+$$\hat{P} = \frac{X + \sqrt{n/4}}{n + \sqrt{n}}$$
+
+where $X \sim \text{Binomial}(n, p)$.
+
+### Part (a)
+
+Determine the MSE of this estimator.
+
+**Solution:**
+
+**Step 1: Find $E(\hat{P})$**
+
+$$E(\hat{P}) = \frac{E(X) + \sqrt{n/4}}{n + \sqrt{n}} = \frac{np + \frac{\sqrt{n}}{2}}{n + \sqrt{n}}$$
+
+Factor out $\sqrt{n}$:
+
+$$E(\hat{P}) = \frac{\sqrt{n}\left(\sqrt{n}p + \frac{1}{2}\right)}{\sqrt{n}(\sqrt{n} + 1)} = \frac{\sqrt{n}p + \frac{1}{2}}{\sqrt{n} + 1}$$
+
+**Step 2: Find the bias**
+
+$$\text{Bias}(\hat{P}) = E(\hat{P}) - p = \frac{\sqrt{n}p + \frac{1}{2}}{\sqrt{n} + 1} - p$$
+
+$$= \frac{\sqrt{n}p + \frac{1}{2} - p(\sqrt{n} + 1)}{\sqrt{n} + 1} = \frac{\sqrt{n}p + \frac{1}{2} - \sqrt{n}p - p}{\sqrt{n} + 1} = \frac{\frac{1}{2} - p}{\sqrt{n} + 1}$$
+
+**Step 3: Find the variance**
+
+$$\text{Var}(\hat{P}) = \frac{\text{Var}(X)}{(n + \sqrt{n})^2} = \frac{np(1-p)}{n(\sqrt{n} + 1)^2} = \frac{p(1-p)}{(\sqrt{n} + 1)^2}$$
+
+**Step 4: Calculate MSE**
+
+$$\text{MSE}(\hat{P}) = \text{Var}(\hat{P}) + [\text{Bias}(\hat{P})]^2$$
+
+$$= \frac{p(1-p)}{(\sqrt{n} + 1)^2} + \frac{(\frac{1}{2} - p)^2}{(\sqrt{n} + 1)^2}$$
+
+$$= \frac{p(1-p) + \left(\frac{1}{2} - p\right)^2}{(\sqrt{n} + 1)^2}$$
+
+Expand the numerator:
+$$p(1-p) + \left(\frac{1}{2} - p\right)^2 = p - p^2 + \frac{1}{4} - p + p^2 = \frac{1}{4}$$
+
+Therefore:
+
+$$\boxed{\text{MSE}(\hat{P}) = \frac{1/4}{(\sqrt{n} + 1)^2} = \frac{1}{4(\sqrt{n} + 1)^2}}$$
+
+**What is interesting?** 
+
+The MSE **does not depend on $p$**! For most proportion estimators, the MSE depends on the unknown value of $p$. This is another Bayesian-derived estimator (posterior mean under a Beta($\sqrt{n}/2$, $\sqrt{n}/2$)) and it results in MSE across all values of $p$.
+
+### Part (b)
+
+Compare to the usual estimator $\hat{p} = X/n$.
+
+**Solution:**
+
+The usual estimator has:
+$$\text{MSE}(\hat{p}) = \frac{p(1-p)}{n}$$
+
+which depends on $p$ and is maximized at $p = 0.5$ where $\text{MSE}(\hat{p}) = \frac{0.25}{n}$.
+
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+
+n_values <- c(16, 36, 64, 100)
+
+mse_data <- crossing(
+  p = seq(0.01, 0.99, by = 0.01),
+  n = n_values
+) |>
+  mutate(
+    mse_usual = p * (1 - p) / n,
+    mse_bayesian = 1 / (4 * (sqrt(n) + 1)^2),
+    n_label = paste("n =", n)
+  )
+
+mse_data |>
+  pivot_longer(cols = c(mse_usual, mse_bayesian), names_to = "Estimator", values_to = "MSE") |>
+  mutate(Estimator = ifelse(Estimator == "mse_usual", "Usual (X/n)", "Bayesian-Adjusted")) |>
+  ggplot(aes(x = p, y = MSE, color = Estimator, linetype = Estimator)) +
+  geom_line(linewidth = 1) +
+  facet_wrap(~n_label, scales = "free_y") +
+  scale_color_manual(values = c("darkred", "steelblue")) +
+  labs(
+    title = "MSE Comparison: Usual vs. Bayesian-Adjusted Estimator",
+    subtitle = "Bayesian estimator has constant MSE (horizontal line)",
+    x = "True Proportion (p)",
+    y = "Mean Squared Error"
+  ) +
+  theme(legend.position = "top")
+```
+
+
+**Conclusions:**
+
+1. The **Bayesian-adjusted estimator** has constant MSE regardless of $p$ (shown as horizontal lines).
+
+2. The **usual estimator** has MSE that varies with $p$, maximized at $p = 0.5$.
+
+3. For moderate values of $p$ (roughly between 0.15 and 0.85 depending on $n$), the Bayesian estimator has lower MSE.
+
+4. For extreme values of $p$ (near 0 or 1), the usual estimator is preferred.
+
+5. As $n$ increases, both MSEs decrease, but the crossover points shift, with the Bayesian estimator winning over a narrower range of $p$ values.
+
+6. The constant-MSE property is particularly valuable when we have no prior information about $p$, as it provides a "minimax" type guarantee.
