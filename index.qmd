@@ -43,9 +43,7 @@ Prerequisites: BSTA 550 Probability, familiarity with R.
 ::: g-col-3
 ### Office Hours
 
-[Charles](https://ohsu.webex.com/meet/parkecha) {{< iconify icon-park-solid time size=24px >}} TBD
-
-[Charles](https://ohsu.webex.com/meet/parkecha) {{< iconify icon-park-solid time size=24px >}} TBD
+[Charles](https://ohsu.webex.com/meet/parkecha) {{< iconify icon-park-solid time size=24px >}} Tues 1:45-2:45pm
 
 Jessica {{< iconify icon-park-solid time size=24px >}} M/W 12pm-12:30pm after class
 
