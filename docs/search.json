@@ -6347,5 +6347,1160 @@
     "title": "BSTA 551: Statistical Inference",
     "section": "Questions?",
     "text": "Questions?\nKey Takeaways:\n\nMSE = Variance + Bias² (total error)\nMLEs are consistent and asymptotically efficient\nSufficient statistics capture ALL information about \\(\\theta\\)\nMVUE = Best unbiased estimator = achieves CRLB (when it exists)\nComplete + Sufficient → Unique MVUE\n\nThank you!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#review-what-weve-learned-about-estimation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#review-what-weve-learned-about-estimation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Review: What We’ve Learned About Estimation",
+    "text": "Review: What We’ve Learned About Estimation\nPoint Estimation (Lessons 1-6):\n\nEstimators: statistics that estimate parameters\nProperties: bias, variance, MSE, efficiency\nConstruction: Method of Moments, Maximum Likelihood\nQuality: MVUE, sufficient statistics, Cramér-Rao bound\n\n\nThe Limitation of Point Estimates:\nA single number (\\(\\hat{\\theta} = 0.75\\)) tells us nothing about precision or uncertainty of the estimate."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#todays-goals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#todays-goals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Today’s Goals",
+    "text": "Today’s Goals\n\nUnderstand why we need interval estimates\nLearn the correct interpretation of confidence intervals\nDerive confidence intervals using pivotal quantities\nConstruct and interpret z-intervals (known \\(\\sigma\\))\nDetermine sample sizes for desired precision\nUnderstand one-sided confidence bounds"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#motivating-example-clinical-trial",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#motivating-example-clinical-trial",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Motivating Example: Clinical Trial",
+    "text": "Motivating Example: Clinical Trial\nA new antihypertensive drug is tested in \\(n = 36\\) patients. The mean reduction in systolic blood pressure is \\(\\bar{x} = 12.3\\) mmHg.\n\nPoint estimate: \\(\\hat{\\mu} = 12.3\\) mmHg\n\n\nQuestions we can’t answer with just the point estimate:\n\nHow close is 12.3 to the true mean reduction?\nIs the true mean likely to be at least 10 mmHg?\nHow much could \\(\\bar{X}\\) vary in repeated trials?\n\n\n\n\n\n\n\n\n\nThe Solution\n\n\nA confidence interval provides a range of plausible values for the parameter, along with a measure of confidence."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-point-to-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-point-to-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "From Point to Interval",
+    "text": "From Point to Interval\n\nKey insight: The interval captures our uncertainty about the true parameter value."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-is-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-is-a-confidence-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "What Is a Confidence Interval?",
+    "text": "What Is a Confidence Interval?\n\n\n\n\n\n\nDefinition: Confidence Interval\n\n\nA confidence interval (CI) for a parameter \\(\\theta\\) is a random interval \\((L, U)\\) computed from sample data such that: \\[P(L &lt; \\theta &lt; U) = 1 - \\alpha\\] for a specified confidence level \\(1 - \\alpha\\).\n\n\n\n\nImportant:\n\n\\(L\\) and \\(U\\) are random (they depend on the sample)\n\\(\\theta\\) is fixed (but unknown)\nThe probability statement is about the random event that the lower and upper bound cover \\(\\theta\\), not about any randomness in \\(\\theta\\) itself.\nThe probability statement only makes sense when thinking about defining the estimators \\(L\\) and \\(U\\) and their sampling distributions, it does not make sense when talking about one sample and the observed values for \\(L\\) and \\(U\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#correct-interpretation-of-confidence-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#correct-interpretation-of-confidence-intervals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Correct Interpretation of Confidence Intervals",
+    "text": "Correct Interpretation of Confidence Intervals\n\n\n\n\n\n\nCommon Misconception\n\n\n“There is a 95% probability that \\(\\mu\\) lies in the interval (7.4, 17.2).”\nThis is WRONG! After computing the interval, \\(\\mu\\) either is or is not in the interval. There’s no probability involved.\n\n\n\n\n\n\n\n\n\n\nCorrect Interpretation\n\n\n“If we repeated this procedure many times, 95% of the resulting intervals would contain the true \\(\\mu\\).”\nOr more simply/loosely: “We are 95% confident that the true mean lies between 7.4 and 17.2.”"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-simulation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-simulation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing Confidence Level: Simulation",
+    "text": "Visualizing Confidence Level: Simulation\n\n# Simulate 100 confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:100) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Count how many contain the true mean\nsum(ci_data$contains_mu)\n\n[1] 94"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-the-plot",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-the-plot",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing Confidence Level: The Plot",
+    "text": "Visualizing Confidence Level: The Plot"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-r-code-for-ci-visualization",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-r-code-for-ci-visualization",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The R Code for CI Visualization",
+    "text": "The R Code for CI Visualization\n\n# Simulate *5000* confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:5000) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Proportion containing true mu (should be ~95%)\nmean(ci_data$contains_mu)\n\n[1] 0.9498\n\n\nThis is how the confidence level works: about 95% of intervals capture \\(\\mu\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-key-to-constructing-cis",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-key-to-constructing-cis",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The Key to Constructing CIs",
+    "text": "The Key to Constructing CIs\n\n\n\n\n\n\nDefinition: Pivotal Quantity\n\n\nA pivotal quantity is a function \\(h(X_1, \\ldots, X_n; \\theta)\\) of the data and parameter such that:\n\nIt depends on both the sample and \\(\\theta\\)\nIts distribution does not depend on \\(\\theta\\) (or any other unknown parameters)\n\n\n\n\n\nWhy pivotal quantities matter:\n\nWe can find critical values that don’t depend on unknowns\nWe can “solve for \\(\\theta\\)” to get confidence limits"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-the-standard-pivotal-quantity",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-the-standard-pivotal-quantity",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: The Standard Pivotal Quantity",
+    "text": "Example: The Standard Pivotal Quantity\nLet \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known.\n\nConsider: \\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\]\n\n\nCheck the properties:\n\n\\(Z\\) depends on \\(\\bar{X}\\) (data) and \\(\\mu\\) (parameter) ✓\n\\(Z \\sim N(0, 1)\\) — the distribution doesn’t depend on \\(\\mu\\) ✓\n\n\n\n\\(Z\\) is a pivotal quantity!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-pivotal-quantity-to-ci",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-pivotal-quantity-to-ci",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "From Pivotal Quantity to CI",
+    "text": "From Pivotal Quantity to CI\nSince \\(Z \\sim N(0, 1)\\), we know: \\[P(-z_{\\alpha/2} &lt; Z &lt; z_{\\alpha/2}) = 1 - \\alpha\\]\n\nSubstitute \\(Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\): \\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha/2}\\right) = 1 - \\alpha\\]\n\n\nSolve for \\(\\mu\\): \\[P\\left(\\bar{X} - z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\right) = 1 - \\alpha\\]\n\n\nThis gives us the confidence interval formula!\n\n\nWhat is \\(L\\) and \\(U\\) here?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-z-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-z-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The Z-Interval",
+    "text": "The Z-Interval\n\n\n\n\n\n\nZ Confidence Interval for Normal Mean (\\(\\sigma\\) Known)\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known, a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\] where \\(z_{\\alpha/2}\\) is the critical value with \\(P(Z &gt; z_{\\alpha/2}) = \\alpha/2\\).\n\n\n\n\nCommon critical values:\n\n\n\nConfidence Level\n\\(\\alpha\\)\n\\(\\alpha/2\\)\n\\(z_{\\alpha/2}\\)\n\n\n\n\n90%\n0.10\n0.05\n1.645\n\n\n95%\n0.05\n0.025\n1.960\n\n\n99%\n0.01\n0.005\n2.576"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-tensile-strength-devore-example-8.1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-tensile-strength-devore-example-8.1",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Tensile Strength (Devore Example 8.1)",
+    "text": "Example: Tensile Strength (Devore Example 8.1)\nSynthetic fibers are tested for tensile strength. From past data, \\(\\sigma = 55\\) MPa is known. A sample of \\(n = 31\\) fibers has \\(\\bar{x} = 1064\\) MPa.\n\n95% Confidence Interval:\n\nxbar &lt;- 1064\nsigma &lt;- 55\nn &lt;- 31\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha/2)\nmargin &lt;- z_crit * sigma / sqrt(n)\n\nc(xbar - margin, xbar + margin)\n\n[1] 1044.639 1083.361\n\n\n\n\nInterpretation: We are 95% confident that the true mean tensile strength is between 1044.6 and 1083.4 MPa."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-blood-glucose-levels",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-blood-glucose-levels",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Medical Example: Blood Glucose Levels",
+    "text": "Medical Example: Blood Glucose Levels\nA hospital monitors fasting blood glucose in diabetic patients. Historical data shows \\(\\sigma = 18\\) mg/dL. A sample of \\(n = 40\\) patients has \\(\\bar{x} = 142\\) mg/dL.\nConstruct a 99% CI for the population mean glucose level:\n\nxbar &lt;- 142\nsigma &lt;- 18\nn &lt;- 40\nalpha &lt;- 0.01\n\nz_crit &lt;- qnorm(1 - alpha/2)\ncat(\"z critical value:\", round(z_crit, 3), \"\\n\")\n\nz critical value: 2.576 \n\nmargin &lt;- z_crit * sigma / sqrt(n)\ncat(\"Margin of error:\", round(margin, 2), \"mg/dL\\n\")\n\nMargin of error: 7.33 mg/dL\n\ncat(\"99% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n99% CI: ( 134.7 , 149.3 )\n\n\n\nClinical interpretation: We can be 99% confident that the true mean fasting glucose for this patient population is between 134.7 and 149.3 mg/dL."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#anatomy-of-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#anatomy-of-a-confidence-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Anatomy of a Confidence Interval",
+    "text": "Anatomy of a Confidence Interval\n\\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]\n\nThree factors affect the margin of error:\n\nConfidence level (\\(z_{\\alpha/2}\\)): Higher confidence → wider interval → less precise\nPopulation variability (\\(\\sigma\\)): More variation → wider interval → less precise\nSample size (\\(n\\)): Larger sample → narrower interval → more precise"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#interactive-effect-of-confidence-level",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#interactive-effect-of-confidence-level",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Interactive: Effect of Confidence Level",
+    "text": "Interactive: Effect of Confidence Level\n\n# Same data, different confidence levels\nxbar &lt;- 1064; sigma &lt;- 55; n &lt;- 31\n\nconfidence_levels &lt;- c(0.90, 0.95, 0.99)\n\ntibble(conf_level = confidence_levels) |&gt;\n  mutate(\n    z_crit = qnorm(1 - (1 - conf_level)/2),\n    margin = z_crit * sigma / sqrt(n),\n    lower = xbar - margin,\n    upper = xbar + margin,\n    width = upper - lower\n  )\n\n# A tibble: 3 × 6\n  conf_level z_crit margin lower upper width\n       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1       0.9    1.64   16.2 1048. 1080.  32.5\n2       0.95   1.96   19.4 1045. 1083.  38.7\n3       0.99   2.58   25.4 1039. 1089.  50.9\n\n\nTakeaway: Higher confidence requires wider intervals!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-determination",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-determination",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size Determination",
+    "text": "Sample Size Determination\nQuestion: How large should \\(n\\) be to achieve a desired precision?\n\nIf we want the margin of error to be at most \\(b\\): \\[z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}} \\leq b\\]\n\n\nSolving for \\(n\\): \\[n \\geq \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-clinical-trial-design",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-clinical-trial-design",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size Example: Clinical Trial Design",
+    "text": "Sample Size Example: Clinical Trial Design\nA pharmaceutical company wants to estimate mean drug clearance time. From pilot data, \\(\\sigma \\approx 25\\) minutes. They want a 95% CI with margin of error ≤ 5 minutes.\n\nsigma &lt;- 25\nb &lt;- 5  # desired margin of error\nalpha &lt;- 0.05\nz_crit &lt;- qnorm(1 - alpha/2)\n\nn_required &lt;- (z_crit * sigma / b)^2\ncat(\"Minimum sample size:\", ceiling(n_required))\n\nMinimum sample size: 97\n\n\n\nNote: Always round up to ensure the desired precision!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#one-sided-confidence-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#one-sided-confidence-bounds",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "One-Sided Confidence Bounds",
+    "text": "One-Sided Confidence Bounds\nSometimes we only care about one direction:\n\nLower bound: We want to know the minimum plausible value\nUpper bound: We want to know the maximum plausible value\n\n\n\n\n\n\n\n\nOne-Sided Bounds\n\n\nLower Confidence Bound: \\(\\bar{x} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\)\nUpper Confidence Bound: \\(\\mu &lt; \\bar{x} + z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\nNote: Use \\(z_\\alpha\\) (not \\(z_{\\alpha/2}\\)) for one-sided bounds at confidence level \\(1 - \\alpha\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-drug-half-life",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-drug-half-life",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Medical Example: Drug Half-Life",
+    "text": "Medical Example: Drug Half-Life\nA pharmacologist measures half-life of a new drug. With \\(n = 20\\) subjects, \\(\\bar{x} = 4.2\\) hours, and known \\(\\sigma = 0.8\\) hours.\nFind a 95% lower confidence bound:\n\nxbar &lt;- 4.2\nsigma &lt;- 0.8\nn &lt;- 20\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha)  # Note: z_alpha, not z_alpha/2\nlower_bound &lt;- xbar - z_crit * sigma / sqrt(n)\n\ncat(\"95% lower confidence bound:\", round(lower_bound, 2), \"hours\\n\")\n\n95% lower confidence bound: 3.91 hours\n\ncat(\"Interpretation: We are 95% confident that the true half-life\",\n    \"\\nis at least\", round(lower_bound, 2), \"hours\")\n\nInterpretation: We are 95% confident that the true half-life \nis at least 3.91 hours"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-realistic-case",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-realistic-case",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Realistic Case",
+    "text": "The Realistic Case\nIn practice, we rarely know the population standard deviation \\(\\sigma\\).\n\nNatural idea: Replace \\(\\sigma\\) with the sample standard deviation \\(s\\).\n\n\nBut what happens to our pivotal quantity?\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0, 1)\\]\nbecomes\n\\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim \\; ???\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-t-distribution",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-t-distribution",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The t Distribution",
+    "text": "The t Distribution\n\nThe t distribution has heavier tails than the normal — accounting for extra uncertainty from estimating \\(\\sigma\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#students-t-distribution",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#students-t-distribution",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Student’s t Distribution",
+    "text": "Student’s t Distribution\n\n\n\n\n\n\nGosset’s Theorem\n\n\nIf \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\), then: \\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim t_{n-1}\\] where \\(t_{n-1}\\) denotes the t distribution with \\(n-1\\) degrees of freedom.\n\n\n\n\nKey properties of \\(t_\\nu\\):\n\nSymmetric around 0\nHeavier tails than \\(N(0, 1)\\)\nAs \\(\\nu \\to \\infty\\), \\(t_\\nu \\to N(0, 1)\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-n-1-degrees-of-freedom",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-n-1-degrees-of-freedom",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Why \\((n-1)\\) Degrees of Freedom?",
+    "text": "Why \\((n-1)\\) Degrees of Freedom?\nThe sample variance involves: \\[S^2 = \\frac{1}{n-1}\\sum_{i=1}^n(X_i - \\bar{X})^2\\]\n\nSince \\(\\sum(X_i - \\bar{X}) = 0\\), knowing any \\(n-1\\) deviations determines the last one.\n\n\nIntuition: We “use up” one degree of freedom by estimating \\(\\mu\\) with \\(\\bar{X}\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-one-sample-t-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-one-sample-t-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The One-Sample t Interval",
+    "text": "The One-Sample t Interval\n\n\n\n\n\n\nt Confidence Interval for Normal Mean (\\(\\sigma\\) Unknown)\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\), a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm t_{\\alpha/2, n-1} \\cdot \\frac{s}{\\sqrt{n}}\\] where \\(t_{\\alpha/2, n-1}\\) is the critical value with \\(P(T &gt; t_{\\alpha/2, n-1}) = \\alpha/2\\) for \\(T \\sim t_{n-1}\\).\n\n\n\n\nThe quantity \\(s/\\sqrt{n}\\) is called the standard error of the mean (SEM or SE)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#t-critical-values",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#t-critical-values",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "t Critical Values",
+    "text": "t Critical Values\n\n# Compare z and t critical values for 95% CI\nz_crit &lt;- qnorm(0.975)\n\ndf_values &lt;- c(5, 10, 20, 30, 50, 100, Inf)\nt_crits &lt;- qt(0.975, df = df_values)\n\ntibble(\n  df = c(\"5\", \"10\", \"20\", \"30\", \"50\", \"100\", \"∞ (z)\"),\n  t_critical = round(c(head(t_crits, -1), z_crit), 3)\n)\n\n# A tibble: 7 × 2\n  df    t_critical\n  &lt;chr&gt;      &lt;dbl&gt;\n1 5           2.57\n2 10          2.23\n3 20          2.09\n4 30          2.04\n5 50          2.01\n6 100         1.98\n7 ∞ (z)       1.96\n\n\nKey insight: For small samples, \\(t\\) critical values are substantially larger than \\(z\\) critical values."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-porsche-odometer-readings-devore-example-8.8",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-porsche-odometer-readings-devore-example-8.8",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: Porsche Odometer Readings (Devore Example 8.8)",
+    "text": "Example: Porsche Odometer Readings (Devore Example 8.8)\nA sample of \\(n = 16\\) used Porsche Boxsters has odometer readings (miles):\n\nodometer &lt;- c(80000, 30100, 97500, 58551, 73787, 51800, 69267, 44530,\n              42192, 104920, 41442, 27418, 43436, 77219, 5991, 14362)\n\nn &lt;- length(odometer)\nxbar &lt;- mean(odometer)\ns &lt;- sd(odometer)\n\ncat(\"Sample size:\", n, \"\\n\")\n\nSample size: 16 \n\ncat(\"Sample mean:\", round(xbar, 1), \"miles\\n\")\n\nSample mean: 53907.2 miles\n\ncat(\"Sample SD:\", round(s, 1), \"miles\\n\")\n\nSample SD: 28287.2 miles"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-porsche-continued",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-porsche-continued",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: Porsche (continued)",
+    "text": "Example: Porsche (continued)\n95% Confidence Interval:\n\nalpha &lt;- 0.05\nt_crit &lt;- qt(1 - alpha/2, df = n - 1)\n\ncat(\"t critical value (df=15):\", round(t_crit, 3), \"\\n\")\n\nt critical value (df=15): 2.131 \n\nse &lt;- s / sqrt(n)\nmargin &lt;- t_crit * se\n\ncat(\"Standard error:\", round(se, 1), \"\\n\")\n\nStandard error: 7071.8 \n\ncat(\"Margin of error:\", round(margin, 1), \"\\n\\n\")\n\nMargin of error: 15073.2 \n\ncat(\"95% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n95% CI: ( 38834 , 68980.4 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#checking-the-normality-assumption",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#checking-the-normality-assumption",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Checking the Normality Assumption",
+    "text": "Checking the Normality Assumption\nThe t interval assumes normally distributed data. Always check!\n\npar(mfrow = c(1, 2))\nhist(odometer, main = \"Histogram\", xlab = \"Odometer (miles)\", col = \"lightblue\")\nqqnorm(odometer, main = \"Normal Q-Q Plot\", pch = 19)\nqqline(odometer, col = \"red\", lwd = 2)\n\n\nThe Q-Q plot looks reasonably linear — normality assumption is plausible."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-systolic-blood-pressure",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-systolic-blood-pressure",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Systolic Blood Pressure",
+    "text": "Medical Example: Systolic Blood Pressure\nA clinical study measures systolic blood pressure in \\(n = 25\\) patients after a new treatment:\n\n# Simulated BP data (mmHg)\nbp &lt;- c(118, 124, 131, 127, 122, 119, 128, 135, 121, 126,\n        130, 124, 129, 133, 120, 125, 127, 132, 123, 128,\n        126, 131, 122, 129, 125)\n\nn &lt;- length(bp)\nxbar &lt;- mean(bp)\ns &lt;- sd(bp)\n\n# 95% CI\nt_crit &lt;- qt(0.975, df = n - 1)\nse &lt;- s / sqrt(n)\nci &lt;- c(xbar - t_crit * se, xbar + t_crit * se)\n\ncat(\"Sample mean:\", round(xbar, 1), \"mmHg\\n\")\n\nSample mean: 126.2 mmHg\n\ncat(\"Sample SD:\", round(s, 1), \"mmHg\\n\")\n\nSample SD: 4.5 mmHg\n\ncat(\"95% CI: (\", round(ci[1], 1), \",\", round(ci[2], 1), \") mmHg\")\n\n95% CI: ( 124.3 , 128.1 ) mmHg"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#using-t.test-in-r",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#using-t.test-in-r",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Using t.test() in R",
+    "text": "Using t.test() in R\n\n# The easy way to compute t confidence intervals\nt.test(bp, conf.level = 0.95)\n\n\n    One Sample t-test\n\ndata:  bp\nt = 140.51, df = 24, p-value &lt; 2.2e-16\nalternative hypothesis: true mean is not equal to 0\n95 percent confidence interval:\n 124.3463 128.0537\nsample estimates:\nmean of x \n    126.2 \n\n\n\nNote: R’s t.test() also performs a hypothesis test (which we’ll cover later)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-setup",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-setup",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Setup",
+    "text": "The Setup\nSituation: We observe \\(X\\) successes in \\(n\\) independent Bernoulli trials.\n\n\\(X \\sim \\text{Binomial}(n, p)\\)\nPoint estimate: \\(\\hat{p} = X/n\\)\n\n\nExamples:\n\nProportion of patients responding to treatment\nProportion of adverse events\nDisease prevalence in a population"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-wald-interval-traditional",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-wald-interval-traditional",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Wald Interval (Traditional)",
+    "text": "The Wald Interval (Traditional)\nFor large \\(n\\), \\(\\hat{P} = X/n\\) is approximately normal: \\[\\hat{P} \\approx N\\left(p, \\frac{p(1-p)}{n}\\right)\\]\n\nThe Wald (traditional) 95% CI: \\[\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]\n\n\n\n\n\n\n\n\nProblems with the Wald Interval\n\n\n\nPoor coverage probability for \\(p\\) near 0 or 1\nCan produce bounds outside [0, 1]\nNot recommended for small samples"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#coverage-problems-with-wald",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#coverage-problems-with-wald",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Coverage Problems with Wald",
+    "text": "Coverage Problems with Wald\n\nThe Wald interval often has coverage below the nominal level!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-score-wilson-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-score-wilson-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Score (Wilson) Interval",
+    "text": "The Score (Wilson) Interval\nA better approach: solve for \\(p\\) in the pivotal quantity directly.\n\n\n\n\n\n\nScore Confidence Interval for a Proportion\n\n\n\\[\\frac{\\hat{p} + \\frac{z_{\\alpha/2}^2}{2n} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n} + \\frac{z_{\\alpha/2}^2}{4n^2}}}{1 + \\frac{z_{\\alpha/2}^2}{n}}\\]\n\n\n\n\nAdvantages:\n\nCoverage probability much closer to nominal level\nHandles extreme proportions well\nAlways produces bounds in [0, 1]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-agresti-coull-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-agresti-coull-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Agresti-Coull Interval",
+    "text": "The Agresti-Coull Interval\nA simpler approximation that works well in practice:\n\n\n\n\n\n\nAgresti-Coull (“Add Two Successes and Two Failures”)\n\n\nLet \\(\\tilde{n} = n + 4\\) and \\(\\tilde{p} = \\frac{X + 2}{n + 4}\\)\nThen use: \\[\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\]\n\n\n\n\nWhy it works: Adding 2 successes and 2 failures “shrinks” extreme estimates toward 0.5."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#comparing-intervals-clinical-trial-example",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#comparing-intervals-clinical-trial-example",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Comparing Intervals: Clinical Trial Example",
+    "text": "Comparing Intervals: Clinical Trial Example\nIn a Phase II trial, 23 of 40 patients respond to treatment.\n\nx &lt;- 23; n &lt;- 40; p_hat &lt;- x/n\ncat(\"Sample proportion:\", p_hat, \"\\n\\n\")\n\nSample proportion: 0.575 \n\n# Wald interval\nse_wald &lt;- sqrt(p_hat * (1 - p_hat) / n)\nwald_ci &lt;- p_hat + c(-1, 1) * 1.96 * se_wald\n\n# Agresti-Coull interval\nn_tilde &lt;- n + 4\np_tilde &lt;- (x + 2) / n_tilde\nse_ac &lt;- sqrt(p_tilde * (1 - p_tilde) / n_tilde)\nac_ci &lt;- p_tilde + c(-1, 1) * 1.96 * se_ac\n\ncat(\"Wald 95% CI:          (\", round(wald_ci[1], 3), \",\", round(wald_ci[2], 3), \")\\n\")\n\nWald 95% CI:          ( 0.422 , 0.728 )\n\ncat(\"Agresti-Coull 95% CI: (\", round(ac_ci[1], 3), \",\", round(ac_ci[2], 3), \")\")\n\nAgresti-Coull 95% CI: ( 0.422 , 0.715 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#using-prop.test-for-score-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#using-prop.test-for-score-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Using prop.test() for Score Interval",
+    "text": "Using prop.test() for Score Interval\n\n# Score (Wilson) interval in R\nprop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE)\n\n\n    1-sample proportions test without continuity correction\n\ndata:  23 out of 40, null probability 0.5\nX-squared = 0.9, df = 1, p-value = 0.3428\nalternative hypothesis: true p is not equal to 0.5\n95 percent confidence interval:\n 0.4219507 0.7149061\nsample estimates:\n    p \n0.575"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-adverse-event-rate",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-adverse-event-rate",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Adverse Event Rate",
+    "text": "Medical Example: Adverse Event Rate\nIn a safety study, 8 out of 200 patients experience a serious adverse event.\n\nx &lt;- 8; n &lt;- 200\n\n# Score interval\nresult &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)\ncat(\"Point estimate:\", x/n, \"\\n\")\n\nPoint estimate: 0.04 \n\ncat(\"95% Score CI:\", round(result$conf.int, 4))\n\n95% Score CI: 0.0204 0.0769\n\n\n\nClinical interpretation: We are 95% confident that the true rate of serious adverse events is between 1.8% and 7.7%."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-for-proportions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-for-proportions",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size for Proportions",
+    "text": "Sample Size for Proportions\nTo achieve a margin of error \\(b\\) with confidence level \\(1 - \\alpha\\):\n\\[n = \\frac{z_{\\alpha/2}^2 \\cdot p(1-p)}{b^2}\\]\n\nProblem: We don’t know \\(p\\) before the study!\n\n\nConservative approach: Use \\(p = 0.5\\) (maximizes \\(p(1-p)\\)): \\[n = \\frac{z_{\\alpha/2}^2 \\cdot 0.25}{b^2}\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-disease-prevalence",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-disease-prevalence",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size Example: Disease Prevalence",
+    "text": "Sample Size Example: Disease Prevalence\nAn epidemiologist wants to estimate disease prevalence with a margin of error ≤ 3% with 95% confidence.\n\nb &lt;- 0.03  # margin of error\nz &lt;- qnorm(0.975)\n\n# Conservative (p = 0.5)\nn_conservative &lt;- z^2 * 0.25 / b^2\ncat(\"Conservative sample size:\", ceiling(n_conservative), \"\\n\")\n\nConservative sample size: 1068 \n\n# If we believe p ≈ 0.10\nn_informed &lt;- z^2 * 0.10 * 0.90 / b^2\ncat(\"Informed sample size (p ≈ 0.10):\", ceiling(n_informed))\n\nInformed sample size (p ≈ 0.10): 385"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#summary-ci-methods-comparison",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#summary-ci-methods-comparison",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Summary: CI Methods Comparison",
+    "text": "Summary: CI Methods Comparison\n\n\n\nMethod\nWhen to Use\nNotes\n\n\n\n\nZ-interval\nNormal data, \\(\\sigma\\) known\nRarely applicable\n\n\nt-interval\nNormal data, \\(\\sigma\\) unknown\nCheck normality\n\n\nWald (proportion)\nLarge \\(n\\), \\(p\\) not extreme\nPoor coverage\n\n\nScore/Wilson\nGeneral\nBest for proportions\n\n\nAgresti-Coull\nQuick calculation\nGood approximation"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-cis-tell-us",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-cis-tell-us",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "What CIs Tell Us",
+    "text": "What CIs Tell Us\n\n\n\n\n\n\nValid Interpretations\n\n\n\n“We are 95% confident that \\(\\mu\\) lies between L and U”\n“The interval (L, U) is a plausible range for \\(\\mu\\)”\n“In repeated sampling, 95% of such intervals would contain \\(\\mu\\)”\n\n\n\n\n\n\n\n\n\n\n\nInvalid Interpretations\n\n\n\n“There is a 95% probability that \\(\\mu\\) is in (L, U)” ✗\n“95% of the data falls between L and U” ✗\n“The true mean varies between L and U” ✗"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-in-medical-literature",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-in-medical-literature",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Common Mistakes in Medical Literature",
+    "text": "Common Mistakes in Medical Literature\n\n\n\n\n\n\n\n\n\nMistake\nCorrect Interpretation\n\n\n\n\nThe probability that the true effect is in the CI is 95%\nWe are 95% confident the true effect is in the CI\n\n\n95% of patients have values in this range\nWe are 95% confident the mean is in this range\n\n\nIf we repeat the study, results will be in the CI\n95% of future CIs would contain the true mean"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#clinical-decision-making",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#clinical-decision-making",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Clinical Decision Making",
+    "text": "Clinical Decision Making\nExample: A drug reduces blood pressure by an estimated 12 mmHg with 95% CI (8, 16).\n\nQuestions we can answer:\n\nIs the effect clinically meaningful? (If minimum important difference is 5 mmHg, yes!)\nIs zero a plausible value? (No — CI excludes 0)\nWhat’s the worst-case scenario? (Lower bound suggests at least 8 mmHg effect)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#relationship-to-hypothesis-testing",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#relationship-to-hypothesis-testing",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Relationship to Hypothesis Testing",
+    "text": "Relationship to Hypothesis Testing\n\n\n\n\n\n\nPreview of Coming Material\n\n\nA 95% CI contains all parameter values that would not be rejected by a two-sided test at \\(\\alpha = 0.05\\).\n\nIf CI excludes the null value → reject \\(H_0\\)\nIf CI includes the null value → fail to reject \\(H_0\\)\n\n\n\n\n\nExample: 95% CI for mean difference is (8, 16).\n\nTest \\(H_0: \\mu = 0\\) → Reject (0 not in CI)\nTest \\(H_0: \\mu = 10\\) → Fail to reject (10 in CI)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-summary",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-summary",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Lesson 7 Summary",
+    "text": "Lesson 7 Summary\nKey Concepts:\n\nConfidence Intervals provide a range of plausible values with quantified uncertainty\nCorrect Interpretation: “95% of intervals constructed this way contain \\(\\theta\\)”\nPivotal Quantities allow CI construction without knowing unknown parameters\nZ-intervals (\\(\\sigma\\) known): \\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nSample Size: \\(n \\geq \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\)\nOne-sided bounds use \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Key Formulas",
+    "text": "Key Formulas\n\n\n\n\n\n\n\n\nParameter\nCI Formula\nConditions\n\n\n\n\n\\(\\mu\\) (\\(\\sigma\\) known)\n\\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(\\mu\\) (\\(\\sigma\\) unknown)\n\\(\\bar{x} \\pm t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(p\\) (Wald)\n\\(\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\)\nLarge \\(n\\)\n\n\n\\(p\\) (Agresti-Coull)\n\\(\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\)\nGeneral"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-practice-problems",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-practice-problems",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Lesson 7 Practice Problems",
+    "text": "Lesson 7 Practice Problems\n\n(Devore 8.1) Consider a normal population with \\(\\sigma\\) known.\n\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 2.81\\sigma/\\sqrt{n}\\)?\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 1.44\\sigma/\\sqrt{n}\\)?\nWhat value of \\(z_{\\alpha/2}\\) gives a 99.7% confidence level?\n\n(Devore 8.2) Two CIs for mean resonance frequency are (114.4, 115.6) and (114.1, 115.9).\n\nWhat is the sample mean?\nWhich has the 90% confidence level and which has 99%? Explain.\n\n(Devore 8.4) For IQ scores with \\(\\sigma = 15\\), how large a sample is needed for a 99% CI with margin of error ≤ 2?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-practice-problems-continued",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-practice-problems-continued",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Lesson 7 Practice Problems (continued)",
+    "text": "Lesson 7 Practice Problems (continued)\n\n(Chihara 7.2) Explain why each of these interpretations of a 95% CI for mean gas mileage (29.5, 33.4) is incorrect:\n\n“We are 95% confident gas mileage is between 29.5 and 33.4 mpg.”\n“95% of samples will give an average between 29.5 and 33.4 mpg.”\n“There is a 95% chance the true mean is in this interval.”\n\n(Medical Application) A hospital wants to estimate mean ICU stay duration. Historical data shows \\(\\sigma = 2.5\\) days. What sample size is needed for a 95% CI with margin of error ≤ 0.5 days?\n(Devore 8.7 style) A pharmaceutical company claims their pain reliever lasts at least 6 hours. With \\(n = 30\\), \\(\\bar{x} = 6.8\\) hours, and \\(\\sigma = 1.5\\) hours, find a 95% lower confidence bound. Does this support their claim?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext Session (Lesson 7 Part 2): Bootstrap Confidence Intervals\n\nWhat if normality doesn’t hold?\nBootstrap percentile intervals\nBootstrap t intervals\nWhen to use bootstrap vs. classical methods\n\n\nComing Soon:\n\nHypothesis testing (Lessons 9-12)\nTwo-sample inference (Lesson 13)\nPaired data analysis (Lesson 14)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#references",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#references",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 8.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 7.1-7.2"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#questions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#questions",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-to-avoid-chihara-example-7.2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-to-avoid-chihara-example-7.2",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Common Mistakes to Avoid (Chihara Example 7.2)",
+    "text": "Common Mistakes to Avoid (Chihara Example 7.2)\nSuppose a 95% CI for mean gas mileage is (29.5, 33.4) mpg. Evaluate:\n\n\n❌ “We are 95% confident that gas mileage for cars in this company is between 29.5 and 33.4 mpg.”\n\nWrong: CI is for population mean, not individual values.\n\n\n\n\n\n❌ “95% of all samples will give an average mileage between 29.5 and 33.4 mpg.”\n\nWrong: Each sample gives a different CI; 95% of intervals contain \\(\\mu\\).\n\n\n\n\n\n❌ “There is a 95% chance that the true mean is between 29.5 and 33.4 mpg.”\n\nWrong: \\(\\mu\\) is fixed, not random. It’s either in the interval or not."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#your-turn-ci-interpretation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#your-turn-ci-interpretation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Your Turn: CI Interpretation",
+    "text": "Your Turn: CI Interpretation\nExercise: A researcher reports a 95% CI for mean hospital stay after surgery as (3.2, 4.8) days. Which statements are correct?\nA. “95% of patients stay between 3.2 and 4.8 days”\nB. “We are 95% confident the true mean stay is between 3.2 and 4.8 days”\nC. “There is a 95% probability the mean is in this interval”\nD. “If we repeated this study many times, about 95% of the CIs would contain the true mean”\n\nAnswer: B and D are correct interpretations."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-general-pivotal-quantity-method",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-general-pivotal-quantity-method",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The General Pivotal Quantity Method",
+    "text": "The General Pivotal Quantity Method\n\n\n\n\n\n\nRecipe for Constructing CIs\n\n\n\nFind a pivotal quantity \\(h(X_1, \\ldots, X_n; \\theta)\\)\nFind constants \\(a\\) and \\(b\\) such that \\(P(a &lt; h &lt; b) = 1 - \\alpha\\)\nSolve the inequalities for \\(\\theta\\) to get \\((L, U)\\)\n\n\n\n\n\nExample (Devore 8.1): For normal data with known \\(\\sigma\\):\n\nPivotal: \\(Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0,1)\\)\nConstants: \\(a = -z_{\\alpha/2}\\), \\(b = z_{\\alpha/2}\\)\nSolve: \\(\\bar{X} - z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-the-trade-off",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-the-trade-off",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing the Trade-off",
+    "text": "Visualizing the Trade-off"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-effect-of-requirements",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-effect-of-requirements",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size: Effect of Requirements",
+    "text": "Sample Size: Effect of Requirements\n\n# How does required n change with margin of error and confidence?\nexpand_grid(\n  margin = c(3, 5, 10),\n  conf_level = c(0.90, 0.95, 0.99)\n) |&gt;\n  mutate(\n    z = qnorm(1 - (1 - conf_level)/2),\n    n_required = ceiling((z * 25 / margin)^2)\n  ) |&gt;\n  pivot_wider(names_from = margin, values_from = n_required, \n              names_prefix = \"margin_\") |&gt;\n  select(-z)\n\n# A tibble: 3 × 4\n  conf_level margin_3 margin_5 margin_10\n       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;\n1       0.9       188       68        17\n2       0.95      267       97        25\n3       0.99      461      166        42\n\n\nKey insight: Halving the margin of error (from 10 to 5) quadruples the sample size!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-lower-vs.-upper-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-lower-vs.-upper-bounds",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Why Lower vs. Upper Bounds?",
+    "text": "Why Lower vs. Upper Bounds?\nUse a LOWER bound when:\n\nTesting if a treatment effect is “at least” some value\nEstablishing minimum efficacy\nSetting safety margins\n\n\nUse an UPPER bound when:\n\nEstimating maximum risk or adverse event rate\n\nEstablishing worst-case scenarios\nQuality control (maximum defect rate)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-remission-time-devore-8.7",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-remission-time-devore-8.7",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Remission Time (Devore 8.7)",
+    "text": "Example: Remission Time (Devore 8.7)\nA surgeon wants a lower bound for mean remission time after cancer surgery. From \\(n = 25\\) patients, \\(\\bar{x} = 42\\) months, \\(\\sigma = 12\\) months (from historical data).\n\nxbar &lt;- 42\nsigma &lt;- 12\nn &lt;- 25\nalpha &lt;- 0.05\n\n# 95% lower confidence bound\nz_alpha &lt;- qnorm(1 - alpha)\nlower &lt;- xbar - z_alpha * sigma / sqrt(n)\n\ncat(\"95% lower confidence bound:\", round(lower, 1), \"months\\n\")\n\n95% lower confidence bound: 38.1 months\n\ncat(\"\\nWe are 95% confident that true mean remission time\\n\")\n\n\nWe are 95% confident that true mean remission time\n\ncat(\"is at least\", round(lower, 1), \"months.\")\n\nis at least 38.1 months."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-exponential-distribution-devore-8.5",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-exponential-distribution-devore-8.5",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Exponential Distribution (Devore 8.5)",
+    "text": "Example: Exponential Distribution (Devore 8.5)\nTime-to-breakdown of insulating fluid follows \\(\\text{Exp}(\\lambda)\\) with mean \\(1/\\lambda\\) and variance \\(1/\\lambda^2\\). Given \\(n = 10\\) observations with \\(\\sum x_i = 550.87\\) min.\n\nThe pivotal quantity: \\[h = 2\\lambda \\sum_{i=1}^n X_i \\sim \\chi^2_{2n}\\]\n\n\nWhy is this pivotal?\n\nDepends on data (\\(\\sum X_i\\)) and parameter (\\(\\lambda\\))\nDistribution (\\(\\chi^2_{2n}\\)) doesn’t depend on \\(\\lambda\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#exponential-ci-derivation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#exponential-ci-derivation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Exponential CI Derivation",
+    "text": "Exponential CI Derivation\nLet \\(\\chi^2_{.025, 20}\\) and \\(\\chi^2_{.975, 20}\\) be the critical values. Then:\n\\[P\\left(\\chi^2_{.975, 20} &lt; 2\\lambda \\sum X_i &lt; \\chi^2_{.025, 20}\\right) = 0.95\\]\n\nSolving for \\(\\lambda\\): \\[P\\left(\\frac{\\chi^2_{.975, 20}}{2\\sum X_i} &lt; \\lambda &lt; \\frac{\\chi^2_{.025, 20}}{2\\sum X_i}\\right) = 0.95\\]\n\nsum_x &lt;- 550.87\nlower &lt;- qchisq(0.025, df = 20) / (2 * sum_x)\nupper &lt;- qchisq(0.975, df = 20) / (2 * sum_x)\ncat(\"95% CI for λ: (\", round(lower, 4), \",\", round(upper, 4), \")\")\n\n95% CI for λ: ( 0.0087 , 0.031 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#ci-for-mean-of-exponential",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#ci-for-mean-of-exponential",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "CI for Mean of Exponential",
+    "text": "CI for Mean of Exponential\nSince the mean of \\(\\text{Exp}(\\lambda)\\) is \\(\\mu = 1/\\lambda\\):\n\n# CI for mean breakdown time\nmean_lower &lt;- 1/upper\nmean_upper &lt;- 1/lower\n\ncat(\"95% CI for mean breakdown time:\\n\")\n\n95% CI for mean breakdown time:\n\ncat(\"(\", round(mean_lower, 1), \",\", round(mean_upper, 1), \") minutes\")\n\n( 32.2 , 114.9 ) minutes\n\n\n\nNote: The interval is quite wide — reflecting variability in the data and small sample size."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas-for-z-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas-for-z-intervals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Key Formulas for Z-Intervals",
+    "text": "Key Formulas for Z-Intervals\n\n\n\n\n\n\n\nQuantity\nFormula\n\n\n\n\nTwo-sided CI\n\\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nLower bound\n\\(\\bar{x} - z_{\\alpha}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nUpper bound\n\\(\\bar{x} + z_{\\alpha}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample size\n\\(n = \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\)\n\n\nWidth\n\\(w = 2 z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead-lesson-8",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead-lesson-8",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Looking Ahead: Lesson 8",
+    "text": "Looking Ahead: Lesson 8\nNext Lesson: One-Sample t-Intervals and Proportions\n\nWhat if \\(\\sigma\\) is unknown? (The t-interval)\nThe Student’s t distribution\nConfidence intervals for population proportions\nWald vs. Score intervals\nChecking assumptions"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "",
+    "text": "Point Estimation (Lessons 1-6):\n\nEstimators: statistics that estimate parameters\nProperties: bias, variance, MSE, efficiency\nConstruction: Method of Moments, Maximum Likelihood\nQuality: MVUE, sufficient statistics, Cramér-Rao bound\n\n. . .\nThe Limitation of Point Estimates:\nA single number (\\(\\hat{\\theta} = 0.75\\)) tells us nothing about precision or uncertainty.\n\n\n\n\n\nUnderstand why we need interval estimates\nDerive confidence intervals using pivotal quantities\nConstruct and interpret z-intervals (known \\(\\sigma\\))\nConstruct and interpret t-intervals (unknown \\(\\sigma\\))\nUnderstand confidence intervals for proportions\nApply these methods to medical research examples\n\n\n\n\n\nA new antihypertensive drug is tested in \\(n = 36\\) patients. The mean reduction in systolic blood pressure is \\(\\bar{x} = 12.3\\) mmHg.\n. . .\nPoint estimate: \\(\\hat{\\mu} = 12.3\\) mmHg\n. . .\nQuestions we can’t answer with just the point estimate:\n\nHow close is 12.3 to the true mean reduction?\nIs the true mean likely to be at least 10 mmHg?\nHow much could \\(\\bar{X}\\) vary in repeated trials?\n\n. . .\n\n\n\n\n\n\nThe Solution\n\n\n\nA confidence interval provides a range of plausible values for the parameter, along with a measure of confidence."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#review-what-weve-learned-about-estimation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#review-what-weve-learned-about-estimation",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "",
+    "text": "Point Estimation (Lessons 1-6):\n\nEstimators: statistics that estimate parameters\nProperties: bias, variance, MSE, efficiency\nConstruction: Method of Moments, Maximum Likelihood\nQuality: MVUE, sufficient statistics, Cramér-Rao bound\n\n. . .\nThe Limitation of Point Estimates:\nA single number (\\(\\hat{\\theta} = 0.75\\)) tells us nothing about precision or uncertainty."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#todays-goals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#todays-goals",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "",
+    "text": "Understand why we need interval estimates\nDerive confidence intervals using pivotal quantities\nConstruct and interpret z-intervals (known \\(\\sigma\\))\nConstruct and interpret t-intervals (unknown \\(\\sigma\\))\nUnderstand confidence intervals for proportions\nApply these methods to medical research examples"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#motivating-example-clinical-trial",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#motivating-example-clinical-trial",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "",
+    "text": "A new antihypertensive drug is tested in \\(n = 36\\) patients. The mean reduction in systolic blood pressure is \\(\\bar{x} = 12.3\\) mmHg.\n. . .\nPoint estimate: \\(\\hat{\\mu} = 12.3\\) mmHg\n. . .\nQuestions we can’t answer with just the point estimate:\n\nHow close is 12.3 to the true mean reduction?\nIs the true mean likely to be at least 10 mmHg?\nHow much could \\(\\bar{X}\\) vary in repeated trials?\n\n. . .\n\n\n\n\n\n\nThe Solution\n\n\n\nA confidence interval provides a range of plausible values for the parameter, along with a measure of confidence."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#from-point-to-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#from-point-to-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "From Point to Interval",
+    "text": "From Point to Interval\n\n\n\n\n\n\n\n\n\nKey insight: The interval captures our uncertainty about the true parameter value."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#what-is-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#what-is-a-confidence-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "What Is a Confidence Interval?",
+    "text": "What Is a Confidence Interval?\n\n\n\n\n\n\nDefinition: Confidence Interval\n\n\n\nA confidence interval (CI) for a parameter \\(\\theta\\) is a random interval \\((L, U)\\) computed from sample data such that: \\[P(L &lt; \\theta &lt; U) = 1 - \\alpha\\] for a specified confidence level \\(1 - \\alpha\\).\n\n\n. . .\nImportant:\n\n\\(L\\) and \\(U\\) are random (they depend on the sample)\n\\(\\theta\\) is fixed (but unknown)\nThe probability statement is about the procedure, not about \\(\\theta\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#correct-interpretation-of-confidence-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#correct-interpretation-of-confidence-intervals",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Correct Interpretation of Confidence Intervals",
+    "text": "Correct Interpretation of Confidence Intervals\n\n\n\n\n\n\nCommon Misconception\n\n\n\n“There is a 95% probability that \\(\\mu\\) lies in the interval (7.4, 17.2).”\nThis is WRONG! After computing the interval, \\(\\mu\\) either is or is not in the interval. There’s no probability involved.\n\n\n. . .\n\n\n\n\n\n\nCorrect Interpretation\n\n\n\n“If we repeated this procedure many times, 95% of the resulting intervals would contain the true \\(\\mu\\).”\nOr more simply: “We are 95% confident that the true mean lies between 7.4 and 17.2.”"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#visualizing-confidence-level-simulation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#visualizing-confidence-level-simulation",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Visualizing Confidence Level: Simulation",
+    "text": "Visualizing Confidence Level: Simulation\n\n# Simulate 100 confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:100) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Count how many contain the true mean\nsum(ci_data$contains_mu)\n\n[1] 94"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#visualizing-confidence-level-the-plot",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#visualizing-confidence-level-the-plot",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Visualizing Confidence Level: The Plot",
+    "text": "Visualizing Confidence Level: The Plot"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-r-code-for-ci-visualization",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-r-code-for-ci-visualization",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The R Code for CI Visualization",
+    "text": "The R Code for CI Visualization\n\n# Simulate 100 confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:100) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Proportion containing true mu (should be ~95%)\nmean(ci_data$contains_mu)\n\nThis is how the confidence level works: about 95% of intervals capture \\(\\mu\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-key-to-constructing-cis",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-key-to-constructing-cis",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Key to Constructing CIs",
+    "text": "The Key to Constructing CIs\n\n\n\n\n\n\nDefinition: Pivotal Quantity\n\n\n\nA pivotal quantity is a function \\(h(X_1, \\ldots, X_n; \\theta)\\) of the data and parameter such that:\n\nIt depends on both the sample and \\(\\theta\\)\nIts distribution does not depend on \\(\\theta\\) (or any other unknown parameters)\n\n\n\n. . .\nWhy pivotal quantities matter:\n\nWe can find critical values that don’t depend on unknowns\nWe can “solve for \\(\\theta\\)” to get confidence limits"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-the-standard-pivotal-quantity",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-the-standard-pivotal-quantity",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: The Standard Pivotal Quantity",
+    "text": "Example: The Standard Pivotal Quantity\nLet \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known.\n. . .\nConsider: \\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\]\n. . .\nCheck the properties:\n\n\\(Z\\) depends on \\(\\bar{X}\\) (data) and \\(\\mu\\) (parameter) ✓\n\\(Z \\sim N(0, 1)\\) — the distribution doesn’t depend on \\(\\mu\\) ✓\n\n. . .\n\\(Z\\) is a pivotal quantity!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#from-pivotal-quantity-to-ci",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#from-pivotal-quantity-to-ci",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "From Pivotal Quantity to CI",
+    "text": "From Pivotal Quantity to CI\nSince \\(Z \\sim N(0, 1)\\), we know: \\[P(-z_{\\alpha/2} &lt; Z &lt; z_{\\alpha/2}) = 1 - \\alpha\\]\n. . .\nSubstitute \\(Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\): \\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha/2}\\right) = 1 - \\alpha\\]\n. . .\nSolve for \\(\\mu\\): \\[P\\left(\\bar{X} - z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\right) = 1 - \\alpha\\]\n. . .\nThis gives us the confidence interval formula!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-z-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-z-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Z-Interval",
+    "text": "The Z-Interval\n\n\n\n\n\n\nZ Confidence Interval for Normal Mean (\\(\\sigma\\) Known)\n\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known, a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\] where \\(z_{\\alpha/2}\\) is the critical value with \\(P(Z &gt; z_{\\alpha/2}) = \\alpha/2\\).\n\n\n. . .\nCommon critical values:\n\n\n\nConfidence Level\n\\(\\alpha\\)\n\\(\\alpha/2\\)\n\\(z_{\\alpha/2}\\)\n\n\n\n\n90%\n0.10\n0.05\n1.645\n\n\n95%\n0.05\n0.025\n1.960\n\n\n99%\n0.01\n0.005\n2.576"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-tensile-strength-devore-example-8.1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-tensile-strength-devore-example-8.1",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: Tensile Strength (Devore Example 8.1)",
+    "text": "Example: Tensile Strength (Devore Example 8.1)\nSynthetic fibers are tested for tensile strength. From past data, \\(\\sigma = 55\\) MPa is known. A sample of \\(n = 31\\) fibers has \\(\\bar{x} = 1064\\) MPa.\n. . .\n95% Confidence Interval:\n\nxbar &lt;- 1064\nsigma &lt;- 55\nn &lt;- 31\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha/2)\nmargin &lt;- z_crit * sigma / sqrt(n)\n\nc(xbar - margin, xbar + margin)\n\n[1] 1044.639 1083.361\n\n\n. . .\nInterpretation: We are 95% confident that the true mean tensile strength is between 1044.6 and 1083.4 MPa."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-blood-glucose-levels",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-blood-glucose-levels",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Blood Glucose Levels",
+    "text": "Medical Example: Blood Glucose Levels\nA hospital monitors fasting blood glucose in diabetic patients. Historical data shows \\(\\sigma = 18\\) mg/dL. A sample of \\(n = 40\\) patients has \\(\\bar{x} = 142\\) mg/dL.\nConstruct a 99% CI for the population mean glucose level:\n\nxbar &lt;- 142\nsigma &lt;- 18\nn &lt;- 40\nalpha &lt;- 0.01\n\nz_crit &lt;- qnorm(1 - alpha/2)\ncat(\"z critical value:\", round(z_crit, 3), \"\\n\")\n\nz critical value: 2.576 \n\nmargin &lt;- z_crit * sigma / sqrt(n)\ncat(\"Margin of error:\", round(margin, 2), \"mg/dL\\n\")\n\nMargin of error: 7.33 mg/dL\n\ncat(\"99% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n99% CI: ( 134.7 , 149.3 )\n\n\n. . .\nClinical interpretation: We can be 99% confident that the true mean fasting glucose for this patient population is between 134.7 and 149.3 mg/dL."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#anatomy-of-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#anatomy-of-a-confidence-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Anatomy of a Confidence Interval",
+    "text": "Anatomy of a Confidence Interval\n\\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]\n\n\n\n\n\n\n\n\n\nThree factors affect the margin of error:\n\nConfidence level (\\(z_{\\alpha/2}\\)): Higher confidence → wider interval\nPopulation variability (\\(\\sigma\\)): More variation → wider interval\nSample size (\\(n\\)): Larger sample → narrower interval"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#interactive-effect-of-confidence-level",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#interactive-effect-of-confidence-level",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Interactive: Effect of Confidence Level",
+    "text": "Interactive: Effect of Confidence Level\n\n# Same data, different confidence levels\nxbar &lt;- 1064; sigma &lt;- 55; n &lt;- 31\n\nconfidence_levels &lt;- c(0.90, 0.95, 0.99)\n\ntibble(conf_level = confidence_levels) |&gt;\n  mutate(\n    z_crit = qnorm(1 - (1 - conf_level)/2),\n    margin = z_crit * sigma / sqrt(n),\n    lower = xbar - margin,\n    upper = xbar + margin,\n    width = upper - lower\n  )\n\n# A tibble: 3 × 6\n  conf_level z_crit margin lower upper width\n       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1       0.9    1.64   16.2 1048. 1080.  32.5\n2       0.95   1.96   19.4 1045. 1083.  38.7\n3       0.99   2.58   25.4 1039. 1089.  50.9\n\n\nTakeaway: Higher confidence requires wider intervals!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-determination",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-determination",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size Determination",
+    "text": "Sample Size Determination\nQuestion: How large should \\(n\\) be to achieve a desired precision?\n. . .\nIf we want the margin of error to be at most \\(b\\): \\[z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}} \\leq b\\]\n. . .\nSolving for \\(n\\): \\[n \\geq \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-example-clinical-trial-design",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-example-clinical-trial-design",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size Example: Clinical Trial Design",
+    "text": "Sample Size Example: Clinical Trial Design\nA pharmaceutical company wants to estimate mean drug clearance time. From pilot data, \\(\\sigma \\approx 25\\) minutes. They want a 95% CI with margin of error ≤ 5 minutes.\n\nsigma &lt;- 25\nb &lt;- 5  # desired margin of error\nalpha &lt;- 0.05\nz_crit &lt;- qnorm(1 - alpha/2)\n\nn_required &lt;- (z_crit * sigma / b)^2\ncat(\"Required sample size:\", ceiling(n_required))\n\nRequired sample size: 97\n\n\n. . .\nNote: Always round up to ensure the desired precision!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#one-sided-confidence-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#one-sided-confidence-bounds",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "One-Sided Confidence Bounds",
+    "text": "One-Sided Confidence Bounds\nSometimes we only care about one direction:\n\nLower bound: We want to know the minimum plausible value\nUpper bound: We want to know the maximum plausible value\n\n. . .\n\n\n\n\n\n\nOne-Sided Bounds\n\n\n\nLower Confidence Bound: \\(\\bar{x} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\)\nUpper Confidence Bound: \\(\\mu &lt; \\bar{x} + z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\nNote: Use \\(z_\\alpha\\) (not \\(z_{\\alpha/2}\\)) for one-sided bounds at confidence level \\(1 - \\alpha\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-drug-half-life",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-drug-half-life",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Drug Half-Life",
+    "text": "Medical Example: Drug Half-Life\nA pharmacologist measures half-life of a new drug. With \\(n = 20\\) subjects, \\(\\bar{x} = 4.2\\) hours, and known \\(\\sigma = 0.8\\) hours.\nFind a 95% lower confidence bound:\n\nxbar &lt;- 4.2\nsigma &lt;- 0.8\nn &lt;- 20\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha)  # Note: z_alpha, not z_alpha/2\nlower_bound &lt;- xbar - z_crit * sigma / sqrt(n)\n\ncat(\"95% lower confidence bound:\", round(lower_bound, 2), \"hours\\n\")\n\n95% lower confidence bound: 3.91 hours\n\ncat(\"Interpretation: We are 95% confident that the true half-life\",\n    \"\\nis at least\", round(lower_bound, 2), \"hours\")\n\nInterpretation: We are 95% confident that the true half-life \nis at least 3.91 hours"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-realistic-case",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-realistic-case",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Realistic Case",
+    "text": "The Realistic Case\nIn practice, we rarely know the population standard deviation \\(\\sigma\\).\n. . .\nNatural idea: Replace \\(\\sigma\\) with the sample standard deviation \\(s\\).\n. . .\nBut what happens to our pivotal quantity?\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0, 1)\\]\nbecomes\n\\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim \\; ???\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-t-distribution",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-t-distribution",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The t Distribution",
+    "text": "The t Distribution\n\n\n\n\n\n\n\n\n\nThe t distribution has heavier tails than the normal — accounting for extra uncertainty from estimating \\(\\sigma\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#students-t-distribution",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#students-t-distribution",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Student’s t Distribution",
+    "text": "Student’s t Distribution\n\n\n\n\n\n\nGosset’s Theorem\n\n\n\nIf \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\), then: \\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim t_{n-1}\\] where \\(t_{n-1}\\) denotes the t distribution with \\(n-1\\) degrees of freedom.\n\n\n. . .\nKey properties of \\(t_\\nu\\):\n\nSymmetric around 0\nHeavier tails than \\(N(0, 1)\\)\nAs \\(\\nu \\to \\infty\\), \\(t_\\nu \\to N(0, 1)\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#why-n-1-degrees-of-freedom",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#why-n-1-degrees-of-freedom",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Why \\((n-1)\\) Degrees of Freedom?",
+    "text": "Why \\((n-1)\\) Degrees of Freedom?\nThe sample variance involves: \\[S^2 = \\frac{1}{n-1}\\sum_{i=1}^n(X_i - \\bar{X})^2\\]\n. . .\nSince \\(\\sum(X_i - \\bar{X}) = 0\\), knowing any \\(n-1\\) deviations determines the last one.\n. . .\nIntuition: We “use up” one degree of freedom by estimating \\(\\mu\\) with \\(\\bar{X}\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-one-sample-t-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-one-sample-t-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The One-Sample t Interval",
+    "text": "The One-Sample t Interval\n\n\n\n\n\n\nt Confidence Interval for Normal Mean (\\(\\sigma\\) Unknown)\n\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\), a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm t_{\\alpha/2, n-1} \\cdot \\frac{s}{\\sqrt{n}}\\] where \\(t_{\\alpha/2, n-1}\\) is the critical value with \\(P(T &gt; t_{\\alpha/2, n-1}) = \\alpha/2\\) for \\(T \\sim t_{n-1}\\).\n\n\n. . .\nThe quantity \\(s/\\sqrt{n}\\) is called the standard error of the mean (SEM or SE)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#t-critical-values",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#t-critical-values",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "t Critical Values",
+    "text": "t Critical Values\n\n# Compare z and t critical values for 95% CI\nz_crit &lt;- qnorm(0.975)\n\ndf_values &lt;- c(5, 10, 20, 30, 50, 100, Inf)\nt_crits &lt;- qt(0.975, df = df_values)\n\ntibble(\n  df = c(\"5\", \"10\", \"20\", \"30\", \"50\", \"100\", \"∞ (z)\"),\n  t_critical = round(c(head(t_crits, -1), z_crit), 3)\n)\n\n# A tibble: 7 × 2\n  df    t_critical\n  &lt;chr&gt;      &lt;dbl&gt;\n1 5           2.57\n2 10          2.23\n3 20          2.09\n4 30          2.04\n5 50          2.01\n6 100         1.98\n7 ∞ (z)       1.96\n\n\nKey insight: For small samples, \\(t\\) critical values are substantially larger than \\(z\\) critical values."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-porsche-odometer-readings-devore-example-8.8",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-porsche-odometer-readings-devore-example-8.8",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: Porsche Odometer Readings (Devore Example 8.8)",
+    "text": "Example: Porsche Odometer Readings (Devore Example 8.8)\nA sample of \\(n = 16\\) used Porsche Boxsters has odometer readings (miles):\n\nodometer &lt;- c(80000, 30100, 97500, 58551, 73787, 51800, 69267, 44530,\n              42192, 104920, 41442, 27418, 43436, 77219, 5991, 14362)\n\nn &lt;- length(odometer)\nxbar &lt;- mean(odometer)\ns &lt;- sd(odometer)\n\ncat(\"Sample size:\", n, \"\\n\")\n\nSample size: 16 \n\ncat(\"Sample mean:\", round(xbar, 1), \"miles\\n\")\n\nSample mean: 53907.2 miles\n\ncat(\"Sample SD:\", round(s, 1), \"miles\\n\")\n\nSample SD: 28287.2 miles"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-porsche-continued",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#example-porsche-continued",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Example: Porsche (continued)",
+    "text": "Example: Porsche (continued)\n95% Confidence Interval:\n\nalpha &lt;- 0.05\nt_crit &lt;- qt(1 - alpha/2, df = n - 1)\n\ncat(\"t critical value (df=15):\", round(t_crit, 3), \"\\n\")\n\nt critical value (df=15): 2.131 \n\nse &lt;- s / sqrt(n)\nmargin &lt;- t_crit * se\n\ncat(\"Standard error:\", round(se, 1), \"\\n\")\n\nStandard error: 7071.8 \n\ncat(\"Margin of error:\", round(margin, 1), \"\\n\\n\")\n\nMargin of error: 15073.2 \n\ncat(\"95% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n95% CI: ( 38834 , 68980.4 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#checking-the-normality-assumption",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#checking-the-normality-assumption",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Checking the Normality Assumption",
+    "text": "Checking the Normality Assumption\nThe t interval assumes normally distributed data. Always check!\n\npar(mfrow = c(1, 2))\nhist(odometer, main = \"Histogram\", xlab = \"Odometer (miles)\", col = \"lightblue\")\nqqnorm(odometer, main = \"Normal Q-Q Plot\", pch = 19)\nqqline(odometer, col = \"red\", lwd = 2)\n\n\n\n\n\n\n\n\nThe Q-Q plot looks reasonably linear — normality assumption is plausible."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-systolic-blood-pressure",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-systolic-blood-pressure",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Systolic Blood Pressure",
+    "text": "Medical Example: Systolic Blood Pressure\nA clinical study measures systolic blood pressure in \\(n = 25\\) patients after a new treatment:\n\n# Simulated BP data (mmHg)\nbp &lt;- c(118, 124, 131, 127, 122, 119, 128, 135, 121, 126,\n        130, 124, 129, 133, 120, 125, 127, 132, 123, 128,\n        126, 131, 122, 129, 125)\n\nn &lt;- length(bp)\nxbar &lt;- mean(bp)\ns &lt;- sd(bp)\n\n# 95% CI\nt_crit &lt;- qt(0.975, df = n - 1)\nse &lt;- s / sqrt(n)\nci &lt;- c(xbar - t_crit * se, xbar + t_crit * se)\n\ncat(\"Sample mean:\", round(xbar, 1), \"mmHg\\n\")\n\nSample mean: 126.2 mmHg\n\ncat(\"Sample SD:\", round(s, 1), \"mmHg\\n\")\n\nSample SD: 4.5 mmHg\n\ncat(\"95% CI: (\", round(ci[1], 1), \",\", round(ci[2], 1), \") mmHg\")\n\n95% CI: ( 124.3 , 128.1 ) mmHg"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#using-t.test-in-r",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#using-t.test-in-r",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Using t.test() in R",
+    "text": "Using t.test() in R\n\n# The easy way to compute t confidence intervals\nt.test(bp, conf.level = 0.95)\n\n\n    One Sample t-test\n\ndata:  bp\nt = 140.51, df = 24, p-value &lt; 2.2e-16\nalternative hypothesis: true mean is not equal to 0\n95 percent confidence interval:\n 124.3463 128.0537\nsample estimates:\nmean of x \n    126.2 \n\n\n. . .\nNote: R’s t.test() also performs a hypothesis test (which we’ll cover later)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-setup",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-setup",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Setup",
+    "text": "The Setup\nSituation: We observe \\(X\\) successes in \\(n\\) independent Bernoulli trials.\n\n\\(X \\sim \\text{Binomial}(n, p)\\)\nPoint estimate: \\(\\hat{p} = X/n\\)\n\n. . .\nExamples:\n\nProportion of patients responding to treatment\nProportion of adverse events\nDisease prevalence in a population"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-wald-interval-traditional",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-wald-interval-traditional",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Wald Interval (Traditional)",
+    "text": "The Wald Interval (Traditional)\nFor large \\(n\\), \\(\\hat{P} = X/n\\) is approximately normal: \\[\\hat{P} \\approx N\\left(p, \\frac{p(1-p)}{n}\\right)\\]\n. . .\nThe Wald (traditional) 95% CI: \\[\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]\n. . .\n\n\n\n\n\n\nProblems with the Wald Interval\n\n\n\n\nPoor coverage probability for \\(p\\) near 0 or 1\nCan produce bounds outside [0, 1]\nNot recommended for small samples"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#coverage-problems-with-wald",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#coverage-problems-with-wald",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Coverage Problems with Wald",
+    "text": "Coverage Problems with Wald\n\n\n\n\n\n\n\n\n\nThe Wald interval often has coverage below the nominal level!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-score-wilson-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-score-wilson-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Score (Wilson) Interval",
+    "text": "The Score (Wilson) Interval\nA better approach: solve for \\(p\\) in the pivotal quantity directly.\n\n\n\n\n\n\nScore Confidence Interval for a Proportion\n\n\n\n\\[\\frac{\\hat{p} + \\frac{z_{\\alpha/2}^2}{2n} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n} + \\frac{z_{\\alpha/2}^2}{4n^2}}}{1 + \\frac{z_{\\alpha/2}^2}{n}}\\]\n\n\n. . .\nAdvantages:\n\nCoverage probability much closer to nominal level\nHandles extreme proportions well\nAlways produces bounds in [0, 1]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-agresti-coull-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#the-agresti-coull-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "The Agresti-Coull Interval",
+    "text": "The Agresti-Coull Interval\nA simpler approximation that works well in practice:\n\n\n\n\n\n\nAgresti-Coull (“Add Two Successes and Two Failures”)\n\n\n\nLet \\(\\tilde{n} = n + 4\\) and \\(\\tilde{p} = \\frac{X + 2}{n + 4}\\)\nThen use: \\[\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\]\n\n\n. . .\nWhy it works: Adding 2 successes and 2 failures “shrinks” extreme estimates toward 0.5."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#comparing-intervals-clinical-trial-example",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#comparing-intervals-clinical-trial-example",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Comparing Intervals: Clinical Trial Example",
+    "text": "Comparing Intervals: Clinical Trial Example\nIn a Phase II trial, 23 of 40 patients respond to treatment.\n\nx &lt;- 23; n &lt;- 40; p_hat &lt;- x/n\ncat(\"Sample proportion:\", p_hat, \"\\n\\n\")\n\nSample proportion: 0.575 \n\n# Wald interval\nse_wald &lt;- sqrt(p_hat * (1 - p_hat) / n)\nwald_ci &lt;- p_hat + c(-1, 1) * 1.96 * se_wald\n\n# Agresti-Coull interval\nn_tilde &lt;- n + 4\np_tilde &lt;- (x + 2) / n_tilde\nse_ac &lt;- sqrt(p_tilde * (1 - p_tilde) / n_tilde)\nac_ci &lt;- p_tilde + c(-1, 1) * 1.96 * se_ac\n\ncat(\"Wald 95% CI:          (\", round(wald_ci[1], 3), \",\", round(wald_ci[2], 3), \")\\n\")\n\nWald 95% CI:          ( 0.422 , 0.728 )\n\ncat(\"Agresti-Coull 95% CI: (\", round(ac_ci[1], 3), \",\", round(ac_ci[2], 3), \")\")\n\nAgresti-Coull 95% CI: ( 0.422 , 0.715 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#using-prop.test-for-score-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#using-prop.test-for-score-interval",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Using prop.test() for Score Interval",
+    "text": "Using prop.test() for Score Interval\n\n# Score (Wilson) interval in R\nprop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE)\n\n\n    1-sample proportions test without continuity correction\n\ndata:  23 out of 40, null probability 0.5\nX-squared = 0.9, df = 1, p-value = 0.3428\nalternative hypothesis: true p is not equal to 0.5\n95 percent confidence interval:\n 0.4219507 0.7149061\nsample estimates:\n    p \n0.575"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-adverse-event-rate",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#medical-example-adverse-event-rate",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Medical Example: Adverse Event Rate",
+    "text": "Medical Example: Adverse Event Rate\nIn a safety study, 8 out of 200 patients experience a serious adverse event.\n\nx &lt;- 8; n &lt;- 200\n\n# Score interval\nresult &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)\ncat(\"Point estimate:\", x/n, \"\\n\")\n\nPoint estimate: 0.04 \n\ncat(\"95% Score CI:\", round(result$conf.int, 4))\n\n95% Score CI: 0.0204 0.0769\n\n\n. . .\nClinical interpretation: We are 95% confident that the true rate of serious adverse events is between 1.8% and 7.7%."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-for-proportions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-for-proportions",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size for Proportions",
+    "text": "Sample Size for Proportions\nTo achieve a margin of error \\(b\\) with confidence level \\(1 - \\alpha\\):\n\\[n = \\frac{z_{\\alpha/2}^2 \\cdot p(1-p)}{b^2}\\]\n. . .\nProblem: We don’t know \\(p\\) before the study!\n. . .\nConservative approach: Use \\(p = 0.5\\) (maximizes \\(p(1-p)\\)): \\[n = \\frac{z_{\\alpha/2}^2 \\cdot 0.25}{b^2}\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-example-disease-prevalence",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#sample-size-example-disease-prevalence",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Sample Size Example: Disease Prevalence",
+    "text": "Sample Size Example: Disease Prevalence\nAn epidemiologist wants to estimate disease prevalence with a margin of error ≤ 3% with 95% confidence.\n\nb &lt;- 0.03  # margin of error\nz &lt;- qnorm(0.975)\n\n# Conservative (p = 0.5)\nn_conservative &lt;- z^2 * 0.25 / b^2\ncat(\"Conservative sample size:\", ceiling(n_conservative), \"\\n\")\n\nConservative sample size: 1068 \n\n# If we believe p ≈ 0.10\nn_informed &lt;- z^2 * 0.10 * 0.90 / b^2\ncat(\"Informed sample size (p ≈ 0.10):\", ceiling(n_informed))\n\nInformed sample size (p ≈ 0.10): 385"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#summary-ci-methods-comparison",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#summary-ci-methods-comparison",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Summary: CI Methods Comparison",
+    "text": "Summary: CI Methods Comparison\n\n\n\nMethod\nWhen to Use\nNotes\n\n\n\n\nZ-interval\nNormal data, \\(\\sigma\\) known\nRarely applicable\n\n\nt-interval\nNormal data, \\(\\sigma\\) unknown\nCheck normality\n\n\nWald (proportion)\nLarge \\(n\\), \\(p\\) not extreme\nPoor coverage\n\n\nScore/Wilson\nGeneral\nBest for proportions\n\n\nAgresti-Coull\nQuick calculation\nGood approximation"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#what-cis-tell-us",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#what-cis-tell-us",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "What CIs Tell Us",
+    "text": "What CIs Tell Us\n\n\n\n\n\n\nValid Interpretations\n\n\n\n\n“We are 95% confident that \\(\\mu\\) lies between L and U”\n“The interval (L, U) is a plausible range for \\(\\mu\\)”\n“In repeated sampling, 95% of such intervals would contain \\(\\mu\\)”\n\n\n\n. . .\n\n\n\n\n\n\nInvalid Interpretations\n\n\n\n\n“There is a 95% probability that \\(\\mu\\) is in (L, U)” ✗\n“95% of the data falls between L and U” ✗\n“The true mean varies between L and U” ✗"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#common-mistakes-in-medical-literature",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#common-mistakes-in-medical-literature",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Common Mistakes in Medical Literature",
+    "text": "Common Mistakes in Medical Literature\n\n\n\n\n\n\n\n\n\nMistake\nCorrect Interpretation\n\n\n\n\nThe probability that the true effect is in the CI is 95%\nWe are 95% confident the true effect is in the CI\n\n\n95% of patients have values in this range\nWe are 95% confident the mean is in this range\n\n\nIf we repeat the study, results will be in the CI\n95% of future CIs would contain the true mean"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#clinical-decision-making",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#clinical-decision-making",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Clinical Decision Making",
+    "text": "Clinical Decision Making\nExample: A drug reduces blood pressure by an estimated 12 mmHg with 95% CI (8, 16).\n. . .\nQuestions we can answer:\n\nIs the effect clinically meaningful? (If minimum important difference is 5 mmHg, yes!)\nIs zero a plausible value? (No — CI excludes 0)\nWhat’s the worst-case scenario? (Lower bound suggests at least 8 mmHg effect)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#relationship-to-hypothesis-testing",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#relationship-to-hypothesis-testing",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Relationship to Hypothesis Testing",
+    "text": "Relationship to Hypothesis Testing\n\n\n\n\n\n\nPreview of Coming Material\n\n\n\nA 95% CI contains all parameter values that would not be rejected by a two-sided test at \\(\\alpha = 0.05\\).\n\nIf CI excludes the null value → reject \\(H_0\\)\nIf CI includes the null value → fail to reject \\(H_0\\)\n\n\n\n. . .\nExample: 95% CI for mean difference is (8, 16).\n\nTest \\(H_0: \\mu = 0\\) → Reject (0 not in CI)\nTest \\(H_0: \\mu = 10\\) → Fail to reject (10 in CI)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-summary",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-summary",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Lesson 7 Summary",
+    "text": "Lesson 7 Summary\nKey Concepts:\n\nConfidence Intervals provide a range of plausible values with quantified uncertainty\nPivotal Quantities allow us to construct CIs without knowing unknown parameters\nZ-intervals (\\(\\sigma\\) known): \\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nt-intervals (\\(\\sigma\\) unknown): \\(\\bar{x} \\pm t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}\\)\nProportion intervals: Score/Wilson preferred over Wald"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#key-formulas",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#key-formulas",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Key Formulas",
+    "text": "Key Formulas\n\n\n\n\n\n\n\n\nParameter\nCI Formula\nConditions\n\n\n\n\n\\(\\mu\\) (\\(\\sigma\\) known)\n\\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(\\mu\\) (\\(\\sigma\\) unknown)\n\\(\\bar{x} \\pm t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(p\\) (Wald)\n\\(\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\)\nLarge \\(n\\)\n\n\n\\(p\\) (Agresti-Coull)\n\\(\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\)\nGeneral"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-practice-problems",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-practice-problems",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Lesson 7 Practice Problems",
+    "text": "Lesson 7 Practice Problems\n\n(Devore 8.1) Consider a normal population with \\(\\sigma\\) known.\n\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 2.81\\sigma/\\sqrt{n}\\)?\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 1.44\\sigma/\\sqrt{n}\\)?\n\n(Devore 8.9) A CI for true average breaking strength is (1142.4, 1257.6).\n\nWhat assumptions must hold for this to be valid?\nWhat sample size was used?\n\n(Devore 8.17) Compute a 95% CI for mean tensile strength based on \\(n = 20\\), \\(\\bar{x} = 13.71\\), \\(s = 3.55\\).\n(Devore 8.43) In a survey, 859 of 1044 adults support mandatory GMO labeling. Construct a 95% CI for the true proportion."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-practice-problems-continued",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#lesson-7-practice-problems-continued",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Lesson 7 Practice Problems (continued)",
+    "text": "Lesson 7 Practice Problems (continued)\n\n(Medical Application) A clinical trial tests a new cholesterol medication. In \\(n = 48\\) patients, the mean LDL reduction is \\(\\bar{x} = 35\\) mg/dL with \\(s = 18\\) mg/dL.\n\nConstruct a 95% CI for the mean LDL reduction.\nConstruct a 99% CI. How does it compare?\nThe company claims a mean reduction of at least 30 mg/dL. Is this claim supported?\n\n(Chihara 7.1) Explain why the statement “There is a 95% probability that \\(\\mu\\) lies in the interval (29.5, 33.4)” is incorrect.\n(Sample Size) How many subjects are needed to estimate the proportion of patients responding to a treatment within \\(\\pm 5\\%\\) with 95% confidence?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#looking-ahead",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#looking-ahead",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext Session (Lesson 7 Part 2): Bootstrap Confidence Intervals\n\nWhat if normality doesn’t hold?\nBootstrap percentile intervals\nBootstrap t intervals\nWhen to use bootstrap vs. classical methods\n\n. . .\nComing Soon:\n\nHypothesis testing (Lessons 9-12)\nTwo-sample inference (Lesson 13)\nPaired data analysis (Lesson 14)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#references",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#references",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "References",
+    "text": "References\n\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 8.1-8.4\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 7.\nAgresti, A. and Coull, B. (1998). Approximate is better than “exact” for interval estimation of binomial proportions. The American Statistician, 52:119-126."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#questions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#questions",
+    "title": "Lesson 7: Confidence Intervals",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "",
+    "text": "Key concepts from Lessons 1-5:\n\nPoint estimation: \\(\\hat{\\theta}\\) estimates unknown parameter \\(\\theta\\)\nBias and MSE: Properties for evaluating estimators\nMVUE: Minimum variance unbiased estimators\nMLE: Maximum likelihood estimation\nSufficient statistics: Data reduction without information loss\n\n. . .\nToday’s Goals:\n\nMove from point estimates to interval estimates\nUnderstand the concept of confidence level\nDerive confidence intervals using pivotal quantities\nExplore the relationship between precision and confidence\n\n\n\n\nA point estimate like \\(\\bar{x} = 11.28\\) tells us nothing about precision or reliability.\n. . .\nConsider: A clinical trial testing a new blood pressure medication\n\n# Blood pressure reductions (mmHg) from 25 patients\nbp_reductions &lt;- c(12.3, 8.7, 15.2, 10.1, 7.4, 14.8, 11.2, 9.5, 13.1, 16.2,\n                   8.1, 12.5, 10.8, 14.3, 11.7, 9.2, 15.0, 13.4, 7.9, 12.1,\n                   10.5, 8.3, 14.1, 11.5, 13.8)\n\ncat(\"Point estimate of mean BP reduction:\", round(mean(bp_reductions), 2), \"mmHg\\n\")\n\nPoint estimate of mean BP reduction: 11.67 mmHg\n\n\n. . .\n\n\n\n\n\n\nThe Key Question\n\n\n\nHow close is \\(\\bar{x} = 11.28\\) mmHg to the true population mean \\(\\mu\\)? Could we get a different answer with different patients?\n\n\n\n\n\nInstead of a single number, we report an interval of plausible values.\n. . .\nDefinition: A confidence interval (CI) is a range of values that, with a specified level of confidence, contains the true parameter value.\n. . .\n\n\n\n\n\n\nTwo Key Properties of CIs\n\n\n\n\nConfidence level: How reliable is the interval? (e.g., 95%)\nWidth: How precise is our estimate? (narrower = more precise)\n\n\n\n. . .\nThe tradeoff: Higher confidence → Wider interval → Less precision"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#review-where-we-left-off",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#review-where-we-left-off",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "",
+    "text": "Key concepts from Lessons 1-5:\n\nPoint estimation: \\(\\hat{\\theta}\\) estimates unknown parameter \\(\\theta\\)\nBias and MSE: Properties for evaluating estimators\nMVUE: Minimum variance unbiased estimators\nMLE: Maximum likelihood estimation\nSufficient statistics: Data reduction without information loss\n\n. . .\nToday’s Goals:\n\nMove from point estimates to interval estimates\nUnderstand the concept of confidence level\nDerive confidence intervals using pivotal quantities\nExplore the relationship between precision and confidence"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#from-point-estimates-to-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#from-point-estimates-to-intervals",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "",
+    "text": "A point estimate like \\(\\bar{x} = 11.28\\) tells us nothing about precision or reliability.\n. . .\nConsider: A clinical trial testing a new blood pressure medication\n\n# Blood pressure reductions (mmHg) from 25 patients\nbp_reductions &lt;- c(12.3, 8.7, 15.2, 10.1, 7.4, 14.8, 11.2, 9.5, 13.1, 16.2,\n                   8.1, 12.5, 10.8, 14.3, 11.7, 9.2, 15.0, 13.4, 7.9, 12.1,\n                   10.5, 8.3, 14.1, 11.5, 13.8)\n\ncat(\"Point estimate of mean BP reduction:\", round(mean(bp_reductions), 2), \"mmHg\\n\")\n\nPoint estimate of mean BP reduction: 11.67 mmHg\n\n\n. . .\n\n\n\n\n\n\nThe Key Question\n\n\n\nHow close is \\(\\bar{x} = 11.28\\) mmHg to the true population mean \\(\\mu\\)? Could we get a different answer with different patients?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-confidence-interval-approach",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-confidence-interval-approach",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "",
+    "text": "Instead of a single number, we report an interval of plausible values.\n. . .\nDefinition: A confidence interval (CI) is a range of values that, with a specified level of confidence, contains the true parameter value.\n. . .\n\n\n\n\n\n\nTwo Key Properties of CIs\n\n\n\n\nConfidence level: How reliable is the interval? (e.g., 95%)\nWidth: How precise is our estimate? (narrower = more precise)\n\n\n\n. . .\nThe tradeoff: Higher confidence → Wider interval → Less precision"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#setup-the-idealized-scenario",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#setup-the-idealized-scenario",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Setup: The Idealized Scenario",
+    "text": "Setup: The Idealized Scenario\nAssumptions:\n\n\\(X_1, X_2, \\ldots, X_n\\) is a random sample from a normal population\nThe population standard deviation \\(\\sigma\\) is known\n\n. . .\nWhile \\(\\sigma\\) known is unrealistic, this case:\n\nIllustrates the fundamental concepts\nProvides the foundation for more realistic scenarios\nIs approximately valid when \\(n\\) is very large"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#starting-point-the-sampling-distribution",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#starting-point-the-sampling-distribution",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Starting Point: The Sampling Distribution",
+    "text": "Starting Point: The Sampling Distribution\nFrom the Central Limit Theorem and properties of normal distributions:\n\\[\\bar{X} \\sim N\\left(\\mu, \\frac{\\sigma^2}{n}\\right)\\]\n. . .\nStandardizing:\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0, 1)\\]\n. . .\nThis \\(Z\\) has a known distribution (standard normal) that does not depend on \\(\\mu\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-pivotal-quantity",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-pivotal-quantity",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The Pivotal Quantity",
+    "text": "The Pivotal Quantity\n\n\n\n\n\n\nDefinition (Devore 8.1)\n\n\n\nA pivotal quantity is a random variable \\(h(X_1, \\ldots, X_n; \\theta)\\) such that:\n\nIt is a function of both the data and the unknown parameter \\(\\theta\\)\nIts probability distribution does not depend on \\(\\theta\\) or any other unknown parameters\n\n\n\n. . .\nOur pivotal quantity:\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\]\n\n✓ Depends on data (\\(\\bar{X}\\)) and unknown parameter (\\(\\mu\\))\n✓ Distribution is \\(N(0, 1)\\) — doesn’t depend on \\(\\mu\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#building-the-interval-step-1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#building-the-interval-step-1",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Building the Interval: Step 1",
+    "text": "Building the Interval: Step 1\nFor the standard normal distribution, we know:\n\\[P(-1.96 &lt; Z &lt; 1.96) = 0.95\\]\n. . .\n\n\nCode\ntibble(z = seq(-4, 4, 0.01)) |&gt;\n  mutate(density = dnorm(z),\n         fill_region = ifelse(abs(z) &lt;= 1.96, \"Middle 95%\", \"Tails\")) |&gt;\n  ggplot(aes(x = z, y = density, fill = fill_region)) +\n  geom_area(alpha = 0.7) +\n  geom_vline(xintercept = c(-1.96, 1.96), linetype = \"dashed\", color = \"red\") +\n  scale_fill_manual(values = c(\"Middle 95%\" = \"steelblue\", \"Tails\" = \"gray80\")) +\n  labs(title = \"Standard Normal Distribution\", \n       subtitle = \"P(-1.96 &lt; Z &lt; 1.96) = 0.95\",\n       x = \"Z\", y = \"Density\", fill = \"\") +\n  annotate(\"text\", x = 0, y = 0.15, label = \"0.95\", size = 6, color = \"white\") +\n  theme(legend.position = \"top\")"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#building-the-interval-step-2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#building-the-interval-step-2",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Building the Interval: Step 2",
+    "text": "Building the Interval: Step 2\nSubstitute our pivotal quantity:\n\\[P\\left(-1.96 &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; 1.96\\right) = 0.95\\]\n. . .\nIsolate \\(\\mu\\): Multiply all parts by \\(\\sigma/\\sqrt{n}\\):\n\\[P\\left(-1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\bar{X} - \\mu &lt; 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\right) = 0.95\\]\n. . .\nRearrange (subtract \\(\\bar{X}\\), multiply by \\(-1\\)):\n\\[P\\left(\\bar{X} - 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\right) = 0.95\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-random-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-random-interval",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The Random Interval",
+    "text": "The Random Interval\n\n\n\n\n\n\nKey Insight\n\n\n\nThe interval \\(\\left(\\bar{X} - 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}, \\bar{X} + 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\right)\\) is random because \\(\\bar{X}\\) is random.\n\n\n. . .\nBefore sampling: With probability 0.95, this random interval will contain \\(\\mu\\).\nAfter sampling: We observe \\(\\bar{x}\\) and compute the interval. The interval is now fixed — it either contains \\(\\mu\\) or it doesn’t.\n. . ."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-95-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-95-confidence-interval",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The 95% Confidence Interval",
+    "text": "The 95% Confidence Interval\n\n\n\n\n\n\nDefinition (Devore 8.1)\n\n\n\nA 95% confidence interval for \\(\\mu\\) (with known \\(\\sigma\\)) is:\n\\[\\left(\\bar{x} - 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}, \\bar{x} + 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\right)\\]\nor equivalently: \\(\\bar{x} \\pm 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\n\n\n. . .\nComponents:\n\n\\(\\bar{x}\\) = point estimate (center of the interval)\n\\(1.96 \\cdot \\sigma/\\sqrt{n}\\) = margin of error\n\\(\\sigma/\\sqrt{n}\\) = standard error of \\(\\bar{X}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-titanium-alloy-tensile-strength-devore-8.1-8.2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-titanium-alloy-tensile-strength-devore-8.1-8.2",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Example: Titanium Alloy Tensile Strength (Devore 8.1-8.2)",
+    "text": "Example: Titanium Alloy Tensile Strength (Devore 8.1-8.2)\nProblem: An engineer wants to estimate the true mean tensile strength of a titanium alloy weld. Previous tests suggest \\(\\sigma = 55\\) MPa. A sample of \\(n = 31\\) welds gives \\(\\bar{x} = 1064\\) MPa.\n. . .\nCalculate the 95% CI:\n\nsigma &lt;- 55\nn &lt;- 31\nxbar &lt;- 1064\nz_crit &lt;- 1.96\n\nmargin_error &lt;- z_crit * sigma / sqrt(n)\nlower &lt;- xbar - margin_error\nupper &lt;- xbar + margin_error\n\ncat(\"95% CI: (\", round(lower, 1), \",\", round(upper, 1), \") MPa\\n\")\n\n95% CI: ( 1044.6 , 1083.4 ) MPa\n\ncat(\"Margin of Error:\", round(margin_error, 1), \"MPa\\n\")\n\nMargin of Error: 19.4 MPa\n\n\n. . .\nInterpretation: We are 95% confident that the true mean tensile strength is between 1044.6 and 1083.4 MPa."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#medical-example-blood-pressure-medication",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#medical-example-blood-pressure-medication",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Medical Example: Blood Pressure Medication",
+    "text": "Medical Example: Blood Pressure Medication\nScenario: A clinical trial measures systolic BP reduction (mmHg) for a new medication. Assume \\(\\sigma = 5\\) mmHg (from prior studies). With \\(n = 25\\) patients:\n\n# Data\nbp_reductions &lt;- c(12.3, 8.7, 15.2, 10.1, 7.4, 14.8, 11.2, 9.5, 13.1, 16.2,\n                   8.1, 12.5, 10.8, 14.3, 11.7, 9.2, 15.0, 13.4, 7.9, 12.1,\n                   10.5, 8.3, 14.1, 11.5, 13.8)\nsigma &lt;- 5\nn &lt;- length(bp_reductions)\nxbar &lt;- mean(bp_reductions)\n\n# 95% CI\nmargin_error &lt;- 1.96 * sigma / sqrt(n)\nci_lower &lt;- xbar - margin_error\nci_upper &lt;- xbar + margin_error\n\ncat(\"Sample mean:\", round(xbar, 2), \"mmHg\\n\")\n\nSample mean: 11.67 mmHg\n\ncat(\"95% CI: (\", round(ci_lower, 2), \",\", round(ci_upper, 2), \") mmHg\\n\")\n\n95% CI: ( 9.71 , 13.63 ) mmHg\n\n\n. . .\nClinical interpretation: We’re 95% confident the medication reduces systolic BP by between 9.32 and 13.24 mmHg on average."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#what-does-95-confident-mean",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#what-does-95-confident-mean",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "What Does “95% Confident” Mean?",
+    "text": "What Does “95% Confident” Mean?\n\n\n\n\n\n\nCommon Misconception\n\n\n\nWRONG: “There is a 95% probability that \\(\\mu\\) lies in the interval (9.32, 13.24).”\n\n\n. . .\nWhy is this wrong?\n\n\\(\\mu\\) is a fixed (though unknown) constant\nThe interval (9.32, 13.24) is fixed after we compute it\nThere’s no probability involved — \\(\\mu\\) either is or isn’t in this specific interval"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-correct-interpretation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-correct-interpretation",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The Correct Interpretation",
+    "text": "The Correct Interpretation\n\n\n\n\n\n\nFrequentist Interpretation\n\n\n\nIf we were to repeat this sampling procedure many times:\n\nEach time computing a 95% CI from a new random sample\n95% of those intervals would contain the true \\(\\mu\\)\n\n\n\n. . .\nIn other words: The method works 95% of the time, not this specific interval.\n. . .\nThink of it as confidence in the procedure, not in the specific interval."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#simulation-understanding-confidence-level",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#simulation-understanding-confidence-level",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Simulation: Understanding Confidence Level",
+    "text": "Simulation: Understanding Confidence Level\n\n\nCode\nset.seed(2024)\nmu_true &lt;- 11  # True mean BP reduction\nsigma &lt;- 5\nn &lt;- 25\nn_samples &lt;- 100\n\n# Generate 100 confidence intervals\nci_sim &lt;- tibble(sample_id = 1:n_samples) |&gt;\n  mutate(\n    data = map(sample_id, ~rnorm(n, mu_true, sigma)),\n    xbar = map_dbl(data, mean),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; mu_true & upper &gt; mu_true\n  )\n\ncoverage &lt;- mean(ci_sim$contains_mu)\n\n# Plot\nci_sim |&gt;\n  slice_head(n = 50) |&gt;\n  ggplot(aes(y = sample_id)) +\n  geom_segment(aes(x = lower, xend = upper, yend = sample_id, color = contains_mu),\n               linewidth = 0.8) +\n  geom_point(aes(x = xbar, color = contains_mu), size = 1.5) +\n  geom_vline(xintercept = mu_true, color = \"red\", linewidth = 1.2, linetype = \"dashed\") +\n  scale_color_manual(values = c(\"FALSE\" = \"orange\", \"TRUE\" = \"steelblue\"),\n                     labels = c(\"Misses μ\", \"Contains μ\")) +\n  labs(title = paste0(\"50 of \", n_samples, \" Simulated 95% CIs\"),\n       subtitle = paste0(\"Coverage: \", round(100*coverage, 1), \"% contain true μ = \", mu_true),\n       x = \"BP Reduction (mmHg)\", y = \"Sample Number\", color = \"\") +\n  theme(legend.position = \"top\")"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-insight-from-simulation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-insight-from-simulation",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Key Insight from Simulation",
+    "text": "Key Insight from Simulation\n\ncat(\"Out of\", n_samples, \"intervals:\\n\")\n\nOut of 100 intervals:\n\ncat(\"-\", sum(ci_sim$contains_mu), \"contain the true μ\\n\")\n\n- 98 contain the true μ\n\ncat(\"-\", sum(!ci_sim$contains_mu), \"miss the true μ\\n\")\n\n- 2 miss the true μ\n\ncat(\"\\nEmpirical coverage:\", round(100*coverage, 1), \"%\\n\")\n\n\nEmpirical coverage: 98 %\n\ncat(\"Expected coverage: 95%\\n\")\n\nExpected coverage: 95%\n\n\n. . .\n\n\n\n\n\n\nPractical Interpretation\n\n\n\nWhen we report a 95% CI, we’re using a reliable method. About 1 in 20 times, we’ll be unlucky and our interval won’t contain the true value — but we won’t know which times those are!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#general-confidence-interval-formula",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#general-confidence-interval-formula",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "General Confidence Interval Formula",
+    "text": "General Confidence Interval Formula\nTo construct a \\(100(1-\\alpha)\\%\\) CI, we use \\(z_{\\alpha/2}\\) — the critical value that captures upper tail area \\(\\alpha/2\\).\n. . .\n\n\n\n\n\n\nGeneral CI for \\(\\mu\\) (Known \\(\\sigma\\))\n\n\n\n\\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]\nwhere \\(P(Z &gt; z_{\\alpha/2}) = \\alpha/2\\) for \\(Z \\sim N(0,1)\\).\n\n\n. . .\n\n\n\nConfidence Level\n\\(\\alpha\\)\n\\(\\alpha/2\\)\n\\(z_{\\alpha/2}\\)\n\n\n\n\n90%\n0.10\n0.05\n1.645\n\n\n95%\n0.05\n0.025\n1.960\n\n\n99%\n0.01\n0.005\n2.576"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#visualizing-different-confidence-levels",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#visualizing-different-confidence-levels",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Visualizing Different Confidence Levels",
+    "text": "Visualizing Different Confidence Levels\n\n\nCode\nz_values &lt;- tibble(\n  conf_level = c(\"90%\", \"95%\", \"99%\"),\n  z_crit = c(1.645, 1.96, 2.576)\n)\n\ntibble(z = seq(-4, 4, 0.01)) |&gt;\n  mutate(density = dnorm(z)) |&gt;\n  ggplot(aes(x = z, y = density)) +\n  geom_area(fill = \"gray90\") +\n  geom_area(data = . %&gt;% filter(abs(z) &lt;= 2.576), fill = \"lightblue\", alpha = 0.5) +\n  geom_area(data = . %&gt;% filter(abs(z) &lt;= 1.96), fill = \"steelblue\", alpha = 0.7) +\n  geom_area(data = . %&gt;% filter(abs(z) &lt;= 1.645), fill = \"darkblue\", alpha = 0.8) +\n  geom_vline(xintercept = c(-2.576, 2.576), linetype = \"dotted\", color = \"lightblue\") +\n  geom_vline(xintercept = c(-1.96, 1.96), linetype = \"dashed\", color = \"steelblue\") +\n  geom_vline(xintercept = c(-1.645, 1.645), linetype = \"solid\", color = \"darkblue\") +\n  annotate(\"text\", x = 0, y = 0.35, label = \"90%\", color = \"white\", size = 5) +\n  annotate(\"text\", x = 1.8, y = 0.08, label = \"95%\", color = \"steelblue\", size = 4) +\n  annotate(\"text\", x = 2.3, y = 0.02, label = \"99%\", color = \"lightblue\", size = 4) +\n  labs(title = \"Critical Values for Different Confidence Levels\",\n       x = \"Z\", y = \"Density\")"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-comparing-confidence-levels-devore-8.3",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-comparing-confidence-levels-devore-8.3",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Example: Comparing Confidence Levels (Devore 8.3)",
+    "text": "Example: Comparing Confidence Levels (Devore 8.3)\nScenario: A new online homework system is tested. Past experience: \\(\\sigma = 13\\) points. A sample of \\(n = 40\\) students has mean final exam score \\(\\bar{x} = 70.7\\).\n\nsigma &lt;- 13\nn &lt;- 40\nxbar &lt;- 70.7\n\n# Calculate CIs at different confidence levels\nci_results &lt;- tibble(\n  conf_level = c(\"90%\", \"95%\", \"99%\"),\n  z_crit = c(1.645, 1.96, 2.576)\n) |&gt;\n  mutate(\n    margin_error = z_crit * sigma / sqrt(n),\n    lower = xbar - margin_error,\n    upper = xbar + margin_error,\n    width = upper - lower\n  )\n\nci_results |&gt;\n  mutate(across(where(is.numeric), ~round(., 2))) |&gt;\n  knitr::kable()\n\n\n\n\nconf_level\nz_crit\nmargin_error\nlower\nupper\nwidth\n\n\n\n\n90%\n1.65\n3.38\n67.32\n74.08\n6.76\n\n\n95%\n1.96\n4.03\n66.67\n74.73\n8.06\n\n\n99%\n2.58\n5.29\n65.41\n75.99\n10.59"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-confidence-precision-tradeoff",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-confidence-precision-tradeoff",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The Confidence-Precision Tradeoff",
+    "text": "The Confidence-Precision Tradeoff\n\n\nCode\nci_results |&gt;\n  ggplot(aes(y = conf_level)) +\n  geom_segment(aes(x = lower, xend = upper, yend = conf_level), \n               linewidth = 2, color = \"steelblue\") +\n  geom_point(aes(x = xbar), size = 4, color = \"red\") +\n  geom_vline(xintercept = 65, linetype = \"dashed\", color = \"darkgray\") +\n  annotate(\"text\", x = 65, y = 3.3, label = \"Old mean = 65\", size = 4) +\n  labs(title = \"Effect of Confidence Level on Interval Width\",\n       subtitle = \"Higher confidence → Wider interval\",\n       x = \"Final Exam Score\", y = \"Confidence Level\") +\n  theme(axis.text.y = element_text(size = 14))\n\n\n\n\n\n\n\n\n\n. . .\nNote: At 90% confidence, we can say the new mean exceeds 65 (the old mean). At higher confidence levels, this conclusion is less certain."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-width-of-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#the-width-of-a-confidence-interval",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "The Width of a Confidence Interval",
+    "text": "The Width of a Confidence Interval\nThe width of a \\(100(1-\\alpha)\\%\\) CI is:\n\\[w = 2 \\cdot z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]\n. . .\nWidth depends on:\n\n\n\n\n\n\n\nFactor\nEffect on Width\n\n\n\n\n\\(\\uparrow\\) Confidence level\nWidth increases (larger \\(z_{\\alpha/2}\\))\n\n\n\\(\\uparrow\\) Sample size \\(n\\)\nWidth decreases (larger \\(\\sqrt{n}\\))\n\n\n\\(\\uparrow\\) Population SD \\(\\sigma\\)\nWidth increases"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#sample-size-determination",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#sample-size-determination",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Sample Size Determination",
+    "text": "Sample Size Determination\nThe question: How large a sample do we need to achieve a desired width \\(w\\) at a specified confidence level?\n. . .\nFrom \\(w = 2 \\cdot z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\), solving for \\(n\\):\n\n\n\n\n\n\nSample Size Formula (Devore 8.6)\n\n\n\n\\[n = \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{w/2}\\right)^2 = \\left(\\frac{2 \\cdot z_{\\alpha/2} \\cdot \\sigma}{w}\\right)^2\\]\nwhere \\(w/2\\) is the desired margin of error."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-response-time-study-devore-8.4",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-response-time-study-devore-8.4",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Example: Response Time Study (Devore 8.4)",
+    "text": "Example: Response Time Study (Devore 8.4)\nProblem: A new operating system is installed. Response time is normally distributed with \\(\\sigma = 25\\) ms. What sample size ensures a 95% CI with width at most 10 ms?\n. . .\n\nsigma &lt;- 25\nw &lt;- 10  # desired width\nz_crit &lt;- 1.96\n\nn_required &lt;- (2 * z_crit * sigma / w)^2\ncat(\"Required sample size:\", ceiling(n_required), \"\\n\")\n\nRequired sample size: 97 \n\n\n. . .\nCheck:\n\nn &lt;- 97\nactual_width &lt;- 2 * z_crit * sigma / sqrt(n)\ncat(\"Actual width with n =\", n, \":\", round(actual_width, 2), \"ms\\n\")\n\nActual width with n = 97 : 9.95 ms"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#medical-example-planning-a-clinical-trial",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#medical-example-planning-a-clinical-trial",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Medical Example: Planning a Clinical Trial",
+    "text": "Medical Example: Planning a Clinical Trial\nScenario: Planning a trial for a hypertension drug. Prior studies suggest \\(\\sigma = 8\\) mmHg for BP reduction. You want to estimate the true mean reduction to within 2 mmHg with 99% confidence.\n\nsigma &lt;- 8\nmargin_error &lt;- 2  # desired margin of error\nz_crit &lt;- 2.576  # for 99% CI\n\nn_required &lt;- (z_crit * sigma / margin_error)^2\ncat(\"For 99% CI with margin of error ±2 mmHg:\\n\")\n\nFor 99% CI with margin of error ±2 mmHg:\n\ncat(\"Required sample size:\", ceiling(n_required), \"patients\\n\")\n\nRequired sample size: 107 patients\n\n\n. . .\nWhat if we use 95% confidence instead?\n\nz_crit_95 &lt;- 1.96\nn_required_95 &lt;- (z_crit_95 * sigma / margin_error)^2\ncat(\"\\nFor 95% CI with same margin of error:\\n\")\n\n\nFor 95% CI with same margin of error:\n\ncat(\"Required sample size:\", ceiling(n_required_95), \"patients\\n\")\n\nRequired sample size: 62 patients\n\ncat(\"Savings:\", ceiling(n_required) - ceiling(n_required_95), \"patients\\n\")\n\nSavings: 45 patients"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#sample-size-vs.-precision",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#sample-size-vs.-precision",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Sample Size vs. Precision",
+    "text": "Sample Size vs. Precision\n\n\nCode\n# Show how sample size affects width\nsample_sizes &lt;- seq(10, 200, 5)\nsigma &lt;- 25\n\nwidth_data &lt;- tibble(n = sample_sizes) |&gt;\n  mutate(\n    width_90 = 2 * 1.645 * sigma / sqrt(n),\n    width_95 = 2 * 1.96 * sigma / sqrt(n),\n    width_99 = 2 * 2.576 * sigma / sqrt(n)\n  ) |&gt;\n  pivot_longer(starts_with(\"width\"), names_to = \"conf_level\", values_to = \"width\") |&gt;\n  mutate(conf_level = case_when(\n    conf_level == \"width_90\" ~ \"90%\",\n    conf_level == \"width_95\" ~ \"95%\",\n    conf_level == \"width_99\" ~ \"99%\"\n  ))\n\nggplot(width_data, aes(x = n, y = width, color = conf_level)) +\n  geom_line(linewidth = 1.2) +\n  geom_hline(yintercept = 10, linetype = \"dashed\", color = \"gray50\") +\n  annotate(\"text\", x = 180, y = 11, label = \"Target width = 10\", size = 4) +\n  scale_color_manual(values = c(\"90%\" = \"darkblue\", \"95%\" = \"steelblue\", \"99%\" = \"lightblue\")) +\n  labs(title = \"CI Width vs. Sample Size\",\n       subtitle = \"σ = 25, showing diminishing returns\",\n       x = \"Sample Size (n)\", y = \"CI Width\", color = \"Confidence\\nLevel\") +\n  theme(legend.position = \"right\")"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#confidence-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#confidence-bounds",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Confidence Bounds",
+    "text": "Confidence Bounds\nSometimes we only need a lower bound or upper bound for the parameter.\n. . .\nExamples:\n\nA surgeon wants only a lower bound for average remission time after cancer surgery\nA manufacturer wants only an upper bound for average defect rate\nAn engineer wants only a lower bound for mean tensile strength"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#derivation-of-one-sided-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#derivation-of-one-sided-bounds",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Derivation of One-Sided Bounds",
+    "text": "Derivation of One-Sided Bounds\nFor a 95% lower confidence bound:\n\\[P(Z &lt; 1.645) = 0.95\\]\n\\[P\\left(\\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; 1.645\\right) = 0.95\\]\n. . .\nRearranging:\n\\[P\\left(\\bar{X} - 1.645 \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\right) = 0.95\\]\n\n\n\n\n\n\nOne-Sided Confidence Bounds\n\n\n\n\n95% Lower Bound: \\(\\bar{x} - 1.645 \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\)\n95% Upper Bound: \\(\\mu &lt; \\bar{x} + 1.645 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-tensile-strength-lower-bound-devore-8.7",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#example-tensile-strength-lower-bound-devore-8.7",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Example: Tensile Strength Lower Bound (Devore 8.7)",
+    "text": "Example: Tensile Strength Lower Bound (Devore 8.7)\nProblem: For the titanium alloy weld data (\\(\\bar{x} = 1064\\) MPa, \\(\\sigma = 55\\) MPa, \\(n = 31\\)), compute a 95% lower confidence bound.\n\nxbar &lt;- 1064\nsigma &lt;- 55\nn &lt;- 31\nz_crit &lt;- 1.645  # for one-sided 95%\n\nlower_bound &lt;- xbar - z_crit * sigma / sqrt(n)\ncat(\"95% Lower Confidence Bound:\", round(lower_bound, 2), \"MPa\\n\")\n\n95% Lower Confidence Bound: 1047.75 MPa\n\n\n. . .\nInterpretation: We are 95% confident that the true mean tensile strength is at least 1047.75 MPa.\n. . .\nCompare with two-sided 95% CI: (1044.6, 1083.4) — the lower bound is higher than the two-sided lower limit!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#comparing-one-sided-and-two-sided-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#comparing-one-sided-and-two-sided-intervals",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Comparing One-Sided and Two-Sided Intervals",
+    "text": "Comparing One-Sided and Two-Sided Intervals\n\n\nCode\n# Visual comparison - draw each interval type separately\nggplot() +\n  # Two-sided CI (no arrow)\n  geom_segment(aes(x = 1044.6, xend = 1083.4, y = \"Two-sided 95% CI\", yend = \"Two-sided 95% CI\"),\n               linewidth = 3, color = \"steelblue\") +\n  # One-sided lower bound (arrow pointing right to infinity)\n  geom_segment(aes(x = 1047.75, xend = 1110, y = \"One-sided 95% LB\", yend = \"One-sided 95% LB\"),\n               linewidth = 3, color = \"steelblue\",\n               arrow = arrow(length = unit(0.3, \"cm\"), ends = \"last\")) +\n  # One-sided upper bound (arrow pointing left to negative infinity)\n  geom_segment(aes(x = 1020, xend = 1080.25, y = \"One-sided 95% UB\", yend = \"One-sided 95% UB\"),\n               linewidth = 3, color = \"steelblue\",\n               arrow = arrow(length = unit(0.3, \"cm\"), ends = \"first\")) +\n  # Point estimates\n\n  geom_point(aes(x = 1064, y = \"Two-sided 95% CI\"), size = 4, color = \"red\") +\n  geom_point(aes(x = 1064, y = \"One-sided 95% LB\"), size = 4, color = \"red\") +\n  geom_point(aes(x = 1064, y = \"One-sided 95% UB\"), size = 4, color = \"red\") +\n  labs(title = \"Comparison of Two-Sided CI vs One-Sided Bounds\",\n       subtitle = \"Arrows indicate interval extends to ±∞\",\n       x = \"Tensile Strength (MPa)\", y = \"\") +\n  xlim(1020, 1110) +\n  theme(axis.text.y = element_text(size = 12))"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#understanding-ci-coverage-through-simulation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#understanding-ci-coverage-through-simulation",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Understanding CI Coverage Through Simulation",
+    "text": "Understanding CI Coverage Through Simulation\nLet’s simulate many samples and examine how often CIs capture the true parameter.\n\n\nCode\nset.seed(551)\nmu_true &lt;- 100\nsigma &lt;- 15\nn_values &lt;- c(10, 25, 50, 100)\nn_sims &lt;- 1000\n\n# Function to compute CI and check coverage\nsimulate_coverage &lt;- function(n, mu, sigma, n_sims) {\n  tibble(sim = 1:n_sims) |&gt;\n    mutate(\n      xbar = map_dbl(sim, ~mean(rnorm(n, mu, sigma))),\n      lower = xbar - 1.96 * sigma / sqrt(n),\n      upper = xbar + 1.96 * sigma / sqrt(n),\n      contains_mu = lower &lt; mu & upper &gt; mu\n    )\n}\n\ncoverage_results &lt;- tibble(n = n_values) |&gt;\n  mutate(\n    results = map(n, ~simulate_coverage(.x, mu_true, sigma, n_sims)),\n    coverage = map_dbl(results, ~mean(.x$contains_mu)),\n    avg_width = map_dbl(results, ~mean(.x$upper - .x$lower))\n  )\n\ncoverage_results |&gt;\n  select(n, coverage, avg_width) |&gt;\n  mutate(coverage = paste0(round(100*coverage, 1), \"%\"),\n         avg_width = round(avg_width, 2)) |&gt;\n  knitr::kable(col.names = c(\"Sample Size\", \"Coverage\", \"Average Width\"))\n\n\n\n\n\nSample Size\nCoverage\nAverage Width\n\n\n\n\n10\n93.8%\n18.59\n\n\n25\n95%\n11.76\n\n\n50\n95.3%\n8.32\n\n\n100\n95.3%\n5.88"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#visualizing-coverage-by-sample-size",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#visualizing-coverage-by-sample-size",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Visualizing Coverage by Sample Size",
+    "text": "Visualizing Coverage by Sample Size\n\n\nCode\ncoverage_results |&gt;\n  unnest(results) |&gt;\n  filter(sim &lt;= 50) |&gt;\n  ggplot(aes(y = sim)) +\n  geom_segment(aes(x = lower, xend = upper, yend = sim, color = contains_mu),\n               linewidth = 0.6) +\n  geom_vline(xintercept = mu_true, color = \"red\", linewidth = 1, linetype = \"dashed\") +\n  facet_wrap(~paste(\"n =\", n), nrow = 1, scales = \"free_x\") +\n  scale_color_manual(values = c(\"FALSE\" = \"orange\", \"TRUE\" = \"steelblue\"),\n                     labels = c(\"Misses μ\", \"Contains μ\")) +\n  labs(title = \"95% CIs for Different Sample Sizes (first 50 simulations)\",\n       subtitle = paste0(\"True μ = \", mu_true, \" (red dashed line)\"),\n       x = \"Value\", y = \"Simulation\", color = \"\") +\n  theme(legend.position = \"top\")"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-observations",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-observations",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Key Observations",
+    "text": "Key Observations\n\n\n\n\n\n\nWhat the Simulation Shows\n\n\n\n\nCoverage is approximately 95% regardless of sample size (when assumptions hold)\nWidth decreases with sample size — larger samples give more precise estimates\nWidth decreases proportional to \\(1/\\sqrt{n}\\) — need to quadruple \\(n\\) to halve the width\nIntervals are centered at \\(\\bar{x}\\), which varies from sample to sample"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#lesson-6-key-takeaways",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#lesson-6-key-takeaways",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Lesson 6: Key Takeaways",
+    "text": "Lesson 6: Key Takeaways\n1. Confidence Intervals provide interval estimates\n\nMore informative than point estimates alone\nCommunicate both estimate and precision\n\n. . .\n2. The pivotal quantity method\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0,1)\\]\n\nAllows derivation of CI formula\nFoundation for more complex scenarios\n\n. . .\n3. The \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) (known \\(\\sigma\\)):\n\\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-formulas",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#key-formulas",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Key Formulas",
+    "text": "Key Formulas\n\n\n\n\n\n\n\nQuantity\nFormula\n\n\n\n\n95% CI\n\\(\\bar{x} \\pm 1.96 \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nGeneral CI\n\\(\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nCI Width\n\\(w = 2 \\cdot z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample Size\n\\(n = \\left(\\frac{2z_{\\alpha/2}\\sigma}{w}\\right)^2\\)\n\n\nLower Bound\n\\(\\bar{x} - z_\\alpha \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nUpper Bound\n\\(\\bar{x} + z_\\alpha \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#looking-ahead",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#looking-ahead",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext Lesson (7): Confidence intervals when \\(\\sigma\\) is unknown\n\nThe \\(t\\)-distribution\nOne-sample \\(t\\) confidence interval\nLarge-sample intervals\nIntervals for population proportions\n\n. . .\nKey transition: From the idealized case (known \\(\\sigma\\)) to the realistic case (unknown \\(\\sigma\\))"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#references",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#references",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "References",
+    "text": "References\n\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 8.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 7"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Exercises from Devore, Berk, Carlton Section 8.1",
+    "text": "Exercises from Devore, Berk, Carlton Section 8.1\nProblem 1. Consider a normal population distribution with the value of \\(\\sigma\\) known.\n\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 2.81\\sigma/\\sqrt{n}\\)?\nWhat is the confidence level for the interval \\(\\bar{x} \\pm 1.44\\sigma/\\sqrt{n}\\)?\nWhat value of \\(z_{\\alpha/2}\\) in the CI formula results in a confidence level of 99.7%?\nAnswer the question posed in part (c) for a confidence level of 75%."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)",
+    "text": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)\nProblem 2. Each of the following is a confidence interval for \\(\\mu\\) = true average resonance frequency (Hz) for all tennis rackets of a certain type:\n(114.4, 115.6) and (114.1, 115.9)\n\nWhat is the value of the sample mean resonance frequency?\nBoth intervals were calculated from the same sample data. The confidence level for one of these intervals is 90% and for the other is 99%. Which of the intervals has the 90% confidence level, and why?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued-1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued-1",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)",
+    "text": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)\nProblem 3. Suppose that a random sample of 50 bottles of a particular brand of cough syrup is selected and the alcohol content of each bottle is determined. Let \\(\\mu\\) denote the average alcohol content for the population of all bottles of the brand under study. Suppose that the resulting 95% confidence interval is (7.8, 9.4).\n\nWould a 90% confidence interval calculated from this same sample have been narrower or wider than the given interval? Explain your reasoning.\nConsider the following statement: There is a 95% chance that \\(\\mu\\) is between 7.8 and 9.4. Is this statement correct? Why or why not?\nConsider the following statement: We can be highly confident that 95% of all bottles of this type of cough syrup have an alcohol content that is between 7.8 and 9.4. Is this statement correct? Why or why not?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued-2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#exercises-from-devore-berk-carlton-section-8.1-continued-2",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)",
+    "text": "Exercises from Devore, Berk, Carlton Section 8.1 (continued)\nProblem 4. A random sample of \\(n = 15\\) heat pumps of a certain type yielded the following observations on lifetime (in years):\n2.0, 1.3, 6.0, 1.9, 5.1, 0.4, 1.0, 5.3, 15.7, 0.7, 4.8, 0.9, 12.2, 5.3, 0.6\n\nAssume that the lifetime distribution is exponential and use an argument parallel to that of Example 8.5 in the textbook to obtain a 95% CI for expected (true average) lifetime.\nHow should the interval of part (a) be altered to achieve a confidence level of 99%?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#questions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old.html#questions",
+    "title": "Lesson 6: Confidence Intervals",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Why \\(z_\\alpha\\)?",
+    "text": "Why \\(z_\\alpha\\)?\n\\[P(L &lt; \\mu) = 1-\\alpha \\iff P\\left\\(z_\\alpha &gt; \\frac{\\Xbar - \\mu}{\\sigma/\\sqrt{n}}\\right\\)\\] \\[P(\\mu &gt; U) = 1-\\alpha\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha-instead-of-z_alpha2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha-instead-of-z_alpha2",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Why \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)?",
+    "text": "Why \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)?\nFor a two-sided CI, we split \\(\\alpha\\) into two tails (\\(\\alpha/2\\) each): \\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha/2}\\right) = 1 - \\alpha\\]\n\nFor a one-sided lower bound, all \\(\\alpha\\) goes in one tail: \\[P\\left(\\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha}\\right) = 1 - \\alpha\\]\nRearranging for \\(\\mu\\): \\[P\\left(\\bar{X} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\right) = 1 - \\alpha\\]\n\n\nSo the lower bound is: \\(L = \\bar{X} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\nKey insight: One-sided bounds use \\(z_\\alpha\\) because we put all the “error probability” \\(\\alpha\\) on one side, not split between two sides."
   }
 ]

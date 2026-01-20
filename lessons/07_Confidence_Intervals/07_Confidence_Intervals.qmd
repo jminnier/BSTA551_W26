@@ -1,0 +1,739 @@
+---
+title: "Lesson 7: Introduction to Confidence Intervals"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w3d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 7 - Introduction to CIs
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 7: From Point Estimates to Intervals {background-color="#2c3e50"}
+
+## Review: What We've Learned About Estimation
+
+**Point Estimation (Lessons 1-6):**
+
+-   Estimators: statistics that estimate parameters
+-   Properties: bias, variance, MSE, efficiency
+-   Construction: Method of Moments, Maximum Likelihood
+-   Quality: MVUE, sufficient statistics, Cramér-Rao bound
+
+. . .
+
+**The Limitation of Point Estimates:**
+
+A single number ($\hat{\theta} = 0.75$) tells us nothing about **precision** or **uncertainty** of the estimate.
+
+## Today's Goals
+
+::: incremental
+1.  Understand why we need interval estimates
+2.  Learn the correct interpretation of confidence intervals
+3.  Derive confidence intervals using pivotal quantities
+4.  Construct and interpret z-intervals (known $\sigma$)
+5.  Determine sample sizes for desired precision
+6.  Understand one-sided confidence bounds
+:::
+
+## Motivating Example: Clinical Trial
+
+A new antihypertensive drug is tested in $n = 36$ patients. The mean reduction in systolic blood pressure is $\bar{x} = 12.3$ mmHg.
+
+. . .
+
+**Point estimate:** $\hat{\mu} = 12.3$ mmHg
+
+. . .
+
+**Questions we can't answer with just the point estimate:**
+
+-   How close is 12.3 to the true mean reduction?
+-   Is the true mean likely to be at least 10 mmHg?
+-   How much could $\bar{X}$ vary in repeated trials?
+
+. . .
+
+::: callout-note
+## The Solution
+A **confidence interval** provides a range of plausible values for the parameter, along with a measure of confidence.
+:::
+
+# The Fundamental Idea {background-color="#27ae60"}
+
+## From Point to Interval
+
+```{r}
+#| echo: false
+#| fig-width: 14
+#| fig-height: 6
+tibble(x = seq(5, 20, by = 0.1)) |>
+  mutate(y = dnorm(x, mean = 12.3, sd = 2.5)) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_vline(xintercept = 12.3, color = "red", linetype = "dashed", linewidth = 1.2) +
+  geom_segment(aes(x = 7.4, xend = 17.2, y = 0.02, yend = 0.02), 
+               color = "darkgreen", linewidth = 2,
+               arrow = arrow(ends = "both", length = unit(0.2, "cm"))) +
+  annotate("text", x = 12.3, y = 0.18, label = expression(bar(x) == 12.3), size = 7, color = "red") +
+  annotate("text", x = 12.3, y = 0.05, label = "95% CI: (7.4, 17.2)", size = 6, color = "darkgreen") +
+  labs(x = "Blood Pressure Reduction (mmHg)", y = "Density",
+       title = "Point Estimate with Confidence Interval") +
+  theme_minimal(base_size = 18)
+```
+
+**Key insight:** The interval captures our uncertainty about the true parameter value.
+
+## What Is a Confidence Interval?
+
+::: callout-important
+## Definition: Confidence Interval
+A **confidence interval (CI)** for a parameter $\theta$ is a random interval $(L, U)$ computed from sample data such that:
+$$P(L < \theta < U) = 1 - \alpha$$
+for a specified confidence level $1 - \alpha$.
+:::
+
+. . .
+
+**Important:**
+
+-   $L$ and $U$ are **random** (they depend on the sample)
+-   $\theta$ is **fixed** (but unknown)
+-   The probability statement is about the **random event** that the lower and upper bound cover $\theta$, not about any randomness in $\theta$ itself.
+-   The probability statement only makes sense when thinking about defining the estimators $L$ and $U$ and their sampling distributions, it does not make sense when talking about one sample and the observed values for $L$ and $U$
+
+## Correct Interpretation of Confidence Intervals
+
+::: callout-warning
+## Common Misconception
+"There is a 95% probability that $\mu$ lies in the interval (7.4, 17.2)."
+
+**This is WRONG!** After computing the interval, $\mu$ either is or is not in the interval. There's no probability involved.
+:::
+
+. . .
+
+::: callout-tip
+## Correct Interpretation
+"If we repeated this procedure many times, 95% of the resulting intervals would contain the true $\mu$."
+
+Or more simply/loosely: "We are 95% confident that the true mean lies between 7.4 and 17.2."
+:::
+
+## Common Mistakes to Avoid (Chihara Example 7.2)
+
+Suppose a 95% CI for mean gas mileage is (29.5, 33.4) mpg. Evaluate:
+
+. . .
+
+1. ❌ "We are 95% confident that gas mileage for cars in this company is between 29.5 and 33.4 mpg."
+   - **Wrong:** CI is for population *mean*, not individual values.
+
+. . .
+
+2. ❌ "95% of all samples will give an average mileage between 29.5 and 33.4 mpg."
+   - **Wrong:** Each sample gives a *different* CI; 95% of *intervals* contain $\mu$.
+
+. . .
+
+3. ❌ "There is a 95% chance that the true mean is between 29.5 and 33.4 mpg."
+   - **Wrong:** $\mu$ is fixed, not random. It's either in the interval or not.
+
+## Visualizing Confidence Level: Simulation
+
+```{r}
+#| echo: true
+#| fig-height: 5
+# Simulate 100 confidence intervals
+set.seed(551)
+true_mu <- 10; sigma <- 4; n <- 25
+
+ci_data <- tibble(sample_id = 1:100) |>
+  rowwise() |>
+  mutate(
+    xbar = mean(rnorm(n, true_mu, sigma)),
+    lower = xbar - 1.96 * sigma / sqrt(n),
+    upper = xbar + 1.96 * sigma / sqrt(n),
+    contains_mu = lower < true_mu & upper > true_mu
+  )
+
+# Count how many contain the true mean
+sum(ci_data$contains_mu)
+```
+
+## Visualizing Confidence Level: The Plot
+
+```{r}
+#| echo: false
+#| fig-height: 8
+ci_data |>
+  slice_head(n = 50) |>
+  ggplot(aes(y = sample_id, color = contains_mu)) +
+  geom_segment(aes(x = lower, xend = upper, yend = sample_id), linewidth = 0.8) +
+  geom_point(aes(x = xbar), size = 2) +
+  geom_vline(xintercept = true_mu, color = "red", linetype = "dashed", linewidth = 1.2) +
+  scale_color_manual(values = c("FALSE" = "red", "TRUE" = "steelblue"),
+                     labels = c("Misses μ", "Contains μ")) +
+  labs(x = "Value", y = "Sample Number", 
+       title = "50 Confidence Intervals (95% Level)",
+       subtitle = paste("True μ =", true_mu, "(red dashed line)"),
+       color = "") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "top")
+```
+
+## The R Code for CI Visualization
+
+```{r}
+#| eval: true
+#| echo: true
+# Simulate *5000* confidence intervals
+set.seed(551)
+true_mu <- 10; sigma <- 4; n <- 25
+
+ci_data <- tibble(sample_id = 1:5000) |>
+  rowwise() |>
+  mutate(
+    xbar = mean(rnorm(n, true_mu, sigma)),
+    lower = xbar - 1.96 * sigma / sqrt(n),
+    upper = xbar + 1.96 * sigma / sqrt(n),
+    contains_mu = lower < true_mu & upper > true_mu
+  )
+
+# Proportion containing true mu (should be ~95%)
+mean(ci_data$contains_mu)
+```
+
+This is how the confidence level works: about 95% of intervals capture $\mu$.
+
+## Your Turn: CI Interpretation
+
+**Exercise:** A researcher reports a 95% CI for mean hospital stay after surgery as (3.2, 4.8) days. Which statements are correct?
+
+A. "95% of patients stay between 3.2 and 4.8 days"
+
+B. "We are 95% confident the true mean stay is between 3.2 and 4.8 days"
+
+C. "There is a 95% probability the mean is in this interval"
+
+D. "If we repeated this study many times, about 95% of the CIs would contain the true mean"
+
+. . .
+
+**Answer:** B and D are correct interpretations.
+
+# Pivotal Quantities {background-color="#e74c3c"}
+
+## The Key to Constructing CIs
+
+::: callout-important
+## Definition: Pivotal Quantity
+A **pivotal quantity** is a function $h(X_1, \ldots, X_n; \theta)$ of the data and parameter such that:
+
+1.  It depends on both the sample and $\theta$
+2.  Its **distribution does not depend on $\theta$** (or any other unknown parameters)
+:::
+
+. . .
+
+**Why pivotal quantities matter:**
+
+-   We can find critical values that don't depend on unknowns
+-   We can "solve for $\theta$" to get confidence limits
+
+## Example: The Standard Pivotal Quantity
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)$ with $\sigma$ known.
+
+. . .
+
+Consider:
+$$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$$
+
+. . .
+
+**Check the properties:**
+
+1.  $Z$ depends on $\bar{X}$ (data) and $\mu$ (parameter) ✓
+2.  $Z \sim N(0, 1)$ — the distribution doesn't depend on $\mu$ ✓
+
+. . .
+
+$Z$ is a **pivotal quantity**!
+
+## From Pivotal Quantity to CI
+
+Since $Z \sim N(0, 1)$, we know:
+$$P(-z_{\alpha/2} < Z < z_{\alpha/2}) = 1 - \alpha$$
+
+. . .
+
+Substitute $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$:
+$$P\left(-z_{\alpha/2} < \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} < z_{\alpha/2}\right) = 1 - \alpha$$
+
+. . .
+
+**Solve for $\mu$:**
+$$P\left(\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\right) = 1 - \alpha$$
+
+. . .
+
+This gives us the **confidence interval formula**!
+
+. . .
+
+What is $L$ and $U$ here?
+
+## The General Pivotal Quantity Method
+
+::: callout-tip
+## Recipe for Constructing CIs
+1. Find a pivotal quantity $h(X_1, \ldots, X_n; \theta)$
+2. Find constants $a$ and $b$ such that $P(a < h < b) = 1 - \alpha$
+3. Solve the inequalities for $\theta$ to get $(L, U)$
+:::
+
+. . .
+
+**Example (Devore 8.1):** For normal data with known $\sigma$:
+
+- Pivotal: $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0,1)$
+- Constants: $a = -z_{\alpha/2}$, $b = z_{\alpha/2}$
+- Solve: $\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} < \mu < \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$
+
+# CI for Mean: $\sigma$ Known {background-color="#3498db"}
+
+## The Z-Interval
+
+::: callout-important
+## Z Confidence Interval for Normal Mean ($\sigma$ Known)
+If $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$ with $\sigma$ known, a $100(1-\alpha)\%$ CI for $\mu$ is:
+$$\bar{x} \pm z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+where $z_{\alpha/2}$ is the critical value with $P(Z > z_{\alpha/2}) = \alpha/2$.
+:::
+
+. . .
+
+**Common critical values:**
+
+| Confidence Level | $\alpha$ | $\alpha/2$ | $z_{\alpha/2}$ |
+|------------------|----------|------------|----------------|
+| 90% | 0.10 | 0.05 | 1.645 |
+| 95% | 0.05 | 0.025 | 1.960 |
+| 99% | 0.01 | 0.005 | 2.576 |
+
+## Example: Tensile Strength (Devore Example 8.1)
+
+Synthetic fibers are tested for tensile strength. From past data, $\sigma = 55$ MPa is known. A sample of $n = 31$ fibers has $\bar{x} = 1064$ MPa.
+
+. . .
+
+**95% Confidence Interval:**
+
+```{r}
+xbar <- 1064
+sigma <- 55
+n <- 31
+alpha <- 0.05
+
+z_crit <- qnorm(1 - alpha/2)
+margin <- z_crit * sigma / sqrt(n)
+
+c(xbar - margin, xbar + margin)
+```
+
+. . .
+
+**Interpretation:** We are 95% confident that the true mean tensile strength is between 1044.6 and 1083.4 MPa.
+
+## Medical Example: Blood Glucose Levels
+
+A hospital monitors fasting blood glucose in diabetic patients. Historical data shows $\sigma = 18$ mg/dL. A sample of $n = 40$ patients has $\bar{x} = 142$ mg/dL.
+
+**Construct a 99% CI for the population mean glucose level:**
+
+```{r}
+xbar <- 142
+sigma <- 18
+n <- 40
+alpha <- 0.01
+
+z_crit <- qnorm(1 - alpha/2)
+cat("z critical value:", round(z_crit, 3), "\n")
+
+margin <- z_crit * sigma / sqrt(n)
+cat("Margin of error:", round(margin, 2), "mg/dL\n")
+
+cat("99% CI: (", round(xbar - margin, 1), ",", round(xbar + margin, 1), ")")
+```
+
+. . .
+
+**Clinical interpretation:** We can be 99% confident that the true mean fasting glucose for this patient population is between 134.7 and 149.3 mg/dL.
+
+## Anatomy of a Confidence Interval
+
+$$\bar{x} \pm z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+
+```{r}
+#| echo: false
+#| fig-height: 4
+tibble(x = c(1, 2, 3)) |>
+  ggplot() +
+  annotate("text", x = 1.5, y = 0.8, label = "Point Estimate", size = 15, hjust = 0.5) +
+  annotate("text", x = 1.5, y = 0.6, label = expression(bar(x)), size = 20, hjust = 0.5, color = "red") +
+  annotate("text", x = 2.5, y = 0.8, label = "Margin of Error", size = 15, hjust = 0.5) +
+  annotate("text", x = 2.5, y = 0.55, label = expression(z[alpha/2] %.% frac(sigma, sqrt(n))), 
+           size = 15, hjust = 0.5, color = "steelblue") +
+  xlim(1, 3) + ylim(0, 1) +
+  theme_void()
+```
+
+**Three factors affect the margin of error:**
+
+1. **Confidence level** ($z_{\alpha/2}$): Higher confidence → wider interval → less precise
+2. **Population variability** ($\sigma$): More variation → wider interval → less precise
+3. **Sample size** ($n$): Larger sample → narrower interval → more precise
+
+## Interactive: Effect of Confidence Level
+
+```{r}
+#| echo: true
+# Same data, different confidence levels
+xbar <- 1064; sigma <- 55; n <- 31
+
+confidence_levels <- c(0.90, 0.95, 0.99)
+
+tibble(conf_level = confidence_levels) |>
+  mutate(
+    z_crit = qnorm(1 - (1 - conf_level)/2),
+    margin = z_crit * sigma / sqrt(n),
+    lower = xbar - margin,
+    upper = xbar + margin,
+    width = upper - lower
+  )
+```
+
+**Takeaway:** Higher confidence requires wider intervals!
+
+## Visualizing the Trade-off
+
+```{r}
+#| echo: false
+#| fig-height: 6
+tibble(conf = seq(0.80, 0.99, by = 0.01)) |>
+  mutate(
+    z = qnorm(1 - (1 - conf)/2),
+    width = 2 * z * 55 / sqrt(31)
+  ) |>
+  ggplot(aes(x = conf, y = width)) +
+  geom_line(linewidth = 1.5, color = "steelblue") +
+  geom_point(data = tibble(conf = c(0.90, 0.95, 0.99), 
+                           width = 2 * qnorm(c(0.95, 0.975, 0.995)) * 55 / sqrt(31)),
+             size = 4, color = "red") +
+  labs(x = "Confidence Level", y = "CI Width (MPa)",
+       title = "Trade-off: Confidence Level vs. Precision") +
+  scale_x_continuous(labels = scales::percent) +
+  theme_minimal(base_size = 18)
+```
+
+## Sample Size Determination
+
+**Question:** How large should $n$ be to achieve a desired precision?
+
+. . .
+
+If we want the margin of error to be at most $b$:
+$$z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}} \leq b$$
+
+. . .
+
+**Solving for $n$:**
+$$n \geq \left(\frac{z_{\alpha/2} \cdot \sigma}{b}\right)^2$$
+
+## Sample Size Example: Clinical Trial Design
+
+A pharmaceutical company wants to estimate mean drug clearance time. From pilot data, $\sigma \approx 25$ minutes. They want a 95% CI with margin of error ≤ 5 minutes.
+
+```{r}
+sigma <- 25
+b <- 5  # desired margin of error
+alpha <- 0.05
+z_crit <- qnorm(1 - alpha/2)
+
+n_required <- (z_crit * sigma / b)^2
+cat("Minimum sample size:", ceiling(n_required))
+```
+
+. . .
+
+**Note:** Always round **up** to ensure the desired precision!
+
+## Sample Size: Effect of Requirements
+
+```{r}
+#| echo: true
+# How does required n change with margin of error and confidence?
+expand_grid(
+  margin = c(3, 5, 10),
+  conf_level = c(0.90, 0.95, 0.99)
+) |>
+  mutate(
+    z = qnorm(1 - (1 - conf_level)/2),
+    n_required = ceiling((z * 25 / margin)^2)
+  ) |>
+  pivot_wider(names_from = margin, values_from = n_required, 
+              names_prefix = "margin_") |>
+  select(-z)
+```
+
+**Key insight:** Halving the margin of error (from 10 to 5) quadruples the sample size!
+
+## One-Sided Confidence Bounds
+
+Sometimes we only care about one direction:
+
+-   **Lower bound:** We want to know the minimum plausible value
+-   **Upper bound:** We want to know the maximum plausible value
+
+. . .
+
+::: callout-tip
+## One-Sided Bounds
+**Lower Confidence Bound:** $\bar{x} - z_{\alpha} \cdot \frac{\sigma}{\sqrt{n}} < \mu$
+
+**Upper Confidence Bound:** $\mu < \bar{x} + z_{\alpha} \cdot \frac{\sigma}{\sqrt{n}}$
+
+Note: Use $z_\alpha$ (not $z_{\alpha/2}$) for one-sided bounds at confidence level $1 - \alpha$.
+:::
+
+. . .
+
+## Why $z_\alpha$ instead of $z_{\alpha/2}$?
+
+For a **two-sided** CI, we split $\alpha$ into two tails ($\alpha/2$ each):
+$$P\left(-z_{\alpha/2} < \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} < z_{\alpha/2}\right) = 1 - \alpha$$
+
+. . .
+
+For a **one-sided lower bound**, all $\alpha$ goes in one tail:
+$$P\left(\frac{\bar{X} - \mu}{\sigma/\sqrt{n}} < z_{\alpha}\right) = 1 - \alpha$$
+
+Rearranging for $\mu$:
+$$P\left(\bar{X} - z_{\alpha} \cdot \frac{\sigma}{\sqrt{n}} < \mu\right) = 1 - \alpha$$
+
+. . .
+
+So the lower bound is: $L = \bar{X} - z_{\alpha} \cdot \frac{\sigma}{\sqrt{n}}$
+
+**Key insight:** One-sided bounds use $z_\alpha$ because we put all the "error probability" $\alpha$ on one side, not split between two sides.
+
+## Medical Example: Drug Half-Life
+
+A pharmacologist measures half-life of a new drug. With $n = 20$ subjects, $\bar{x} = 4.2$ hours, and known $\sigma = 0.8$ hours.
+
+**Find a 95% lower confidence bound:**
+
+```{r}
+xbar <- 4.2
+sigma <- 0.8
+n <- 20
+alpha <- 0.05
+
+z_crit <- qnorm(1 - alpha)  # Note: z_alpha, not z_alpha/2
+lower_bound <- xbar - z_crit * sigma / sqrt(n)
+
+cat("95% lower confidence bound:", round(lower_bound, 2), "hours\n")
+cat("Interpretation: We are 95% confident that the true half-life",
+    "\nis at least", round(lower_bound, 2), "hours")
+```
+
+## Why Lower vs. Upper Bounds?
+
+**Use a LOWER bound when:**
+
+- Testing if a treatment effect is "at least" some value
+- Establishing minimum efficacy
+- Setting safety margins
+
+. . .
+
+**Use an UPPER bound when:**
+
+- Estimating maximum risk or adverse event rate  
+- Establishing worst-case scenarios
+- Quality control (maximum defect rate)
+
+## Example: Remission Time (Devore 8.7)
+
+A surgeon wants a lower bound for mean remission time after cancer surgery. From $n = 25$ patients, $\bar{x} = 42$ months, $\sigma = 12$ months (from historical data).
+
+```{r}
+xbar <- 42
+sigma <- 12
+n <- 25
+alpha <- 0.05
+
+# 95% lower confidence bound
+z_alpha <- qnorm(1 - alpha)
+lower <- xbar - z_alpha * sigma / sqrt(n)
+
+cat("95% lower confidence bound:", round(lower, 1), "months\n")
+cat("\nWe are 95% confident that true mean remission time\n")
+cat("is at least", round(lower, 1), "months.")
+```
+
+# Pivotal Quantities for Other Distributions {background-color="#9b59b6"}
+
+## Example: Exponential Distribution (Devore 8.5)
+
+Time-to-breakdown of insulating fluid follows $\text{Exp}(\lambda)$ with mean $1/\lambda$ and variance $1/\lambda^2$. Given $n = 10$ observations with $\sum x_i = 550.87$ min.
+
+. . .
+
+**The pivotal quantity:**
+$$h = 2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}$$
+
+. . .
+
+**Why is this pivotal?**
+
+- Depends on data ($\sum X_i$) and parameter ($\lambda$)
+- Distribution ($\chi^2_{2n}$) doesn't depend on $\lambda$
+
+## Exponential CI Derivation
+
+Let $\chi^2_{.025, 20}$ and $\chi^2_{.975, 20}$ be the critical values. Then:
+
+$$P\left(\chi^2_{.975, 20} < 2\lambda \sum X_i < \chi^2_{.025, 20}\right) = 0.95$$
+
+. . .
+
+**Solving for $\lambda$:**
+$$P\left(\frac{\chi^2_{.975, 20}}{2\sum X_i} < \lambda < \frac{\chi^2_{.025, 20}}{2\sum X_i}\right) = 0.95$$
+
+```{r}
+sum_x <- 550.87
+lower <- qchisq(0.025, df = 20) / (2 * sum_x)
+upper <- qchisq(0.975, df = 20) / (2 * sum_x)
+cat("95% CI for λ: (", round(lower, 4), ",", round(upper, 4), ")")
+```
+
+## CI for Mean of Exponential
+
+Since the mean of $\text{Exp}(\lambda)$ is $\mu = 1/\lambda$:
+
+```{r}
+# CI for mean breakdown time
+mean_lower <- 1/upper
+mean_upper <- 1/lower
+
+cat("95% CI for mean breakdown time:\n")
+cat("(", round(mean_lower, 1), ",", round(mean_upper, 1), ") minutes")
+```
+
+. . .
+
+**Note:** The interval is quite wide — reflecting variability in the data and small sample size.
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## Lesson 7 Summary
+
+**Key Concepts:**
+
+1.  **Confidence Intervals** provide a range of plausible values with quantified uncertainty
+
+2.  **Correct Interpretation:** "95% of intervals constructed this way contain $\theta$"
+
+3.  **Pivotal Quantities** allow CI construction without knowing unknown parameters
+
+4.  **Z-intervals** ($\sigma$ known): $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$
+
+5.  **Sample Size:** $n \geq \left(\frac{z_{\alpha/2} \cdot \sigma}{b}\right)^2$
+
+6.  **One-sided bounds** use $z_\alpha$ instead of $z_{\alpha/2}$
+
+## Key Formulas for Z-Intervals
+
+| Quantity | Formula |
+|----------|---------|
+| Two-sided CI | $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ |
+| Lower bound | $\bar{x} - z_{\alpha}\frac{\sigma}{\sqrt{n}}$ |
+| Upper bound | $\bar{x} + z_{\alpha}\frac{\sigma}{\sqrt{n}}$ |
+| Sample size | $n = \left(\frac{z_{\alpha/2} \cdot \sigma}{b}\right)^2$ |
+| Width | $w = 2 z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ |
+
+## Lesson 7 Practice Problems
+
+1.  **(Devore 8.1)** Consider a normal population with $\sigma$ known. 
+    a. What is the confidence level for the interval $\bar{x} \pm 2.81\sigma/\sqrt{n}$?
+    b. What is the confidence level for the interval $\bar{x} \pm 1.44\sigma/\sqrt{n}$?
+    c. What value of $z_{\alpha/2}$ gives a 99.7% confidence level?
+
+2.  **(Devore 8.2)** Two CIs for mean resonance frequency are (114.4, 115.6) and (114.1, 115.9).
+    a. What is the sample mean?
+    b. Which has the 90% confidence level and which has 99%? Explain.
+
+3.  **(Devore 8.4)** For IQ scores with $\sigma = 15$, how large a sample is needed for a 99% CI with margin of error ≤ 2?
+
+## Lesson 7 Practice Problems (continued)
+
+4.  **(Chihara 7.2)** Explain why each of these interpretations of a 95% CI for mean gas mileage (29.5, 33.4) is incorrect:
+    a. "We are 95% confident gas mileage is between 29.5 and 33.4 mpg."
+    b. "95% of samples will give an average between 29.5 and 33.4 mpg."
+    c. "There is a 95% chance the true mean is in this interval."
+
+5.  **(Medical Application)** A hospital wants to estimate mean ICU stay duration. Historical data shows $\sigma = 2.5$ days. What sample size is needed for a 95% CI with margin of error ≤ 0.5 days?
+
+6.  **(Devore 8.7 style)** A pharmaceutical company claims their pain reliever lasts at least 6 hours. With $n = 30$, $\bar{x} = 6.8$ hours, and $\sigma = 1.5$ hours, find a 95% lower confidence bound. Does this support their claim?
+
+## Looking Ahead: Lesson 8
+
+**Next Lesson: One-Sample t-Intervals and Proportions**
+
+-   What if $\sigma$ is unknown? (The t-interval)
+-   The Student's t distribution
+-   Confidence intervals for population proportions
+-   Wald vs. Score intervals
+-   Checking assumptions
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 8.1
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 7.1-7.2
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/07_Intro_Confidence_Intervals/07_Intro_Confidence_Intervals.html lessons/07_Intro_Confidence_Intervals/07_Intro_Confidence_Intervals.pdf
+```
