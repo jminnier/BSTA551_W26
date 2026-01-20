@@ -687,30 +687,6 @@ cat("(", round(mean_lower, 1), ",", round(mean_upper, 1), ") minutes")
 | Sample size | $n = \left(\frac{z_{\alpha/2} \cdot \sigma}{b}\right)^2$ |
 | Width | $w = 2 z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ |
 
-## Lesson 7 Practice Problems
-
-1.  **(Devore 8.1)** Consider a normal population with $\sigma$ known. 
-    a. What is the confidence level for the interval $\bar{x} \pm 2.81\sigma/\sqrt{n}$?
-    b. What is the confidence level for the interval $\bar{x} \pm 1.44\sigma/\sqrt{n}$?
-    c. What value of $z_{\alpha/2}$ gives a 99.7% confidence level?
-
-2.  **(Devore 8.2)** Two CIs for mean resonance frequency are (114.4, 115.6) and (114.1, 115.9).
-    a. What is the sample mean?
-    b. Which has the 90% confidence level and which has 99%? Explain.
-
-3.  **(Devore 8.4)** For IQ scores with $\sigma = 15$, how large a sample is needed for a 99% CI with margin of error ≤ 2?
-
-## Lesson 7 Practice Problems (continued)
-
-4.  **(Chihara 7.2)** Explain why each of these interpretations of a 95% CI for mean gas mileage (29.5, 33.4) is incorrect:
-    a. "We are 95% confident gas mileage is between 29.5 and 33.4 mpg."
-    b. "95% of samples will give an average between 29.5 and 33.4 mpg."
-    c. "There is a 95% chance the true mean is in this interval."
-
-5.  **(Medical Application)** A hospital wants to estimate mean ICU stay duration. Historical data shows $\sigma = 2.5$ days. What sample size is needed for a 95% CI with margin of error ≤ 0.5 days?
-
-6.  **(Devore 8.7 style)** A pharmaceutical company claims their pain reliever lasts at least 6 hours. With $n = 30$, $\bar{x} = 6.8$ hours, and $\sigma = 1.5$ hours, find a 95% lower confidence bound. Does this support their claim?
-
 ## Looking Ahead: Lesson 8
 
 **Next Lesson: One-Sample t-Intervals and Proportions**
@@ -735,5 +711,5 @@ Thank you!
 ```{bash}
 #| eval: false
 #| include: false
-decktape reveal --fragments docs/lessons/07_Intro_Confidence_Intervals/07_Intro_Confidence_Intervals.html lessons/07_Intro_Confidence_Intervals/07_Intro_Confidence_Intervals.pdf
+decktape reveal --fragments docs/lessons/07_Confidence_Intervals/07_Confidence_Intervals.html lessons/07_Confidence_Intervals/07_Confidence_Intervals.pdf
 ```
