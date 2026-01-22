@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -69,6 +104,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -125,7 +189,13 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-pivotal-quantities-and-confidence-intervals-devore-section-8.1-example-8.5-style" id="toc-problem-1-pivotal-quantities-and-confidence-intervals-devore-section-8.1-example-8.5-style" class="nav-link" data-scroll-target="#problem-1-pivotal-quantities-and-confidence-intervals-devore-section-8.1-example-8.5-style">Problem 1: Pivotal Quantities and Confidence Intervals (Devore Section 8.1, Example 8.5 style)</a></li>
+  <li><a href="#problem-2-z-interval-for-a-normal-mean-devore-section-8.1" id="toc-problem-2-z-interval-for-a-normal-mean-devore-section-8.1" class="nav-link" data-scroll-target="#problem-2-z-interval-for-a-normal-mean-devore-section-8.1">Problem 2: z-Interval for a Normal Mean (Devore Section 8.1)</a></li>
+  <li><a href="#problem-3-devore-section-8.1-exercise-1" id="toc-problem-3-devore-section-8.1-exercise-1" class="nav-link" data-scroll-target="#problem-3-devore-section-8.1-exercise-1">Problem 3: Devore Section 8.1, Exercise 1</a></li>
+  <li><a href="#problem-4-estimating-different-population-characteristics-devore-7.4-style" id="toc-problem-4-estimating-different-population-characteristics-devore-7.4-style" class="nav-link" data-scroll-target="#problem-4-estimating-different-population-characteristics-devore-7.4-style">Problem 4: Estimating Different Population Characteristics (Devore 7.4 Style)</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_03.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -152,7 +222,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 20, 2026</p>
+      <p class="date-modified">January 21, 2026</p>
     </div>
   </div>
     
@@ -165,14 +235,72 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="directions" class="level2">
 <h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf or html format.</p>
-<p>You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.</p>
+<p><strong>Same as previous instructions</strong></p>
+<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_03.qmd">github link</a></p>
 <p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 6 and 7: Review of Point Estimation and Introduction to Confidence Intervals (pivotal quantities, two-sided z-intervals).</p>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-pivotal-quantities-and-confidence-intervals-devore-section-8.1-example-8.5-style" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-pivotal-quantities-and-confidence-intervals-devore-section-8.1-example-8.5-style">Problem 1: Pivotal Quantities and Confidence Intervals (Devore Section 8.1, Example 8.5 style)</h3>
+<p>A theoretical model suggests that the time-to-failure (in hours) of a certain medical device component follows an Exponential distribution with unknown rate parameter <span class="math inline">\(\lambda &gt; 0\)</span>. A random sample of <span class="math inline">\(n = 8\)</span> components yields the following failure times:</p>
+<p><span class="math display">\[X = \{145, 89, 203, 67, 112, 156, 178, 94\}\]</span></p>
+<p><em>Hint: If <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)\)</span>, then <span class="math inline">\(2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}\)</span> (chi-squared with <span class="math inline">\(2n\)</span> degrees of freedom).</em></p>
+<p><strong>(a)</strong> Let <span class="math inline">\(h(X_1, \ldots, X_n, \lambda) = 2\lambda \sum_{i=1}^n X_i\)</span>. Show that <span class="math inline">\(h\)</span> is a pivotal quantity by verifying the definition included in class slides.</p>
+<p><strong>(b)</strong> Using the pivotal quantity from part (a), derive a <span class="math inline">\(100(1-\alpha)\%\)</span> confidence interval for <span class="math inline">\(\lambda\)</span>. Express your answer in terms of <span class="math inline">\(\sum X_i\)</span> and chi-squared critical values <span class="math inline">\(\chi^2_{\alpha/2, 2n}\)</span> and <span class="math inline">\(\chi^2_{1-\alpha/2, 2n}\)</span>.</p>
+<p><strong>(c)</strong> Compute a 95% confidence interval for <span class="math inline">\(\lambda\)</span> using the data. In R, use <code>qchisq(p, df)</code> to find chi-squared quantiles.</p>
+<p><strong>(d)</strong> Find a 95% confidence interval for the mean time-to-failure <span class="math inline">\(\mu = 1/\lambda\)</span>.</p>
+</section>
+<section id="problem-2-z-interval-for-a-normal-mean-devore-section-8.1" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-z-interval-for-a-normal-mean-devore-section-8.1">Problem 2: z-Interval for a Normal Mean (Devore Section 8.1)</h3>
+<p>A pharmaceutical company is conducting quality control on the fill volume (in mL) of syringes. Based on extensive historical data, the fill volumes are known to follow a normal distribution with standard deviation <span class="math inline">\(\sigma = 0.05\)</span> mL. The target fill volume is <span class="math inline">\(\mu_0 = 1.00\)</span> mL.</p>
+<p>A random sample of <span class="math inline">\(n = 20\)</span> syringes from a new production batch yields a sample mean of <span class="math inline">\(\bar{x} = 0.982\)</span> mL.</p>
+<p><strong>(a)</strong> Verify that <span class="math inline">\(Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}\)</span> is a pivotal quantity for <span class="math inline">\(\mu\)</span> (verify the definition in the slides, you can just state the distribution of <span class="math inline">\(\bar{X}\)</span> to start, don’t need to derive it mathematically).</p>
+<p><strong>(b)</strong> Calculate a 95% confidence interval for the true mean fill volume <span class="math inline">\(\mu\)</span> using the observed sample mean provided.</p>
+<p><strong>(c)</strong> Based on your confidence interval, is there evidence that the true mean fill volume differs from the target of 1.00 mL? Explain.</p>
+<p><strong>(d)</strong> The company wants to estimate the mean fill volume to within <span class="math inline">\(\pm 0.02\)</span> mL with 95% confidence. What sample size is required?</p>
+</section>
+<section id="problem-3-devore-section-8.1-exercise-1" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-devore-section-8.1-exercise-1">Problem 3: Devore Section 8.1, Exercise 1</h3>
+<p>Consider a normal population distribution with the value of <span class="math inline">\(\sigma\)</span> known.</p>
+<p><strong>(a)</strong> What is the confidence level for the interval <span class="math inline">\(\bar{x} \pm 2.81 \cdot \sigma/\sqrt{n}\)</span>? (Hint, use the definition of critical value and the <code>pnorm()</code> function in R – do sanity checks to make sure you’re using the appropriate tail!).</p>
+<p><strong>(b)</strong> What is the confidence level for the interval <span class="math inline">\(\bar{x} \pm 1.44 \cdot \sigma/\sqrt{n}\)</span>?</p>
+<p><strong>(c)</strong> What value of <span class="math inline">\(z_{\alpha/2}\)</span> in the CI formula results in a confidence level of 99.7%?</p>
+<p><strong>(d)</strong> Answer the question posed in part (c) for a confidence level of 75%.</p>
+</section>
+<section id="problem-4-estimating-different-population-characteristics-devore-7.4-style" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-estimating-different-population-characteristics-devore-7.4-style">Problem 4: Estimating Different Population Characteristics (Devore 7.4 Style)</h3>
+<p>A clinical researcher is studying verbal IQ scores in a population of patients recovering from mild traumatic brain injury. A random sample of <span class="math inline">\(n = 12\)</span> patients yields the following verbal IQ scores:</p>
+<p><span class="math display">\[X = \{94, 108, 87, 115, 102, 99, 91, 106, 112, 98, 103, 89\}\]</span></p>
+<p>Assume verbal IQ scores in this population follow a normal distribution with unknown mean <span class="math inline">\(\mu\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>.</p>
+<p><strong>(a)</strong> Compute point estimates for:</p>
+<ul>
+<li>The population mean <span class="math inline">\(\mu\)</span></li>
+<li>The population variance <span class="math inline">\(\sigma^2\)</span> (use the unbiased estimator <span class="math inline">\(S^2\)</span>)</li>
+<li>The population standard deviation <span class="math inline">\(\sigma\)</span></li>
+</ul>
+<p><strong>(b)</strong> The researcher wants to estimate the proportion of patients in this population with verbal IQ scores below 95 (the clinical threshold for concern). If <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span>, then this proportion is <span class="math inline">\(p = P(X &lt; 95) = \Phi\left(\frac{95 - \mu}{\sigma}\right)\)</span>.</p>
+<p>Using the invariance property of MLEs and your estimates from part (a), compute a point estimate <span class="math inline">\(\hat{p}\)</span> for this proportion.</p>
+<p><em>Hint: In R, use <code>pnorm()</code> to compute the standard normal CDF <span class="math inline">\(\Phi\)</span>.</em></p>
+<p><strong>(c)</strong> A colleague suggests a different estimator for <span class="math inline">\(p\)</span>: simply use the sample proportion of observations below 95, i.e., <span class="math inline">\(\tilde{p} = \frac{\#\{X_i &lt; 95\}}{n}\)</span>.</p>
+<ul>
+<li>Compute <span class="math inline">\(\tilde{p}\)</span> for the given data</li>
+<li>Is <span class="math inline">\(\tilde{p}\)</span> unbiased for <span class="math inline">\(p = P(X &lt; 95)\)</span>? Explain briefly.</li>
+<li>(optional bonus question, do not need to complete for credit) Which estimator (<span class="math inline">\(\hat{p}\)</span> or <span class="math inline">\(\tilde{p}\)</span>) do you think makes better use of the normality assumption? Why?</li>
+</ul>
+<p><strong>(d)</strong> Using R, compute the estimated standard error of <span class="math inline">\(\bar{X}\)</span>: <span class="math display">\[\widehat{SE}(\bar{X}) = \frac{S}{\sqrt{n}}\]</span></p>
+<p>If a different researcher collected a new sample of the same size, how much would you expect their sample mean to differ from yours, roughly speaking?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>iq_scores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">94</span>, <span class="dv">108</span>, <span class="dv">87</span>, <span class="dv">115</span>, <span class="dv">102</span>, <span class="dv">99</span>, <span class="dv">91</span>, <span class="dv">106</span>, <span class="dv">112</span>, <span class="dv">98</span>, <span class="dv">103</span>, <span class="dv">89</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

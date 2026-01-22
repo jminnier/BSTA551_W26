@@ -23,10 +23,102 @@ source(here("class_dates.R"))
 
 ## Directions
 
-**Please turn in this homework on Sakai.** Please submit your homework in pdf or html format. 
+**Same as previous instructions**
 
-You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.
+For simulation problems, set your seed to `set.seed(551)` for reproducibility.
+
+For the qmd of this Homework page, see this [github link](https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_03.qmd)
 
 *You must show all of your work to receive credit.*
 
+This homework covers material from Lessons 6 and 7: Review of Point Estimation and Introduction to Confidence Intervals (pivotal quantities, two-sided z-intervals). 
+
+
 ## Questions
+
+
+### Problem 1: Pivotal Quantities and Confidence Intervals (Devore Section 8.1, Example 8.5 style)
+
+A theoretical model suggests that the time-to-failure (in hours) of a certain medical device component follows an Exponential distribution with unknown rate parameter $\lambda > 0$. A random sample of $n = 8$ components yields the following failure times:
+
+$$X = \{145, 89, 203, 67, 112, 156, 178, 94\}$$
+
+*Hint: If $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)$, then $2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}$ (chi-squared with $2n$ degrees of freedom).*
+
+**(a)** Let $h(X_1, \ldots, X_n, \lambda) = 2\lambda \sum_{i=1}^n X_i$. Show that $h$ is a pivotal quantity by verifying the definition included in class slides.
+
+**(b)** Using the pivotal quantity from part (a), derive a $100(1-\alpha)\%$ confidence interval for $\lambda$. Express your answer in terms of $\sum X_i$ and chi-squared critical values $\chi^2_{\alpha/2, 2n}$ and $\chi^2_{1-\alpha/2, 2n}$.
+
+   
+
+**(c)** Compute a 95% confidence interval for $\lambda$ using the data. In R, use `qchisq(p, df)` to find chi-squared quantiles.
+
+**(d)** Find a 95% confidence interval for the mean time-to-failure $\mu = 1/\lambda$.
+
+
+### Problem 2: z-Interval for a Normal Mean (Devore Section 8.1)
+
+A pharmaceutical company is conducting quality control on the fill volume (in mL) of syringes. Based on extensive historical data, the fill volumes are known to follow a normal distribution with standard deviation $\sigma = 0.05$ mL. The target fill volume is $\mu_0 = 1.00$ mL.
+
+A random sample of $n = 20$ syringes from a new production batch yields a sample mean of $\bar{x} = 0.982$ mL.
+
+**(a)** Verify that $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$ is a pivotal quantity for $\mu$ (verify the definition in the slides, you can just state the distribution of $\bar{X}$ to start, don't need to derive it mathematically).
+
+**(b)** Calculate a 95% confidence interval for the true mean fill volume $\mu$ using the observed sample mean provided.
+
+**(c)** Based on your confidence interval, is there evidence that the true mean fill volume differs from the target of 1.00 mL? Explain.
+
+**(d)** The company wants to estimate the mean fill volume to within $\pm 0.02$ mL with 95% confidence. What sample size is required?
+
+
+### Problem 3: Devore Section 8.1, Exercise 1
+
+Consider a normal population distribution with the value of $\sigma$ known.
+
+**(a)** What is the confidence level for the interval $\bar{x} \pm 2.81 \cdot \sigma/\sqrt{n}$? (Hint, use the definition of critical value and the `pnorm()` function in R -- do sanity checks to make sure you're using the appropriate tail!).
+
+**(b)** What is the confidence level for the interval $\bar{x} \pm 1.44 \cdot \sigma/\sqrt{n}$?
+
+**(c)** What value of $z_{\alpha/2}$ in the CI formula results in a confidence level of 99.7%?
+
+**(d)** Answer the question posed in part (c) for a confidence level of 75%.
+
+### Problem 4: Estimating Different Population Characteristics (Devore 7.4 Style)
+
+A clinical researcher is studying verbal IQ scores in a population of patients recovering from mild traumatic brain injury. A random sample of $n = 12$ patients yields the following verbal IQ scores:
+
+$$X = \{94, 108, 87, 115, 102, 99, 91, 106, 112, 98, 103, 89\}$$
+
+Assume verbal IQ scores in this population follow a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$.
+
+**(a)** Compute point estimates for:
+
+   - The population mean $\mu$
+   - The population variance $\sigma^2$ (use the unbiased estimator $S^2$)
+   - The population standard deviation $\sigma$
+
+**(b)** The researcher wants to estimate the proportion of patients in this population with verbal IQ scores below 95 (the clinical threshold for concern). If $X \sim N(\mu, \sigma^2)$, then this proportion is $p = P(X < 95) = \Phi\left(\frac{95 - \mu}{\sigma}\right)$.
+
+   Using the invariance property of MLEs and your estimates from part (a), compute a point estimate $\hat{p}$ for this proportion.
+   
+   *Hint: In R, use `pnorm()` to compute the standard normal CDF $\Phi$.*
+
+**(c)** A colleague suggests a different estimator for $p$: simply use the sample proportion of observations below 95, i.e., $\tilde{p} = \frac{\#\{X_i < 95\}}{n}$.
+
+   - Compute $\tilde{p}$ for the given data
+   - Is $\tilde{p}$ unbiased for $p = P(X < 95)$? Explain briefly.
+   - (optional bonus question, do not need to complete for credit) Which estimator ($\hat{p}$ or $\tilde{p}$) do you think makes better use of the normality assumption? Why?
+
+**(d)** Using R, compute the estimated standard error of $\bar{X}$:
+$$\widehat{SE}(\bar{X}) = \frac{S}{\sqrt{n}}$$
+
+   If a different researcher collected a new sample of the same size, how much would you expect their sample mean to differ from yours, roughly speaking?
+
+```{r}
+#| label: prob4-template
+#| eval: false
+# Data
+iq_scores <- c(94, 108, 87, 115, 102, 99, 91, 106, 112, 98, 103, 89)
+
+# Your code here
+```
