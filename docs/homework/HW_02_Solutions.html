@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Homework 2 Solutions – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#problem-1-fisher-information-and-crlb" id="toc-problem-1-fisher-information-and-crlb" class="nav-link active" data-scroll-target="#problem-1-fisher-information-and-crlb">Problem 1: Fisher Information and CRLB</a>
+  <ul class="collapse">
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a">Part (a)</a></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b">Part (b)</a></li>
+  <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c">Part (c)</a></li>
+  <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d">Part (d)</a></li>
+  </ul></li>
+  <li><a href="#problem-2-method-of-moments-shifted-exponential-distribution" id="toc-problem-2-method-of-moments-shifted-exponential-distribution" class="nav-link" data-scroll-target="#problem-2-method-of-moments-shifted-exponential-distribution">Problem 2: Method of Moments (Shifted Exponential Distribution)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-1" id="toc-part-a-1" class="nav-link" data-scroll-target="#part-a-1">Part (a)</a></li>
+  <li><a href="#part-b-1" id="toc-part-b-1" class="nav-link" data-scroll-target="#part-b-1">Part (b)</a></li>
+  </ul></li>
+  <li><a href="#problem-3-maximum-likelihood-estimation-devore-7.25" id="toc-problem-3-maximum-likelihood-estimation-devore-7.25" class="nav-link" data-scroll-target="#problem-3-maximum-likelihood-estimation-devore-7.25">Problem 3: Maximum Likelihood Estimation (Devore 7.25)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-2" id="toc-part-a-2" class="nav-link" data-scroll-target="#part-a-2">Part (a)</a></li>
+  <li><a href="#part-b-2" id="toc-part-b-2" class="nav-link" data-scroll-target="#part-b-2">Part (b)</a></li>
+  <li><a href="#part-c-1" id="toc-part-c-1" class="nav-link" data-scroll-target="#part-c-1">Part (c)</a></li>
+  </ul></li>
+  <li><a href="#problem-4-sufficient-statistics-medical-application" id="toc-problem-4-sufficient-statistics-medical-application" class="nav-link" data-scroll-target="#problem-4-sufficient-statistics-medical-application">Problem 4: Sufficient Statistics (Medical Application)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-3" id="toc-part-a-3" class="nav-link" data-scroll-target="#part-a-3">Part (a)</a></li>
+  <li><a href="#part-b-3" id="toc-part-b-3" class="nav-link" data-scroll-target="#part-b-3">Part (b)</a></li>
+  <li><a href="#part-c-2" id="toc-part-c-2" class="nav-link" data-scroll-target="#part-c-2">Part (c)</a></li>
+  </ul></li>
+  <li><a href="#problem-5-mle-for-normal-variance-devore-7.31-modified" id="toc-problem-5-mle-for-normal-variance-devore-7.31-modified" class="nav-link" data-scroll-target="#problem-5-mle-for-normal-variance-devore-7.31-modified">Problem 5: MLE for Normal Variance (Devore 7.31 Modified)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-4" id="toc-part-a-4" class="nav-link" data-scroll-target="#part-a-4">Part (a)</a></li>
+  <li><a href="#part-b-4" id="toc-part-b-4" class="nav-link" data-scroll-target="#part-b-4">Part (b)</a></li>
+  <li><a href="#part-c-3" id="toc-part-c-3" class="nav-link" data-scroll-target="#part-c-3">Part (c)</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_02_Solutions.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 2 Solutions</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 23, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="problem-1-fisher-information-and-crlb" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1-fisher-information-and-crlb">Problem 1: Fisher Information and CRLB</h2>
+<p>A clinical trial is testing a new treatment for hypertension. The time (in days) until a patient achieves target blood pressure is modeled as an Exponential distribution with rate parameter <span class="math inline">\(\lambda\)</span> (where <span class="math inline">\(E(X) = 1/\lambda\)</span>).</p>
+<p>In a pilot study, the following times (in days) were observed for <span class="math inline">\(n = 8\)</span> patients: <span class="math display">\[X = \{12, 8, 15, 6, 10, 14, 9, 11\}\]</span></p>
+<section id="part-a" class="level3">
+<h3 class="anchored" data-anchor-id="part-a">Part (a)</h3>
+<p><strong>Calculate the Fisher Information <span class="math inline">\(I(\lambda)\)</span> for a single observation from an Exponential(<span class="math inline">\(\lambda\)</span>) distribution. Show your derivation using the definition <span class="math inline">\(I(\lambda) = E[-\ell''(\lambda)]\)</span>.</strong></p>
+<p>For <span class="math inline">\(X \sim \text{Exponential}(\lambda)\)</span>, the pdf is <span class="math inline">\(f(x; \lambda) = \lambda e^{-\lambda x}\)</span> for <span class="math inline">\(x &gt; 0\)</span>.</p>
+<p><strong>Log-likelihood for a single observation:</strong> <span class="math display">\[\ell(\lambda) = \ln f(x; \lambda) = \ln \lambda - \lambda x\]</span></p>
+<p><strong>First derivative:</strong> <span class="math display">\[\ell'(\lambda) = \frac{1}{\lambda} - x\]</span></p>
+<p><strong>Second derivative:</strong> <span class="math display">\[\ell''(\lambda) = -\frac{1}{\lambda^2}\]</span></p>
+<p><strong>Fisher Information:</strong> <span class="math display">\[I(\lambda) = E[-\ell''(\lambda)] = E\left[\frac{1}{\lambda^2}\right] = \boxed{\frac{1}{\lambda^2}}\]</span></p>
+<p>Note: Since the second derivative does not depend on <span class="math inline">\(X\)</span>, the expectation is straightforward.</p>
+</section>
+<section id="part-b" class="level3">
+<h3 class="anchored" data-anchor-id="part-b">Part (b)</h3>
+<p><strong>State the Cramér-Rao Lower Bound (CRLB) for unbiased estimators of <span class="math inline">\(\lambda\)</span> based on a sample of size <span class="math inline">\(n\)</span>.</strong></p>
+<p>For <span class="math inline">\(n\)</span> observations, the Fisher Information is: <span class="math display">\[I_n(\lambda) = n \cdot I(\lambda) = \frac{n}{\lambda^2}\]</span></p>
+<p>The <strong>Cramér-Rao Lower Bound</strong> for unbiased estimators of <span class="math inline">\(\lambda\)</span> is: <span class="math display">\[\boxed{\text{CRLB} = \frac{1}{I_n(\lambda)} = \frac{\lambda^2}{n}}\]</span></p>
+</section>
+<section id="part-c" class="level3">
+<h3 class="anchored" data-anchor-id="part-c">Part (c)</h3>
+<p><strong>The MLE of <span class="math inline">\(\lambda\)</span> is <span class="math inline">\(\hat{\lambda} = 1/\bar{X}\)</span>. This estimator is biased. Find an unbiased estimator of <span class="math inline">\(\lambda\)</span> and compute its variance. Does this unbiased estimator achieve the CRLB?</strong></p>
+<p>[JM NOTE: Apologies! I meant to give you the “hint” about the distribution of 1/Y used below and only realized I hadn’t put it in the question when one of you asked me a question about it. Note that <span class="math inline">\(\bar{X}\)</span> is unbiased for <span class="math inline">\(1/\lambda\)</span> but <span class="math inline">\(1/\bar{X}\)</span> is not unbiased for <span class="math inline">\(\lambda\)</span> since <span class="math inline">\(g(x) = 1/x\)</span> is a convex function.]</p>
+<p>For Exponential(<span class="math inline">\(\lambda\)</span>), we have <span class="math inline">\(\sum_{i=1}^n X_i \sim \text{Gamma}(n, \lambda)\)</span>.</p>
+<p>Using properties of the Gamma distribution, for <span class="math inline">\(Y \sim \text{Gamma}(n, \lambda)\)</span>: <span class="math display">\[E\left(\frac{1}{Y}\right) = \frac{\lambda}{n-1} \quad \text{for } n &gt; 1\]</span></p>
+<p>Therefore: <span class="math display">\[E\left(\frac{1}{\bar{X}}\right) = E\left(\frac{n}{\sum X_i}\right) = \frac{n\lambda}{n-1}\]</span></p>
+<p>So the MLE is biased with <span class="math inline">\(E(\hat{\lambda}) = \frac{n}{n-1}\lambda &gt; \lambda\)</span>.</p>
+<p><strong>Unbiased estimator:</strong> <span class="math display">\[\boxed{\hat{\lambda}_U = \frac{n-1}{n} \cdot \frac{1}{\bar{X}} = \frac{n-1}{\sum_{i=1}^n X_i}}\]</span></p>
+<p><strong>Variance of the unbiased estimator:</strong></p>
+<p>For <span class="math inline">\(Y \sim \text{Gamma}(n, \lambda)\)</span>, we have: <span class="math display">\[\text{Var}\left(\frac{1}{Y}\right) = \frac{\lambda^2}{(n-1)^2(n-2)} \quad \text{for } n &gt; 2\]</span></p>
+<p>Therefore: <span class="math display">\[\text{Var}(\hat{\lambda}_U) = (n-1)^2 \cdot \text{Var}\left(\frac{1}{\sum X_i}\right) = (n-1)^2 \cdot \frac{\lambda^2}{(n-1)^2(n-2)} = \boxed{\frac{\lambda^2}{n-2}}\]</span></p>
+<p><strong>Comparison with CRLB:</strong> <span class="math display">\[\text{Var}(\hat{\lambda}_U) = \frac{\lambda^2}{n-2} &gt; \frac{\lambda^2}{n} = \text{CRLB}\]</span></p>
+<p>The unbiased estimator does <strong>NOT</strong> achieve the CRLB.</p>
+</section>
+<section id="part-d" class="level3">
+<h3 class="anchored" data-anchor-id="part-d">Part (d)</h3>
+<p><strong>Using R, compute the MLE <span class="math inline">\(\hat{\lambda}\)</span> from the pilot study data. Also compute the CRLB at this estimated value. Interpret what this bound tells us about estimation precision.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pilot study data</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>bp_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">9</span>, <span class="dv">11</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(bp_times)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># MLE</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>lambda_mle <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(bp_times)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Unbiased estimator</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>lambda_unbiased <span class="ot">&lt;-</span> (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">sum</span>(bp_times)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># CRLB at the MLE estimate</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>crlb <span class="ot">&lt;-</span> lambda_mle<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> n</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample size: n ="</span>, n, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample size: n = 8 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean:"</span>, <span class="fu">mean</span>(bp_times), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean: 10.625 days</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE of λ:"</span>, <span class="fu">round</span>(lambda_mle, <span class="dv">4</span>), <span class="st">"per day</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE of λ: 0.0941 per day</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unbiased estimate of λ:"</span>, <span class="fu">round</span>(lambda_unbiased, <span class="dv">4</span>), <span class="st">"per day</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unbiased estimate of λ: 0.0824 per day</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"CRLB at MLE:"</span>, <span class="fu">round</span>(crlb, <span class="dv">6</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CRLB at MLE: 0.001107 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Standard error bound:"</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(crlb), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Standard error bound: 0.0333 </code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The CRLB tells us that no unbiased estimator of <span class="math inline">\(\lambda\)</span> can have variance smaller than 0.001107. This means the standard error of any unbiased estimator must be at least 0.0333. Our estimate of <span class="math inline">\(\lambda \approx\)</span> 0.0941 per day (corresponding to a mean time of 10.6 days) has inherent uncertainty—we can expect our estimates to vary by roughly ±0.067 across repeated samples of this size.</p>
+</section>
+</section>
+<section id="problem-2-method-of-moments-shifted-exponential-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2-method-of-moments-shifted-exponential-distribution">Problem 2: Method of Moments (Shifted Exponential Distribution)</h2>
+<p>The time (in hours) from hospital admission to discharge for patients undergoing a minor outpatient procedure can be modeled with a shifted (two-parameter) Exponential distribution. This accounts for a minimum required observation time <span class="math inline">\(\theta\)</span> plus additional random waiting time. The pdf is: <span class="math display">\[f(x; \lambda, \theta) = \lambda e^{-\lambda(x - \theta)}, \quad x \geq \theta, \quad \lambda &gt; 0, \quad \theta &gt; 0\]</span></p>
+<p>For this distribution: <span class="math display">\[E(X) = \theta + \frac{1}{\lambda}, \quad \text{Var}(X) = \frac{1}{\lambda^2}\]</span></p>
+<section id="part-a-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-1">Part (a)</h3>
+<p><strong>Derive the Method of Moments estimators <span class="math inline">\(\tilde{\lambda}\)</span> and <span class="math inline">\(\tilde{\theta}\)</span> in terms of the sample mean <span class="math inline">\(\bar{X}\)</span> and sample standard deviation <span class="math inline">\(S\)</span>.</strong></p>
+<p>For the shifted Exponential distribution, the population moments are: <span class="math display">\[E(X) = \theta + \frac{1}{\lambda}, \quad E(X^2) = \text{Var}(X) + [E(X)]^2 = \frac{1}{\lambda^2} + \left(\theta + \frac{1}{\lambda}\right)^2\]</span></p>
+<p>The corresponding sample moments are: <span class="math display">\[\bar{X} = \frac{1}{n}\sum_{i=1}^n X_i, \quad \frac{1}{n}\sum_{i=1}^n X_i^2\]</span></p>
+<p><strong>Method of Moments:</strong> Set population moments equal to sample moments.</p>
+<p><strong>First moment equation:</strong> <span class="math display">\[E(X) = \bar{X}\]</span> <span class="math display">\[\theta + \frac{1}{\lambda} = \bar{X} \quad \quad (1)\]</span></p>
+<p><strong>Second moment equation:</strong> <span class="math display">\[E(X^2) = \frac{1}{n}\sum_{i=1}^n X_i^2\]</span></p>
+<p>It is easier to work with the variance. Recall that <span class="math inline">\(\text{Var}(X) = E(X^2) - [E(X)]^2\)</span>, so: <span class="math display">\[E(X^2) - [E(X)]^2 = \frac{1}{n}\sum_{i=1}^n X_i^2 - \bar{X}^2\]</span></p>
+<p>The left side is <span class="math inline">\(\text{Var}(X) = \frac{1}{\lambda^2}\)</span>, and the right side is the sample variance (with <span class="math inline">\(n\)</span> in denominator): <span class="math display">\[\frac{1}{\lambda^2} = \frac{1}{n}\sum_{i=1}^n X_i^2 - \bar{X}^2 = \frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2 \quad \quad (2)\]</span></p>
+<p>Note that the sample standard deviation is <span class="math inline">\(S = \sqrt{\frac{1}{n-1}\sum(X_i - \bar{X})^2}\)</span>, so: <span class="math display">\[\frac{1}{n}\sum_{i=1}^n (X_i - \bar{X})^2 = \frac{n-1}{n}S^2\]</span></p>
+<p>Substituting into equation (2): <span class="math display">\[\frac{1}{\lambda^2} = \frac{n-1}{n}S^2 \quad \quad (3)\]</span></p>
+<p><strong>Solving the system:</strong></p>
+<p><strong>Step 1:</strong> From equation (3), solve for <span class="math inline">\(\lambda\)</span>: <span class="math display">\[\frac{1}{\lambda^2} = \frac{n-1}{n}S^2 \implies \lambda = \sqrt{\frac{n}{n-1}} \cdot \frac{1}{S}\]</span></p>
+<p><strong>Step 2:</strong> Substitute into equation (1) to find <span class="math inline">\(\theta\)</span>: <span class="math display">\[\theta + \frac{1}{\lambda} = \bar{X}\]</span> <span class="math display">\[\theta + S\sqrt{\frac{n-1}{n}} = \bar{X}\]</span> <span class="math display">\[\theta = \bar{X} - S\sqrt{\frac{n-1}{n}}\]</span></p>
+<p><strong>Method of Moments Estimators:</strong> <span class="math display">\[\boxed{\tilde{\lambda} = \sqrt{\frac{n}{n-1}} \cdot \frac{1}{S} = \frac{1}{S}\sqrt{\frac{n}{n-1}}}\]</span> <span class="math display">\[\boxed{\tilde{\theta} = \bar{X} - S\sqrt{\frac{n-1}{n}}}\]</span></p>
+</section>
+<section id="part-b-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-1">Part (b)</h3>
+<p><strong>Using R, calculate the MME estimates <span class="math inline">\(\tilde{\lambda}\)</span> and <span class="math inline">\(\tilde{\theta}\)</span>. Verify that your estimate of <span class="math inline">\(\theta\)</span> is less than the minimum observed value.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Discharge times (hours)</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>discharge_times <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.2</span>, <span class="fl">4.1</span>, <span class="fl">2.8</span>, <span class="fl">5.3</span>, <span class="fl">3.5</span>, <span class="fl">4.8</span>, <span class="fl">3.1</span>, <span class="fl">6.2</span>, <span class="fl">4.4</span>, <span class="fl">3.9</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(discharge_times)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Sample statistics</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(discharge_times)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(discharge_times)  <span class="co"># This is S with (n-1) denominator</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Method of Moments estimates (exact formulas)</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>lambda_mme <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">/</span>s) <span class="sc">*</span> <span class="fu">sqrt</span>(n <span class="sc">/</span> (n <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>theta_mme <span class="ot">&lt;-</span> xbar <span class="sc">-</span> s <span class="sc">*</span> <span class="fu">sqrt</span>((n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> n)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample size: n ="</span>, n, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample size: n = 10 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean:"</span>, <span class="fu">round</span>(xbar, <span class="dv">4</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean: 4.13 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample SD (S):"</span>, <span class="fu">round</span>(s, <span class="dv">4</span>), <span class="st">"hours</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample SD (S): 1.0709 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MME estimates (exact formulas):</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MME estimates (exact formulas):</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  λ̃ ="</span>, <span class="fu">round</span>(lambda_mme, <span class="dv">4</span>), <span class="st">"per hour</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  λ̃ = 0.9843 per hour</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  θ̃ ="</span>, <span class="fu">round</span>(theta_mme, <span class="dv">4</span>), <span class="st">"hours</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  θ̃ = 3.1141 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Validity check</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>min_obs <span class="ot">&lt;-</span> <span class="fu">min</span>(discharge_times)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Validity check:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Validity check:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Minimum observed value:"</span>, min_obs, <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Minimum observed value: 2.8 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  θ̃ ="</span>, <span class="fu">round</span>(theta_mme, <span class="dv">4</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  θ̃ = 3.1141 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Is θ̃ &lt; min(X)?"</span>, theta_mme <span class="sc">&lt;</span> min_obs, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Is θ̃ &lt; min(X)? FALSE </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Interpretation</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Interpretation:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Interpretation:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Estimated minimum observation time:"</span>, <span class="fu">round</span>(theta_mme, <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Estimated minimum observation time: 3.11 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Estimated mean additional wait time (1/λ):"</span>, <span class="fu">round</span>(<span class="dv">1</span><span class="sc">/</span>lambda_mme, <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Estimated mean additional wait time (1/λ): 1.02 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  Estimated total mean discharge time:"</span>, <span class="fu">round</span>(theta_mme <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>lambda_mme, <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Estimated total mean discharge time: 4.13 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"  (Check: this should equal x̄ ="</span>, <span class="fu">round</span>(xbar, <span class="dv">2</span>), <span class="st">"hours)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (Check: this should equal x̄ = 4.13 hours)</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The MME estimates suggest that patients require a minimum of approximately 3.11 hours of observation, with an additional expected random waiting time of 1.02 hours before discharge. The validity check confirms that <span class="math inline">\(\tilde{\theta}\)</span> is less than the smallest observed discharge time (2.8 hours), which is necessary for the model to be consistent with the data.</p>
+</section>
+</section>
+<section id="problem-3-maximum-likelihood-estimation-devore-7.25" class="level2">
+<h2 class="anchored" data-anchor-id="problem-3-maximum-likelihood-estimation-devore-7.25">Problem 3: Maximum Likelihood Estimation (Devore 7.25)</h2>
+<p>Let <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> be a random sample from a distribution with pdf: <span class="math display">\[f(x; \theta) = (\theta + 1)x^\theta, \quad 0 \le x \le 1, \quad \theta &gt; -1\]</span></p>
+<section id="part-a-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-2">Part (a)</h3>
+<p><strong>Derive the maximum likelihood estimator <span class="math inline">\(\hat{\theta}\)</span> of <span class="math inline">\(\theta\)</span>.</strong></p>
+<p><strong>Likelihood:</strong> <span class="math display">\[L(\theta) = \prod_{i=1}^n (\theta + 1) x_i^\theta = (\theta + 1)^n \prod_{i=1}^n x_i^\theta = (\theta + 1)^n \left(\prod_{i=1}^n x_i\right)^\theta\]</span></p>
+<p><strong>Log-likelihood:</strong> <span class="math display">\[\ell(\theta) = n \ln(\theta + 1) + \theta \sum_{i=1}^n \ln(x_i)\]</span></p>
+<p><strong>First derivative:</strong> <span class="math display">\[\ell'(\theta) = \frac{n}{\theta + 1} + \sum_{i=1}^n \ln(x_i)\]</span></p>
+<p><strong>Setting <span class="math inline">\(\ell'(\theta) = 0\)</span>:</strong> <span class="math display">\[\frac{n}{\theta + 1} = -\sum_{i=1}^n \ln(x_i)\]</span> <span class="math display">\[\theta + 1 = \frac{n}{-\sum_{i=1}^n \ln(x_i)} = \frac{-n}{\sum_{i=1}^n \ln(x_i)}\]</span> <span class="math display">\[\theta = \frac{-n}{\sum_{i=1}^n \ln(x_i)} - 1\]</span></p>
+<p><strong>MLE:</strong> <span class="math display">\[\boxed{\hat{\theta} = \frac{-n}{\sum_{i=1}^n \ln(x_i)} - 1 = -1 - \frac{1}{\overline{\ln(X)}}}\]</span></p>
+<p>where <span class="math inline">\(\overline{\ln(X)} = \frac{1}{n}\sum_{i=1}^n \ln(x_i)\)</span>.</p>
+<p><strong>Verification (second derivative test):</strong> <span class="math display">\[\ell''(\theta) = -\frac{n}{(\theta + 1)^2} &lt; 0\]</span></p>
+<p>This confirms we have a maximum.</p>
+</section>
+<section id="part-b-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-2">Part (b)</h3>
+<p><strong>For a sample of size <span class="math inline">\(n = 5\)</span> with observations <span class="math inline">\(x_1 = 0.92, x_2 = 0.79, x_3 = 0.85, x_4 = 0.95, x_5 = 0.88\)</span>, compute the MLE <span class="math inline">\(\hat{\theta}\)</span>.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.92</span>, <span class="fl">0.79</span>, <span class="fl">0.85</span>, <span class="fl">0.95</span>, <span class="fl">0.88</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># MLE calculation</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>sum_ln_x <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">log</span>(x))</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>theta_mle <span class="ot">&lt;-</span> <span class="sc">-</span>n <span class="sc">/</span> sum_ln_x <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observations:"</span>, x, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observations: 0.92 0.79 0.85 0.95 0.88 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sum of ln(x_i):"</span>, <span class="fu">round</span>(sum_ln_x, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sum of ln(x_i): -0.6607 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE θ̂ ="</span>, <span class="fu">round</span>(theta_mle, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE θ̂ = 6.5672 </code></pre>
+</div>
+</div>
+</section>
+<section id="part-c-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-1">Part (c)</h3>
+<p><strong>Use the invariance property of MLEs to find the MLE of <span class="math inline">\(\tau(\theta) = \frac{\theta + 1}{\theta + 2}\)</span>, which represents <span class="math inline">\(E(X)\)</span> for this distribution.</strong></p>
+<p>By the <strong>invariance property of MLEs</strong>, the MLE of <span class="math inline">\(\tau(\theta) = g(\theta)\)</span> is <span class="math inline">\(\hat{\tau} = g(\hat{\theta})\)</span>.</p>
+<p>Therefore: <span class="math display">\[\hat{\tau} = \frac{\hat{\theta} + 1}{\hat{\theta} + 2}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>tau_mle <span class="ot">&lt;-</span> (theta_mle <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (theta_mle <span class="sc">+</span> <span class="dv">2</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE of τ(θ) = (θ+1)/(θ+2):"</span>, <span class="fu">round</span>(tau_mle, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE of τ(θ) = (θ+1)/(θ+2): 0.8833 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean (for comparison):"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(x), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean (for comparison): 0.878 </code></pre>
+</div>
+</div>
+<p>Note: The MLE of <span class="math inline">\(E(X)\)</span> (0.8833) is close to but not exactly equal to the sample mean (0.878). This is expected since the MLE uses the full likelihood structure of the distribution.</p>
+</section>
+</section>
+<section id="problem-4-sufficient-statistics-medical-application" class="level2">
+<h2 class="anchored" data-anchor-id="problem-4-sufficient-statistics-medical-application">Problem 4: Sufficient Statistics (Medical Application)</h2>
+<p>A researcher is studying the number of adverse events reported per patient in a drug trial. The number of adverse events <span class="math inline">\(X\)</span> follows a Poisson(<span class="math inline">\(\mu\)</span>) distribution.</p>
+<section id="part-a-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-3">Part (a)</h3>
+<p><strong>For a random sample <span class="math inline">\(X_1, \ldots, X_n\)</span> from Poisson(<span class="math inline">\(\mu\)</span>), use the Neyman Factorization Theorem to show that <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is a sufficient statistic for <span class="math inline">\(\mu\)</span>.</strong></p>
+<p>For <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\mu)\)</span>, the joint pmf is:</p>
+<p><span class="math display">\[f(x_1, \ldots, x_n; \mu) = \prod_{i=1}^n \frac{e^{-\mu} \mu^{x_i}}{x_i!} = \frac{e^{-n\mu} \mu^{\sum_{i=1}^n x_i}}{\prod_{i=1}^n x_i!}\]</span></p>
+<p>We can factor this as: <span class="math display">\[f(x_1, \ldots, x_n; \mu) = \underbrace{e^{-n\mu} \mu^{\sum x_i}}_{g(T; \mu)} \cdot \underbrace{\frac{1}{\prod_{i=1}^n x_i!}}_{h(x_1, \ldots, x_n)}\]</span></p>
+<p>where <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span>.</p>
+<ul>
+<li><span class="math inline">\(g(T; \mu) = e^{-n\mu} \mu^T\)</span> depends on the data <strong>only through</strong> <span class="math inline">\(T\)</span> and involves <span class="math inline">\(\mu\)</span></li>
+<li><span class="math inline">\(h(x_1, \ldots, x_n) = 1/\prod x_i!\)</span> depends only on the data, <strong>not on</strong> <span class="math inline">\(\mu\)</span></li>
+</ul>
+<p>By the <strong>Neyman Factorization Theorem</strong>, <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is <strong>sufficient for <span class="math inline">\(\mu\)</span></strong>. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="part-b-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-3">Part (b)</h3>
+<p><strong>Show that the MLE <span class="math inline">\(\hat{\mu} = \bar{X}\)</span> is a function of the sufficient statistic <span class="math inline">\(T\)</span>.</strong></p>
+<p>The MLE is: <span class="math display">\[\hat{\mu} = \bar{X} = \frac{1}{n}\sum_{i=1}^n X_i = \frac{T}{n}\]</span></p>
+<p>Since <span class="math inline">\(\hat{\mu} = T/n\)</span>, the MLE can be written purely as a function of the sufficient statistic <span class="math inline">\(T\)</span>. <span class="math inline">\(\checkmark\)</span></p>
+</section>
+<section id="part-c-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-2">Part (c)</h3>
+<p>In a clinical trial with <span class="math inline">\(n = 50\)</span> patients, suppose the following summary statistics are recorded: <span class="math display">\[\sum_{i=1}^{50} X_i = 72\]</span></p>
+<p>A colleague suggests using a different estimator: <span class="math inline">\(\tilde{\mu} = \frac{\text{number of patients with } X_i &gt; 0}{n}\)</span>.</p>
+<p><strong>Using R simulation, generate 1000 samples from Poisson(<span class="math inline">\(\mu = 1.5\)</span>) with <span class="math inline">\(n = 50\)</span> and compare the bias, variance and MSE of <span class="math inline">\(\hat{\mu}\)</span> and <span class="math inline">\(\tilde{\mu}\)</span>.</strong></p>
+<p>[JM side note: You don’t need to use <code>map()</code> functions like I do, unless you want to learn them! Feel free to make this work however you know you to make tibbles (stack, make each vector separately, whatever).]</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>mu_true <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>n_sims <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulation</span></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>sim_results <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sims) <span class="sc">|&gt;</span></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="fu">map</span>(sim, \(s) <span class="fu">rpois</span>(n, mu_true)),</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_hat =</span> <span class="fu">map_dbl</span>(data, mean),                    <span class="co"># MLE (based on sufficient stat)</span></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">mu_tilde =</span> <span class="fu">map_dbl</span>(data, \(x) <span class="fu">mean</span>(x <span class="sc">&gt;</span> <span class="dv">0</span>))       <span class="co"># Proportion with events</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute summaries</span></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a>summary_stats <span class="ot">&lt;-</span> sim_results <span class="sc">|&gt;</span></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estimator =</span> <span class="fu">c</span>(<span class="st">"μ̂ = X̄ (MLE)"</span>, <span class="st">"μ̃ = proportion(X &gt; 0)"</span>),</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">True_Value =</span> <span class="fu">c</span>(mu_true, <span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>mu_true)),  <span class="co"># Note: E(μ̃) = P(X &gt; 0) = 1 - e^(-μ)</span></span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean =</span> <span class="fu">c</span>(<span class="fu">mean</span>(mu_hat), <span class="fu">mean</span>(mu_tilde)),</span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">Bias =</span> <span class="fu">c</span>(<span class="fu">mean</span>(mu_hat) <span class="sc">-</span> mu_true, <span class="fu">mean</span>(mu_tilde) <span class="sc">-</span> mu_true),</span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">Variance =</span> <span class="fu">c</span>(<span class="fu">var</span>(mu_hat), <span class="fu">var</span>(mu_tilde)),</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">MSE =</span> <span class="fu">c</span>(<span class="fu">mean</span>((mu_hat <span class="sc">-</span> mu_true)<span class="sc">^</span><span class="dv">2</span>), <span class="fu">mean</span>((mu_tilde <span class="sc">-</span> mu_true)<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(summary_stats)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  Estimator             True_Value  Mean     Bias Variance    MSE
+  &lt;chr&gt;                      &lt;dbl&gt; &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;
+1 μ̂ = X̄ (MLE)                1.5   1.50   0.00384  0.0309  0.0309
+2 μ̃ = proportion(X &gt; 0)      0.777 0.778 -0.722    0.00367 0.525 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualization</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>sim_results <span class="sc">|&gt;</span></span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(mu_hat, mu_tilde), </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">names_to =</span> <span class="st">"Estimator"</span>, <span class="at">values_to =</span> <span class="st">"Estimate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb55-5"><a href="#cb55-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Estimator =</span> <span class="fu">factor</span>(Estimator, </span>
+<span id="cb55-6"><a href="#cb55-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"mu_hat"</span>, <span class="st">"mu_tilde"</span>),</span>
+<span id="cb55-7"><a href="#cb55-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"MLE"</span>, <span class="st">"Proportion"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb55-8"><a href="#cb55-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Estimate, <span class="at">fill =</span> Estimator)) <span class="sc">+</span></span>
+<span id="cb55-9"><a href="#cb55-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">bins =</span> <span class="dv">30</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb55-10"><a href="#cb55-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_true, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb55-11"><a href="#cb55-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">"Sampling Distributions of Two Estimators for"</span> <span class="sc">~</span> mu),</span>
+<span id="cb55-12"><a href="#cb55-12" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"True"</span> <span class="sc">~</span> mu <span class="sc">==</span> .(mu_true) <span class="sc">~</span> <span class="st">"|"</span> <span class="sc">~</span> n <span class="sc">==</span> .(n) <span class="sc">~</span> <span class="st">"| Simulations ="</span> <span class="sc">~</span> .(n_sims)),</span>
+<span id="cb55-13"><a href="#cb55-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"Estimate"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>) <span class="sc">+</span></span>
+<span id="cb55-14"><a href="#cb55-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>,</span>
+<span id="cb55-15"><a href="#cb55-15" aria-hidden="true" tabindex="-1"></a>                    <span class="at">labels =</span> <span class="fu">c</span>(<span class="fu">expression</span>(<span class="fu">hat</span>(mu) <span class="sc">==</span> <span class="fu">bar</span>(X) <span class="sc">~</span> <span class="st">"(MLE)"</span>),</span>
+<span id="cb55-16"><a href="#cb55-16" aria-hidden="true" tabindex="-1"></a>                               <span class="fu">expression</span>(<span class="fu">tilde</span>(mu) <span class="sc">==</span> <span class="st">"proportion(X &gt; 0)"</span>))) <span class="sc">+</span></span>
+<span id="cb55-17"><a href="#cb55-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb55-18"><a href="#cb55-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_02_Solutions_files/figure-html/prob4-plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li>The MLE <span class="math inline">\(\hat{\mu} = \bar{X}\)</span> is essentially unbiased with bias ≈ 0 and estimates <span class="math inline">\(\mu\)</span> directly.</li>
+<li>The proportion estimator <span class="math inline">\(\tilde{\mu}\)</span> is heavily biased because it estimates <span class="math inline">\(P(X &gt; 0) = 1 - e^{-\mu} \approx\)</span> 0.777, not <span class="math inline">\(\mu\)</span> itself.</li>
+<li>Even though <span class="math inline">\(\tilde{\mu}\)</span> has smaller variance, its large bias results in much larger MSE.</li>
+<li>The MLE, which is based on the sufficient statistic <span class="math inline">\(T = \sum X_i\)</span>, is clearly superior for estimating <span class="math inline">\(\mu\)</span>.</li>
+</ul>
+</section>
+</section>
+<section id="problem-5-mle-for-normal-variance-devore-7.31-modified" class="level2">
+<h2 class="anchored" data-anchor-id="problem-5-mle-for-normal-variance-devore-7.31-modified">Problem 5: MLE for Normal Variance (Devore 7.31 Modified)</h2>
+<p>Measurement errors in a laboratory instrument are assumed to follow a Normal distribution with known mean <span class="math inline">\(\mu = 0\)</span> and unknown variance <span class="math inline">\(\sigma^2\)</span>. A sample of <span class="math inline">\(n\)</span> measurements yields observations <span class="math inline">\(X_1, \ldots, X_n\)</span>.</p>
+<section id="part-a-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-4">Part (a)</h3>
+<p><strong>Derive the MLE of <span class="math inline">\(\sigma^2\)</span>.</strong></p>
+<p>For <span class="math inline">\(X_i \stackrel{iid}{\sim} N(0, \sigma^2)\)</span>, the pdf is: <span class="math display">\[f(x; \sigma^2) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-x^2/(2\sigma^2)}\]</span></p>
+<p><strong>Likelihood:</strong> <span class="math display">\[L(\sigma^2) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} e^{-x_i^2/(2\sigma^2)} = (2\pi\sigma^2)^{-n/2} \exp\left(-\frac{\sum_{i=1}^n x_i^2}{2\sigma^2}\right)\]</span></p>
+<p><strong>Log-likelihood:</strong> <span class="math display">\[\ell(\sigma^2) = -\frac{n}{2}\ln(2\pi) - \frac{n}{2}\ln(\sigma^2) - \frac{\sum_{i=1}^n x_i^2}{2\sigma^2}\]</span></p>
+<p><strong>Derivative with respect to <span class="math inline">\(\sigma^2\)</span>:</strong> <span class="math display">\[\frac{\partial \ell}{\partial \sigma^2} = -\frac{n}{2\sigma^2} + \frac{\sum_{i=1}^n x_i^2}{2(\sigma^2)^2}\]</span></p>
+<p><strong>Setting equal to zero:</strong> <span class="math display">\[\frac{n}{2\sigma^2} = \frac{\sum_{i=1}^n x_i^2}{2(\sigma^2)^2}\]</span> <span class="math display">\[n\sigma^2 = \sum_{i=1}^n x_i^2\]</span></p>
+<p><strong>MLE:</strong> <span class="math display">\[\boxed{\hat{\sigma}^2 = \frac{1}{n}\sum_{i=1}^n X_i^2}\]</span></p>
+</section>
+<section id="part-b-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-4">Part (b)</h3>
+<p><strong>Is this MLE unbiased? If not, find the bias.</strong></p>
+<p>Since <span class="math inline">\(X_i \sim N(0, \sigma^2)\)</span>, we have: <span class="math display">\[E(X_i^2) = \text{Var}(X_i) + [E(X_i)]^2 = \sigma^2 + 0 = \sigma^2\]</span></p>
+<p>Therefore: <span class="math display">\[E(\hat{\sigma}^2) = E\left(\frac{1}{n}\sum_{i=1}^n X_i^2\right) = \frac{1}{n} \cdot n \cdot \sigma^2 = \sigma^2\]</span></p>
+<p>The MLE <strong>is unbiased</strong>: <span class="math display">\[\boxed{\text{Bias}(\hat{\sigma}^2) = E(\hat{\sigma}^2) - \sigma^2 = 0}\]</span></p>
+</section>
+<section id="part-c-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-3">Part (c)</h3>
+<p><strong>A technician takes <span class="math inline">\(n = 15\)</span> measurements and records: <span class="math inline">\(\sum_{i=1}^{15} X_i^2 = 4.8\)</span></strong></p>
+<p><strong>Calculate the MLE of <span class="math inline">\(\sigma^2\)</span> and provide an unbiased estimate.</strong></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>sum_x_squared <span class="ot">&lt;-</span> <span class="fl">4.8</span></span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a><span class="co"># MLE (which is also unbiased in this case)</span></span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>sigma2_mle <span class="ot">&lt;-</span> sum_x_squared <span class="sc">/</span> n</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"n ="</span>, n, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n = 15 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sum of X_i² ="</span>, sum_x_squared, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sum of X_i² = 4.8 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE of σ²:"</span>, <span class="fu">round</span>(sigma2_mle, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE of σ²: 0.32 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unbiased estimate of σ²:"</span>, <span class="fu">round</span>(sigma2_mle, <span class="dv">4</span>), <span class="st">"(same as MLE)</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Unbiased estimate of σ²: 0.32 (same as MLE)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Estimated σ:"</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(sigma2_mle), <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated σ: 0.5657 </code></pre>
+</div>
+</div>
+<p><strong>Note:</strong> In this special case where <span class="math inline">\(\mu = 0\)</span> is known, the MLE <span class="math inline">\(\hat{\sigma}^2 = \frac{1}{n}\sum X_i^2\)</span> is already unbiased. This is different from the usual case where <span class="math inline">\(\mu\)</span> is unknown, in which case the MLE <span class="math inline">\(\frac{1}{n}\sum(X_i - \bar{X})^2\)</span> is biased and we use <span class="math inline">\(\frac{1}{n-1}\sum(X_i - \bar{X})^2\)</span> for an unbiased estimate.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

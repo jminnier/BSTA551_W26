@@ -1,0 +1,577 @@
+---
+title: "Lesson 5: Sufficient Statistics"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w2d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 5
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 5: Sufficient Statistics
+
+## Review: Where We Left Off
+
+**Key concepts from Lessons 1-4:**
+
+-   **Point estimation:** $\hat{\theta}$ estimates unknown parameter $\theta$
+-   **Bias and MSE:** $\text{Bias}(\hat{\theta}) = E(\hat{\theta}) - \theta$, $\text{MSE} = \text{Var} + \text{Bias}^2$
+-   **MVUE:** Unbiased estimator with minimum variance
+-   **Fisher Information:** $I(\theta) = E[-\ell''(\theta)]$
+-   **Cramér-Rao Lower Bound:** $\text{Var}(T) \geq 1/I_n(\theta)$
+-   **MLE and MME:** Systematic methods for constructing estimators
+
+. . .
+
+**Today's Goals:**
+
+-   Understand sufficient statistics: data reduction without information loss
+-   Learn the Neyman Factorization Theorem
+-   Connect sufficiency to finding MVUEs via Rao-Blackwell
+-   Define completeness and its role in optimal estimation
+
+## Motivating Question: Data Reduction
+
+Suppose we observe $X_1, \ldots, X_n$ from a distribution with unknown $\theta$.
+
+**Question:** Can we summarize the data with a simpler statistic $T(X_1, \ldots, X_n)$ without losing information about $\theta$?
+
+. . .
+
+::: callout-note
+## The Key Insight
+If a statistic captures **all** the information about $\theta$ contained in the data, we call it **sufficient** for $\theta$.
+:::
+
+. . .
+
+**Why this matters:**
+
+-   Simplifies analysis and computation
+-   Guides us to optimal estimators
+-   Fundamental for understanding MVUEs
+
+# The Concept of Sufficiency {background-color="#3498db"}
+
+## Intuition: What Does "Sufficient" Mean?
+
+Imagine you're a consulting statistician. A colleague ran an experiment and wants your help estimating $\theta$.
+
+**Scenario 1:** They give you all raw data: $x_1 = 1, x_2 = 0, x_3 = 3$
+
+**Scenario 2:** They only tell you the total: $T = x_1 + x_2 + x_3 = 4$
+
+. . .
+
+**Question:** Does Scenario 1 give you more information about $\theta$ than Scenario 2?
+
+. . .
+
+If the answer is **no**—if knowing $T$ tells you everything about $\theta$—then $T$ is **sufficient** for $\theta$.
+
+## Example: Poisson Defects (Devore 7.25)
+
+**Setup:** The number of major defects on new vehicles follows $\text{Poisson}(\mu)$. We observe $n = 3$ vehicles with defects $X_1 = 1, X_2 = 0, X_3 = 3$.
+
+**Key Question:** Would knowing only $T = \sum X_i = 4$ provide the same information about $\mu$ as knowing all individual $X_i$'s?
+
+. . .
+
+**Consider:** Given that $T = 4$, what's the conditional probability of $(X_1, X_2, X_3) = (2, 1, 1)$?
+
+$$P(X_1 = 2, X_2 = 1, X_3 = 1 | T = 4) = \frac{\frac{e^{-\mu}\mu^2}{2!} \cdot \frac{e^{-\mu}\mu^1}{1!} \cdot \frac{e^{-\mu}\mu^1}{1!}}{\frac{e^{-3\mu}(3\mu)^4}{4!}} = \frac{4}{27}$$
+
+. . .
+
+::: callout-important
+## Critical Observation
+The $\mu$ terms **cancel out**! The conditional probability doesn't depend on $\mu$.
+:::
+
+## Formal Definition of Sufficiency
+
+::: callout-important
+## Definition (Devore 7.3)
+
+A statistic $T = t(X_1, \ldots, X_n)$ is **sufficient for $\theta$** if the conditional distribution of $X_1, \ldots, X_n$ given $T = t$ does not depend on $\theta$, for every possible value $t$.
+:::
+
+. . .
+
+**In other words:** Once you know the value of $T$, the distribution of the data no longer involves $\theta$—so no additional information about $\theta$ can be extracted.
+
+. . .
+
+::: callout-tip
+## Intuition
+$T$ is sufficient if it "captures" all the information in the data relevant to $\theta$. It's sufficient to know $T$; the raw data adds nothing more.
+:::
+
+# The Neyman Factorization Theorem {background-color="#3498db"}
+
+## Finding Sufficient Statistics: The Factorization Theorem
+
+Computing conditional distributions is difficult. The **Neyman Factorization Theorem** provides an elegant shortcut.
+
+::: callout-important
+## Theorem (Neyman-Fisher Factorization)
+
+Let $f(x_1, \ldots, x_n; \theta)$ denote the joint pmf or pdf. Then $T = t(X_1, \ldots, X_n)$ is **sufficient for $\theta$** if and only if:
+
+$$f(x_1, \ldots, x_n; \theta) = g(t(x_1, \ldots, x_n); \theta) \cdot h(x_1, \ldots, x_n)$$
+
+where:
+
+-   $g$ depends on the data **only through** $T$ and involves $\theta$
+-   $h$ depends on the data but **not on $\theta$**
+:::
+
+## Understanding the Factorization
+
+$$f(x_1, \ldots, x_n; \theta) = \underbrace{g(T; \theta)}_{\text{Involves } \theta \text{ and data through } T} \cdot \underbrace{h(x_1, \ldots, x_n)}_{\text{Depends on data, not } \theta}$$
+
+. . .
+
+::: callout-tip
+## Strategy for Finding Sufficient Statistics
+
+1.  Write down the joint pmf/pdf
+2.  Identify the part that involves $\theta$
+3.  Factor it so $\theta$ appears only with a function of the data
+4.  That function is your sufficient statistic!
+:::
+
+## Example 1: Poisson Distribution
+
+**Setup:** $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\mu)$
+
+**Joint pmf:**
+$$f(x_1, \ldots, x_n; \mu) = \prod_{i=1}^n \frac{e^{-\mu}\mu^{x_i}}{x_i!} = \frac{e^{-n\mu}\mu^{\sum x_i}}{\prod_{i=1}^n x_i!}$$
+
+. . .
+
+**Factorization:**
+$$= \underbrace{e^{-n\mu}\mu^t}_{g(t; \mu)} \cdot \underbrace{\frac{1}{\prod_{i=1}^n x_i!}}_{h(x_1, \ldots, x_n)}$$
+
+. . .
+
+::: callout-important
+## Result
+$T = \sum_{i=1}^n X_i$ is **sufficient for $\mu$**.
+:::
+
+## Example 2: Uniform Distribution (Devore 7.27)
+
+**Setup:** $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Uniform}[0, \theta]$
+
+**Joint pdf:**
+$$f(x_1, \ldots, x_n; \theta) = \frac{1}{\theta^n} \cdot I(\max(x_i) \leq \theta) \cdot I(\min(x_i) \geq 0)$$
+
+. . .
+
+**Factorization:**
+$$= \underbrace{\frac{1}{\theta^n} I(\max(x_i) \leq \theta)}_{g(t; \theta)} \cdot \underbrace{I(\min(x_i) \geq 0)}_{h(x_1, \ldots, x_n)}$$
+
+. . .
+
+::: callout-important
+## Result
+$T = \max(X_1, \ldots, X_n)$ is **sufficient for $\theta$**. 
+
+Note: $\bar{X}$ is NOT sufficient here!
+:::
+
+## Why Isn't $\bar{X}$ Sufficient for Uniform?
+
+```{r}
+# Two samples with same mean but different maxima
+data_A <- c(2, 4, 6, 8)  # mean = 5, max = 8
+data_B <- c(1, 4, 5, 10) # mean = 5, max = 10
+
+cat("Dataset A: mean =", mean(data_A), ", max =", max(data_A), "\n")
+cat("Dataset B: mean =", mean(data_B), ", max =", max(data_B), "\n")
+```
+
+. . .
+
+These have the same $\bar{X} = 5$, but:
+
+-   Dataset A tells us $\theta \geq 8$
+-   Dataset B tells us $\theta \geq 10$
+
+**Knowing only $\bar{X}$ loses information about $\theta$!**
+
+## Jointly Sufficient Statistics
+
+When there are **multiple parameters**, we need **multiple sufficient statistics**.
+
+. . .
+
+**Example: Normal$(\mu, \sigma^2)$** with both unknown:
+
+$$f = \frac{1}{\sigma^n} \exp\left(-\frac{\sum x_i^2 - 2\mu \sum x_i + n\mu^2}{2\sigma^2}\right) \cdot \left(\frac{1}{2\pi}\right)^{n/2}$$
+
+. . .
+
+::: callout-important
+## Result
+$(\bar{X}, S^2)$ or equivalently $(\sum X_i, \sum X_i^2)$ are **jointly sufficient** for $(\mu, \sigma^2)$.
+:::
+
+## Summary: Sufficient Statistics for Common Distributions
+
+| Distribution | Parameter(s) | Sufficient Statistic(s) |
+|--------------|--------------|-------------------------|
+| Bernoulli($p$) | $p$ | $\sum X_i$ |
+| Poisson($\mu$) | $\mu$ | $\sum X_i$ |
+| Exponential($\lambda$) | $\lambda$ | $\sum X_i$ |
+| Normal($\mu$, known $\sigma^2$) | $\mu$ | $\bar{X}$ |
+| Normal($\mu$, $\sigma^2$) | $(\mu, \sigma^2)$ | $(\bar{X}, S^2)$ |
+| Uniform$[0, \theta]$ | $\theta$ | $\max(X_i)$ |
+
+# Minimal Sufficiency {background-color="#3498db"}
+
+## Minimal Sufficient Statistics
+
+Sufficient statistics are **not unique**! The entire dataset is always (trivially) sufficient.
+
+. . .
+
+::: callout-important
+## Definition
+
+A sufficient statistic $T$ is **minimal sufficient** if it is a function of every other sufficient statistic.
+:::
+
+. . .
+
+**Intuition:** Minimal sufficient statistics achieve the **greatest data reduction** without losing information.
+
+. . .
+
+::: callout-tip
+## Practical Criterion (Devore 7.74)
+$T$ is minimal sufficient if the likelihood ratio $f(\mathbf{x}; \theta)/f(\mathbf{y}; \theta)$ doesn't depend on $\theta$ **if and only if** $t(\mathbf{x}) = t(\mathbf{y})$.
+:::
+
+# The Rao-Blackwell Theorem {background-color="#3498db"}
+
+## Why Sufficiency Matters for Estimation
+
+**Key Question:** How do we use sufficient statistics to find better estimators?
+
+. . .
+
+::: callout-important
+## Rao-Blackwell Theorem
+
+If $T$ is sufficient for $\theta$ and $U$ is any unbiased estimator for $h(\theta)$, then:
+
+$$U^* = E(U | T)$$
+
+satisfies:
+
+1.  $U^*$ is unbiased for $h(\theta)$
+2.  $\text{Var}(U^*) \leq \text{Var}(U)$ (with equality only if $U$ is already a function of $T$)
+:::
+
+. . .
+
+**In words:** Conditioning on sufficient statistics **never increases variance** and often **decreases it**.
+
+## Proof of Rao-Blackwell
+
+**Step 1:** $U^*$ doesn't depend on $\theta$ (since $T$ is sufficient)
+
+**Step 2:** By Law of Total Expectation: 
+$$E(U^*) = E[E(U|T)] = E(U) = h(\theta) \checkmark$$
+
+**Step 3:** By Law of Total Variance:
+$$\text{Var}(U) = \text{Var}(E[U|T]) + E[\text{Var}(U|T)] = \text{Var}(U^*) + E[\text{Var}(U|T)]$$
+
+Since $E[\text{Var}(U|T)] \geq 0$, we have $\text{Var}(U) \geq \text{Var}(U^*)$ ✓
+
+## Example: Poisson Zero-Defect Probability (Devore 7.30)
+
+**Problem:** Estimate $e^{-\mu} = P(\text{no defects})$ for $X_i \sim \text{Poisson}(\mu)$.
+
+**Crude estimator:** $U = I(X_1 = 0)$ is unbiased since $E(U) = P(X_1 = 0) = e^{-\mu}$
+
+. . .
+
+**Apply Rao-Blackwell:** With sufficient statistic $T = \sum X_i$:
+
+$$U^* = P(X_1 = 0 | T = t) = \frac{P(X_1 = 0) \cdot P(\sum_{i=2}^n X_i = t)}{P(T = t)} = \left(1 - \frac{1}{n}\right)^t$$
+
+. . .
+
+::: callout-important
+## Improved Estimator
+$U^* = \left(1 - \frac{1}{n}\right)^T$ is unbiased with smaller variance!
+:::
+
+## Simulation: Rao-Blackwell Improvement
+
+```{r}
+#| code-fold: true
+#| fig-height: 4.5
+set.seed(42)
+mu_true <- 1.5; n <- 10; n_sims <- 5000
+
+poisson_sim <- tibble(sim = 1:n_sims) |> 
+  mutate(
+    data = map(sim, \(s) rpois(n, mu_true)),
+    T_sum = map_dbl(data, sum),
+    crude_U = map_dbl(data, \(d) as.numeric(d[1] == 0)),
+    improved_U = (1 - 1/n)^T_sum
+  )
+
+poisson_sim |> 
+  select(crude_U, improved_U) |> 
+  pivot_longer(everything(), names_to = "Estimator", values_to = "Estimate") |> 
+  mutate(Estimator = ifelse(Estimator == "crude_U", "Crude: I(X_1=0)", "Improved: (1-1/n)^T")) |> 
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(bins = 25, alpha = 0.6, position = "identity") +
+  geom_vline(xintercept = exp(-mu_true), color = "red", linetype = "dashed", linewidth = 1.2) +
+  labs(title = "Rao-Blackwell: Variance Reduction Through Sufficiency",
+       subtitle = paste0("True e^(-μ) = ", round(exp(-mu_true), 3)), x = "Estimate", y = "Frequency") +
+  scale_fill_manual(values = c("orange", "steelblue")) +
+  theme(legend.position = "top")
+```
+
+## Key Implication
+
+::: callout-important
+## Corollary
+
+Any estimator that is **not** based purely on sufficient statistics is necessarily **inferior** to some other estimator.
+:::
+
+# MLEs and Sufficient Statistics {background-color="#3498db"}
+
+## Do MLEs Use Sufficient Statistics?
+
+**Key Question:** What is the relationship between MLEs and sufficient statistics?
+
+. . .
+
+::: callout-important
+## Theorem: MLEs Are Functions of Sufficient Statistics
+
+If $T$ is sufficient for $\theta$, then the MLE $\hat{\theta}$ can always be expressed as a function of $T$ alone.
+:::
+
+. . .
+
+**Proof:** By the factorization theorem:
+$$L(\theta) = f(\mathbf{x}; \theta) = g(T; \theta) \cdot h(\mathbf{x})$$
+
+Maximizing $L(\theta)$ is equivalent to maximizing $g(T; \theta)$ since $h(\mathbf{x})$ doesn't involve $\theta$.
+
+Therefore $\hat{\theta}$ depends on the data **only through $T$**.
+
+## Example: MLE Uses the Sufficient Statistic
+
+**Poisson$(\mu)$:** 
+
+- Sufficient statistic: $T = \sum X_i$
+- MLE: $\hat{\mu} = \bar{X} = T/n$ ✓ (function of $T$)
+
+. . .
+
+**Normal$(\mu, \sigma^2)$:**
+
+- Sufficient statistics: $(\sum X_i, \sum X_i^2)$ or equivalently $(\bar{X}, S^2)$
+- MLEs: $\hat{\mu} = \bar{X}$, $\hat{\sigma}^2 = \frac{1}{n}\sum(X_i - \bar{X})^2$ ✓ (functions of sufficient statistics)
+
+. . .
+
+**Uniform$[0, \theta]$:**
+
+- Sufficient statistic: $T = \max(X_i)$
+- MLE: $\hat{\theta} = \max(X_i) = T$ ✓ (is the sufficient statistic itself!)
+
+## Are MLEs Themselves Sufficient?
+
+**Important distinction:**
+
+- MLEs are **functions of** sufficient statistics ✓
+- But MLEs are **not always sufficient** themselves ✗
+
+. . .
+
+::: callout-warning
+## MLEs ≠ Sufficient Statistics
+
+The MLE $\hat{\theta}$ is sufficient **only if** $\hat{\theta}$ and the sufficient statistic $T$ determine each other (one-to-one correspondence).
+:::
+
+. . .
+
+**Example where MLE IS sufficient:**
+
+- Uniform$[0, \theta]$: MLE = $\max(X_i)$ = sufficient statistic ✓
+
+**Example where MLE is NOT sufficient:**
+
+- Normal$(\mu, \sigma^2)$: MLEs are $(\hat{\mu}, \hat{\sigma}^2)$, which ARE jointly sufficient
+- But if we only want $\hat{\mu} = \bar{X}$, this alone is not sufficient for both parameters
+
+## Why This Matters
+
+::: callout-tip
+## Practical Implications
+
+1. **MLEs are efficient:** They automatically use all available information about $\theta$
+
+2. **Finding MLEs:** Once you identify sufficient statistics, you only need to maximize $g(T; \theta)$—often simpler!
+
+3. **Asymptotic optimality:** MLEs achieve the Cramér-Rao bound asymptotically, partly because they use sufficient statistics
+:::
+
+. . .
+
+**Bottom line:** Sufficiency explains *why* MLEs have such good properties—they never "waste" information in the data.
+
+## Connecting MLE, Sufficiency, and MVUE
+
+```{r}
+#| echo: false
+#| fig-height: 3
+library(DiagrammeR)
+
+grViz("
+digraph connections {
+  graph [rankdir = LR, bgcolor = transparent]
+  node [shape = box, style = filled, fontsize = 14]
+  
+  MLE [label = 'MLE', fillcolor = lightblue]
+  Suff [label = 'Sufficient\\nStatistic T', fillcolor = lightyellow]
+  MVUE [label = 'MVUE', fillcolor = darkseagreen1]
+  
+  MLE -> Suff [label = 'is function of', fontsize = 10]
+  Suff -> MVUE [label = 'if complete,\\nunbiased function is', fontsize = 10]
+  MLE -> MVUE [label = 'asymptotically\\n(large n)', style = dashed, fontsize = 10]
+}
+")
+```
+
+- MLE is always a function of sufficient statistics
+- If the sufficient statistic is complete, unbiased functions of it are MVUEs
+- For large $n$, MLEs are approximately MVUEs (asymptotic efficiency)
+
+# Completeness {background-color="#3498db"}
+
+## The Final Piece: Completeness
+
+**Question:** Given a sufficient statistic $T$, is there a **unique** best unbiased estimator based on $T$?
+
+. . .
+
+::: callout-important
+## Definition: Complete Statistic
+
+A statistic $T$ is **complete** if for any function $g$:
+
+$$E_\theta[g(T)] = 0 \text{ for all } \theta \implies P_\theta(g(T) = 0) = 1 \text{ for all } \theta$$
+:::
+
+. . .
+
+**Intuition:** The only unbiased estimator of zero based on $T$ is the zero function itself.
+
+## Lehmann-Scheffé Theorem
+
+::: callout-important
+## Theorem (Lehmann-Scheffé)
+
+If $T$ is a **complete sufficient statistic** and $U = h(T)$ is unbiased for $\tau(\theta)$, then $U$ is the **unique MVUE** of $\tau(\theta)$.
+:::
+
+. . .
+
+**Key fact:** For exponential family distributions (Normal, Poisson, Exponential, Binomial, Gamma), the natural sufficient statistics are typically **complete**.
+
+. . .
+
+::: callout-tip
+## The Power of Completeness + Sufficiency
+Once we find a complete sufficient statistic, any unbiased function of it is automatically the MVUE!
+:::
+
+## The Road to MVUE: Summary
+
+**Method 1: Via Sufficiency**
+
+1.  Find sufficient statistic $T$ (Factorization Theorem)
+2.  Check completeness (exponential family → typically complete)
+3.  Find unbiased function of $T$ → **MVUE** (Lehmann-Scheffé)
+
+. . .
+
+**Method 2: Via Cramér-Rao**
+
+1.  Compute Fisher Information $I(\theta)$
+2.  Find CRLB = $1/[nI(\theta)]$
+3.  Find estimator achieving CRLB → **MVUE**
+
+# Summary {background-color="#2c3e50"}
+
+## Lesson 5: Key Takeaways
+
+**1. Sufficiency:** $T$ captures all information about $\theta$ in the data
+
+**2. Neyman Factorization:** $f(\mathbf{x}; \theta) = g(T; \theta) \cdot h(\mathbf{x})$ identifies sufficient statistics
+
+**3. Rao-Blackwell:** Conditioning on sufficient statistics improves estimators
+
+**4. Completeness + Sufficiency → Unique MVUE** (Lehmann-Scheffé)
+
+. . .
+
+| Distribution | Sufficient Statistic | Complete? |
+|--------------|---------------------|-----------|
+| Poisson$(\mu)$ | $\sum X_i$ | Yes |
+| Exponential$(\lambda)$ | $\sum X_i$ | Yes |
+| Normal$(\mu, \sigma^2)$ | $(\bar{X}, S^2)$ | Yes |
+| Uniform$[0, \theta]$ | $\max(X_i)$ | Yes |
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 7.3
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 6.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/05_Sufficiency/05_Sufficient_Statistics.html lessons/05_Sufficiency/05_Sufficient_Statistics.pdf
+```
