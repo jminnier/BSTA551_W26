@@ -15,7 +15,7 @@ source(here("class_dates.R"))
 ```
 
 |  |  |  |  |  |  |  |  |  |  |  |
-|-------|:-----:|:------|:------|:------|:-----:|:-----:|:-----:|:-----:|:-----:|:-----:|
+|----|:--:|:---|:---|:---|:--:|:--:|:--:|:--:|:--:|:--:|
 | Week | Date | Exit tix | Lesson | Topics | [TB](https://librarysearch.ohsu.edu/permalink/01ALLIANCE_OHSU/okd4j/alma99900609916301858) | Key Info | Slides HTML | Slides PDF | Slides Notes | Muddy Points |
 | 1 | `{r} w1d1 %>% format("%m/%d")` | [[{{< iconify healthicons health-worker-form size=32px >}}](https://forms.office.com/r/UT6bq9k6Gr)]{style="color:#f8f5f0;"} | 0 | Welcome |  | [[{{< iconify akar-icons info-fill size=30px >}}](lessons/00_Intro/00_Intro_key_info.qmd)]{style="color:#f8f5f0;"} | [[{{< iconify ri slideshow-fill size=30px >}}](lessons/00_Intro/00_Intro.qmd)]{style="color:#f8f5f0;"} | [[{{< iconify bi file-earmark-pdf-fill size=28px >}}](lessons/00_Intro/00_Intro.pdf)]{style="color:#f8f5f0;"} | [{{< iconify pepicons-pop pen-circle-filled size=29px >}}]{style="color:#f8f5f0;"} | [{{< iconify pajamas question size=30px >}}]{style="color:#f8f5f0;"} |
 |  |  |  | 1 | Introduction to Statistical Inference; Statistics | 6.1, 6.2 | [{{< iconify akar-icons info-fill size=30px >}}]{style="color:#f8f5f0;"} | [[{{< iconify ri slideshow-fill size=30px >}}](lessons/01_Intro_Inference/01_Intro_Inference.qmd)]{style="color:#f8f5f0;"} | [[{{< iconify bi file-earmark-pdf-fill size=28px >}}](lessons/01_Intro_Inference/01_Intro_Inference.pdf)]{style="color:#f8f5f0;"} | [{{< iconify pepicons-pop pen-circle-filled size=29px >}}]{style="color:#f8f5f0;"} | [{{< iconify pajamas question size=30px >}}]{style="color:#f8f5f0;"} |

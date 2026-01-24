@@ -1,0 +1,1253 @@
+---
+title: "Lesson 8: One-Sample t-Intervals and Population Proportions"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w4d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 8 - t-Intervals and Proportions
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+set.seed(42)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 8: The Realistic Case {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lesson 7: Confidence Intervals (Introduction)**
+
+-   CI definition and correct interpretation
+-   Pivotal quantities for constructing CIs
+-   Z-intervals when $\sigma$ is known: $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$
+
+. . .
+
+**The Problem:** In practice, we **rarely know** the population standard deviation $\sigma$.
+
+. . .
+
+**Today's Goals:**
+
+1. Construct t-intervals when $\sigma$ is unknown
+2. Check normality assumptions
+3. Build confidence intervals for population proportions
+4. Compare Wald, Score, and Agresti-Coull intervals
+
+# CI for Mean: $\sigma$ Unknown {background-color="#9b59b6"}
+
+## The Realistic Case
+
+In practice, we **rarely know** the population standard deviation $\sigma$.
+
+. . .
+
+**Natural idea:** Replace $\sigma$ with the sample standard deviation $s$.
+
+. . .
+
+But what happens to our pivotal quantity?
+
+$$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1)$$
+
+becomes
+
+$$T = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim \; ???$$
+
+## The Source of Extra Variability
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+set.seed(551)
+n_sim <- 10000
+n <- 10
+true_mu <- 0
+true_sigma <- 1
+
+# Simulate both Z and T statistics
+sim_data <- tibble(
+  Z = replicate(n_sim, {
+    x <- rnorm(n, true_mu, true_sigma)
+    (mean(x) - true_mu) / (true_sigma / sqrt(n))
+  }),
+  T = replicate(n_sim, {
+    x <- rnorm(n, true_mu, true_sigma)
+    (mean(x) - true_mu) / (sd(x) / sqrt(n))
+  })
+) |>
+  pivot_longer(everything(), names_to = "statistic", values_to = "value")
+
+sim_data |>
+  ggplot(aes(x = value, fill = statistic)) +
+  geom_histogram(bins = 50, alpha = 0.6, position = "identity") +
+  scale_fill_manual(
+    values = c("Z" = "steelblue", "T" = "coral"),
+    labels = c(
+      T = expression(T == (bar(X) - mu) / (S / sqrt(n))),
+      Z = expression(Z == (bar(X) - mu) / (sigma / sqrt(n)))
+    )
+  ) +
+  labs(x = "Value", y = "Count", 
+       title = "Comparing Z and T Statistics (n = 10)",
+       fill = "Statistic") +
+  theme_minimal(base_size = 18)
+```
+
+**Key insight:** T has more variability because both $\bar{X}$ and $S$ are random!
+
+## The t Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+tibble(x = seq(-4, 4, by = 0.01)) |>
+  mutate(
+    normal = dnorm(x),
+    t_5 = dt(x, df = 5),
+    t_15 = dt(x, df = 15),
+    t_30 = dt(x, df = 30)
+  ) |>
+  pivot_longer(-x, names_to = "distribution", values_to = "density") |>
+  mutate(distribution = factor(distribution, 
+                               levels = c("normal", "t_30", "t_15", "t_5"),
+                               labels = c("N(0,1)", "t(df=30)", "t(df=15)", "t(df=5)"))) |>
+  ggplot(aes(x = x, y = density, color = distribution)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(values = c("black", "#3498db", "#e74c3c", "#27ae60")) +
+  labs(x = "x", y = "Density", color = "Distribution",
+       title = "Student's t Distribution vs. Standard Normal") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "right")
+```
+
+The t distribution has **heavier tails** than the normal — accounting for extra uncertainty from estimating $\sigma$.
+
+## Student's t Distribution
+
+::: callout-important
+## Gosset's Theorem
+If $X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)$, then:
+$$T = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim t_{n-1}$$
+where $t_{n-1}$ denotes the t distribution with $n-1$ **degrees of freedom**.
+:::
+
+. . .
+
+**Key properties of $t_\nu$:**
+
+-   Symmetric around 0
+-   Heavier tails than $N(0, 1)$
+-   As $\nu \to \infty$, $t_\nu \to N(0, 1)$
+
+## Simulating the t Distribution (Chihara 7.1.2)
+
+```{r}
+#| echo: true
+#| fig-height: 6.5
+# Verify that (X̄ - μ)/(S/√n) follows t distribution
+set.seed(551)
+n <- 15
+t_stats <- replicate(10000, {
+  x <- rnorm(n, mean = 25, sd = 7)
+  (mean(x) - 25) / (sd(x) / sqrt(n))
+})
+
+# Compare to theoretical t distribution
+qqplot(qt(ppoints(10000), df = n - 1), t_stats, 
+       main = "Q-Q Plot: Simulated vs. t(14)", 
+       xlab = "Theoretical t(14)", ylab = "Simulated")
+abline(0, 1, col = "red", lwd = 2)
+```
+
+## Why $(n-1)$ Degrees of Freedom?
+
+The sample variance involves:
+$$S^2 = \frac{1}{n-1}\sum_{i=1}^n(X_i - \bar{X})^2$$
+
+. . .
+
+Since $\sum(X_i - \bar{X}) = 0$, knowing any $n-1$ deviations determines the last one.
+
+. . .
+
+**Intuition:** We "use up" one degree of freedom by estimating $\mu$ with $\bar{X}$.
+
+## The One-Sample t Interval
+
+::: callout-important
+## t Confidence Interval for Normal Mean ($\sigma$ Unknown)
+If $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$, a $100(1-\alpha)\%$ CI for $\mu$ is:
+$$\bar{x} \pm t_{\alpha/2, n-1} \cdot \frac{s}{\sqrt{n}}$$
+where $t_{\alpha/2, n-1}$ is the critical value with $P(T > t_{\alpha/2, n-1}) = \alpha/2$ for $T \sim t_{n-1}$.
+:::
+
+. . .
+
+The quantity $s/\sqrt{n}$ is called the **standard error of the mean** (SEM or SE).
+
+## t Critical Values
+
+```{r}
+# Compare z and t critical values for 95% CI
+z_crit <- qnorm(0.975)
+
+df_values <- c(5, 10, 20, 30, 50, 100, Inf)
+t_crits <- qt(0.975, df = df_values)
+
+tibble(
+  df = c("5", "10", "20", "30", "50", "100", "∞ (z)"),
+  t_critical = round(c(head(t_crits, -1), z_crit), 3)
+)
+```
+
+**Key insight:** For small samples, $t$ critical values are substantially larger than $z$ critical values.
+
+## Visualizing z vs. t Critical Values
+
+```{r}
+#| echo: false
+#| fig-height: 6
+tibble(df = 2:100) |>
+  mutate(t_crit = qt(0.975, df)) |>
+  ggplot(aes(x = df, y = t_crit)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_hline(yintercept = qnorm(0.975), linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = 80, y = 2.1, label = "z = 1.96", color = "red", size = 6) +
+  labs(x = "Degrees of Freedom", y = "Critical Value (α = 0.05)",
+       title = "t Critical Values Approach z as df → ∞") +
+  theme_minimal(base_size = 18)
+```
+
+## Example: Porsche Odometer Readings (Devore Example 8.8)
+
+A sample of $n = 16$ used Porsche Boxsters has odometer readings (miles):
+
+```{r}
+odometer <- c(80000, 30100, 97500, 58551, 73787, 51800, 69267, 44530,
+              42192, 104920, 41442, 27418, 43436, 77219, 5991, 14362)
+
+n <- length(odometer)
+xbar <- mean(odometer)
+s <- sd(odometer)
+
+cat("Sample size:", n, "\n")
+cat("Sample mean:", round(xbar, 1), "miles\n")
+cat("Sample SD:", round(s, 1), "miles\n")
+```
+
+## Example: Porsche (continued)
+
+**95% Confidence Interval:**
+
+```{r}
+alpha <- 0.05
+t_crit <- qt(1 - alpha/2, df = n - 1)
+
+cat("t critical value (df=15):", round(t_crit, 3), "\n")
+
+se <- s / sqrt(n)
+margin <- t_crit * se
+
+cat("Standard error:", round(se, 1), "\n")
+cat("Margin of error:", round(margin, 1), "\n\n")
+
+cat("95% CI: (", round(xbar - margin, 1), ",", round(xbar + margin, 1), ")")
+```
+
+## Checking the Normality Assumption
+
+The t interval assumes normally distributed data. **Always check!**
+
+```{r}
+#| fig-height: 5
+par(mfrow = c(1, 2))
+hist(odometer, main = "Histogram", xlab = "Odometer (miles)", col = "lightblue")
+qqnorm(odometer, main = "Normal Q-Q Plot", pch = 19)
+qqline(odometer, col = "red", lwd = 2)
+```
+
+The Q-Q plot looks reasonably linear — normality assumption is plausible.
+
+## Medical Example: Systolic Blood Pressure
+
+A clinical study measures systolic blood pressure in $n = 25$ patients after a new treatment:
+
+```{r}
+# Simulated BP data (mmHg)
+bp <- c(118, 124, 131, 127, 122, 119, 128, 135, 121, 126,
+        130, 124, 129, 133, 120, 125, 127, 132, 123, 128,
+        126, 131, 122, 129, 125)
+
+n <- length(bp)
+xbar <- mean(bp)
+s <- sd(bp)
+
+# 95% CI
+t_crit <- qt(0.975, df = n - 1)
+se <- s / sqrt(n)
+ci <- c(xbar - t_crit * se, xbar + t_crit * se)
+
+cat("Sample mean:", round(xbar, 1), "mmHg\n")
+cat("Sample SD:", round(s, 1), "mmHg\n")
+cat("95% CI: (", round(ci[1], 1), ",", round(ci[2], 1), ") mmHg")
+```
+
+## Using t.test() in R
+
+```{r}
+# The easy way to compute t confidence intervals
+t.test(bp, conf.level = 0.95)
+```
+
+. . .
+
+**Note:** R's `t.test()` also performs a hypothesis test (which we'll cover later).
+
+## Using broom to Tidy t.test() Output
+
+The `broom` package provides a convenient way to extract results as a tibble:
+
+```{r}
+# Tidy output with broom
+library(broom)
+
+t.test(bp, conf.level = 0.95) |> 
+  tidy() |> 
+  select(estimate, conf.low, conf.high, statistic, p.value)
+```
+
+. . .
+
+**Advantages of broom:**
+
+-   Results as a tibble (easy to manipulate)
+-   Consistent interface across many statistical functions
+-   Great for automated reporting and combining results
+
+## Medical Example: Stress and Cortisol (Devore 8.37)
+
+Medical students' serum cortisol levels were measured at the beginning and end of semester. For $n = 41$ students, the mean difference (end - beginning) was $\bar{d} = 2.08$ with $s_d = 7.88$.
+
+**Find a 95% lower confidence bound for the population mean change:**
+
+```{r}
+n <- 41
+dbar <- 2.08
+s <- 7.88
+
+t_alpha <- qt(0.95, df = n - 1)  # One-sided!
+se <- s / sqrt(n)
+
+lower_bound <- dbar - t_alpha * se
+
+cat("95% lower confidence bound:", round(lower_bound, 2), "\n")
+cat("Is the mean change necessarily positive? ", 
+    ifelse(lower_bound > 0, "Yes", "No"))
+```
+
+## When Can We Trust the t-Interval?
+
+::: callout-tip
+## Guidelines for t-Interval Validity
+1. **Large samples (n ≥ 30-40):** t-interval is robust to non-normality (by CLT)
+2. **Moderate samples (15-30):** Check for severe skewness or outliers
+3. **Small samples (n < 15):** Normality is crucial; use Q-Q plots
+4. **Outliers:** Can severely affect $\bar{x}$ and $s$; consider alternatives
+:::
+
+. . .
+
+**Alternatives for non-normal data:**
+
+-   Bootstrap confidence intervals (Lesson 9)
+-   Non-parametric methods (median-based)
+-   Transformations (log, square root)
+
+## Your Turn: Practice Problem
+
+**Exercise:** A study of $n = 20$ hospital ICU stays yields $\bar{x} = 4.2$ days with $s = 1.8$ days.
+
+1. Calculate a 95% CI for mean ICU stay
+2. Calculate a 90% CI — how does it compare?
+3. What assumptions are we making?
+
+. . .
+
+```{r}
+n <- 20; xbar <- 4.2; s <- 1.8
+
+# 95% CI
+t95 <- qt(0.975, df = n - 1)
+ci95 <- xbar + c(-1, 1) * t95 * s / sqrt(n)
+
+# 90% CI  
+t90 <- qt(0.95, df = n - 1)
+ci90 <- xbar + c(-1, 1) * t90 * s / sqrt(n)
+
+cat("95% CI:", round(ci95, 2), "\n")
+cat("90% CI:", round(ci90, 2))
+```
+
+
+# Confidence Intervals for Proportions {background-color="#e67e22"}
+
+## The Setup
+
+**Situation:** We observe $X$ successes in $n$ independent Bernoulli trials.
+
+-   $X \sim \text{Binomial}(n, p)$
+-   Point estimate: $\hat{p} = X/n$
+
+. . .
+
+**Examples in medical research:**
+
+-   Proportion of patients responding to treatment
+-   Proportion experiencing adverse events
+-   Disease prevalence in a population
+-   Sensitivity/specificity of diagnostic tests
+
+## Deriving the MLE for Bernoulli (Review)
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Bernoulli}(p)$ where $P(X_i = 1) = p$.
+
+. . .
+
+**Likelihood function:**
+$$L(p) = \prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^{\sum x_i}(1-p)^{n - \sum x_i}$$
+
+. . .
+
+**Log-likelihood:**
+$$\ell(p) = \left(\sum x_i\right) \ln(p) + \left(n - \sum x_i\right) \ln(1-p)$$
+
+## MLE for Bernoulli (continued)
+
+**Taking the derivative and setting to zero:**
+$$\frac{d\ell}{dp} = \frac{\sum x_i}{p} - \frac{n - \sum x_i}{1-p} = 0$$
+
+. . .
+
+**Solving for $p$:**
+$$\frac{\sum x_i}{p} = \frac{n - \sum x_i}{1-p}$$
+$$(1-p)\sum x_i = p(n - \sum x_i)$$
+$$\sum x_i = np$$
+
+. . .
+
+::: callout-important
+## MLE for Bernoulli Parameter
+$$\hat{p}_{MLE} = \frac{\sum X_i}{n} = \bar{X} = \frac{X}{n}$$
+:::
+
+## The General Wald Interval
+
+::: callout-important
+## Wald Confidence Interval (General Definition)
+For an MLE $\hat{\theta}$ with large $n$, the **Wald interval** is based on the asymptotic normality of MLEs:
+$$\hat{\theta} \dot{\sim} N\left(\theta, \frac{1}{I_n(\theta)}\right)$$
+
+A $100(1-\alpha)\%$ Wald CI is:
+$$\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})$$
+where $\widehat{SE}$ is an estimate of the standard error, typically using $\hat{\theta}$ in place of $\theta$.
+:::
+
+. . .
+
+**Key idea:** Replace unknown parameters in the standard error with their MLEs.
+
+## Why the Wald Interval Works: Asymptotic Theory
+
+From Lesson 4, we know the MLE has these asymptotic properties:
+
+1. **Consistency:** $\hat{\theta} \xrightarrow{P} \theta$
+
+2. **Asymptotic normality:** $\sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} N(0, 1/I(\theta))$
+
+. . .
+
+For the Bernoulli case with $\hat{p} = \bar{X}$:
+
+-   $E(\hat{p}) = p$ and $\text{Var}(\hat{p}) = \frac{p(1-p)}{n}$
+-   Fisher information: $I(p) = \frac{1}{p(1-p)}$, so $I_n(p) = \frac{n}{p(1-p)}$
+-   CRLB: $\frac{1}{I_n(p)} = \frac{p(1-p)}{n} = \text{Var}(\hat{p})$ ✓
+
+## Visualizing Convergence to N(0,1): Density Comparison
+
+```{r}
+#| echo: false
+#| fig-height: 6.5
+set.seed(551)
+p_true <- 0.3
+n_values <- c(10, 30, 100, 500)
+n_sim <- 10000
+
+# Simulate Wald pivot for various sample sizes
+sim_wald_pivot <- function(n, p, n_sim) {
+
+  replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    p_hat <- x / n
+    if (p_hat > 0 & p_hat < 1) {
+      (p_hat - p) / sqrt(p_hat * (1 - p_hat) / n)
+    } else {
+      NA
+    }
+  })
+}
+
+# Generate data for all sample sizes
+pivot_data <- map_dfr(n_values, ~{
+  pivots <- sim_wald_pivot(.x, p_true, n_sim)
+  tibble(n = .x,
+         n_label = paste0("n = ", .x),
+         pivot = pivots[!is.na(pivots)])
+})
+
+# Overlaid density plots
+pivot_data |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", n_values))) |>
+  ggplot(aes(x = pivot)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60, 
+                 fill = "steelblue", alpha = 0.6, color = "white") +
+  stat_function(fun = dnorm, color = "red", linewidth = 1.5) +
+  facet_wrap(~n_label, nrow = 1) +
+  coord_cartesian(xlim = c(-4, 4)) +
+  labs(x = "Wald Pivot Value",
+       y = "Density",
+       title = "Wald Pivot Distribution Converges to N(0,1)",
+       subtitle = "Blue histogram: 10,000 simulated pivots | Red curve: N(0,1) density | True p = 0.3") +
+  theme_minimal(base_size = 16)
+```
+
+As $n$ increases, the histogram of simulated Wald pivots matches the red N(0,1) curve more closely.
+
+## Convergence in the Tails (What Matters for CIs)
+
+```{r}
+#| echo: false
+#| fig-height: 6
+# Focus on the tails - this is what matters for confidence intervals
+pivot_data |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", n_values))) |>
+  ggplot(aes(x = pivot, color = n_label)) +
+  stat_ecdf(linewidth = 1.2) +
+  stat_function(fun = pnorm, color = "black", linewidth = 1.5, linetype = "dashed") +
+  # Add reference lines at critical values
+
+  geom_vline(xintercept = c(-1.96, 1.96), linetype = "dotted", color = "gray40") +
+  geom_hline(yintercept = c(0.025, 0.975), linetype = "dotted", color = "gray40") +
+  annotate("text", x = -2.8, y = 0.08, label = "2.5%", size = 4) +
+  annotate("text", x = 2.8, y = 0.92, label = "97.5%", size = 4) +
+  scale_color_brewer(palette = "Set1") +
+  coord_cartesian(xlim = c(-4, 4)) +
+  labs(x = "Wald Pivot Value",
+       y = "Cumulative Probability",
+       title = "CDF Comparison: Focus on the Tails",
+       subtitle = "Dotted lines mark ±1.96 (95% CI critical values) | Black dashed: N(0,1)",
+       color = "Sample Size") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "right")
+```
+
+The tails (where we find critical values for CIs) converge more slowly than the center.
+
+## Quantifying Convergence: Kolmogorov-Smirnov Distance
+
+```{r}
+#| echo: false
+#| fig-height: 5.5
+set.seed(551)
+# Calculate KS distance for many sample sizes
+n_sequence <- c(seq(10, 100, by = 10), seq(120, 200, by = 20), seq(250, 500, by = 50))
+n_sim <- 3000
+
+ks_results <- map_dfr(n_sequence, function(n) {
+  pivots <- sim_wald_pivot(n, p_true, n_sim)
+  pivots <- pivots[!is.na(pivots)]
+  ks_stat <- ks.test(pivots, "pnorm")$statistic
+  tibble(n = n, ks_distance = ks_stat)
+})
+
+ks_results |>
+  ggplot(aes(x = n, y = ks_distance)) +
+  geom_line(linewidth = 1, color = "steelblue") +
+  geom_point(size = 2.5, color = "steelblue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  labs(x = "Sample Size (n)",
+       y = "Kolmogorov-Smirnov Distance from N(0,1)",
+       title = "Wald Pivot Approaches N(0,1) as n Increases",
+       subtitle = "KS distance measures maximum gap between empirical and theoretical CDF") +
+  theme_minimal(base_size = 18)
+```
+
+The KS distance (maximum difference between ECDFs) shrinks toward 0, confirming convergence in distribution.
+
+## Convergence: Critical Values for 95% CI
+
+```{r}
+#| echo: false
+#| fig-height: 5.5
+# Focus on the percentiles that matter for 95% CIs: 2.5% and 97.5%
+set.seed(551)
+critical_comparison <- map_dfr(n_sequence, function(n) {
+  pivots <- sim_wald_pivot(n, p_true, n_sim)
+  pivots <- pivots[!is.na(pivots)]
+  tibble(
+    n = n,
+    `Lower (2.5%)` = quantile(pivots, 0.025),
+    `Upper (97.5%)` = quantile(pivots, 0.975)
+  )
+}) |>
+  pivot_longer(-n, names_to = "Percentile", values_to = "Empirical")
+
+# Add theoretical values
+theoretical_vals <- tibble(
+  Percentile = c("Lower (2.5%)", "Upper (97.5%)"),
+  Theoretical = c(qnorm(0.025), qnorm(0.975))
+)
+
+critical_comparison |>
+  left_join(theoretical_vals, by = "Percentile") |>
+  ggplot(aes(x = n, y = Empirical, color = Percentile)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  geom_hline(aes(yintercept = Theoretical, color = Percentile), 
+             linetype = "dashed", linewidth = 1) +
+  scale_color_manual(values = c("Lower (2.5%)" = "#e74c3c", "Upper (97.5%)" = "#3498db")) +
+  labs(x = "Sample Size (n)",
+       y = "Critical Value",
+       title = "Empirical Critical Values Converge to ±1.96",
+       subtitle = "Solid lines: simulated | Dashed lines: theoretical N(0,1) values") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "right")
+```
+
+For 95% CIs, we need the 2.5th and 97.5th percentiles to equal ±1.96. This happens as $n \to \infty$.
+
+## The Exact Pivot for Proportions
+
+If we knew $p$, we could use this **exact pivot**:
+$$Z = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}} \xrightarrow{d} N(0, 1)$$
+
+. . .
+
+**Problem:** The standard error $\sqrt{p(1-p)/n}$ depends on the unknown $p$!
+
+. . .
+
+**Wald solution:** Replace $p$ with $\hat{p}$ in the standard error:
+$$Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}}$$
+
+But is $Z^*$ still approximately $N(0,1)$?
+
+## Why Plugging In $\hat{p}$ Works: Slutsky's Theorem
+
+We can rewrite $Z^*$ as:
+$$Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} = \underbrace{\frac{\hat{p} - p}{\sqrt{p(1-p)/n}}}_{\xrightarrow{d} N(0,1)} \cdot \underbrace{\frac{\sqrt{p(1-p)}}{\sqrt{\hat{p}(1-\hat{p})}}}_{\xrightarrow{P} 1}$$
+
+. . .
+
+**Slutsky's Theorem:** If $X_n \xrightarrow{d} X$ and $Y_n \xrightarrow{P} c$ (a constant), then:
+$$X_n \cdot Y_n \xrightarrow{d} c \cdot X$$
+
+. . .
+
+Since $\hat{p} \xrightarrow{P} p$ (consistency), we have:
+$$\frac{\sqrt{p(1-p)}}{\sqrt{\hat{p}(1-\hat{p})}} \xrightarrow{P} 1$$
+
+Therefore: $Z^* \xrightarrow{d} N(0,1)$
+
+## Visualizing the Consistency Argument
+
+```{r}
+#| echo: false
+#| fig-height: 5.5
+set.seed(551)
+p_true <- 0.3
+n_values <- c(20, 50, 100, 500)
+
+sim_ratio <- function(n, p, n_sim = 5000) {
+  replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    p_hat <- x/n
+    if (p_hat > 0 & p_hat < 1) {
+      sqrt(p*(1-p)) / sqrt(p_hat*(1-p_hat))
+    } else {
+      NA
+    }
+  })
+}
+
+ratio_data <- map_dfr(n_values, ~{
+  tibble(n = paste0("n = ", .x), 
+         ratio = sim_ratio(.x, p_true))
+}) |> 
+  filter(!is.na(ratio))
+
+ratio_data |> 
+  ggplot(aes(x = ratio)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.7) +
+  geom_vline(xintercept = 1, color = "red", linewidth = 1.2, linetype = "dashed") +
+  facet_wrap(~n, scales = "free_y") +
+  labs(x = expression(sqrt(p(1-p)) / sqrt(hat(p)(1-hat(p)))),
+       y = "Count",
+       title = "Ratio of True SE to Estimated SE Concentrates at 1",
+       subtitle = "True p = 0.3") +
+  theme_minimal(base_size = 16)
+```
+
+## The Wald Interval for Proportions
+
+Using $Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} \approx N(0,1)$ as our pivot:
+
+$$P\left(-z_{\alpha/2} < \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} < z_{\alpha/2}\right) \approx 1 - \alpha$$
+
+. . .
+
+Solving for $p$:
+
+::: callout-important
+## Wald Confidence Interval for a Proportion
+$$\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$
+:::
+
+. . .
+
+::: callout-warning
+## Problems with the Wald Interval
+-   Poor coverage probability for $p$ near 0 or 1
+-   Can produce bounds outside [0, 1]
+-   Not recommended for small samples
+:::
+
+## Coverage Problems with Wald
+
+```{r}
+#| echo: false
+#| fig-height: 6
+# Simulate coverage probability for Wald interval
+set.seed(551)
+n_sim <- 10000
+n <- 100
+
+coverage_wald <- function(p, n, n_sim = 10000) {
+  mean(replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    p_hat <- x/n
+    se <- sqrt(p_hat * (1 - p_hat) / n)
+    lower <- p_hat - 1.96 * se
+    upper <- p_hat + 1.96 * se
+    lower < p & p < upper
+  }))
+}
+
+p_values <- seq(0.05, 0.95, by = 0.05)
+coverage <- sapply(p_values, coverage_wald, n = 100)
+
+tibble(p = p_values, coverage = coverage) |>
+  ggplot(aes(x = p, y = coverage)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_point(size = 3, color = "steelblue") +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "red", linewidth = 1) +
+  labs(x = "True Proportion p", y = "Coverage Probability",
+       title = "Coverage Probability of 95% Wald Interval (n = 100)",
+       subtitle = "Dashed line shows nominal 95% level") +
+  theme_minimal(base_size = 18) +
+  ylim(0.85, 1)
+```
+
+The Wald interval often has coverage **below** the nominal level!
+
+## The Score Interval: A Better Approach
+
+::: callout-important
+## The Score Test Statistic (General Definition)
+The **score function** is the derivative of the log-likelihood:
+$$U(\theta) = \ell'(\theta) = \frac{d}{d\theta} \ln L(\theta)$$
+
+The **score test statistic** is:
+$$Z_{score} = \frac{U(\theta)}{\sqrt{I_n(\theta)}} \xrightarrow{d} N(0,1)$$
+where $I_n(\theta)$ is the Fisher information.
+:::
+
+. . .
+
+**Key insight:** The score statistic is evaluated at the **null/hypothesized** parameter value, not at the MLE!
+
+## Score Function for Bernoulli
+
+For $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Bernoulli}(p)$:
+
+**Log-likelihood:** $\ell(p) = X \ln(p) + (n-X)\ln(1-p)$ where $X = \sum X_i$
+
+. . .
+
+**Score function:**
+$$U(p) = \ell'(p) = \frac{X}{p} - \frac{n-X}{1-p} = \frac{X - np}{p(1-p)}$$
+
+. . .
+
+**Fisher information:** $I_n(p) = \frac{n}{p(1-p)}$
+
+. . .
+
+**Score statistic:**
+$$Z_{score} = \frac{U(p)}{\sqrt{I_n(p)}} = \frac{(X-np)/[p(1-p)]}{\sqrt{n/[p(1-p)]}} = \frac{X - np}{\sqrt{np(1-p)}} = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}}$$
+
+## Score Interval: Keep $p$ in the Denominator!
+
+Notice that the score statistic for proportions is:
+$$Z_{score} = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}} \approx N(0,1)$$
+
+. . .
+
+**The score interval** keeps $p$ in the standard error (unlike Wald):
+$$\left|\frac{\hat{p} - p}{\sqrt{p(1-p)/n}}\right| \leq z_{\alpha/2}$$
+
+. . .
+
+Squaring both sides:
+$$\frac{(\hat{p} - p)^2}{p(1-p)/n} \leq z_{\alpha/2}^2$$
+
+. . .
+
+This is a **quadratic equation** in $p$!
+
+## Solving the Quadratic for the Score Interval
+
+Rearranging $(\hat{p} - p)^2 \leq z^2 \cdot p(1-p)/n$:
+
+$$n(\hat{p} - p)^2 \leq z^2 p(1-p)$$
+
+$$n\hat{p}^2 - 2np\hat{p} + np^2 \leq z^2 p - z^2 p^2$$
+
+$$(n + z^2)p^2 - (2n\hat{p} + z^2)p + n\hat{p}^2 \leq 0$$
+
+. . .
+
+Solving with the quadratic formula gives the **Score (Wilson) interval**:
+
+::: callout-important
+## Score Confidence Interval for a Proportion
+$$\frac{\hat{p} + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n} + \frac{z^2}{4n^2}}}{1 + \frac{z^2}{n}}$$
+where $z = z_{\alpha/2}$.
+:::
+
+## Why Score Intervals Are Better
+
+```{r}
+#| echo: false
+#| fig-height: 5.5
+# Compare coverage of Wald vs Score
+coverage_score <- function(p, n, n_sim = 10000) {
+  mean(replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    ci <- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int
+    ci[1] < p & p < ci[2]
+  }))
+}
+
+p_values <- seq(0.05, 0.95, by = 0.05)
+coverage_w <- sapply(p_values, coverage_wald, n = 50)
+coverage_s <- sapply(p_values, coverage_score, n = 50)
+
+tibble(p = rep(p_values, 2),
+       coverage = c(coverage_w, coverage_s),
+       method = rep(c("Wald", "Score"), each = length(p_values))) |>
+  ggplot(aes(x = p, y = coverage, color = method)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("Wald" = "coral", "Score" = "steelblue")) +
+  labs(x = "True Proportion p", y = "Coverage Probability",
+       title = "Coverage Comparison: Wald vs Score (n = 50)",
+       color = "Method") +
+  theme_minimal(base_size = 18)
+```
+
+Score interval maintains coverage closer to nominal level, especially for extreme $p$.
+
+## The Agresti-Coull Interval
+
+A simpler approximation that works well in practice:
+
+::: callout-tip
+## Agresti-Coull ("Add Two Successes and Two Failures")
+Let $\tilde{n} = n + 4$ and $\tilde{p} = \frac{X + 2}{n + 4}$
+
+Then use:
+$$\tilde{p} \pm z_{\alpha/2}\sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}$$
+:::
+
+. . .
+
+**Why it works:** Adding 2 successes and 2 failures "shrinks" extreme estimates toward 0.5, improving coverage.
+
+. . .
+
+**Connection to Score:** With $z_{0.025} \approx 2$, the Score interval is approximately Agresti-Coull!
+
+## Comparing Intervals: Clinical Trial Example
+
+In a Phase II trial, 23 of 40 patients respond to treatment.
+
+```{r}
+x <- 23; n <- 40; p_hat <- x/n
+cat("Sample proportion:", p_hat, "\n\n")
+
+# Wald interval
+se_wald <- sqrt(p_hat * (1 - p_hat) / n)
+wald_ci <- p_hat + c(-1, 1) * 1.96 * se_wald
+
+# Agresti-Coull interval
+n_tilde <- n + 4
+p_tilde <- (x + 2) / n_tilde
+se_ac <- sqrt(p_tilde * (1 - p_tilde) / n_tilde)
+ac_ci <- p_tilde + c(-1, 1) * 1.96 * se_ac
+
+cat("Wald 95% CI:          (", round(wald_ci[1], 3), ",", round(wald_ci[2], 3), ")\n")
+cat("Agresti-Coull 95% CI: (", round(ac_ci[1], 3), ",", round(ac_ci[2], 3), ")")
+```
+
+## Using prop.test() for Score Interval
+
+```{r}
+# Score (Wilson) interval in R
+prop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE)
+```
+
+## Using broom with prop.test()
+
+```{r}
+# Tidy output with broom
+prop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE) |> 
+  tidy() |> 
+  select(estimate, conf.low, conf.high, statistic, p.value, method)
+```
+
+. . .
+
+**Note:** The `estimate` column shows $\hat{p}$, and `conf.low`/`conf.high` give the Score interval bounds.
+
+## Comparing All Three Methods
+
+```{r}
+#| echo: true
+compare_proportion_cis <- function(x, n, conf = 0.95) {
+  p_hat <- x/n
+  z <- qnorm(1 - (1-conf)/2)
+  
+  # Wald
+  se_w <- sqrt(p_hat * (1-p_hat) / n)
+  wald <- p_hat + c(-1, 1) * z * se_w
+  
+  # Agresti-Coull
+  p_ac <- (x + 2) / (n + 4)
+  se_ac <- sqrt(p_ac * (1-p_ac) / (n + 4))
+  agresti <- p_ac + c(-1, 1) * z * se_ac
+  
+  # Score (Wilson)
+  score <- prop.test(x, n, conf.level = conf, correct = FALSE)$conf.int
+  
+  tibble(Method = c("Wald", "Agresti-Coull", "Score"),
+         Lower = c(wald[1], agresti[1], score[1]),
+         Upper = c(wald[2], agresti[2], score[2]))
+}
+
+compare_proportion_cis(23, 40)
+```
+
+## Medical Example: Adverse Event Rate
+
+In a safety study, 8 out of 200 patients experience a serious adverse event.
+
+```{r}
+x <- 8; n <- 200
+
+# Score interval
+result <- prop.test(x, n, conf.level = 0.95, correct = FALSE)
+cat("Point estimate:", x/n, "=", round(x/n * 100, 1), "%\n")
+cat("95% Score CI:", round(result$conf.int * 100, 2), "%")
+```
+
+. . .
+
+**Clinical interpretation:** We are 95% confident that the true rate of serious adverse events is between 1.8% and 7.7%.
+
+## Extreme Proportions: Why Wald Fails
+
+```{r}
+# What if only 2 of 50 patients have adverse events?
+x <- 2; n <- 50; p_hat <- x/n
+
+# Wald can give negative lower bound!
+se_wald <- sqrt(p_hat * (1-p_hat) / n)
+wald_ci <- p_hat + c(-1, 1) * 1.96 * se_wald
+
+cat("Wald 95% CI:  (", round(wald_ci[1], 4), ",", round(wald_ci[2], 4), ")\n")
+
+# Score interval stays in [0,1]
+score_ci <- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int
+cat("Score 95% CI: (", round(score_ci[1], 4), ",", round(score_ci[2], 4), ")")
+```
+
+The Wald interval gives a **negative** lower bound — impossible for a proportion!
+
+## Example: Super Bowl Viewing (Devore 8.15)
+
+In a sample of 25 students, **all 25** said they watched the Super Bowl. What's a 95% CI for the true proportion?
+
+```{r}
+x <- 25; n <- 25
+
+# Wald gives silly result
+p_hat <- x/n
+se_wald <- sqrt(p_hat * (1-p_hat) / n)  # This is 0!
+cat("Wald 95% CI: (1, 1) — just the point estimate!\n\n")
+
+# Score interval is much better
+score_ci <- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int
+cat("Score 95% CI: (", round(score_ci[1], 3), ",", round(score_ci[2], 3), ")")
+```
+
+## Sample Size for Proportions
+
+To achieve a margin of error $b$ with confidence level $1 - \alpha$:
+
+$$n = \frac{z_{\alpha/2}^2 \cdot p(1-p)}{b^2}$$
+
+. . .
+
+**Problem:** We don't know $p$ before the study!
+
+. . .
+
+**Conservative approach:** Use $p = 0.5$ (maximizes $p(1-p) = 0.25$):
+$$n = \frac{z_{\alpha/2}^2 \cdot 0.25}{b^2}$$
+
+## Sample Size Example: Disease Prevalence
+
+An epidemiologist wants to estimate disease prevalence with a margin of error ≤ 3% with 95% confidence.
+
+```{r}
+b <- 0.03  # margin of error
+z <- qnorm(0.975)
+
+# Conservative (p = 0.5)
+n_conservative <- z^2 * 0.25 / b^2
+cat("Conservative sample size:", ceiling(n_conservative), "\n")
+
+# If we believe p ≈ 0.10 from prior studies
+n_informed <- z^2 * 0.10 * 0.90 / b^2
+cat("Informed sample size (p ≈ 0.10):", ceiling(n_informed))
+```
+
+. . .
+
+Using prior information can **substantially** reduce required sample size!
+
+## Sample Size: Effect of Assumptions
+
+```{r}
+#| echo: false
+#| fig-height: 5
+tibble(p = seq(0.05, 0.95, by = 0.01)) |>
+  mutate(n = qnorm(0.975)^2 * p * (1-p) / 0.03^2) |>
+  ggplot(aes(x = p, y = n)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_hline(yintercept = qnorm(0.975)^2 * 0.25 / 0.03^2, 
+             linetype = "dashed", color = "red") +
+  annotate("text", x = 0.8, y = 1100, label = "Conservative (p = 0.5)", color = "red", size = 5) +
+  labs(x = "Assumed Proportion p", y = "Required Sample Size",
+       title = "Sample Size for 95% CI with Margin ≤ 3%") +
+  theme_minimal(base_size = 18)
+```
+
+## One-Sided Bounds for Proportions
+
+**Upper confidence bound** (e.g., maximum adverse event rate):
+
+```{r}
+# 12 adverse events in 150 patients
+x <- 12; n <- 150
+
+# 95% upper bound using Score method
+result <- prop.test(x, n, conf.level = 0.95, 
+                    alternative = "less", correct = FALSE)
+cat("Point estimate:", round(x/n * 100, 1), "%\n")
+cat("95% upper bound:", round(result$conf.int[2] * 100, 1), "%")
+```
+
+. . .
+
+**Interpretation:** We are 95% confident that the true adverse event rate is **at most** 12.9%.
+
+# Practical Considerations {background-color="#16a085"}
+
+## Summary: CI Methods Comparison
+
+| Method | When to Use | Notes |
+|--------|-------------|-------|
+| Z-interval | Normal data, $\sigma$ known | Rarely applicable |
+| t-interval | Normal data, $\sigma$ unknown | Check normality |
+| Wald (proportion) | Large $n$, $p$ not extreme | Poor coverage |
+| Score/Wilson | General | Best for proportions |
+| Agresti-Coull | Quick calculation | Good approximation |
+
+## CI Interpretation in Medical Research
+
+::: callout-tip
+## Valid Interpretations
+-   "We are 95% confident that $\mu$ lies between L and U"
+-   "The interval (L, U) is a plausible range for $\mu$"
+-   "In repeated sampling, 95% of such intervals would contain $\mu$"
+:::
+
+. . .
+
+::: callout-warning
+## Invalid Interpretations
+-   "There is a 95% probability that $\mu$ is in (L, U)" ✗
+-   "95% of the data falls between L and U" ✗
+-   "The true mean varies between L and U" ✗
+:::
+
+## Clinical Decision Making with CIs
+
+**Example:** A drug reduces blood pressure by an estimated 12 mmHg with 95% CI (8, 16).
+
+. . .
+
+**Questions we can answer:**
+
+-   Is the effect clinically meaningful? (If minimum important difference is 5 mmHg, yes!)
+-   Is zero a plausible value? (No — CI excludes 0)
+-   What's the worst-case scenario? (Lower bound suggests at least 8 mmHg effect)
+
+## Relationship to Hypothesis Testing
+
+::: callout-note
+## Preview of Coming Material
+A 95% CI contains all parameter values that would **not** be rejected by a two-sided test at $\alpha = 0.05$.
+
+-   If CI excludes the null value → reject $H_0$
+-   If CI includes the null value → fail to reject $H_0$
+:::
+
+. . .
+
+**Example:** 95% CI for mean difference is (8, 16).
+
+-   Test $H_0: \mu = 0$ → Reject (0 not in CI)
+-   Test $H_0: \mu = 10$ → Fail to reject (10 in CI)
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## Lesson 8 Summary
+
+**Key Concepts:**
+
+1.  **t-intervals** handle unknown $\sigma$: $\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}$
+
+2.  **t distribution** has heavier tails than normal; approaches normal as df → ∞
+
+3.  **Always check normality** for t-intervals (Q-Q plots, histograms)
+
+4.  **Wald intervals** based on asymptotic MLE theory; plug in $\hat{\theta}$ for SE
+
+5.  **Score intervals** keep the parameter in SE, solve quadratic; better coverage
+
+6.  **Agresti-Coull** ("add 2 and 2") is a good simple approximation
+
+## Key Formulas
+
+| Parameter | CI Formula | Conditions |
+|-----------|------------|------------|
+| $\mu$ ($\sigma$ known) | $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ | Normal data |
+| $\mu$ ($\sigma$ unknown) | $\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}$ | Normal data |
+| $p$ (Wald) | $\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$ | Large $n$ |
+| $p$ (Agresti-Coull) | $\tilde{p} \pm z_{\alpha/2}\sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}$ | General |
+
+## Lesson 8 Practice Problems
+
+1.  **(Devore 8.17)** For a sample with $n = 20$, $\bar{x} = 13.71$, $s = 3.55$:
+    a. Compute a 95% CI for the population mean.
+    b. What assumptions are required?
+
+2.  **(Devore 8.37)** Medical students' cortisol levels changed by $\bar{d} = 2.08$ ($s = 7.88$, $n = 41$). Find a 95% lower bound for the mean change.
+
+3.  **(Devore 8.43)** In a survey, 859 of 1044 adults support mandatory GMO labeling. Construct a 95% CI for the true proportion.
+
+4.  **(Devore 8.48)** In 48 trials, 16 resulted in ignition.
+    a. Compute the Score interval.
+    b. Compute the Wald interval.
+    c. Compare and discuss which is preferable.
+
+## Lesson 8 Practice Problems (continued)
+
+5.  **(Medical Application)** A clinical trial tests a new cholesterol medication. In $n = 48$ patients, the mean LDL reduction is $\bar{x} = 35$ mg/dL with $s = 18$ mg/dL.
+    a. Construct a 95% CI for the mean LDL reduction.
+    b. Construct a 99% CI. How does it compare?
+    c. The company claims a mean reduction of at least 30 mg/dL. Is this claim supported?
+
+6.  **(Sample Size)** How many subjects are needed to estimate the proportion of patients responding to a treatment within $\pm 5\%$ with 95% confidence, using the conservative approach?
+
+7.  **(Chihara style)** Simulate 1000 Wald and Score intervals for $p = 0.1$ with $n = 50$. Compare the actual coverage probabilities.
+
+## Looking Ahead
+
+**Next Lesson: Bootstrap Confidence Intervals**
+
+-   What if normality doesn't hold?
+-   Bootstrap percentile intervals
+-   Bootstrap t intervals
+-   When to use bootstrap vs. classical methods
+
+. . .
+
+**Coming Soon:**
+
+-   Hypothesis testing (Lessons 9-12)
+-   Two-sample inference (Lesson 13)
+-   Paired data analysis (Lesson 14)
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 8.1-8.4
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 7.
+-   Agresti, A. and Coull, B. (1998). Approximate is better than "exact" for interval estimation of binomial proportions. *The American Statistician*, 52:119-126.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/08_t_Intervals_Proportions/08_t_Intervals_Proportions.html lessons/08_t_Intervals_Proportions/08_t_Intervals_Proportions.pdf
+```

@@ -4177,5 +4177,754 @@
     "title": "BSTA 551 Syllabus",
     "section": "Further Student Resources",
     "text": "Further Student Resources\n\nAcademic Success Center\nOHSU houses an Academic Success Center for all students. Their mission is to create a center for learning support where ALL learners can discover the resources and community that they need for finding academic success at OHSU. They provide many services to students, including: learning skills support, writing support, English for speakers of other languages (ESOL) support, and individual and group content tutoring. Check out the SharePoint site for the Academic Success Center.\n\n\nStudent Wellness\nI am committed to supporting the physical and emotional well-being of my students. Both PSU and OHSU have designated centers for student health. For OHSU, students can visit the Behavioral Health site, where you can find more information including the number to make an appointment. All student visits are free. OHSU students also have access to PSU’s Counseling Services through the school’s Student Health & Counseling. Information on additional student resources for OHSU students are available on the OHSU Health and Wellness Resource page. \n\n\nSupport for Food Insecurity\nStudents across the country experience food insecurity at high rates. OHSU and PSU both provide a list of resources to help combat food insecurity. Of note, the Committee to Improve Student Food Security (CISFS) at PSU provides a Free Food Market on the second Monday of each month. OHSU also provides SNAP Enrollment Assistance. The Supplemental Nutrition Assistance Program (SNAP) allocates money towards food for individuals below a certain income level. If you make less than $2,430 monthly, you may wish to enroll.\n\n\nSupport for Students with Children\nStudents who have children can use the PSU resource: Resource Center for Students with Children. Resources are mostly focused on students with younger children. There are several great resources available, including: family-friendly study spaces, new baby starter packs, free kids clothing, and further information on financial resources for childcare."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#review-what-weve-learned-about-estimation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#review-what-weve-learned-about-estimation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Review: What We’ve Learned About Estimation",
+    "text": "Review: What We’ve Learned About Estimation\nPoint Estimation (Lessons 1-6):\n\nEstimators: statistics that estimate parameters\nProperties: bias, variance, MSE, efficiency\nConstruction: Method of Moments, Maximum Likelihood\nQuality: MVUE, sufficient statistics, Cramér-Rao bound\n\n\nThe Limitation of Point Estimates:\nA single number (\\(\\hat{\\theta} = 0.75\\)) tells us nothing about precision or uncertainty of the estimate."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#todays-goals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#todays-goals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Today’s Goals",
+    "text": "Today’s Goals\n\nUnderstand why we need interval estimates\nLearn the correct interpretation of confidence intervals\nDerive confidence intervals using pivotal quantities\nConstruct and interpret z-intervals (known \\(\\sigma\\))\nDetermine sample sizes for desired precision\nUnderstand one-sided confidence bounds"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#motivating-example-clinical-trial",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#motivating-example-clinical-trial",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Motivating Example: Clinical Trial",
+    "text": "Motivating Example: Clinical Trial\nA new antihypertensive drug is tested in \\(n = 36\\) patients. The mean reduction in systolic blood pressure is \\(\\bar{x} = 12.3\\) mmHg.\n\nPoint estimate: \\(\\hat{\\mu} = 12.3\\) mmHg\n\n\nQuestions we can’t answer with just the point estimate:\n\nHow close is 12.3 to the true mean reduction?\nIs the true mean likely to be at least 10 mmHg?\nHow much could \\(\\bar{X}\\) vary in repeated trials?\n\n\n\n\n\n\n\n\n\nThe Solution\n\n\nA confidence interval provides a range of plausible values for the parameter, along with a measure of confidence."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-point-to-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-point-to-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "From Point to Interval",
+    "text": "From Point to Interval\n\nKey insight: The interval captures our uncertainty about the true parameter value."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-is-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#what-is-a-confidence-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "What Is a Confidence Interval?",
+    "text": "What Is a Confidence Interval?\n\n\n\n\n\n\nDefinition: Confidence Interval\n\n\nA confidence interval (CI) for a parameter \\(\\theta\\) is a random interval \\((L, U)\\) computed from sample data such that: \\[P(L &lt; \\theta &lt; U) = 1 - \\alpha\\] for a specified confidence level \\(1 - \\alpha\\).\n\n\n\n\nImportant:\n\n\\(L\\) and \\(U\\) are random (they depend on the sample)\n\\(\\theta\\) is fixed (but unknown)\nThe probability statement is about the random event that the lower and upper bound cover \\(\\theta\\), not about any randomness in \\(\\theta\\) itself.\nThe probability statement only makes sense when thinking about defining the estimators \\(L\\) and \\(U\\) and their sampling distributions, it does not make sense when talking about one sample and the observed values for \\(L\\) and \\(U\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#correct-interpretation-of-confidence-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#correct-interpretation-of-confidence-intervals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Correct Interpretation of Confidence Intervals",
+    "text": "Correct Interpretation of Confidence Intervals\n\n\n\n\n\n\nCommon Misconception\n\n\n“There is a 95% probability that \\(\\mu\\) lies in the interval (7.4, 17.2).”\nThis is WRONG! After computing the interval, \\(\\mu\\) either is or is not in the interval. There’s no probability involved.\n\n\n\n\n\n\n\n\n\n\nCorrect Interpretation\n\n\n“If we repeated this procedure many times, 95% of the resulting intervals would contain the true \\(\\mu\\).”\nOr more simply/loosely: “We are 95% confident that the true mean lies between 7.4 and 17.2.”"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-to-avoid-chihara-example-7.2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#common-mistakes-to-avoid-chihara-example-7.2",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Common Mistakes to Avoid (Chihara Example 7.2)",
+    "text": "Common Mistakes to Avoid (Chihara Example 7.2)\nSuppose a 95% CI for mean gas mileage is (29.5, 33.4) mpg. Evaluate:\n\n\n❌ “We are 95% confident that gas mileage for cars in this company is between 29.5 and 33.4 mpg.”\n\nWrong: CI is for population mean, not individual values.\n\n\n\n\n\n❌ “95% of all samples will give an average mileage between 29.5 and 33.4 mpg.”\n\nWrong: Each sample gives a different CI; 95% of intervals contain \\(\\mu\\).\n\n\n\n\n\n❌ “There is a 95% chance that the true mean is between 29.5 and 33.4 mpg.”\n\nWrong: \\(\\mu\\) is fixed, not random. It’s either in the interval or not."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-simulation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-simulation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing Confidence Level: Simulation",
+    "text": "Visualizing Confidence Level: Simulation\n\n# Simulate 100 confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:100) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Count how many contain the true mean\nsum(ci_data$contains_mu)\n\n[1] 94"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-the-plot",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-confidence-level-the-plot",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing Confidence Level: The Plot",
+    "text": "Visualizing Confidence Level: The Plot"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-r-code-for-ci-visualization",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-r-code-for-ci-visualization",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The R Code for CI Visualization",
+    "text": "The R Code for CI Visualization\n\n# Simulate *5000* confidence intervals\nset.seed(551)\ntrue_mu &lt;- 10; sigma &lt;- 4; n &lt;- 25\n\nci_data &lt;- tibble(sample_id = 1:5000) |&gt;\n  rowwise() |&gt;\n  mutate(\n    xbar = mean(rnorm(n, true_mu, sigma)),\n    lower = xbar - 1.96 * sigma / sqrt(n),\n    upper = xbar + 1.96 * sigma / sqrt(n),\n    contains_mu = lower &lt; true_mu & upper &gt; true_mu\n  )\n\n# Proportion containing true mu (should be ~95%)\nmean(ci_data$contains_mu)\n\n[1] 0.9498\n\n\nThis is how the confidence level works: about 95% of intervals capture \\(\\mu\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#your-turn-ci-interpretation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#your-turn-ci-interpretation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Your Turn: CI Interpretation",
+    "text": "Your Turn: CI Interpretation\nExercise: A researcher reports a 95% CI for mean hospital stay after surgery as (3.2, 4.8) days. Which statements are correct?\nA. “95% of patients stay between 3.2 and 4.8 days”\nB. “We are 95% confident the true mean stay is between 3.2 and 4.8 days”\nC. “There is a 95% probability the mean is in this interval”\nD. “If we repeated this study many times, about 95% of the CIs would contain the true mean”\n\nAnswer: B and D are correct interpretations."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-key-to-constructing-cis",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-key-to-constructing-cis",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The Key to Constructing CIs",
+    "text": "The Key to Constructing CIs\n\n\n\n\n\n\nDefinition: Pivotal Quantity\n\n\nA pivotal quantity is a function \\(h(X_1, \\ldots, X_n; \\theta)\\) of the data and parameter such that:\n\nIt depends on both the sample and \\(\\theta\\)\nIts distribution does not depend on \\(\\theta\\) (or any other unknown parameters)\n\n\n\n\n\nWhy pivotal quantities matter:\n\nWe can find critical values that don’t depend on unknowns\nWe can “solve for \\(\\theta\\)” to get confidence limits"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-the-standard-pivotal-quantity",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-the-standard-pivotal-quantity",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: The Standard Pivotal Quantity",
+    "text": "Example: The Standard Pivotal Quantity\nLet \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known.\n\nConsider: \\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\]\n\n\nCheck the properties:\n\n\\(Z\\) depends on \\(\\bar{X}\\) (data) and \\(\\mu\\) (parameter) ✓\n\\(Z \\sim N(0, 1)\\) — the distribution doesn’t depend on \\(\\mu\\) ✓\n\n\n\n\\(Z\\) is a pivotal quantity!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-pivotal-quantity-to-ci",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#from-pivotal-quantity-to-ci",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "From Pivotal Quantity to CI",
+    "text": "From Pivotal Quantity to CI\nSince \\(Z \\sim N(0, 1)\\), we know: \\[P(-z_{\\alpha/2} &lt; Z &lt; z_{\\alpha/2}) = 1 - \\alpha\\]\n\nSubstitute \\(Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}}\\): \\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha/2}\\right) = 1 - \\alpha\\]\n\n\nSolve for \\(\\mu\\): \\[P\\left(\\bar{X} - z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\right) = 1 - \\alpha\\]\n\n\nThis gives us the confidence interval formula!\n\n\nWhat is \\(L\\) and \\(U\\) here?"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-general-pivotal-quantity-method",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-general-pivotal-quantity-method",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The General Pivotal Quantity Method",
+    "text": "The General Pivotal Quantity Method\n\n\n\n\n\n\nRecipe for Constructing CIs\n\n\n\nFind a pivotal quantity \\(h(X_1, \\ldots, X_n; \\theta)\\)\nFind constants \\(a\\) and \\(b\\) such that \\(P(a &lt; h &lt; b) = 1 - \\alpha\\)\nSolve the inequalities for \\(\\theta\\) to get \\((L, U)\\)\n\n\n\n\n\nExample (Devore 8.1): For normal data with known \\(\\sigma\\):\n\nPivotal: \\(Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0,1)\\)\nConstants: \\(a = -z_{\\alpha/2}\\), \\(b = z_{\\alpha/2}\\)\nSolve: \\(\\bar{X} - z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}} &lt; \\mu &lt; \\bar{X} + z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-z-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#the-z-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "The Z-Interval",
+    "text": "The Z-Interval\n\n\n\n\n\n\nZ Confidence Interval for Normal Mean (\\(\\sigma\\) Known)\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\) with \\(\\sigma\\) known, a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\] where \\(z_{\\alpha/2}\\) is the critical value with \\(P(Z &gt; z_{\\alpha/2}) = \\alpha/2\\).\n\n\n\n\nCommon critical values:\n\n\n\nConfidence Level\n\\(\\alpha\\)\n\\(\\alpha/2\\)\n\\(z_{\\alpha/2}\\)\n\n\n\n\n90%\n0.10\n0.05\n1.645\n\n\n95%\n0.05\n0.025\n1.960\n\n\n99%\n0.01\n0.005\n2.576"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-tensile-strength-devore-example-8.1",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-tensile-strength-devore-example-8.1",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Tensile Strength (Devore Example 8.1)",
+    "text": "Example: Tensile Strength (Devore Example 8.1)\nSynthetic fibers are tested for tensile strength. From past data, \\(\\sigma = 55\\) MPa is known. A sample of \\(n = 31\\) fibers has \\(\\bar{x} = 1064\\) MPa.\n\n95% Confidence Interval:\n\nxbar &lt;- 1064\nsigma &lt;- 55\nn &lt;- 31\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha/2)\nmargin &lt;- z_crit * sigma / sqrt(n)\n\nc(xbar - margin, xbar + margin)\n\n[1] 1044.639 1083.361\n\n\n\n\nInterpretation: We are 95% confident that the true mean tensile strength is between 1044.6 and 1083.4 MPa."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-blood-glucose-levels",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-blood-glucose-levels",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Medical Example: Blood Glucose Levels",
+    "text": "Medical Example: Blood Glucose Levels\nA hospital monitors fasting blood glucose in diabetic patients. Historical data shows \\(\\sigma = 18\\) mg/dL. A sample of \\(n = 40\\) patients has \\(\\bar{x} = 142\\) mg/dL.\nConstruct a 99% CI for the population mean glucose level:\n\nxbar &lt;- 142\nsigma &lt;- 18\nn &lt;- 40\nalpha &lt;- 0.01\n\nz_crit &lt;- qnorm(1 - alpha/2)\ncat(\"z critical value:\", round(z_crit, 3), \"\\n\")\n\nz critical value: 2.576 \n\nmargin &lt;- z_crit * sigma / sqrt(n)\ncat(\"Margin of error:\", round(margin, 2), \"mg/dL\\n\")\n\nMargin of error: 7.33 mg/dL\n\ncat(\"99% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n99% CI: ( 134.7 , 149.3 )\n\n\n\nClinical interpretation: We can be 99% confident that the true mean fasting glucose for this patient population is between 134.7 and 149.3 mg/dL."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#anatomy-of-a-confidence-interval",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#anatomy-of-a-confidence-interval",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Anatomy of a Confidence Interval",
+    "text": "Anatomy of a Confidence Interval\n\\[\\bar{x} \\pm z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\]\n\nThree factors affect the margin of error:\n\nConfidence level (\\(z_{\\alpha/2}\\)): Higher confidence → wider interval → less precise\nPopulation variability (\\(\\sigma\\)): More variation → wider interval → less precise\nSample size (\\(n\\)): Larger sample → narrower interval → more precise"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#interactive-effect-of-confidence-level",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#interactive-effect-of-confidence-level",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Interactive: Effect of Confidence Level",
+    "text": "Interactive: Effect of Confidence Level\n\n# Same data, different confidence levels\nxbar &lt;- 1064; sigma &lt;- 55; n &lt;- 31\n\nconfidence_levels &lt;- c(0.90, 0.95, 0.99)\n\ntibble(conf_level = confidence_levels) |&gt;\n  mutate(\n    z_crit = qnorm(1 - (1 - conf_level)/2),\n    margin = z_crit * sigma / sqrt(n),\n    lower = xbar - margin,\n    upper = xbar + margin,\n    width = upper - lower\n  )\n\n# A tibble: 3 × 6\n  conf_level z_crit margin lower upper width\n       &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1       0.9    1.64   16.2 1048. 1080.  32.5\n2       0.95   1.96   19.4 1045. 1083.  38.7\n3       0.99   2.58   25.4 1039. 1089.  50.9\n\n\nTakeaway: Higher confidence requires wider intervals!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-the-trade-off",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#visualizing-the-trade-off",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Visualizing the Trade-off",
+    "text": "Visualizing the Trade-off"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-determination",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-determination",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size Determination",
+    "text": "Sample Size Determination\nQuestion: How large should \\(n\\) be to achieve a desired precision?\n\nIf we want the margin of error to be at most \\(b\\): \\[z_{\\alpha/2} \\cdot \\frac{\\sigma}{\\sqrt{n}} \\leq b\\]\n\n\nSolving for \\(n\\): \\[n \\geq \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\]"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-clinical-trial-design",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-example-clinical-trial-design",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size Example: Clinical Trial Design",
+    "text": "Sample Size Example: Clinical Trial Design\nA pharmaceutical company wants to estimate mean drug clearance time. From pilot data, \\(\\sigma \\approx 25\\) minutes. They want a 95% CI with margin of error ≤ 5 minutes.\n\nsigma &lt;- 25\nb &lt;- 5  # desired margin of error\nalpha &lt;- 0.05\nz_crit &lt;- qnorm(1 - alpha/2)\n\nn_required &lt;- (z_crit * sigma / b)^2\ncat(\"Minimum sample size:\", ceiling(n_required))\n\nMinimum sample size: 97\n\n\n\nNote: Always round up to ensure the desired precision!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-effect-of-requirements",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#sample-size-effect-of-requirements",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Sample Size: Effect of Requirements",
+    "text": "Sample Size: Effect of Requirements\n\n# How does required n change with margin of error and confidence?\nexpand_grid(\n  margin = c(3, 5, 10),\n  conf_level = c(0.90, 0.95, 0.99)\n) |&gt;\n  mutate(\n    z = qnorm(1 - (1 - conf_level)/2),\n    n_required = ceiling((z * 25 / margin)^2)\n  ) |&gt;\n  pivot_wider(names_from = margin, values_from = n_required, \n              names_prefix = \"margin_\") |&gt;\n  select(-z)\n\n# A tibble: 3 × 4\n  conf_level margin_3 margin_5 margin_10\n       &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;\n1       0.9       188       68        17\n2       0.95      267       97        25\n3       0.99      461      166        42\n\n\nKey insight: Halving the margin of error (from 10 to 5) quadruples the sample size!"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#one-sided-confidence-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#one-sided-confidence-bounds",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "One-Sided Confidence Bounds",
+    "text": "One-Sided Confidence Bounds\nSometimes we only care about one direction:\n\nLower bound: We want to know the minimum plausible value\nUpper bound: We want to know the maximum plausible value\n\n\n\n\n\n\n\n\nOne-Sided Bounds\n\n\nLower Confidence Bound: \\(\\bar{x} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\)\nUpper Confidence Bound: \\(\\mu &lt; \\bar{x} + z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\nNote: Use \\(z_\\alpha\\) (not \\(z_{\\alpha/2}\\)) for one-sided bounds at confidence level \\(1 - \\alpha\\)."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha-instead-of-z_alpha2",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-z_alpha-instead-of-z_alpha2",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Why \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)?",
+    "text": "Why \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)?\nFor a two-sided CI, we split \\(\\alpha\\) into two tails (\\(\\alpha/2\\) each): \\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha/2}\\right) = 1 - \\alpha\\]\n\nFor a one-sided lower bound, all \\(\\alpha\\) goes in one tail: \\[P\\left(\\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} &lt; z_{\\alpha}\\right) = 1 - \\alpha\\]\nRearranging for \\(\\mu\\): \\[P\\left(\\bar{X} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}} &lt; \\mu\\right) = 1 - \\alpha\\]\n\n\nSo the lower bound is: \\(L = \\bar{X} - z_{\\alpha} \\cdot \\frac{\\sigma}{\\sqrt{n}}\\)\nKey insight: One-sided bounds use \\(z_\\alpha\\) because we put all the “error probability” \\(\\alpha\\) on one side, not split between two sides."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-drug-half-life",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#medical-example-drug-half-life",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Medical Example: Drug Half-Life",
+    "text": "Medical Example: Drug Half-Life\nA pharmacologist measures half-life of a new drug. With \\(n = 20\\) subjects, \\(\\bar{x} = 4.2\\) hours, and known \\(\\sigma = 0.8\\) hours.\nFind a 95% lower confidence bound:\n\nxbar &lt;- 4.2\nsigma &lt;- 0.8\nn &lt;- 20\nalpha &lt;- 0.05\n\nz_crit &lt;- qnorm(1 - alpha)  # Note: z_alpha, not z_alpha/2\nlower_bound &lt;- xbar - z_crit * sigma / sqrt(n)\n\ncat(\"95% lower confidence bound:\", round(lower_bound, 2), \"hours\\n\")\n\n95% lower confidence bound: 3.91 hours\n\ncat(\"Interpretation: We are 95% confident that the true half-life\",\n    \"\\nis at least\", round(lower_bound, 2), \"hours\")\n\nInterpretation: We are 95% confident that the true half-life \nis at least 3.91 hours"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-lower-vs.-upper-bounds",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#why-lower-vs.-upper-bounds",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Why Lower vs. Upper Bounds?",
+    "text": "Why Lower vs. Upper Bounds?\nUse a LOWER bound when:\n\nTesting if a treatment effect is “at least” some value\nEstablishing minimum efficacy\nSetting safety margins\n\n\nUse an UPPER bound when:\n\nEstimating maximum risk or adverse event rate\n\nEstablishing worst-case scenarios\nQuality control (maximum defect rate)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-remission-time-devore-8.7",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-remission-time-devore-8.7",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Remission Time (Devore 8.7)",
+    "text": "Example: Remission Time (Devore 8.7)\nA surgeon wants a lower bound for mean remission time after cancer surgery. From \\(n = 25\\) patients, \\(\\bar{x} = 42\\) months, \\(\\sigma = 12\\) months (from historical data).\n\nxbar &lt;- 42\nsigma &lt;- 12\nn &lt;- 25\nalpha &lt;- 0.05\n\n# 95% lower confidence bound\nz_alpha &lt;- qnorm(1 - alpha)\nlower &lt;- xbar - z_alpha * sigma / sqrt(n)\n\ncat(\"95% lower confidence bound:\", round(lower, 1), \"months\\n\")\n\n95% lower confidence bound: 38.1 months\n\ncat(\"\\nWe are 95% confident that true mean remission time\\n\")\n\n\nWe are 95% confident that true mean remission time\n\ncat(\"is at least\", round(lower, 1), \"months.\")\n\nis at least 38.1 months."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-exponential-distribution-devore-8.5",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#example-exponential-distribution-devore-8.5",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Example: Exponential Distribution (Devore 8.5)",
+    "text": "Example: Exponential Distribution (Devore 8.5)\nTime-to-breakdown of insulating fluid follows \\(\\text{Exp}(\\lambda)\\) with mean \\(1/\\lambda\\) and variance \\(1/\\lambda^2\\). Given \\(n = 10\\) observations with \\(\\sum x_i = 550.87\\) min.\n\nThe pivotal quantity: \\[h = 2\\lambda \\sum_{i=1}^n X_i \\sim \\chi^2_{2n}\\]\n\n\nWhy is this pivotal?\n\nDepends on data (\\(\\sum X_i\\)) and parameter (\\(\\lambda\\))\nDistribution (\\(\\chi^2_{2n}\\)) doesn’t depend on \\(\\lambda\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#exponential-ci-derivation",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#exponential-ci-derivation",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Exponential CI Derivation",
+    "text": "Exponential CI Derivation\nLet \\(\\chi^2_{.025, 20}\\) and \\(\\chi^2_{.975, 20}\\) be the critical values. Then:\n\\[P\\left(\\chi^2_{.975, 20} &lt; 2\\lambda \\sum X_i &lt; \\chi^2_{.025, 20}\\right) = 0.95\\]\n\nSolving for \\(\\lambda\\): \\[P\\left(\\frac{\\chi^2_{.975, 20}}{2\\sum X_i} &lt; \\lambda &lt; \\frac{\\chi^2_{.025, 20}}{2\\sum X_i}\\right) = 0.95\\]\n\nsum_x &lt;- 550.87\nlower &lt;- qchisq(0.025, df = 20) / (2 * sum_x)\nupper &lt;- qchisq(0.975, df = 20) / (2 * sum_x)\ncat(\"95% CI for λ: (\", round(lower, 4), \",\", round(upper, 4), \")\")\n\n95% CI for λ: ( 0.0087 , 0.031 )"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#ci-for-mean-of-exponential",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#ci-for-mean-of-exponential",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "CI for Mean of Exponential",
+    "text": "CI for Mean of Exponential\nSince the mean of \\(\\text{Exp}(\\lambda)\\) is \\(\\mu = 1/\\lambda\\):\n\n# CI for mean breakdown time\nmean_lower &lt;- 1/upper\nmean_upper &lt;- 1/lower\n\ncat(\"95% CI for mean breakdown time:\\n\")\n\n95% CI for mean breakdown time:\n\ncat(\"(\", round(mean_lower, 1), \",\", round(mean_upper, 1), \") minutes\")\n\n( 32.2 , 114.9 ) minutes\n\n\n\nNote: The interval is quite wide — reflecting variability in the data and small sample size."
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-summary",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#lesson-7-summary",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Lesson 7 Summary",
+    "text": "Lesson 7 Summary\nKey Concepts:\n\nConfidence Intervals provide a range of plausible values with quantified uncertainty\nCorrect Interpretation: “95% of intervals constructed this way contain \\(\\theta\\)”\nPivotal Quantities allow CI construction without knowing unknown parameters\nZ-intervals (\\(\\sigma\\) known): \\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nSample Size: \\(n \\geq \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\)\nOne-sided bounds use \\(z_\\alpha\\) instead of \\(z_{\\alpha/2}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas-for-z-intervals",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#key-formulas-for-z-intervals",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Key Formulas for Z-Intervals",
+    "text": "Key Formulas for Z-Intervals\n\n\n\n\n\n\n\nQuantity\nFormula\n\n\n\n\nTwo-sided CI\n\\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nLower bound\n\\(\\bar{x} - z_{\\alpha}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nUpper bound\n\\(\\bar{x} + z_{\\alpha}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nSample size\n\\(n = \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{b}\\right)^2\\)\n\n\nWidth\n\\(w = 2 z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead-lesson-8",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#looking-ahead-lesson-8",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Looking Ahead: Lesson 8",
+    "text": "Looking Ahead: Lesson 8\nNext Lesson: One-Sample t-Intervals and Proportions\n\nWhat if \\(\\sigma\\) is unknown? (The t-interval)\nThe Student’s t distribution\nConfidence intervals for population proportions\nWald vs. Score intervals\nChecking assumptions"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#references",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#references",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 8.1\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 7.1-7.2"
+  },
+  {
+    "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#questions",
+    "href": "lessons/07_Confidence_Intervals/07_Confidence_Intervals.html#questions",
+    "title": "Lesson 7: Introduction to Confidence Intervals",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#review-where-we-left-off",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#review-where-we-left-off",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Review: Where We Left Off",
+    "text": "Review: Where We Left Off\nLesson 7: Confidence Intervals (Introduction)\n\nCI definition and correct interpretation\nPivotal quantities for constructing CIs\nZ-intervals when \\(\\sigma\\) is known: \\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\n\n\nThe Problem: In practice, we rarely know the population standard deviation \\(\\sigma\\).\n\n\nToday’s Goals:\n\nConstruct t-intervals when \\(\\sigma\\) is unknown\nCheck normality assumptions\nBuild confidence intervals for population proportions\nCompare Wald, Score, and Agresti-Coull intervals"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-realistic-case",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-realistic-case",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Realistic Case",
+    "text": "The Realistic Case\nIn practice, we rarely know the population standard deviation \\(\\sigma\\).\n\nNatural idea: Replace \\(\\sigma\\) with the sample standard deviation \\(s\\).\n\n\nBut what happens to our pivotal quantity?\n\\[Z = \\frac{\\bar{X} - \\mu}{\\sigma/\\sqrt{n}} \\sim N(0, 1)\\]\nbecomes\n\\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim \\; ???\\]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-source-of-extra-variability",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-source-of-extra-variability",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Source of Extra Variability",
+    "text": "The Source of Extra Variability\n\n\nCode\nset.seed(551)\nn_sim &lt;- 10000\nn &lt;- 10\ntrue_mu &lt;- 0\ntrue_sigma &lt;- 1\n\n# Simulate both Z and T statistics\nsim_data &lt;- tibble(\n  Z = replicate(n_sim, {\n    x &lt;- rnorm(n, true_mu, true_sigma)\n    (mean(x) - true_mu) / (true_sigma / sqrt(n))\n  }),\n  T = replicate(n_sim, {\n    x &lt;- rnorm(n, true_mu, true_sigma)\n    (mean(x) - true_mu) / (sd(x) / sqrt(n))\n  })\n) |&gt;\n  pivot_longer(everything(), names_to = \"statistic\", values_to = \"value\")\n\nsim_data |&gt;\n  ggplot(aes(x = value, fill = statistic)) +\n  geom_histogram(bins = 50, alpha = 0.6, position = \"identity\") +\n  scale_fill_manual(\n    values = c(\"Z\" = \"steelblue\", \"T\" = \"coral\"),\n    labels = c(\n      T = expression(T == (bar(X) - mu) / (S / sqrt(n))),\n      Z = expression(Z == (bar(X) - mu) / (sigma / sqrt(n)))\n    )\n  ) +\n  labs(x = \"Value\", y = \"Count\", \n       title = \"Comparing Z and T Statistics (n = 10)\",\n       fill = \"Statistic\") +\n  theme_minimal(base_size = 18)\n\n\n\nKey insight: T has more variability because both \\(\\bar{X}\\) and \\(S\\) are random!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-t-distribution",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-t-distribution",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The t Distribution",
+    "text": "The t Distribution\n\n\nCode\ntibble(x = seq(-4, 4, by = 0.01)) |&gt;\n  mutate(\n    normal = dnorm(x),\n    t_5 = dt(x, df = 5),\n    t_15 = dt(x, df = 15),\n    t_30 = dt(x, df = 30)\n  ) |&gt;\n  pivot_longer(-x, names_to = \"distribution\", values_to = \"density\") |&gt;\n  mutate(distribution = factor(distribution, \n                               levels = c(\"normal\", \"t_30\", \"t_15\", \"t_5\"),\n                               labels = c(\"N(0,1)\", \"t(df=30)\", \"t(df=15)\", \"t(df=5)\"))) |&gt;\n  ggplot(aes(x = x, y = density, color = distribution)) +\n  geom_line(linewidth = 1.2) +\n  scale_color_manual(values = c(\"black\", \"#3498db\", \"#e74c3c\", \"#27ae60\")) +\n  labs(x = \"x\", y = \"Density\", color = \"Distribution\",\n       title = \"Student's t Distribution vs. Standard Normal\") +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"right\")\n\n\n\nThe t distribution has heavier tails than the normal — accounting for extra uncertainty from estimating \\(\\sigma\\)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#students-t-distribution",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#students-t-distribution",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Student’s t Distribution",
+    "text": "Student’s t Distribution\n\n\n\n\n\n\nGosset’s Theorem\n\n\nIf \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} N(\\mu, \\sigma^2)\\), then: \\[T = \\frac{\\bar{X} - \\mu}{S/\\sqrt{n}} \\sim t_{n-1}\\] where \\(t_{n-1}\\) denotes the t distribution with \\(n-1\\) degrees of freedom.\n\n\n\n\nKey properties of \\(t_\\nu\\):\n\nSymmetric around 0\nHeavier tails than \\(N(0, 1)\\)\nAs \\(\\nu \\to \\infty\\), \\(t_\\nu \\to N(0, 1)\\)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#simulating-the-t-distribution-chihara-7.1.2",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#simulating-the-t-distribution-chihara-7.1.2",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Simulating the t Distribution (Chihara 7.1.2)",
+    "text": "Simulating the t Distribution (Chihara 7.1.2)\n\n# Verify that (X̄ - μ)/(S/√n) follows t distribution\nset.seed(551)\nn &lt;- 15\nt_stats &lt;- replicate(10000, {\n  x &lt;- rnorm(n, mean = 25, sd = 7)\n  (mean(x) - 25) / (sd(x) / sqrt(n))\n})\n\n# Compare to theoretical t distribution\nqqplot(qt(ppoints(10000), df = n - 1), t_stats, \n       main = \"Q-Q Plot: Simulated vs. t(14)\", \n       xlab = \"Theoretical t(14)\", ylab = \"Simulated\")\nabline(0, 1, col = \"red\", lwd = 2)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-n-1-degrees-of-freedom",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-n-1-degrees-of-freedom",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Why \\((n-1)\\) Degrees of Freedom?",
+    "text": "Why \\((n-1)\\) Degrees of Freedom?\nThe sample variance involves: \\[S^2 = \\frac{1}{n-1}\\sum_{i=1}^n(X_i - \\bar{X})^2\\]\n\nSince \\(\\sum(X_i - \\bar{X}) = 0\\), knowing any \\(n-1\\) deviations determines the last one.\n\n\nIntuition: We “use up” one degree of freedom by estimating \\(\\mu\\) with \\(\\bar{X}\\)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-one-sample-t-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-one-sample-t-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The One-Sample t Interval",
+    "text": "The One-Sample t Interval\n\n\n\n\n\n\nt Confidence Interval for Normal Mean (\\(\\sigma\\) Unknown)\n\n\nIf \\(X_1, \\ldots, X_n \\sim N(\\mu, \\sigma^2)\\), a \\(100(1-\\alpha)\\%\\) CI for \\(\\mu\\) is: \\[\\bar{x} \\pm t_{\\alpha/2, n-1} \\cdot \\frac{s}{\\sqrt{n}}\\] where \\(t_{\\alpha/2, n-1}\\) is the critical value with \\(P(T &gt; t_{\\alpha/2, n-1}) = \\alpha/2\\) for \\(T \\sim t_{n-1}\\).\n\n\n\n\nThe quantity \\(s/\\sqrt{n}\\) is called the standard error of the mean (SEM or SE)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#t-critical-values",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#t-critical-values",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "t Critical Values",
+    "text": "t Critical Values\n\n# Compare z and t critical values for 95% CI\nz_crit &lt;- qnorm(0.975)\n\ndf_values &lt;- c(5, 10, 20, 30, 50, 100, Inf)\nt_crits &lt;- qt(0.975, df = df_values)\n\ntibble(\n  df = c(\"5\", \"10\", \"20\", \"30\", \"50\", \"100\", \"∞ (z)\"),\n  t_critical = round(c(head(t_crits, -1), z_crit), 3)\n)\n\n# A tibble: 7 × 2\n  df    t_critical\n  &lt;chr&gt;      &lt;dbl&gt;\n1 5           2.57\n2 10          2.23\n3 20          2.09\n4 30          2.04\n5 50          2.01\n6 100         1.98\n7 ∞ (z)       1.96\n\n\nKey insight: For small samples, \\(t\\) critical values are substantially larger than \\(z\\) critical values."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-z-vs.-t-critical-values",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-z-vs.-t-critical-values",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Visualizing z vs. t Critical Values",
+    "text": "Visualizing z vs. t Critical Values\n\n\nCode\ntibble(df = 2:100) |&gt;\n  mutate(t_crit = qt(0.975, df)) |&gt;\n  ggplot(aes(x = df, y = t_crit)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_hline(yintercept = qnorm(0.975), linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  annotate(\"text\", x = 80, y = 2.1, label = \"z = 1.96\", color = \"red\", size = 6) +\n  labs(x = \"Degrees of Freedom\", y = \"Critical Value (α = 0.05)\",\n       title = \"t Critical Values Approach z as df → ∞\") +\n  theme_minimal(base_size = 18)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-porsche-odometer-readings-devore-example-8.8",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-porsche-odometer-readings-devore-example-8.8",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Example: Porsche Odometer Readings (Devore Example 8.8)",
+    "text": "Example: Porsche Odometer Readings (Devore Example 8.8)\nA sample of \\(n = 16\\) used Porsche Boxsters has odometer readings (miles):\n\nodometer &lt;- c(80000, 30100, 97500, 58551, 73787, 51800, 69267, 44530,\n              42192, 104920, 41442, 27418, 43436, 77219, 5991, 14362)\n\nn &lt;- length(odometer)\nxbar &lt;- mean(odometer)\ns &lt;- sd(odometer)\n\ncat(\"Sample size:\", n, \"\\n\")\n\nSample size: 16 \n\ncat(\"Sample mean:\", round(xbar, 1), \"miles\\n\")\n\nSample mean: 53907.2 miles\n\ncat(\"Sample SD:\", round(s, 1), \"miles\\n\")\n\nSample SD: 28287.2 miles"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-porsche-continued",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-porsche-continued",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Example: Porsche (continued)",
+    "text": "Example: Porsche (continued)\n95% Confidence Interval:\n\nalpha &lt;- 0.05\nt_crit &lt;- qt(1 - alpha/2, df = n - 1)\n\ncat(\"t critical value (df=15):\", round(t_crit, 3), \"\\n\")\n\nt critical value (df=15): 2.131 \n\nse &lt;- s / sqrt(n)\nmargin &lt;- t_crit * se\n\ncat(\"Standard error:\", round(se, 1), \"\\n\")\n\nStandard error: 7071.8 \n\ncat(\"Margin of error:\", round(margin, 1), \"\\n\\n\")\n\nMargin of error: 15073.2 \n\ncat(\"95% CI: (\", round(xbar - margin, 1), \",\", round(xbar + margin, 1), \")\")\n\n95% CI: ( 38834 , 68980.4 )"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#checking-the-normality-assumption",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#checking-the-normality-assumption",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Checking the Normality Assumption",
+    "text": "Checking the Normality Assumption\nThe t interval assumes normally distributed data. Always check!\n\npar(mfrow = c(1, 2))\nhist(odometer, main = \"Histogram\", xlab = \"Odometer (miles)\", col = \"lightblue\")\nqqnorm(odometer, main = \"Normal Q-Q Plot\", pch = 19)\nqqline(odometer, col = \"red\", lwd = 2)\n\n\nThe Q-Q plot looks reasonably linear — normality assumption is plausible."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-systolic-blood-pressure",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-systolic-blood-pressure",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Medical Example: Systolic Blood Pressure",
+    "text": "Medical Example: Systolic Blood Pressure\nA clinical study measures systolic blood pressure in \\(n = 25\\) patients after a new treatment:\n\n# Simulated BP data (mmHg)\nbp &lt;- c(118, 124, 131, 127, 122, 119, 128, 135, 121, 126,\n        130, 124, 129, 133, 120, 125, 127, 132, 123, 128,\n        126, 131, 122, 129, 125)\n\nn &lt;- length(bp)\nxbar &lt;- mean(bp)\ns &lt;- sd(bp)\n\n# 95% CI\nt_crit &lt;- qt(0.975, df = n - 1)\nse &lt;- s / sqrt(n)\nci &lt;- c(xbar - t_crit * se, xbar + t_crit * se)\n\ncat(\"Sample mean:\", round(xbar, 1), \"mmHg\\n\")\n\nSample mean: 126.2 mmHg\n\ncat(\"Sample SD:\", round(s, 1), \"mmHg\\n\")\n\nSample SD: 4.5 mmHg\n\ncat(\"95% CI: (\", round(ci[1], 1), \",\", round(ci[2], 1), \") mmHg\")\n\n95% CI: ( 124.3 , 128.1 ) mmHg"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-t.test-in-r",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-t.test-in-r",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Using t.test() in R",
+    "text": "Using t.test() in R\n\n# The easy way to compute t confidence intervals\nt.test(bp, conf.level = 0.95)\n\n\n    One Sample t-test\n\ndata:  bp\nt = 140.51, df = 24, p-value &lt; 2.2e-16\nalternative hypothesis: true mean is not equal to 0\n95 percent confidence interval:\n 124.3463 128.0537\nsample estimates:\nmean of x \n    126.2 \n\n\n\nNote: R’s t.test() also performs a hypothesis test (which we’ll cover later)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-stress-and-cortisol-devore-8.37",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-stress-and-cortisol-devore-8.37",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Medical Example: Stress and Cortisol (Devore 8.37)",
+    "text": "Medical Example: Stress and Cortisol (Devore 8.37)\nMedical students’ serum cortisol levels were measured at the beginning and end of semester. For \\(n = 41\\) students, the mean difference (end - beginning) was \\(\\bar{d} = 2.08\\) with \\(s_d = 7.88\\).\nFind a 95% lower confidence bound for the population mean change:\n\nn &lt;- 41\ndbar &lt;- 2.08\ns &lt;- 7.88\n\nt_alpha &lt;- qt(0.95, df = n - 1)  # One-sided!\nse &lt;- s / sqrt(n)\n\nlower_bound &lt;- dbar - t_alpha * se\n\ncat(\"95% lower confidence bound:\", round(lower_bound, 2), \"\\n\")\n\n95% lower confidence bound: 0.01 \n\ncat(\"Is the mean change necessarily positive? \", \n    ifelse(lower_bound &gt; 0, \"Yes\", \"No\"))\n\nIs the mean change necessarily positive?  Yes"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#when-can-we-trust-the-t-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#when-can-we-trust-the-t-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "When Can We Trust the t-Interval?",
+    "text": "When Can We Trust the t-Interval?\n\n\n\n\n\n\nGuidelines for t-Interval Validity\n\n\n\nLarge samples (n ≥ 30-40): t-interval is robust to non-normality (by CLT)\nModerate samples (15-30): Check for severe skewness or outliers\nSmall samples (n &lt; 15): Normality is crucial; use Q-Q plots\nOutliers: Can severely affect \\(\\bar{x}\\) and \\(s\\); consider alternatives\n\n\n\n\n\nAlternatives for non-normal data:\n\nBootstrap confidence intervals (Lesson 9)\nNon-parametric methods (median-based)\nTransformations (log, square root)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#your-turn-practice-problem",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#your-turn-practice-problem",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Your Turn: Practice Problem",
+    "text": "Your Turn: Practice Problem\nExercise: A study of \\(n = 20\\) hospital ICU stays yields \\(\\bar{x} = 4.2\\) days with \\(s = 1.8\\) days.\n\nCalculate a 95% CI for mean ICU stay\nCalculate a 90% CI — how does it compare?\nWhat assumptions are we making?\n\n\n\nn &lt;- 20; xbar &lt;- 4.2; s &lt;- 1.8\n\n# 95% CI\nt95 &lt;- qt(0.975, df = n - 1)\nci95 &lt;- xbar + c(-1, 1) * t95 * s / sqrt(n)\n\n# 90% CI  \nt90 &lt;- qt(0.95, df = n - 1)\nci90 &lt;- xbar + c(-1, 1) * t90 * s / sqrt(n)\n\ncat(\"95% CI:\", round(ci95, 2), \"\\n\")\n\n95% CI: 3.36 5.04 \n\ncat(\"90% CI:\", round(ci90, 2))\n\n90% CI: 3.5 4.9"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-setup",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-setup",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Setup",
+    "text": "The Setup\nSituation: We observe \\(X\\) successes in \\(n\\) independent Bernoulli trials.\n\n\\(X \\sim \\text{Binomial}(n, p)\\)\nPoint estimate: \\(\\hat{p} = X/n\\)\n\n\nExamples in medical research:\n\nProportion of patients responding to treatment\nProportion experiencing adverse events\nDisease prevalence in a population\nSensitivity/specificity of diagnostic tests"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-interval-traditional",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-interval-traditional",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Wald Interval (Traditional)",
+    "text": "The Wald Interval (Traditional)\nFor large \\(n\\), \\(\\hat{P} = X/n\\) is approximately normal: \\[\\hat{P} \\approx N\\left(p, \\frac{p(1-p)}{n}\\right)\\]\n\nThe Wald (traditional) 95% CI: \\[\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]\n\n\n\n\n\n\n\n\nProblems with the Wald Interval\n\n\n\nPoor coverage probability for \\(p\\) near 0 or 1\nCan produce bounds outside [0, 1]\nNot recommended for small samples"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#coverage-problems-with-wald",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#coverage-problems-with-wald",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Coverage Problems with Wald",
+    "text": "Coverage Problems with Wald\n\n\nCode\n# Simulate coverage probability for Wald interval\nset.seed(551)\nn_sim &lt;- 10000\nn &lt;- 100\n\ncoverage_wald &lt;- function(p, n, n_sim = 10000) {\n  mean(replicate(n_sim, {\n    x &lt;- rbinom(1, n, p)\n    p_hat &lt;- x/n\n    se &lt;- sqrt(p_hat * (1 - p_hat) / n)\n    lower &lt;- p_hat - 1.96 * se\n    upper &lt;- p_hat + 1.96 * se\n    lower &lt; p & p &lt; upper\n  }))\n}\n\np_values &lt;- seq(0.05, 0.95, by = 0.05)\ncoverage &lt;- sapply(p_values, coverage_wald, n = 100)\n\ntibble(p = p_values, coverage = coverage) |&gt;\n  ggplot(aes(x = p, y = coverage)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_point(size = 3, color = \"steelblue\") +\n  geom_hline(yintercept = 0.95, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  labs(x = \"True Proportion p\", y = \"Coverage Probability\",\n       title = \"Coverage Probability of 95% Wald Interval (n = 100)\",\n       subtitle = \"Dashed line shows nominal 95% level\") +\n  theme_minimal(base_size = 18) +\n  ylim(0.85, 1)\n\n\n\nThe Wald interval often has coverage below the nominal level!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-score-wilson-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-score-wilson-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Score (Wilson) Interval",
+    "text": "The Score (Wilson) Interval\nA better approach: solve for \\(p\\) in the pivotal quantity directly.\n\n\n\n\n\n\nScore Confidence Interval for a Proportion\n\n\n\\[\\frac{\\hat{p} + \\frac{z^2}{2n} \\pm z\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n} + \\frac{z^2}{4n^2}}}{1 + \\frac{z^2}{n}}\\] where \\(z = z_{\\alpha/2}\\).\n\n\n\n\nAdvantages:\n\nCoverage probability much closer to nominal level\nHandles extreme proportions well\nAlways produces bounds in [0, 1]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#deriving-the-score-interval-chihara-7.4",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#deriving-the-score-interval-chihara-7.4",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Deriving the Score Interval (Chihara 7.4)",
+    "text": "Deriving the Score Interval (Chihara 7.4)\nStarting from the pivotal quantity: \\[Z = \\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}} \\approx N(0,1)\\]\n\nSet \\(|Z| = z_{\\alpha/2}\\) and solve for \\(p\\): \\[\\left(\\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}\\right)^2 = z_{\\alpha/2}^2\\]\n\n\nThis leads to a quadratic equation in \\(p\\), giving the score interval endpoints."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-agresti-coull-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-agresti-coull-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Agresti-Coull Interval",
+    "text": "The Agresti-Coull Interval\nA simpler approximation that works well in practice:\n\n\n\n\n\n\nAgresti-Coull (“Add Two Successes and Two Failures”)\n\n\nLet \\(\\tilde{n} = n + 4\\) and \\(\\tilde{p} = \\frac{X + 2}{n + 4}\\)\nThen use: \\[\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\]\n\n\n\n\nWhy it works: Adding 2 successes and 2 failures “shrinks” extreme estimates toward 0.5, improving coverage.\n\n\nConnection to Score: With \\(z_{0.025} \\approx 2\\), the Score interval is approximately Agresti-Coull!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#comparing-intervals-clinical-trial-example",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#comparing-intervals-clinical-trial-example",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Comparing Intervals: Clinical Trial Example",
+    "text": "Comparing Intervals: Clinical Trial Example\nIn a Phase II trial, 23 of 40 patients respond to treatment.\n\nx &lt;- 23; n &lt;- 40; p_hat &lt;- x/n\ncat(\"Sample proportion:\", p_hat, \"\\n\\n\")\n\nSample proportion: 0.575 \n\n# Wald interval\nse_wald &lt;- sqrt(p_hat * (1 - p_hat) / n)\nwald_ci &lt;- p_hat + c(-1, 1) * 1.96 * se_wald\n\n# Agresti-Coull interval\nn_tilde &lt;- n + 4\np_tilde &lt;- (x + 2) / n_tilde\nse_ac &lt;- sqrt(p_tilde * (1 - p_tilde) / n_tilde)\nac_ci &lt;- p_tilde + c(-1, 1) * 1.96 * se_ac\n\ncat(\"Wald 95% CI:          (\", round(wald_ci[1], 3), \",\", round(wald_ci[2], 3), \")\\n\")\n\nWald 95% CI:          ( 0.422 , 0.728 )\n\ncat(\"Agresti-Coull 95% CI: (\", round(ac_ci[1], 3), \",\", round(ac_ci[2], 3), \")\")\n\nAgresti-Coull 95% CI: ( 0.422 , 0.715 )"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-prop.test-for-score-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-prop.test-for-score-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Using prop.test() for Score Interval",
+    "text": "Using prop.test() for Score Interval\n\n# Score (Wilson) interval in R\nprop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE)\n\n\n    1-sample proportions test without continuity correction\n\ndata:  23 out of 40, null probability 0.5\nX-squared = 0.9, df = 1, p-value = 0.3428\nalternative hypothesis: true p is not equal to 0.5\n95 percent confidence interval:\n 0.4219507 0.7149061\nsample estimates:\n    p \n0.575"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#comparing-all-three-methods",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#comparing-all-three-methods",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Comparing All Three Methods",
+    "text": "Comparing All Three Methods\n\ncompare_proportion_cis &lt;- function(x, n, conf = 0.95) {\n  p_hat &lt;- x/n\n  z &lt;- qnorm(1 - (1-conf)/2)\n  \n  # Wald\n  se_w &lt;- sqrt(p_hat * (1-p_hat) / n)\n  wald &lt;- p_hat + c(-1, 1) * z * se_w\n  \n  # Agresti-Coull\n  p_ac &lt;- (x + 2) / (n + 4)\n  se_ac &lt;- sqrt(p_ac * (1-p_ac) / (n + 4))\n  agresti &lt;- p_ac + c(-1, 1) * z * se_ac\n  \n  # Score (Wilson)\n  score &lt;- prop.test(x, n, conf.level = conf, correct = FALSE)$conf.int\n  \n  tibble(Method = c(\"Wald\", \"Agresti-Coull\", \"Score\"),\n         Lower = c(wald[1], agresti[1], score[1]),\n         Upper = c(wald[2], agresti[2], score[2]))\n}\n\ncompare_proportion_cis(23, 40)\n\n# A tibble: 3 × 3\n  Method        Lower Upper\n  &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;\n1 Wald          0.422 0.728\n2 Agresti-Coull 0.422 0.715\n3 Score         0.422 0.715\n\ncompare_proportion_cis(5, 40)\n\n# A tibble: 3 × 3\n  Method         Lower Upper\n  &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt;\n1 Wald          0.0225 0.227\n2 Agresti-Coull 0.0510 0.267\n3 Score         0.0546 0.261"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-adverse-event-rate",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#medical-example-adverse-event-rate",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Medical Example: Adverse Event Rate",
+    "text": "Medical Example: Adverse Event Rate\nIn a safety study, 8 out of 200 patients experience a serious adverse event.\n\nx &lt;- 8; n &lt;- 200\n\n# Score interval\nresult &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)\ncat(\"Point estimate:\", x/n, \"=\", round(x/n * 100, 1), \"%\\n\")\n\nPoint estimate: 0.04 = 4 %\n\ncat(\"95% Score CI:\", round(result$conf.int * 100, 2), \"%\")\n\n95% Score CI: 2.04 7.69 %\n\n\n\nClinical interpretation: We are 95% confident that the true rate of serious adverse events is between 1.8% and 7.7%."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#extreme-proportions-why-wald-fails",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#extreme-proportions-why-wald-fails",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Extreme Proportions: Why Wald Fails",
+    "text": "Extreme Proportions: Why Wald Fails\n\n# What if only 2 of 50 patients have adverse events?\nx &lt;- 2; n &lt;- 50; p_hat &lt;- x/n\n\n# Wald can give negative lower bound!\nse_wald &lt;- sqrt(p_hat * (1-p_hat) / n)\nwald_ci &lt;- p_hat + c(-1, 1) * 1.96 * se_wald\n\ncat(\"Wald 95% CI:  (\", round(wald_ci[1], 4), \",\", round(wald_ci[2], 4), \")\\n\")\n\nWald 95% CI:  ( -0.0143 , 0.0943 )\n\n# Score interval stays in [0,1]\nscore_ci &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int\ncat(\"Score 95% CI: (\", round(score_ci[1], 4), \",\", round(score_ci[2], 4), \")\")\n\nScore 95% CI: ( 0.011 , 0.1346 )\n\n\nThe Wald interval gives a negative lower bound — impossible for a proportion!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-super-bowl-viewing-devore-8.15",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#example-super-bowl-viewing-devore-8.15",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Example: Super Bowl Viewing (Devore 8.15)",
+    "text": "Example: Super Bowl Viewing (Devore 8.15)\nIn a sample of 25 students, all 25 said they watched the Super Bowl. What’s a 95% CI for the true proportion?\n\nx &lt;- 25; n &lt;- 25\n\n# Wald gives silly result\np_hat &lt;- x/n\nse_wald &lt;- sqrt(p_hat * (1-p_hat) / n)  # This is 0!\ncat(\"Wald 95% CI: (1, 1) — just the point estimate!\\n\\n\")\n\nWald 95% CI: (1, 1) — just the point estimate!\n\n# Score interval is much better\nscore_ci &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int\ncat(\"Score 95% CI: (\", round(score_ci[1], 3), \",\", round(score_ci[2], 3), \")\")\n\nScore 95% CI: ( 0.867 , 1 )"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-for-proportions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-for-proportions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Sample Size for Proportions",
+    "text": "Sample Size for Proportions\nTo achieve a margin of error \\(b\\) with confidence level \\(1 - \\alpha\\):\n\\[n = \\frac{z_{\\alpha/2}^2 \\cdot p(1-p)}{b^2}\\]\n\nProblem: We don’t know \\(p\\) before the study!\n\n\nConservative approach: Use \\(p = 0.5\\) (maximizes \\(p(1-p) = 0.25\\)): \\[n = \\frac{z_{\\alpha/2}^2 \\cdot 0.25}{b^2}\\]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-example-disease-prevalence",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-example-disease-prevalence",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Sample Size Example: Disease Prevalence",
+    "text": "Sample Size Example: Disease Prevalence\nAn epidemiologist wants to estimate disease prevalence with a margin of error ≤ 3% with 95% confidence.\n\nb &lt;- 0.03  # margin of error\nz &lt;- qnorm(0.975)\n\n# Conservative (p = 0.5)\nn_conservative &lt;- z^2 * 0.25 / b^2\ncat(\"Conservative sample size:\", ceiling(n_conservative), \"\\n\")\n\nConservative sample size: 1068 \n\n# If we believe p ≈ 0.10 from prior studies\nn_informed &lt;- z^2 * 0.10 * 0.90 / b^2\ncat(\"Informed sample size (p ≈ 0.10):\", ceiling(n_informed))\n\nInformed sample size (p ≈ 0.10): 385\n\n\n\nUsing prior information can substantially reduce required sample size!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-effect-of-assumptions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#sample-size-effect-of-assumptions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Sample Size: Effect of Assumptions",
+    "text": "Sample Size: Effect of Assumptions\n\n\nCode\ntibble(p = seq(0.05, 0.95, by = 0.01)) |&gt;\n  mutate(n = qnorm(0.975)^2 * p * (1-p) / 0.03^2) |&gt;\n  ggplot(aes(x = p, y = n)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_hline(yintercept = qnorm(0.975)^2 * 0.25 / 0.03^2, \n             linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = 0.8, y = 1100, label = \"Conservative (p = 0.5)\", color = \"red\", size = 5) +\n  labs(x = \"Assumed Proportion p\", y = \"Required Sample Size\",\n       title = \"Sample Size for 95% CI with Margin ≤ 3%\") +\n  theme_minimal(base_size = 18)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#one-sided-bounds-for-proportions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#one-sided-bounds-for-proportions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "One-Sided Bounds for Proportions",
+    "text": "One-Sided Bounds for Proportions\nUpper confidence bound (e.g., maximum adverse event rate):\n\n# 12 adverse events in 150 patients\nx &lt;- 12; n &lt;- 150\n\n# 95% upper bound using Score method\nresult &lt;- prop.test(x, n, conf.level = 0.95, \n                    alternative = \"less\", correct = FALSE)\ncat(\"Point estimate:\", round(x/n * 100, 1), \"%\\n\")\n\nPoint estimate: 8 %\n\ncat(\"95% upper bound:\", round(result$conf.int[2] * 100, 1), \"%\")\n\n95% upper bound: 12.4 %\n\n\n\nInterpretation: We are 95% confident that the true adverse event rate is at most 12.9%."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#summary-ci-methods-comparison",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#summary-ci-methods-comparison",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Summary: CI Methods Comparison",
+    "text": "Summary: CI Methods Comparison\n\n\n\nMethod\nWhen to Use\nNotes\n\n\n\n\nZ-interval\nNormal data, \\(\\sigma\\) known\nRarely applicable\n\n\nt-interval\nNormal data, \\(\\sigma\\) unknown\nCheck normality\n\n\nWald (proportion)\nLarge \\(n\\), \\(p\\) not extreme\nPoor coverage\n\n\nScore/Wilson\nGeneral\nBest for proportions\n\n\nAgresti-Coull\nQuick calculation\nGood approximation"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#ci-interpretation-in-medical-research",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#ci-interpretation-in-medical-research",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "CI Interpretation in Medical Research",
+    "text": "CI Interpretation in Medical Research\n\n\n\n\n\n\nValid Interpretations\n\n\n\n“We are 95% confident that \\(\\mu\\) lies between L and U”\n“The interval (L, U) is a plausible range for \\(\\mu\\)”\n“In repeated sampling, 95% of such intervals would contain \\(\\mu\\)”\n\n\n\n\n\n\n\n\n\n\n\nInvalid Interpretations\n\n\n\n“There is a 95% probability that \\(\\mu\\) is in (L, U)” ✗\n“95% of the data falls between L and U” ✗\n“The true mean varies between L and U” ✗"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#clinical-decision-making-with-cis",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#clinical-decision-making-with-cis",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Clinical Decision Making with CIs",
+    "text": "Clinical Decision Making with CIs\nExample: A drug reduces blood pressure by an estimated 12 mmHg with 95% CI (8, 16).\n\nQuestions we can answer:\n\nIs the effect clinically meaningful? (If minimum important difference is 5 mmHg, yes!)\nIs zero a plausible value? (No — CI excludes 0)\nWhat’s the worst-case scenario? (Lower bound suggests at least 8 mmHg effect)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#relationship-to-hypothesis-testing",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#relationship-to-hypothesis-testing",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Relationship to Hypothesis Testing",
+    "text": "Relationship to Hypothesis Testing\n\n\n\n\n\n\nPreview of Coming Material\n\n\nA 95% CI contains all parameter values that would not be rejected by a two-sided test at \\(\\alpha = 0.05\\).\n\nIf CI excludes the null value → reject \\(H_0\\)\nIf CI includes the null value → fail to reject \\(H_0\\)\n\n\n\n\n\nExample: 95% CI for mean difference is (8, 16).\n\nTest \\(H_0: \\mu = 0\\) → Reject (0 not in CI)\nTest \\(H_0: \\mu = 10\\) → Fail to reject (10 in CI)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-summary",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-summary",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Lesson 8 Summary",
+    "text": "Lesson 8 Summary\nKey Concepts:\n\nt-intervals handle unknown \\(\\sigma\\): \\(\\bar{x} \\pm t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}\\)\nt distribution has heavier tails than normal; approaches normal as df → ∞\nAlways check normality for t-intervals (Q-Q plots, histograms)\nWald intervals based on asymptotic MLE theory; plug in \\(\\hat{\\theta}\\) for SE\nScore intervals keep the parameter in SE, solve quadratic; better coverage\nAgresti-Coull (“add 2 and 2”) is a good simple approximation"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#key-formulas",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#key-formulas",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Key Formulas",
+    "text": "Key Formulas\n\n\n\n\n\n\n\n\nParameter\nCI Formula\nConditions\n\n\n\n\n\\(\\mu\\) (\\(\\sigma\\) known)\n\\(\\bar{x} \\pm z_{\\alpha/2}\\frac{\\sigma}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(\\mu\\) (\\(\\sigma\\) unknown)\n\\(\\bar{x} \\pm t_{\\alpha/2, n-1}\\frac{s}{\\sqrt{n}}\\)\nNormal data\n\n\n\\(p\\) (Wald)\n\\(\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\)\nLarge \\(n\\)\n\n\n\\(p\\) (Score)\n\\(\\frac{\\hat{p} + \\frac{z^2}{2n} \\pm z\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n} + \\frac{z^2}{4n^2}}}{1 + \\frac{z^2}{n}}\\)\nGeneral\n\n\n\\(p\\) (Agresti-Coull)\n\\(\\tilde{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\tilde{p}(1-\\tilde{p})}{\\tilde{n}}}\\)\nGeneral"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-practice-problems",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-practice-problems",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Lesson 8 Practice Problems",
+    "text": "Lesson 8 Practice Problems\n\n(Devore 8.17) For a sample with \\(n = 20\\), \\(\\bar{x} = 13.71\\), \\(s = 3.55\\):\n\nCompute a 95% CI for the population mean.\nWhat assumptions are required?\n\n(Devore 8.37) Medical students’ cortisol levels changed by \\(\\bar{d} = 2.08\\) (\\(s = 7.88\\), \\(n = 41\\)). Find a 95% lower bound for the mean change.\n(Devore 8.43) In a survey, 859 of 1044 adults support mandatory GMO labeling. Construct a 95% CI for the true proportion.\n(Devore 8.48) In 48 trials, 16 resulted in ignition.\n\nCompute the Score interval.\nCompute the Wald interval.\nCompare and discuss which is preferable."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-practice-problems-continued",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#lesson-8-practice-problems-continued",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Lesson 8 Practice Problems (continued)",
+    "text": "Lesson 8 Practice Problems (continued)\n\n(Medical Application) A clinical trial tests a new cholesterol medication. In \\(n = 48\\) patients, the mean LDL reduction is \\(\\bar{x} = 35\\) mg/dL with \\(s = 18\\) mg/dL.\n\nConstruct a 95% CI for the mean LDL reduction.\nConstruct a 99% CI. How does it compare?\nThe company claims a mean reduction of at least 30 mg/dL. Is this claim supported?\n\n(Sample Size) How many subjects are needed to estimate the proportion of patients responding to a treatment within \\(\\pm 5\\%\\) with 95% confidence, using the conservative approach?\n(Chihara style) Simulate 1000 Wald and Score intervals for \\(p = 0.1\\) with \\(n = 50\\). Compare the actual coverage probabilities."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#looking-ahead",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#looking-ahead",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext Lesson: Bootstrap Confidence Intervals\n\nWhat if normality doesn’t hold?\nBootstrap percentile intervals\nBootstrap t intervals\nWhen to use bootstrap vs. classical methods\n\n\nComing Soon:\n\nHypothesis testing\nTwo-sample inference\nPaired data analysis"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#references",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#references",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Chapter 8.1-8.4\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Chapter 7.\nAgresti, A. and Coull, B. (1998). Approximate is better than “exact” for interval estimation of binomial proportions. The American Statistician, 52:119-126."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#questions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#questions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-broom-to-tidy-t.test-output",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-broom-to-tidy-t.test-output",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Using broom to Tidy t.test() Output",
+    "text": "Using broom to Tidy t.test() Output\nThe broom package provides a convenient way to extract results as a tibble:\n\n# Tidy output with broom\nlibrary(broom)\n\nt.test(bp, conf.level = 0.95) |&gt; \n  tidy() |&gt; \n  select(estimate, conf.low, conf.high, statistic, p.value)\n\n# A tibble: 1 × 5\n  estimate conf.low conf.high statistic  p.value\n     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;\n1     126.     124.      128.      141. 1.65e-36\n\n\n\nAdvantages of broom:\n\nResults as a tibble (easy to manipulate)\nConsistent interface across many statistical functions\nGreat for automated reporting and combining results"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#deriving-the-mle-for-bernoulli-review",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#deriving-the-mle-for-bernoulli-review",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Deriving the MLE for Bernoulli (Review)",
+    "text": "Deriving the MLE for Bernoulli (Review)\nLet \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} \\text{Bernoulli}(p)\\) where \\(P(X_i = 1) = p\\).\n\nLikelihood function: \\[L(p) = \\prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^{\\sum x_i}(1-p)^{n - \\sum x_i}\\]\n\n\nLog-likelihood: \\[\\ell(p) = \\left(\\sum x_i\\right) \\ln(p) + \\left(n - \\sum x_i\\right) \\ln(1-p)\\]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#mle-for-bernoulli-continued",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#mle-for-bernoulli-continued",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "MLE for Bernoulli (continued)",
+    "text": "MLE for Bernoulli (continued)\nTaking the derivative and setting to zero: \\[\\frac{d\\ell}{dp} = \\frac{\\sum x_i}{p} - \\frac{n - \\sum x_i}{1-p} = 0\\]\n\nSolving for \\(p\\): \\[\\frac{\\sum x_i}{p} = \\frac{n - \\sum x_i}{1-p}\\] \\[(1-p)\\sum x_i = p(n - \\sum x_i)\\] \\[\\sum x_i = np\\]\n\n\n\n\n\n\n\n\nMLE for Bernoulli Parameter\n\n\n\\[\\hat{p}_{MLE} = \\frac{\\sum X_i}{n} = \\bar{X} = \\frac{X}{n}\\]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-general-wald-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-general-wald-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The General Wald Interval",
+    "text": "The General Wald Interval\n\n\n\n\n\n\nWald Confidence Interval (General Definition)\n\n\nFor an MLE \\(\\hat{\\theta}\\) with large \\(n\\), the Wald interval is based on the asymptotic normality of MLEs: \\[\\hat{\\theta} \\dot{\\sim} N\\left(\\theta, \\frac{1}{I_n(\\theta)}\\right)\\]\nA \\(100(1-\\alpha)\\%\\) Wald CI is: \\[\\hat{\\theta} \\pm z_{\\alpha/2} \\cdot \\widehat{SE}(\\hat{\\theta})\\] where \\(\\widehat{SE}\\) is an estimate of the standard error, typically using \\(\\hat{\\theta}\\) in place of \\(\\theta\\).\n\n\n\n\nKey idea: Replace unknown parameters in the standard error with their MLEs."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-the-wald-interval-works-asymptotic-theory",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-the-wald-interval-works-asymptotic-theory",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Why the Wald Interval Works: Asymptotic Theory",
+    "text": "Why the Wald Interval Works: Asymptotic Theory\nFrom Lesson 4, we know the MLE has these asymptotic properties:\n\nConsistency: \\(\\hat{\\theta} \\xrightarrow{P} \\theta\\)\nAsymptotic normality: \\(\\sqrt{n}(\\hat{\\theta} - \\theta) \\xrightarrow{d} N(0, 1/I(\\theta))\\)\n\n\nFor the Bernoulli case with \\(\\hat{p} = \\bar{X}\\):\n\n\\(E(\\hat{p}) = p\\) and \\(\\text{Var}(\\hat{p}) = \\frac{p(1-p)}{n}\\)\nFisher information: \\(I(p) = \\frac{1}{p(1-p)}\\), so \\(I_n(p) = \\frac{n}{p(1-p)}\\)\nCRLB: \\(\\frac{1}{I_n(p)} = \\frac{p(1-p)}{n} = \\text{Var}(\\hat{p})\\) ✓"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-exact-pivot-for-proportions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-exact-pivot-for-proportions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Exact Pivot for Proportions",
+    "text": "The Exact Pivot for Proportions\nIf we knew \\(p\\), we could use this exact pivot: \\[Z = \\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}} \\xrightarrow{d} N(0, 1)\\]\n\nProblem: The standard error \\(\\sqrt{p(1-p)/n}\\) depends on the unknown \\(p\\)!\n\n\nWald solution: Replace \\(p\\) with \\(\\hat{p}\\) in the standard error: \\[Z^* = \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}}\\]\nBut is \\(Z^*\\) still approximately \\(N(0,1)\\)?"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-plugging-in-hatp-works-slutskys-theorem",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-plugging-in-hatp-works-slutskys-theorem",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Why Plugging In \\(\\hat{p}\\) Works: Slutsky’s Theorem",
+    "text": "Why Plugging In \\(\\hat{p}\\) Works: Slutsky’s Theorem\nWe can rewrite \\(Z^*\\) as: \\[Z^* = \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}} = \\underbrace{\\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}}_{\\xrightarrow{d} N(0,1)} \\cdot \\underbrace{\\frac{\\sqrt{p(1-p)}}{\\sqrt{\\hat{p}(1-\\hat{p})}}}_{\\xrightarrow{P} 1}\\]\n\nSlutsky’s Theorem: If \\(X_n \\xrightarrow{d} X\\) and \\(Y_n \\xrightarrow{P} c\\) (a constant), then: \\[X_n \\cdot Y_n \\xrightarrow{d} c \\cdot X\\]\n\n\nSince \\(\\hat{p} \\xrightarrow{P} p\\) (consistency), we have: \\[\\frac{\\sqrt{p(1-p)}}{\\sqrt{\\hat{p}(1-\\hat{p})}} \\xrightarrow{P} 1\\]\nTherefore: \\(Z^* \\xrightarrow{d} N(0,1)\\)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-the-consistency-argument",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-the-consistency-argument",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Visualizing the Consistency Argument",
+    "text": "Visualizing the Consistency Argument\n\n\nCode\nset.seed(551)\np_true &lt;- 0.3\nn_values &lt;- c(20, 50, 100, 500)\n\nsim_ratio &lt;- function(n, p, n_sim = 5000) {\n  replicate(n_sim, {\n    x &lt;- rbinom(1, n, p)\n    p_hat &lt;- x/n\n    if (p_hat &gt; 0 & p_hat &lt; 1) {\n      sqrt(p*(1-p)) / sqrt(p_hat*(1-p_hat))\n    } else {\n      NA\n    }\n  })\n}\n\nratio_data &lt;- map_dfr(n_values, ~{\n  tibble(n = paste0(\"n = \", .x), \n         ratio = sim_ratio(.x, p_true))\n}) |&gt; \n  filter(!is.na(ratio))\n\nratio_data |&gt; \n  ggplot(aes(x = ratio)) +\n  geom_histogram(bins = 40, fill = \"steelblue\", alpha = 0.7) +\n  geom_vline(xintercept = 1, color = \"red\", linewidth = 1.2, linetype = \"dashed\") +\n  facet_wrap(~n, scales = \"free_y\") +\n  labs(x = expression(sqrt(p(1-p)) / sqrt(hat(p)(1-hat(p)))),\n       y = \"Count\",\n       title = \"Ratio of True SE to Estimated SE Concentrates at 1\",\n       subtitle = \"True p = 0.3\") +\n  theme_minimal(base_size = 16)"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-interval-for-proportions",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-interval-for-proportions",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Wald Interval for Proportions",
+    "text": "The Wald Interval for Proportions\nUsing \\(Z^* = \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}} \\approx N(0,1)\\) as our pivot:\n\\[P\\left(-z_{\\alpha/2} &lt; \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}} &lt; z_{\\alpha/2}\\right) \\approx 1 - \\alpha\\]\n\nSolving for \\(p\\):\n\n\n\n\n\n\nWald Confidence Interval for a Proportion\n\n\n\\[\\hat{p} \\pm z_{\\alpha/2}\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n}}\\]\n\n\n\n\n\n\n\n\n\n\n\nProblems with the Wald Interval\n\n\n\nPoor coverage probability for \\(p\\) near 0 or 1\nCan produce bounds outside [0, 1]\nNot recommended for small samples"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-score-interval-a-better-approach",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-score-interval-a-better-approach",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Score Interval: A Better Approach",
+    "text": "The Score Interval: A Better Approach\n\n\n\n\n\n\nThe Score Test Statistic (General Definition)\n\n\nThe score function is the derivative of the log-likelihood: \\[U(\\theta) = \\ell'(\\theta) = \\frac{d}{d\\theta} \\ln L(\\theta)\\]\nThe score test statistic is: \\[Z_{score} = \\frac{U(\\theta)}{\\sqrt{I_n(\\theta)}} \\xrightarrow{d} N(0,1)\\] where \\(I_n(\\theta)\\) is the Fisher information.\n\n\n\n\nKey insight: The score statistic is evaluated at the null/hypothesized parameter value, not at the MLE!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#score-function-for-bernoulli",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#score-function-for-bernoulli",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Score Function for Bernoulli",
+    "text": "Score Function for Bernoulli\nFor \\(X_1, \\ldots, X_n \\stackrel{iid}{\\sim} \\text{Bernoulli}(p)\\):\nLog-likelihood: \\(\\ell(p) = X \\ln(p) + (n-X)\\ln(1-p)\\) where \\(X = \\sum X_i\\)\n\nScore function: \\[U(p) = \\ell'(p) = \\frac{X}{p} - \\frac{n-X}{1-p} = \\frac{X - np}{p(1-p)}\\]\n\n\nFisher information: \\(I_n(p) = \\frac{n}{p(1-p)}\\)\n\n\nScore statistic: \\[Z_{score} = \\frac{U(p)}{\\sqrt{I_n(p)}} = \\frac{(X-np)/[p(1-p)]}{\\sqrt{n/[p(1-p)]}} = \\frac{X - np}{\\sqrt{np(1-p)}} = \\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}\\]"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#score-interval-keep-p-in-the-denominator",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#score-interval-keep-p-in-the-denominator",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Score Interval: Keep \\(p\\) in the Denominator!",
+    "text": "Score Interval: Keep \\(p\\) in the Denominator!\nNotice that the score statistic for proportions is: \\[Z_{score} = \\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}} \\approx N(0,1)\\]\n\nThe score interval keeps \\(p\\) in the standard error (unlike Wald): \\[\\left|\\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}\\right| \\leq z_{\\alpha/2}\\]\n\n\nSquaring both sides: \\[\\frac{(\\hat{p} - p)^2}{p(1-p)/n} \\leq z_{\\alpha/2}^2\\]\n\n\nThis is a quadratic equation in \\(p\\)!"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#solving-the-quadratic-for-the-score-interval",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#solving-the-quadratic-for-the-score-interval",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Solving the Quadratic for the Score Interval",
+    "text": "Solving the Quadratic for the Score Interval\nRearranging \\((\\hat{p} - p)^2 \\leq z^2 \\cdot p(1-p)/n\\):\n\\[n(\\hat{p} - p)^2 \\leq z^2 p(1-p)\\]\n\\[n\\hat{p}^2 - 2np\\hat{p} + np^2 \\leq z^2 p - z^2 p^2\\]\n\\[(n + z^2)p^2 - (2n\\hat{p} + z^2)p + n\\hat{p}^2 \\leq 0\\]\n\nSolving with the quadratic formula gives the Score (Wilson) interval:\n\n\n\n\n\n\nScore Confidence Interval for a Proportion\n\n\n\\[\\frac{\\hat{p} + \\frac{z^2}{2n} \\pm z\\sqrt{\\frac{\\hat{p}(1-\\hat{p})}{n} + \\frac{z^2}{4n^2}}}{1 + \\frac{z^2}{n}}\\] where \\(z = z_{\\alpha/2}\\)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-score-intervals-are-better",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#why-score-intervals-are-better",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Why Score Intervals Are Better",
+    "text": "Why Score Intervals Are Better\n\n\nCode\n# Compare coverage of Wald vs Score\ncoverage_score &lt;- function(p, n, n_sim = 10000) {\n  mean(replicate(n_sim, {\n    x &lt;- rbinom(1, n, p)\n    ci &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int\n    ci[1] &lt; p & p &lt; ci[2]\n  }))\n}\n\np_values &lt;- seq(0.05, 0.95, by = 0.05)\ncoverage_w &lt;- sapply(p_values, coverage_wald, n = 50)\ncoverage_s &lt;- sapply(p_values, coverage_score, n = 50)\n\ntibble(p = rep(p_values, 2),\n       coverage = c(coverage_w, coverage_s),\n       method = rep(c(\"Wald\", \"Score\"), each = length(p_values))) |&gt;\n  ggplot(aes(x = p, y = coverage, color = method)) +\n  geom_line(linewidth = 1.2) +\n  geom_point(size = 3) +\n  geom_hline(yintercept = 0.95, linetype = \"dashed\", color = \"gray50\") +\n  scale_color_manual(values = c(\"Wald\" = \"coral\", \"Score\" = \"steelblue\")) +\n  labs(x = \"True Proportion p\", y = \"Coverage Probability\",\n       title = \"Coverage Comparison: Wald vs Score (n = 50)\",\n       color = \"Method\") +\n  theme_minimal(base_size = 18)\n\n\n\nScore interval maintains coverage closer to nominal level, especially for extreme \\(p\\)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-broom-with-prop.test",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#using-broom-with-prop.test",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Using broom with prop.test()",
+    "text": "Using broom with prop.test()\n\n# Tidy output with broom\nprop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE) |&gt; \n  tidy() |&gt; \n  select(estimate, conf.low, conf.high, statistic, p.value, method)\n\n# A tibble: 1 × 6\n  estimate conf.low conf.high statistic p.value method                          \n     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;                           \n1    0.575    0.422     0.715       0.9   0.343 1-sample proportions test witho…\n\n\n\nNote: The estimate column shows \\(\\hat{p}\\), and conf.low/conf.high give the Score interval bounds."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Visualizing Convergence to N(0,1)",
+    "text": "Visualizing Convergence to N(0,1)\n\nAs \\(n\\) increases, the empirical CDF of the Wald pivot approaches the standard normal CDF."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-density-view",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-density-view",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Convergence: Density View",
+    "text": "Convergence: Density View"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01-q-q-plots",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01-q-q-plots",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Visualizing Convergence to N(0,1): Q-Q Plots",
+    "text": "Visualizing Convergence to N(0,1): Q-Q Plots\n\n\nCode\nset.seed(551)\np_true &lt;- 0.3\nn_values &lt;- c(10, 30, 100, 500)\nn_sim &lt;- 5000\n\n# Simulate Wald pivot for various sample sizes\nsim_wald_pivot &lt;- function(n, p, n_sim) {\n  replicate(n_sim, {\n    x &lt;- rbinom(1, n, p)\n    p_hat &lt;- x / n\n    if (p_hat &gt; 0 & p_hat &lt; 1) {\n      (p_hat - p) / sqrt(p_hat * (1 - p_hat) / n)\n    } else {\n      NA\n    }\n  })\n}\n\n# Generate data for all sample sizes\npivot_data &lt;- map_dfr(n_values, ~{\n  pivots &lt;- sim_wald_pivot(.x, p_true, n_sim)\n  pivots &lt;- pivots[!is.na(pivots)]\n  # Create Q-Q data: theoretical quantiles vs sample quantiles\n  tibble(\n    n = .x,\n    n_label = paste0(\"n = \", .x),\n    theoretical = qnorm(ppoints(length(pivots))),\n    sample = sort(pivots)\n  )\n})\n\n# Q-Q plots faceted by sample size\npivot_data |&gt;\n  mutate(n_label = factor(n_label, levels = paste0(\"n = \", n_values))) |&gt;\n  ggplot(aes(x = theoretical, y = sample)) +\n  geom_abline(slope = 1, intercept = 0, color = \"red\", linewidth = 1.2, linetype = \"dashed\") +\n  geom_point(alpha = 0.3, size = 0.8, color = \"steelblue\") +\n  facet_wrap(~n_label, nrow = 1) +\n  coord_cartesian(xlim = c(-3.5, 3.5), ylim = c(-3.5, 3.5)) +\n  labs(x = \"Theoretical N(0,1) Quantiles\",\n       y = \"Sample Quantiles of Wald Pivot\",\n       title = \"Q-Q Plots: Wald Pivot Converges to N(0,1)\",\n       subtitle = \"5,000 simulations per sample size | True p = 0.3 | Red dashed line = perfect N(0,1)\") +\n  theme_minimal(base_size = 16)\n\n\n\nPoints closer to the diagonal line indicate better agreement with N(0,1). Notice how the tails improve dramatically as \\(n\\) increases."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#quantifying-convergence-kolmogorov-smirnov-distance",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#quantifying-convergence-kolmogorov-smirnov-distance",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Quantifying Convergence: Kolmogorov-Smirnov Distance",
+    "text": "Quantifying Convergence: Kolmogorov-Smirnov Distance\n\n\nCode\nset.seed(551)\n# Calculate KS distance for many sample sizes\nn_sequence &lt;- c(seq(10, 100, by = 10), seq(120, 200, by = 20), seq(250, 500, by = 50))\nn_sim &lt;- 3000\n\nks_results &lt;- map_dfr(n_sequence, function(n) {\n  pivots &lt;- sim_wald_pivot(n, p_true, n_sim)\n  pivots &lt;- pivots[!is.na(pivots)]\n  ks_stat &lt;- ks.test(pivots, \"pnorm\")$statistic\n  tibble(n = n, ks_distance = ks_stat)\n})\n\nks_results |&gt;\n  ggplot(aes(x = n, y = ks_distance)) +\n  geom_line(linewidth = 1, color = \"steelblue\") +\n  geom_point(size = 2.5, color = \"steelblue\") +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"gray50\") +\n  labs(x = \"Sample Size (n)\",\n       y = \"Kolmogorov-Smirnov Distance from N(0,1)\",\n       title = \"Wald Pivot Approaches N(0,1) as n Increases\",\n       subtitle = \"KS distance measures maximum gap between empirical and theoretical CDF\") +\n  theme_minimal(base_size = 18)\n\n\n\nThe KS distance (maximum difference between ECDFs) shrinks toward 0, confirming convergence in distribution."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-comparing-percentiles",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-comparing-percentiles",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Convergence: Comparing Percentiles",
+    "text": "Convergence: Comparing Percentiles\n\n\nCode\n# Compare specific percentiles\npercentiles &lt;- c(0.025, 0.05, 0.25, 0.5, 0.75, 0.95, 0.975)\ntheoretical_quantiles &lt;- qnorm(percentiles)\n\npercentile_comparison &lt;- map_dfr(n_sequence, function(n) {\n  pivots &lt;- sim_wald_pivot(n, p_true, n_sim)\n  pivots &lt;- pivots[!is.na(pivots)]\n  empirical_quantiles &lt;- quantile(pivots, percentiles)\n  tibble(\n    n = n,\n    percentile = paste0(percentiles * 100, \"%\"),\n    theoretical = theoretical_quantiles,\n    empirical = as.numeric(empirical_quantiles),\n    difference = empirical - theoretical_quantiles\n  )\n})\n\npercentile_comparison |&gt;\n  mutate(percentile = factor(percentile, levels = paste0(percentiles * 100, \"%\"))) |&gt;\n  ggplot(aes(x = n, y = difference, color = percentile)) +\n  geom_hline(yintercept = 0, linetype = \"dashed\", color = \"gray50\") +\n  geom_line(linewidth = 1) +\n  geom_point(size = 1.5) +\n  scale_color_brewer(palette = \"RdYlBu\", direction = -1) +\n  labs(x = \"Sample Size (n)\",\n       y = \"Empirical − Theoretical Quantile\",\n       title = \"Convergence of Percentiles to N(0,1) Values\",\n       subtitle = \"All percentiles converge to their theoretical values as n increases\",\n       color = \"Percentile\") +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"right\")"
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01-density-comparison",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#visualizing-convergence-to-n01-density-comparison",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Visualizing Convergence to N(0,1): Density Comparison",
+    "text": "Visualizing Convergence to N(0,1): Density Comparison\n\n\nCode\nset.seed(551)\np_true &lt;- 0.3\nn_values &lt;- c(10, 30, 100, 500)\nn_sim &lt;- 10000\n\n# Simulate Wald pivot for various sample sizes\nsim_wald_pivot &lt;- function(n, p, n_sim) {\n\n  replicate(n_sim, {\n    x &lt;- rbinom(1, n, p)\n    p_hat &lt;- x / n\n    if (p_hat &gt; 0 & p_hat &lt; 1) {\n      (p_hat - p) / sqrt(p_hat * (1 - p_hat) / n)\n    } else {\n      NA\n    }\n  })\n}\n\n# Generate data for all sample sizes\npivot_data &lt;- map_dfr(n_values, ~{\n  pivots &lt;- sim_wald_pivot(.x, p_true, n_sim)\n  tibble(n = .x,\n         n_label = paste0(\"n = \", .x),\n         pivot = pivots[!is.na(pivots)])\n})\n\n# Overlaid density plots\npivot_data |&gt;\n  mutate(n_label = factor(n_label, levels = paste0(\"n = \", n_values))) |&gt;\n  ggplot(aes(x = pivot)) +\n  geom_histogram(aes(y = after_stat(density)), bins = 60, \n                 fill = \"steelblue\", alpha = 0.6, color = \"white\") +\n  stat_function(fun = dnorm, color = \"red\", linewidth = 1.5) +\n  facet_wrap(~n_label, nrow = 1) +\n  coord_cartesian(xlim = c(-4, 4)) +\n  labs(x = \"Wald Pivot Value\",\n       y = \"Density\",\n       title = \"Wald Pivot Distribution Converges to N(0,1)\",\n       subtitle = \"Blue histogram: 10,000 simulated pivots | Red curve: N(0,1) density | True p = 0.3\") +\n  theme_minimal(base_size = 16)\n\n\n\nAs \\(n\\) increases, the histogram of simulated Wald pivots matches the red N(0,1) curve more closely."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-in-the-tails-what-matters-for-cis",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-in-the-tails-what-matters-for-cis",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Convergence in the Tails (What Matters for CIs)",
+    "text": "Convergence in the Tails (What Matters for CIs)\n\n\nCode\n# Focus on the tails - this is what matters for confidence intervals\npivot_data |&gt;\n  mutate(n_label = factor(n_label, levels = paste0(\"n = \", n_values))) |&gt;\n  ggplot(aes(x = pivot, color = n_label)) +\n  stat_ecdf(linewidth = 1.2) +\n  stat_function(fun = pnorm, color = \"black\", linewidth = 1.5, linetype = \"dashed\") +\n  # Add reference lines at critical values\n\n  geom_vline(xintercept = c(-1.96, 1.96), linetype = \"dotted\", color = \"gray40\") +\n  geom_hline(yintercept = c(0.025, 0.975), linetype = \"dotted\", color = \"gray40\") +\n  annotate(\"text\", x = -2.8, y = 0.08, label = \"2.5%\", size = 4) +\n  annotate(\"text\", x = 2.8, y = 0.92, label = \"97.5%\", size = 4) +\n  scale_color_brewer(palette = \"Set1\") +\n  coord_cartesian(xlim = c(-4, 4)) +\n  labs(x = \"Wald Pivot Value\",\n       y = \"Cumulative Probability\",\n       title = \"CDF Comparison: Focus on the Tails\",\n       subtitle = \"Dotted lines mark ±1.96 (95% CI critical values) | Black dashed: N(0,1)\",\n       color = \"Sample Size\") +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"right\")\n\n\n\nThe tails (where we find critical values for CIs) converge more slowly than the center."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-critical-values-for-95-ci",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#convergence-critical-values-for-95-ci",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Convergence: Critical Values for 95% CI",
+    "text": "Convergence: Critical Values for 95% CI\n\n\nCode\n# Focus on the percentiles that matter for 95% CIs: 2.5% and 97.5%\nset.seed(551)\ncritical_comparison &lt;- map_dfr(n_sequence, function(n) {\n  pivots &lt;- sim_wald_pivot(n, p_true, n_sim)\n  pivots &lt;- pivots[!is.na(pivots)]\n  tibble(\n    n = n,\n    `Lower (2.5%)` = quantile(pivots, 0.025),\n    `Upper (97.5%)` = quantile(pivots, 0.975)\n  )\n}) |&gt;\n  pivot_longer(-n, names_to = \"Percentile\", values_to = \"Empirical\")\n\n# Add theoretical values\ntheoretical_vals &lt;- tibble(\n  Percentile = c(\"Lower (2.5%)\", \"Upper (97.5%)\"),\n  Theoretical = c(qnorm(0.025), qnorm(0.975))\n)\n\ncritical_comparison |&gt;\n  left_join(theoretical_vals, by = \"Percentile\") |&gt;\n  ggplot(aes(x = n, y = Empirical, color = Percentile)) +\n  geom_line(linewidth = 1.2) +\n  geom_point(size = 2) +\n  geom_hline(aes(yintercept = Theoretical, color = Percentile), \n             linetype = \"dashed\", linewidth = 1) +\n  scale_color_manual(values = c(\"Lower (2.5%)\" = \"#e74c3c\", \"Upper (97.5%)\" = \"#3498db\")) +\n  labs(x = \"Sample Size (n)\",\n       y = \"Critical Value\",\n       title = \"Empirical Critical Values Converge to ±1.96\",\n       subtitle = \"Solid lines: simulated | Dashed lines: theoretical N(0,1) values\") +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"right\")\n\n\n\nFor 95% CIs, we need the 2.5th and 97.5th percentiles to equal ±1.96. This happens as \\(n \\to \\infty\\)."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#verifying-hatp-is-a-maximum",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#verifying-hatp-is-a-maximum",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "Verifying \\(\\hat{p}\\) is a Maximum",
+    "text": "Verifying \\(\\hat{p}\\) is a Maximum\nSecond derivative test: We need \\(\\ell''(p) &lt; 0\\) at \\(\\hat{p}\\).\n\\[\\ell'(p) = \\frac{\\sum x_i}{p} - \\frac{n - \\sum x_i}{1-p}\\]\n\n\\[\\ell''(p) = -\\frac{\\sum x_i}{p^2} - \\frac{n - \\sum x_i}{(1-p)^2}\\]\n\n\nSince \\(\\sum x_i \\geq 0\\) and \\(n - \\sum x_i \\geq 0\\), we have \\(\\ell''(p) \\leq 0\\) for all \\(p \\in (0,1)\\).\n\n\nWhen \\(0 &lt; \\hat{p} &lt; 1\\): \\(\\ell''(\\hat{p}) &lt; 0\\) ✓ → confirms \\(\\hat{p}\\) is a maximum."
+  },
+  {
+    "objectID": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-pivot",
+    "href": "lessons/08_CI_One_Sample/08_CI_One_Sample.html#the-wald-pivot",
+    "title": "Lesson 8: One-Sample t-Intervals and Population Proportions",
+    "section": "The Wald Pivot",
+    "text": "The Wald Pivot\n\n\n\n\n\n\nDefinition: Wald Pivot\n\n\nThe Wald pivot for a proportion is: \\[W = \\frac{\\hat{p} - p}{\\widehat{SE}(\\hat{p})} = \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}}\\] where we estimate the standard error by plugging in \\(\\hat{p}\\) for the unknown \\(p\\).\n\n\n\n\nLarge sample approximation: For large \\(n\\), \\[W = \\frac{\\hat{p} - p}{\\sqrt{\\hat{p}(1-\\hat{p})/n}} \\; \\dot{\\sim} \\; N(0, 1)\\]\n\n\nThis approximation is what allows us to construct confidence intervals using \\(z_{\\alpha/2}\\)."
   }
 ]

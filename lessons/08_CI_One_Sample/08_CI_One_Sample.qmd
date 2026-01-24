@@ -27,6 +27,7 @@ execute:
 #| label: setup
 #| include: false
 library(tidyverse)
+library(broom)
 set.seed(42)
 theme_set(theme_minimal(base_size = 18))
 ```
@@ -77,7 +78,7 @@ $$T = \frac{\bar{X} - \mu}{S/\sqrt{n}} \sim \; ???$$
 ## The Source of Extra Variability
 
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-height: 6
 set.seed(551)
 n_sim <- 10000
@@ -101,8 +102,13 @@ sim_data <- tibble(
 sim_data |>
   ggplot(aes(x = value, fill = statistic)) +
   geom_histogram(bins = 50, alpha = 0.6, position = "identity") +
-  scale_fill_manual(values = c("Z" = "steelblue", "T" = "coral"),
-                    labels = c("T = (X̄ - μ)/(S/√n)", "Z = (X̄ - μ)/(σ/√n)")) +
+  scale_fill_manual(
+    values = c("Z" = "steelblue", "T" = "coral"),
+    labels = c(
+      T = expression(T == (bar(X) - mu) / (S / sqrt(n))),
+      Z = expression(Z == (bar(X) - mu) / (sigma / sqrt(n)))
+    )
+  ) +
   labs(x = "Value", y = "Count", 
        title = "Comparing Z and T Statistics (n = 10)",
        fill = "Statistic") +
@@ -114,7 +120,7 @@ sim_data |>
 ## The t Distribution
 
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-height: 6
 tibble(x = seq(-4, 4, by = 0.01)) |>
   mutate(
@@ -159,7 +165,7 @@ where $t_{n-1}$ denotes the t distribution with $n-1$ **degrees of freedom**.
 
 ```{r}
 #| echo: true
-#| fig-height: 4.5
+#| fig-height: 6.5
 # Verify that (X̄ - μ)/(S/√n) follows t distribution
 set.seed(551)
 n <- 15
@@ -221,7 +227,7 @@ tibble(
 ## Visualizing z vs. t Critical Values
 
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-height: 6
 tibble(df = 2:100) |>
   mutate(t_crit = qt(0.975, df)) |>
@@ -319,6 +325,27 @@ t.test(bp, conf.level = 0.95)
 
 **Note:** R's `t.test()` also performs a hypothesis test (which we'll cover later).
 
+## Using broom to Tidy t.test() Output
+
+The `broom` package provides a convenient way to extract results as a tibble:
+
+```{r}
+# Tidy output with broom
+library(broom)
+
+t.test(bp, conf.level = 0.95) |> 
+  tidy() |> 
+  select(estimate, conf.low, conf.high, statistic, p.value)
+```
+
+. . .
+
+**Advantages of broom:**
+
+-   Results as a tibble (easy to manipulate)
+-   Consistent interface across many statistical functions
+-   Great for automated reporting and combining results
+
 ## Medical Example: Stress and Cortisol (Devore 8.37)
 
 Medical students' serum cortisol levels were measured at the beginning and end of semester. For $n = 41$ students, the mean difference (end - beginning) was $\bar{d} = 2.08$ with $s_d = 7.88$.
@@ -383,6 +410,7 @@ cat("95% CI:", round(ci95, 2), "\n")
 cat("90% CI:", round(ci90, 2))
 ```
 
+
 # Confidence Intervals for Proportions {background-color="#e67e22"}
 
 ## The Setup
@@ -401,15 +429,346 @@ cat("90% CI:", round(ci90, 2))
 -   Disease prevalence in a population
 -   Sensitivity/specificity of diagnostic tests
 
-## The Wald Interval (Traditional)
+## Deriving the MLE for Bernoulli (Review)
 
-For large $n$, $\hat{P} = X/n$ is approximately normal:
-$$\hat{P} \approx N\left(p, \frac{p(1-p)}{n}\right)$$
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Bernoulli}(p)$ where $P(X_i = 1) = p$.
 
 . . .
 
-**The Wald (traditional) 95% CI:**
+**Likelihood function:**
+$$L(p) = \prod_{i=1}^n p^{x_i}(1-p)^{1-x_i} = p^{\sum x_i}(1-p)^{n - \sum x_i}$$
+
+. . .
+
+**Log-likelihood:**
+$$\ell(p) = \left(\sum x_i\right) \ln(p) + \left(n - \sum x_i\right) \ln(1-p)$$
+
+## MLE for Bernoulli (continued)
+
+**Taking the derivative and setting to zero:**
+$$\frac{d\ell}{dp} = \frac{\sum x_i}{p} - \frac{n - \sum x_i}{1-p} = 0$$
+
+. . .
+
+**Solving for $p$:**
+$$\frac{\sum x_i}{p} = \frac{n - \sum x_i}{1-p}$$
+$$(1-p)\sum x_i = p(n - \sum x_i)$$
+$$\sum x_i = np$$
+
+. . .
+
+::: callout-important
+## MLE for Bernoulli Parameter
+$$\hat{p}_{MLE} = \frac{\sum X_i}{n} = \bar{X} = \frac{X}{n}$$
+:::
+
+## Verifying $\hat{p}$ is a Maximum
+
+**Second derivative test:** We need $\ell''(p) < 0$ at $\hat{p}$.
+
+$$\ell'(p) = \frac{\sum x_i}{p} - \frac{n - \sum x_i}{1-p}$$
+
+. . .
+
+$$\ell''(p) = -\frac{\sum x_i}{p^2} - \frac{n - \sum x_i}{(1-p)^2}$$
+
+. . .
+
+Since $\sum x_i \geq 0$ and $n - \sum x_i \geq 0$, we have $\ell''(p) \leq 0$ for all $p \in (0,1)$.
+
+. . .
+
+When $0 < \hat{p} < 1$: $\ell''(\hat{p}) < 0$ ✓ → confirms $\hat{p}$ is a **maximum**.
+
+## The General Wald Interval
+
+::: callout-important
+## Wald Confidence Interval (General Definition)
+For an MLE $\hat{\theta}$ with large $n$, the **Wald interval** is based on the asymptotic normality of MLEs:
+$$\hat{\theta} \dot{\sim} N\left(\theta, \frac{1}{I_n(\theta)}\right)$$
+
+A $100(1-\alpha)\%$ Wald CI is:
+$$\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})$$
+where $\widehat{SE}$ is an estimate of the standard error, typically using $\hat{\theta}$ in place of $\theta$.
+:::
+
+. . .
+
+**Key idea:** Replace unknown parameters in the standard error with their MLEs.
+
+## Why the Wald Interval Works: Asymptotic Theory
+
+From Lesson 4, we know the MLE has these asymptotic properties:
+
+1. **Consistency:** $\hat{\theta} \xrightarrow{P} \theta$
+
+2. **Asymptotic normality:** $\sqrt{n}(\hat{\theta} - \theta) \xrightarrow{d} N(0, 1/I(\theta))$
+
+. . .
+
+For the Bernoulli case with $\hat{p} = \bar{X}$:
+
+-   $E(\hat{p}) = p$ and $\text{Var}(\hat{p}) = \frac{p(1-p)}{n}$
+-   Fisher information: $I(p) = \frac{1}{p(1-p)}$, so $I_n(p) = \frac{n}{p(1-p)}$
+-   CRLB: $\frac{1}{I_n(p)} = \frac{p(1-p)}{n} = \text{Var}(\hat{p})$ ✓
+
+## The Wald Pivot
+
+::: callout-important
+## Definition: Wald Pivot
+The **Wald pivot** for a proportion is:
+$$W = \frac{\hat{p} - p}{\widehat{SE}(\hat{p})} = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}}$$
+where we estimate the standard error by plugging in $\hat{p}$ for the unknown $p$.
+:::
+
+. . .
+
+**Large sample approximation:** For large $n$,
+$$W = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} \; \dot{\sim} \; N(0, 1)$$
+
+. . .
+
+This approximation is what allows us to construct confidence intervals using $z_{\alpha/2}$.
+
+## Visualizing Convergence to N(0,1): Density Comparison
+
+```{r}
+#| code-fold: true
+#| fig-height: 6.5
+set.seed(551)
+p_true <- 0.3
+n_values <- c(10, 30, 100, 500)
+n_sim <- 10000
+
+# Simulate Wald pivot for various sample sizes
+sim_wald_pivot <- function(n, p, n_sim) {
+
+  replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    p_hat <- x / n
+    if (p_hat > 0 & p_hat < 1) {
+      (p_hat - p) / sqrt(p_hat * (1 - p_hat) / n)
+    } else {
+      NA
+    }
+  })
+}
+
+# Generate data for all sample sizes
+pivot_data <- map_dfr(n_values, ~{
+  pivots <- sim_wald_pivot(.x, p_true, n_sim)
+  tibble(n = .x,
+         n_label = paste0("n = ", .x),
+         pivot = pivots[!is.na(pivots)])
+})
+
+# Overlaid density plots
+pivot_data |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", n_values))) |>
+  ggplot(aes(x = pivot)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60, 
+                 fill = "steelblue", alpha = 0.6, color = "white") +
+  stat_function(fun = dnorm, color = "red", linewidth = 1.5) +
+  facet_wrap(~n_label, nrow = 1) +
+  coord_cartesian(xlim = c(-4, 4)) +
+  labs(x = "Wald Pivot Value",
+       y = "Density",
+       title = "Wald Pivot Distribution Converges to N(0,1)",
+       subtitle = "Blue histogram: 10,000 simulated pivots | Red curve: N(0,1) density | True p = 0.3") +
+  theme_minimal(base_size = 16)
+```
+
+As $n$ increases, the histogram of simulated Wald pivots matches the red N(0,1) curve more closely.
+
+## Convergence in the Tails (What Matters for CIs)
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+# Focus on the tails - this is what matters for confidence intervals
+pivot_data |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", n_values))) |>
+  ggplot(aes(x = pivot, color = n_label)) +
+  stat_ecdf(linewidth = 1.2) +
+  stat_function(fun = pnorm, color = "black", linewidth = 1.5, linetype = "dashed") +
+  # Add reference lines at critical values
+
+  geom_vline(xintercept = c(-1.96, 1.96), linetype = "dotted", color = "gray40") +
+  geom_hline(yintercept = c(0.025, 0.975), linetype = "dotted", color = "gray40") +
+  annotate("text", x = -2.8, y = 0.08, label = "2.5%", size = 4) +
+  annotate("text", x = 2.8, y = 0.92, label = "97.5%", size = 4) +
+  scale_color_brewer(palette = "Set1") +
+  coord_cartesian(xlim = c(-4, 4)) +
+  labs(x = "Wald Pivot Value",
+       y = "Cumulative Probability",
+       title = "CDF Comparison: Focus on the Tails",
+       subtitle = "Dotted lines mark ±1.96 (95% CI critical values) | Black dashed: N(0,1)",
+       color = "Sample Size") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "right")
+```
+
+The tails (where we find critical values for CIs) converge more slowly than the center.
+
+## Quantifying Convergence: Kolmogorov-Smirnov Distance
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+set.seed(551)
+# Calculate KS distance for many sample sizes
+n_sequence <- c(seq(10, 100, by = 10), seq(120, 200, by = 20), seq(250, 500, by = 50))
+n_sim <- 3000
+
+ks_results <- map_dfr(n_sequence, function(n) {
+  pivots <- sim_wald_pivot(n, p_true, n_sim)
+  pivots <- pivots[!is.na(pivots)]
+  ks_stat <- ks.test(pivots, "pnorm")$statistic
+  tibble(n = n, ks_distance = ks_stat)
+})
+
+ks_results |>
+  ggplot(aes(x = n, y = ks_distance)) +
+  geom_line(linewidth = 1, color = "steelblue") +
+  geom_point(size = 2.5, color = "steelblue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  labs(x = "Sample Size (n)",
+       y = "Kolmogorov-Smirnov Distance from N(0,1)",
+       title = "Wald Pivot Approaches N(0,1) as n Increases",
+       subtitle = "KS distance measures maximum gap between empirical and theoretical CDF") +
+  theme_minimal(base_size = 18)
+```
+
+The KS distance (maximum difference between ECDFs) shrinks toward 0, confirming convergence in distribution.
+
+## Convergence: Critical Values for 95% CI
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+# Focus on the percentiles that matter for 95% CIs: 2.5% and 97.5%
+set.seed(551)
+critical_comparison <- map_dfr(n_sequence, function(n) {
+  pivots <- sim_wald_pivot(n, p_true, n_sim)
+  pivots <- pivots[!is.na(pivots)]
+  tibble(
+    n = n,
+    `Lower (2.5%)` = quantile(pivots, 0.025),
+    `Upper (97.5%)` = quantile(pivots, 0.975)
+  )
+}) |>
+  pivot_longer(-n, names_to = "Percentile", values_to = "Empirical")
+
+# Add theoretical values
+theoretical_vals <- tibble(
+  Percentile = c("Lower (2.5%)", "Upper (97.5%)"),
+  Theoretical = c(qnorm(0.025), qnorm(0.975))
+)
+
+critical_comparison |>
+  left_join(theoretical_vals, by = "Percentile") |>
+  ggplot(aes(x = n, y = Empirical, color = Percentile)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 2) +
+  geom_hline(aes(yintercept = Theoretical, color = Percentile), 
+             linetype = "dashed", linewidth = 1) +
+  scale_color_manual(values = c("Lower (2.5%)" = "#e74c3c", "Upper (97.5%)" = "#3498db")) +
+  labs(x = "Sample Size (n)",
+       y = "Critical Value",
+       title = "Empirical Critical Values Converge to ±1.96",
+       subtitle = "Solid lines: simulated | Dashed lines: theoretical N(0,1) values") +
+  theme_minimal(base_size = 18) +
+  theme(legend.position = "right")
+```
+
+For 95% CIs, we need the 2.5th and 97.5th percentiles to equal ±1.96. This happens as $n \to \infty$.
+
+## The Exact Pivot for Proportions
+
+If we knew $p$, we could use this **exact pivot**:
+$$Z = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}} \xrightarrow{d} N(0, 1)$$
+
+. . .
+
+**Problem:** The standard error $\sqrt{p(1-p)/n}$ depends on the unknown $p$!
+
+. . .
+
+**Wald solution:** Replace $p$ with $\hat{p}$ in the standard error:
+$$Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}}$$
+
+But is $Z^*$ still approximately $N(0,1)$?
+
+## Why Plugging In $\hat{p}$ Works: Slutsky's Theorem
+
+We can rewrite $Z^*$ as:
+$$Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} = \underbrace{\frac{\hat{p} - p}{\sqrt{p(1-p)/n}}}_{\xrightarrow{d} N(0,1)} \cdot \underbrace{\frac{\sqrt{p(1-p)}}{\sqrt{\hat{p}(1-\hat{p})}}}_{\xrightarrow{P} 1}$$
+
+. . .
+
+**Slutsky's Theorem:** If $X_n \xrightarrow{d} X$ and $Y_n \xrightarrow{P} c$ (a constant), then:
+$$X_n \cdot Y_n \xrightarrow{d} c \cdot X$$
+
+. . .
+
+Since $\hat{p} \xrightarrow{P} p$ (consistency), we have:
+$$\frac{\sqrt{p(1-p)}}{\sqrt{\hat{p}(1-\hat{p})}} \xrightarrow{P} 1$$
+
+Therefore: $Z^* \xrightarrow{d} N(0,1)$
+
+## Visualizing the Consistency Argument
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+set.seed(551)
+p_true <- 0.3
+n_values <- c(20, 50, 100, 500)
+
+sim_ratio <- function(n, p, n_sim = 5000) {
+  replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    p_hat <- x/n
+    if (p_hat > 0 & p_hat < 1) {
+      sqrt(p*(1-p)) / sqrt(p_hat*(1-p_hat))
+    } else {
+      NA
+    }
+  })
+}
+
+ratio_data <- map_dfr(n_values, ~{
+  tibble(n = paste0("n = ", .x), 
+         ratio = sim_ratio(.x, p_true))
+}) |> 
+  filter(!is.na(ratio))
+
+ratio_data |> 
+  ggplot(aes(x = ratio)) +
+  geom_histogram(bins = 40, fill = "steelblue", alpha = 0.7) +
+  geom_vline(xintercept = 1, color = "red", linewidth = 1.2, linetype = "dashed") +
+  facet_wrap(~n, scales = "free_y") +
+  labs(x = expression(sqrt(p(1-p)) / sqrt(hat(p)(1-hat(p)))),
+       y = "Count",
+       title = "Ratio of True SE to Estimated SE Concentrates at 1",
+       subtitle = "True p = 0.3") +
+  theme_minimal(base_size = 16)
+```
+
+## The Wald Interval for Proportions
+
+Using $Z^* = \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} \approx N(0,1)$ as our pivot:
+
+$$P\left(-z_{\alpha/2} < \frac{\hat{p} - p}{\sqrt{\hat{p}(1-\hat{p})/n}} < z_{\alpha/2}\right) \approx 1 - \alpha$$
+
+. . .
+
+Solving for $p$:
+
+::: callout-important
+## Wald Confidence Interval for a Proportion
 $$\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$
+:::
 
 . . .
 
@@ -423,7 +782,7 @@ $$\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$$
 ## Coverage Problems with Wald
 
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-height: 6
 # Simulate coverage probability for Wald interval
 set.seed(551)
@@ -458,9 +817,74 @@ tibble(p = p_values, coverage = coverage) |>
 
 The Wald interval often has coverage **below** the nominal level!
 
-## The Score (Wilson) Interval
+## The Score Interval: A Better Approach
 
-A better approach: solve for $p$ in the pivotal quantity directly.
+::: callout-important
+## The Score Test Statistic (General Definition)
+The **score function** is the derivative of the log-likelihood:
+$$U(\theta) = \ell'(\theta) = \frac{d}{d\theta} \ln L(\theta)$$
+
+The **score test statistic** is:
+$$Z_{score} = \frac{U(\theta)}{\sqrt{I_n(\theta)}} \xrightarrow{d} N(0,1)$$
+where $I_n(\theta)$ is the Fisher information.
+:::
+
+. . .
+
+**Key insight:** The score statistic is evaluated at the **null/hypothesized** parameter value, not at the MLE!
+
+## Score Function for Bernoulli
+
+For $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Bernoulli}(p)$:
+
+**Log-likelihood:** $\ell(p) = X \ln(p) + (n-X)\ln(1-p)$ where $X = \sum X_i$
+
+. . .
+
+**Score function:**
+$$U(p) = \ell'(p) = \frac{X}{p} - \frac{n-X}{1-p} = \frac{X - np}{p(1-p)}$$
+
+. . .
+
+**Fisher information:** $I_n(p) = \frac{n}{p(1-p)}$
+
+. . .
+
+**Score statistic:**
+$$Z_{score} = \frac{U(p)}{\sqrt{I_n(p)}} = \frac{(X-np)/[p(1-p)]}{\sqrt{n/[p(1-p)]}} = \frac{X - np}{\sqrt{np(1-p)}} = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}}$$
+
+## Score Interval: Keep $p$ in the Denominator!
+
+Notice that the score statistic for proportions is:
+$$Z_{score} = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}} \approx N(0,1)$$
+
+. . .
+
+**The score interval** keeps $p$ in the standard error (unlike Wald):
+$$\left|\frac{\hat{p} - p}{\sqrt{p(1-p)/n}}\right| \leq z_{\alpha/2}$$
+
+. . .
+
+Squaring both sides:
+$$\frac{(\hat{p} - p)^2}{p(1-p)/n} \leq z_{\alpha/2}^2$$
+
+. . .
+
+This is a **quadratic equation** in $p$!
+
+## Solving the Quadratic for the Score Interval
+
+Rearranging $(\hat{p} - p)^2 \leq z^2 \cdot p(1-p)/n$:
+
+$$n(\hat{p} - p)^2 \leq z^2 p(1-p)$$
+
+$$n\hat{p}^2 - 2np\hat{p} + np^2 \leq z^2 p - z^2 p^2$$
+
+$$(n + z^2)p^2 - (2n\hat{p} + z^2)p + n\hat{p}^2 \leq 0$$
+
+. . .
+
+Solving with the quadratic formula gives the **Score (Wilson) interval**:
 
 ::: callout-important
 ## Score Confidence Interval for a Proportion
@@ -468,27 +892,39 @@ $$\frac{\hat{p} + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n} + \frac
 where $z = z_{\alpha/2}$.
 :::
 
-. . .
+## Why Score Intervals Are Better
 
-**Advantages:**
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+# Compare coverage of Wald vs Score
+coverage_score <- function(p, n, n_sim = 10000) {
+  mean(replicate(n_sim, {
+    x <- rbinom(1, n, p)
+    ci <- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int
+    ci[1] < p & p < ci[2]
+  }))
+}
 
--   Coverage probability much closer to nominal level
--   Handles extreme proportions well
--   Always produces bounds in [0, 1]
+p_values <- seq(0.05, 0.95, by = 0.05)
+coverage_w <- sapply(p_values, coverage_wald, n = 50)
+coverage_s <- sapply(p_values, coverage_score, n = 50)
 
-## Deriving the Score Interval (Chihara 7.4)
+tibble(p = rep(p_values, 2),
+       coverage = c(coverage_w, coverage_s),
+       method = rep(c("Wald", "Score"), each = length(p_values))) |>
+  ggplot(aes(x = p, y = coverage, color = method)) +
+  geom_line(linewidth = 1.2) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("Wald" = "coral", "Score" = "steelblue")) +
+  labs(x = "True Proportion p", y = "Coverage Probability",
+       title = "Coverage Comparison: Wald vs Score (n = 50)",
+       color = "Method") +
+  theme_minimal(base_size = 18)
+```
 
-Starting from the pivotal quantity:
-$$Z = \frac{\hat{p} - p}{\sqrt{p(1-p)/n}} \approx N(0,1)$$
-
-. . .
-
-Set $|Z| = z_{\alpha/2}$ and solve for $p$:
-$$\left(\frac{\hat{p} - p}{\sqrt{p(1-p)/n}}\right)^2 = z_{\alpha/2}^2$$
-
-. . .
-
-This leads to a **quadratic equation** in $p$, giving the score interval endpoints.
+Score interval maintains coverage closer to nominal level, especially for extreme $p$.
 
 ## The Agresti-Coull Interval
 
@@ -505,6 +941,10 @@ $$\tilde{p} \pm z_{\alpha/2}\sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}$$
 . . .
 
 **Why it works:** Adding 2 successes and 2 failures "shrinks" extreme estimates toward 0.5, improving coverage.
+
+. . .
+
+**Connection to Score:** With $z_{0.025} \approx 2$, the Score interval is approximately Agresti-Coull!
 
 ## Comparing Intervals: Clinical Trial Example
 
@@ -535,6 +975,19 @@ cat("Agresti-Coull 95% CI: (", round(ac_ci[1], 3), ",", round(ac_ci[2], 3), ")")
 prop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE)
 ```
 
+## Using broom with prop.test()
+
+```{r}
+# Tidy output with broom
+prop.test(x = 23, n = 40, conf.level = 0.95, correct = FALSE) |> 
+  tidy() |> 
+  select(estimate, conf.low, conf.high, statistic, p.value, method)
+```
+
+. . .
+
+**Note:** The `estimate` column shows $\hat{p}$, and `conf.low`/`conf.high` give the Score interval bounds.
+
 ## Comparing All Three Methods
 
 ```{r}
@@ -561,6 +1014,8 @@ compare_proportion_cis <- function(x, n, conf = 0.95) {
 }
 
 compare_proportion_cis(23, 40)
+compare_proportion_cis(5, 40)
+
 ```
 
 ## Medical Example: Adverse Event Rate
@@ -655,7 +1110,7 @@ Using prior information can **substantially** reduce required sample size!
 ## Sample Size: Effect of Assumptions
 
 ```{r}
-#| echo: false
+#| code-fold: true
 #| fig-height: 5
 tibble(p = seq(0.05, 0.95, by = 0.01)) |>
   mutate(n = qnorm(0.975)^2 * p * (1-p) / 0.03^2) |>
@@ -759,9 +1214,11 @@ A 95% CI contains all parameter values that would **not** be rejected by a two-s
 
 3.  **Always check normality** for t-intervals (Q-Q plots, histograms)
 
-4.  **Proportion intervals:** Score/Wilson preferred over Wald
+4.  **Wald intervals** based on asymptotic MLE theory; plug in $\hat{\theta}$ for SE
 
-5.  **Agresti-Coull** ("add 2 and 2") is a good simple approximation
+5.  **Score intervals** keep the parameter in SE, solve quadratic; better coverage
+
+6.  **Agresti-Coull** ("add 2 and 2") is a good simple approximation
 
 ## Key Formulas
 
@@ -770,33 +1227,9 @@ A 95% CI contains all parameter values that would **not** be rejected by a two-s
 | $\mu$ ($\sigma$ known) | $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ | Normal data |
 | $\mu$ ($\sigma$ unknown) | $\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}$ | Normal data |
 | $p$ (Wald) | $\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$ | Large $n$ |
+| $p$ (Score) | $\frac{\hat{p} + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n} + \frac{z^2}{4n^2}}}{1 + \frac{z^2}{n}}$ | General |
 | $p$ (Agresti-Coull) | $\tilde{p} \pm z_{\alpha/2}\sqrt{\frac{\tilde{p}(1-\tilde{p})}{\tilde{n}}}$ | General |
 
-## Lesson 8 Practice Problems
-
-1.  **(Devore 8.17)** For a sample with $n = 20$, $\bar{x} = 13.71$, $s = 3.55$:
-    a. Compute a 95% CI for the population mean.
-    b. What assumptions are required?
-
-2.  **(Devore 8.37)** Medical students' cortisol levels changed by $\bar{d} = 2.08$ ($s = 7.88$, $n = 41$). Find a 95% lower bound for the mean change.
-
-3.  **(Devore 8.43)** In a survey, 859 of 1044 adults support mandatory GMO labeling. Construct a 95% CI for the true proportion.
-
-4.  **(Devore 8.48)** In 48 trials, 16 resulted in ignition.
-    a. Compute the Score interval.
-    b. Compute the Wald interval.
-    c. Compare and discuss which is preferable.
-
-## Lesson 8 Practice Problems (continued)
-
-5.  **(Medical Application)** A clinical trial tests a new cholesterol medication. In $n = 48$ patients, the mean LDL reduction is $\bar{x} = 35$ mg/dL with $s = 18$ mg/dL.
-    a. Construct a 95% CI for the mean LDL reduction.
-    b. Construct a 99% CI. How does it compare?
-    c. The company claims a mean reduction of at least 30 mg/dL. Is this claim supported?
-
-6.  **(Sample Size)** How many subjects are needed to estimate the proportion of patients responding to a treatment within $\pm 5\%$ with 95% confidence, using the conservative approach?
-
-7.  **(Chihara style)** Simulate 1000 Wald and Score intervals for $p = 0.1$ with $n = 50$. Compare the actual coverage probabilities.
 
 ## Looking Ahead
 
@@ -811,9 +1244,9 @@ A 95% CI contains all parameter values that would **not** be rejected by a two-s
 
 **Coming Soon:**
 
--   Hypothesis testing (Lessons 9-12)
--   Two-sample inference (Lesson 13)
--   Paired data analysis (Lesson 14)
+-   Hypothesis testing
+-   Two-sample inference
+-   Paired data analysis
 
 ## References
 
