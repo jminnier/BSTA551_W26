@@ -1263,5 +1263,5 @@ Thank you!
 ```{bash}
 #| eval: false
 #| include: false
-decktape reveal --fragments docs/lessons/08_t_Intervals_Proportions/08_t_Intervals_Proportions.html lessons/08_t_Intervals_Proportions/08_t_Intervals_Proportions.pdf
+decktape reveal --fragments docs/lessons/08_CI_One_Sample/08_CI_One_Sample.html lessons/08_CI_One_Sample/08_CI_One_Sample.pdf
 ```
