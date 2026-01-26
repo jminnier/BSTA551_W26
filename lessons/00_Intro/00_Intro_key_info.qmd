@@ -1,7 +1,7 @@
 ---
 title: "Key Info and Announcements"
 subtitle: "Welcome"
-date-modified: "today"
+date: today
 format: 
   html:
     link-external-newwindow: true

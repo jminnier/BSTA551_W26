@@ -1,0 +1,550 @@
+---
+title: "Homework 3 Solutions"
+subtitle: "BSTA 551"
+description: "Due: `r library(here); source(here('class_dates.R')); hw3 %>% format('%m/%d')` at 11pm"
+date-modified: "today"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: "setup"
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
+library(tidyverse)
+set.seed(551)
+```
+
+## Problem 1: Pivotal Quantities and Confidence Intervals (Devore Section 8.1, Example 8.5 style)
+
+A theoretical model suggests that the time-to-failure (in hours) of a certain medical device component follows an Exponential distribution with unknown rate parameter $\lambda > 0$. A random sample of $n = 8$ components yields the following failure times:
+
+$$X = \{145, 89, 203, 67, 112, 156, 178, 94\}$$
+
+*Hint: If $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)$, then $2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}$.*
+
+### Part (a)
+
+**Show that $h(X_1, \ldots, X_n, \lambda) = 2\lambda \sum_{i=1}^n X_i$ is a pivotal quantity by verifying the definition included in class slides.**
+
+A pivotal quantity must satisfy two properties:
+
+**Property 1:** $h$ is a function of both the data $(X_1, \ldots, X_n)$ and the parameter $\lambda$.
+
+This is clearly satisfied: $h = 2\lambda \sum_{i=1}^n X_i$ explicitly involves both the unknown parameter $\lambda$ and the sample values through $\sum X_i$. $\checkmark$
+
+**Property 2:** The probability distribution of $h$ does not depend on $\lambda$ (or any other unknown parameters).
+
+From the hint, we are told that if $X_i \stackrel{iid}{\sim} \text{Exponential}(\lambda)$, then:
+$$h = 2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}$$
+
+The chi-squared distribution with $2n$ degrees of freedom depends **only on $n$** (the sample size, which is known). It does **not depend on $\lambda$**. $\checkmark$
+
+Since both properties are satisfied, $h = 2\lambda \sum_{i=1}^n X_i$ is a **pivotal quantity** for $\lambda$. $\square$
+
+
+### Part (b)
+
+**Using the pivotal quantity from part (a), derive a $100(1-\alpha)\%$ confidence interval for $\lambda$. Express your answer in terms of $\sum X_i$ and chi-squared critical values.**
+
+Let $\chi^2_{\alpha/2, 2n}$ denote the upper $\alpha/2$ critical value (i.e., the value with area $\alpha/2$ to the right) and $\chi^2_{1-\alpha/2, 2n}$ denote the lower $\alpha/2$ critical value (i.e., the value with area $\alpha/2$ to the left).
+
+Since $h = 2\lambda \sum X_i \sim \chi^2_{2n}$, we can write:
+$$P\left(\chi^2_{1-\alpha/2, 2n} < 2\lambda \sum_{i=1}^n X_i < \chi^2_{\alpha/2, 2n}\right) = 1 - \alpha$$
+
+Now we isolate $\lambda$. Dividing all parts of the inequality by $2\sum X_i$ (which is positive):
+$$P\left(\frac{\chi^2_{1-\alpha/2, 2n}}{2\sum_{i=1}^n X_i} < \lambda < \frac{\chi^2_{\alpha/2, 2n}}{2\sum_{i=1}^n X_i}\right) = 1 - \alpha$$
+
+Therefore, the $100(1-\alpha)\%$ confidence interval for $\lambda$ is:
+
+$$\boxed{\left(\frac{\chi^2_{1-\alpha/2, 2n}}{2\sum_{i=1}^n X_i}, \quad \frac{\chi^2_{\alpha/2, 2n}}{2\sum_{i=1}^n X_i}\right)}$$
+
+
+### Part (c)
+
+**Compute a 95% confidence interval for $\lambda$ using the data.**
+
+```{r}
+#| label: prob1c
+# Data
+failure_times <- c(145, 89, 203, 67, 112, 156, 178, 94)
+n <- length(failure_times)
+sum_x <- sum(failure_times)
+
+# Chi-squared critical values for 95% CI (alpha = 0.05)
+# df = 2n = 16
+df <- 2 * n
+
+# Lower critical value: chi^2_{1-alpha/2, 2n} = chi^2_{0.975, 16}
+# This is the 0.025 quantile (area 0.025 to the left)
+chi_lower <- qchisq(0.025, df)
+
+# Upper critical value: chi^2_{alpha/2, 2n} = chi^2_{0.025, 16}
+# This is the 0.975 quantile (area 0.025 to the right)
+chi_upper <- qchisq(0.975, df)
+
+# 95% CI for lambda
+lambda_lower <- chi_lower / (2 * sum_x)
+lambda_upper <- chi_upper / (2 * sum_x)
+
+cat("Data summary:\n")
+cat("  Sample size: n =", n, "\n")
+cat("  Sum of observations: Σx_i =", sum_x, "hours\n")
+cat("  Degrees of freedom: 2n =", df, "\n\n")
+
+cat("Chi-squared critical values:\n")
+cat("  χ²_{0.975, 16} (lower) =", round(chi_lower, 4), "\n")
+cat("  χ²_{0.025, 16} (upper) =", round(chi_upper, 4), "\n\n")
+
+cat("95% CI for λ:\n")
+cat("  Lower bound:", round(chi_lower, 4), "/ (2 ×", sum_x, ") =", round(lambda_lower, 6), "\n")
+cat("  Upper bound:", round(chi_upper, 4), "/ (2 ×", sum_x, ") =", round(lambda_upper, 6), "\n\n")
+
+cat("95% CI for λ: (", round(lambda_lower, 5), ",", round(lambda_upper, 5), ") per hour\n")
+```
+
+The 95% confidence interval for $\lambda$ is $\boxed{(0.00329, 0.01170)}$ per hour.
+
+
+### Part (d)
+
+**Find a 95% confidence interval for the mean time-to-failure $\mu = 1/\lambda$.**
+
+Since $\mu = 1/\lambda$ is a monotonically **decreasing** function of $\lambda$, when we transform the CI for $\lambda$, the bounds are reversed:
+
+- If $\lambda_L < \lambda < \lambda_U$, then $\frac{1}{\lambda_U} < \frac{1}{\lambda} < \frac{1}{\lambda_L}$
+
+Therefore, the CI for $\mu = 1/\lambda$ is:
+$$\left(\frac{1}{\lambda_U}, \frac{1}{\lambda_L}\right)$$
+
+```{r}
+#| label: prob1d
+# CI for mean = 1/lambda
+mu_lower <- 1 / lambda_upper
+mu_upper <- 1 / lambda_lower
+
+cat("95% CI for μ = 1/λ:\n")
+cat("  Lower bound: 1 /", round(lambda_upper, 5), "=", round(mu_lower, 2), "hours\n")
+cat("  Upper bound: 1 /", round(lambda_lower, 5), "=", round(mu_upper, 2), "hours\n\n")
+
+cat("95% CI for μ: (", round(mu_lower, 2), ",", round(mu_upper, 2), ") hours\n\n")
+
+# For reference
+cat("Sample mean (point estimate for μ):", round(mean(failure_times), 2), "hours\n")
+```
+
+The 95% confidence interval for the mean time-to-failure is $\boxed{(85.45, 304.00)}$ hours.
+
+*Note: This interval is quite wide, reflecting substantial variability in failure times and a relatively small sample size (n = 8).*
+
+
+---
+
+## Problem 2: z-Interval for a Normal Mean (Devore Section 8.1)
+
+A pharmaceutical company is conducting quality control on the fill volume (in mL) of syringes. Based on extensive historical data, the fill volumes are known to follow a normal distribution with standard deviation $\sigma = 0.05$ mL. The target fill volume is $\mu_0 = 1.00$ mL.
+
+A random sample of $n = 20$ syringes from a new production batch yields a sample mean of $\bar{x} = 0.982$ mL.
+
+### Part (a)
+
+**Verify that $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$ is a pivotal quantity for $\mu$.**
+
+**Property 1:** $Z$ is a function of both the data and the parameter $\mu$.
+
+$Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$ clearly involves:
+
+- $\bar{X}$, which is computed from the sample data $(X_1, \ldots, X_n)$
+- The unknown parameter $\mu$
+
+So Property 1 is satisfied. $\checkmark$
+
+**Property 2:** The probability distribution of $Z$ does not depend on $\mu$ (or any other unknown parameters).
+
+For $X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)$:
+
+- We can state that $\bar{X} \sim N(\mu, \sigma^2/n)$
+- Standardizing: $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} \sim N(0, 1)$
+
+The standard normal distribution $N(0, 1)$ does **not depend on $\mu$**. Since $\sigma$ is known (given as 0.05 mL), there are no unknown parameters in the distribution of $Z$. $\checkmark$
+
+Since both properties are satisfied, $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$ is a **pivotal quantity** for $\mu$. $\square$
+
+
+### Part (b)
+
+**Calculate a 95% confidence interval for the true mean fill volume $\mu$.**
+
+The 95% CI formula for $\mu$ when $\sigma$ is known is:
+$$\bar{x} \pm z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+
+where $z_{\alpha/2} = z_{0.025} = 1.96$ for 95% confidence.
+
+```{r}
+#| label: prob2b
+xbar <- 0.982
+sigma <- 0.05
+n <- 20
+
+# Critical value for 95% CI
+z_crit <- qnorm(0.975)
+
+# Standard error
+se <- sigma / sqrt(n)
+
+# Margin of error
+margin <- z_crit * se
+
+# Confidence interval
+ci_lower <- xbar - margin
+ci_upper <- xbar + margin
+
+cat("Given information:\n")
+cat("  Sample mean: x̄ =", xbar, "mL\n")
+cat("  Known σ =", sigma, "mL\n")
+cat("  Sample size: n =", n, "\n\n")
+
+cat("Calculations:\n")
+cat("  z_{0.025} =", round(z_crit, 4), "\n")
+cat("  Standard error: σ/√n =", sigma, "/√", n, "=", round(se, 5), "mL\n")
+cat("  Margin of error:", round(z_crit, 2), "×", round(se, 5), "=", round(margin, 4), "mL\n\n")
+
+cat("95% CI: ", xbar, "±", round(margin, 4), "\n")
+cat("95% CI: (", round(ci_lower, 4), ",", round(ci_upper, 4), ") mL\n")
+```
+
+The 95% confidence interval for $\mu$ is $\boxed{(0.9601, 1.0039)}$ mL.
+
+
+### Part (c)
+
+**Based on your confidence interval, is there evidence that the true mean fill volume differs from the target of 1.00 mL? Explain.**
+
+The target value $\mu_0 = 1.00$ mL **is contained within** our 95% confidence interval (0.9601, 1.0039).
+
+Therefore, at the 95% confidence level, **there is insufficient evidence** to conclude that the true mean fill volume differs from the target of 1.00 mL.
+
+The observed sample mean of 0.982 mL is lower than the target, but this difference is within the range of what we would expect from random sampling variability. The data are consistent with a true mean equal to 1.00 mL.
+
+
+### Part (d)
+
+**The company wants to estimate the mean fill volume to within $\pm 0.02$ mL with 95% confidence. What sample size is required?**
+
+The margin of error for a z-interval is:
+$$E = z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+
+Solving for $n$:
+$$n = \left(\frac{z_{\alpha/2} \cdot \sigma}{E}\right)^2$$
+
+```{r}
+#| label: prob2d
+E <- 0.02  # Desired margin of error
+
+n_required <- (z_crit * sigma / E)^2
+
+cat("Sample size calculation:\n")
+cat("  Desired margin of error: E =", E, "mL\n")
+cat("  z_{0.025} =", round(z_crit, 4), "\n")
+cat("  σ =", sigma, "mL\n\n")
+
+cat("  n = (z × σ / E)² = (", round(z_crit, 2), "×", sigma, "/", E, ")²\n")
+cat("  n =", round(n_required, 4), "\n\n")
+
+cat("Required sample size (rounded up): n =", ceiling(n_required), "\n")
+```
+
+The required sample size is $n = \lceil 24.01 \rceil = \boxed{25}$ syringes.
+
+
+---
+
+## Problem 3: Devore Section 8.1, Exercise 1
+
+Consider a normal population distribution with the value of $\sigma$ known.
+
+### Part (a)
+
+**What is the confidence level for the interval $\bar{x} \pm 2.81 \cdot \sigma/\sqrt{n}$?**
+
+The general form of the z-interval is $\bar{x} \pm z_{\alpha/2} \cdot \sigma/\sqrt{n}$, so here $z_{\alpha/2} = 2.81$.
+
+By definition, $z_{\alpha/2}$ is the value such that $P(Z > z_{\alpha/2}) = \alpha/2$ (area in the upper tail).
+
+We need to find $\alpha/2 = P(Z > 2.81)$, then compute the confidence level $1 - \alpha$.
+
+```{r}
+#| label: prob3a
+z_value <- 2.81
+
+# P(Z > 2.81) = 1 - P(Z ≤ 2.81)
+alpha_half <- 1 - pnorm(z_value)
+alpha <- 2 * alpha_half
+conf_level <- 1 - alpha
+
+cat("Given: z_{α/2} =", z_value, "\n\n")
+cat("Find α/2 = P(Z > 2.81):\n")
+cat("  α/2 = 1 - pnorm(2.81) = 1 -", round(pnorm(z_value), 5), "=", round(alpha_half, 5), "\n\n")
+cat("  α = 2 × α/2 =", round(alpha, 4), "\n")
+cat("  Confidence level = 1 - α =", round(conf_level, 4), "\n\n")
+
+cat("Confidence level ≈", round(conf_level * 100, 1), "%\n")
+```
+
+*Sanity check:* We know $z_{0.025} = 1.96$ gives 95% confidence, and $z_{0.005} = 2.576$ gives 99% confidence. Since 2.81 > 2.576, we expect a confidence level greater than 99%, which matches our answer. $\checkmark$
+
+The confidence level is approximately $\boxed{99.5\%}$.
+
+
+### Part (b)
+
+**What is the confidence level for the interval $\bar{x} \pm 1.44 \cdot \sigma/\sqrt{n}$?**
+
+```{r}
+#| label: prob3b
+z_value <- 1.44
+
+alpha_half <- 1 - pnorm(z_value)
+alpha <- 2 * alpha_half
+conf_level <- 1 - alpha
+
+cat("Given: z_{α/2} =", z_value, "\n\n")
+cat("Find α/2 = P(Z > 1.44):\n")
+cat("  α/2 = 1 - pnorm(1.44) =", round(alpha_half, 4), "\n\n")
+cat("  α =", round(alpha, 4), "\n")
+cat("  Confidence level = 1 - α =", round(conf_level, 4), "\n\n")
+
+cat("Confidence level ≈", round(conf_level * 100, 1), "%\n")
+```
+
+*Sanity check:* We know $z_{0.05} = 1.645$ gives 90% confidence. Since 1.44 < 1.645, we expect a confidence level less than 90%, which matches. $\checkmark$
+
+The confidence level is approximately $\boxed{85\%}$.
+
+
+### Part (c)
+
+**What value of $z_{\alpha/2}$ results in a confidence level of 99.7%?**
+
+For a confidence level of 99.7%:
+
+- $1 - \alpha = 0.997$
+- $\alpha = 0.003$
+- $\alpha/2 = 0.0015$
+
+We need the z-value such that $P(Z > z_{\alpha/2}) = 0.0015$, or equivalently, $P(Z \leq z_{\alpha/2}) = 1 - 0.0015 = 0.9985$.
+
+```{r}
+#| label: prob3c
+conf_level <- 0.997
+alpha <- 1 - conf_level
+alpha_half <- alpha / 2
+
+# Find z such that P(Z ≤ z) = 1 - α/2
+z_value <- qnorm(1 - alpha_half)
+
+cat("Given: Confidence level =", conf_level, "\n\n")
+cat("  α = 1 -", conf_level, "=", alpha, "\n")
+cat("  α/2 =", alpha_half, "\n\n")
+cat("  z_{α/2} = qnorm(1 - 0.0015) = qnorm(0.9985)\n")
+cat("  z_{α/2} =", round(z_value, 3), "\n")
+```
+
+The required critical value is $z_{\alpha/2} = \boxed{2.97}$.
+
+*Note: This is very close to 3, which relates to the "empirical rule" stating that approximately 99.7% of observations from a normal distribution fall within 3 standard deviations of the mean.*
+
+
+### Part (d)
+
+**What value of $z_{\alpha/2}$ results in a confidence level of 75%?**
+
+For a confidence level of 75%:
+
+- $1 - \alpha = 0.75$
+- $\alpha = 0.25$
+- $\alpha/2 = 0.125$
+
+```{r}
+#| label: prob3d
+conf_level <- 0.75
+alpha <- 1 - conf_level
+alpha_half <- alpha / 2
+
+z_value <- qnorm(1 - alpha_half)
+
+cat("Given: Confidence level =", conf_level, "\n\n")
+cat("  α =", alpha, "\n")
+cat("  α/2 =", alpha_half, "\n\n")
+cat("  z_{α/2} = qnorm(1 - 0.125) = qnorm(0.875)\n")
+cat("  z_{α/2} =", round(z_value, 3), "\n")
+```
+
+The required critical value is $z_{\alpha/2} = \boxed{1.15}$.
+
+
+---
+
+## Problem 4: Estimating Different Population Characteristics (Devore 7.4 Style)
+
+A clinical researcher is studying verbal IQ scores in a population of patients recovering from mild traumatic brain injury. A random sample of $n = 12$ patients yields the following verbal IQ scores:
+
+$$X = \{94, 108, 87, 115, 102, 99, 91, 106, 112, 98, 103, 89\}$$
+
+Assume verbal IQ scores in this population follow a normal distribution with unknown mean $\mu$ and unknown variance $\sigma^2$.
+
+### Part (a)
+
+**Compute point estimates for $\mu$, $\sigma^2$ (using the unbiased estimator $S^2$), and $\sigma$.**
+
+```{r}
+#| label: prob4a
+# Data
+iq_scores <- c(94, 108, 87, 115, 102, 99, 91, 106, 112, 98, 103, 89)
+n <- length(iq_scores)
+
+# Point estimates
+mu_hat <- mean(iq_scores)
+sigma2_hat <- var(iq_scores)  # R's var() uses n-1 denominator (unbiased)
+sigma_hat <- sd(iq_scores)
+
+cat("Data:", paste(iq_scores, collapse = ", "), "\n")
+cat("Sample size: n =", n, "\n\n")
+
+cat("Point estimates:\n")
+cat("  μ̂ = x̄ = (1/n)Σx_i =", round(mu_hat, 4), "\n")
+cat("  σ̂² = S² = (1/(n-1))Σ(x_i - x̄)² =", round(sigma2_hat, 4), "\n")
+cat("  σ̂ = S = √S² =", round(sigma_hat, 4), "\n")
+```
+
+**Point estimates:**
+
+- $\hat{\mu} = \bar{X} = \boxed{100.33}$
+- $\hat{\sigma}^2 = S^2 = \boxed{75.33}$
+- $\hat{\sigma} = S = \boxed{8.68}$
+
+
+### Part (b)
+
+**Compute a point estimate for $p = P(X < 95)$ using the invariance property of MLEs.**
+
+If $X \sim N(\mu, \sigma^2)$, then the proportion of the population with IQ below 95 is:
+$$p = P(X < 95) = \Phi\left(\frac{95 - \mu}{\sigma}\right)$$
+
+where $\Phi$ is the standard normal CDF.
+
+By the **invariance property of MLEs**, if $\hat{\mu}$ and $\hat{\sigma}$ are the MLEs of $\mu$ and $\sigma$, then:
+$$\hat{p} = \Phi\left(\frac{95 - \hat{\mu}}{\hat{\sigma}}\right)$$
+
+*Note: The MLE of $\sigma^2$ is $\frac{1}{n}\sum(X_i - \bar{X})^2$, which differs from $S^2$. However, for this problem we use $S$ as our estimate of $\sigma$ as instructed in part (a).*
+
+```{r}
+#| label: prob4b
+# Compute the z-score
+z_score <- (95 - mu_hat) / sigma_hat
+
+# Compute p-hat using the standard normal CDF
+p_hat <- pnorm(z_score)
+
+cat("Using the normal model to estimate P(X < 95):\n\n")
+cat("  z = (95 - μ̂) / σ̂\n")
+cat("  z = (95 -", round(mu_hat, 2), ") /", round(sigma_hat, 2), "\n")
+cat("  z =", round(z_score, 4), "\n\n")
+
+cat("  p̂ = Φ(z) = pnorm(", round(z_score, 4), ")\n")
+cat("  p̂ =", round(p_hat, 4), "\n\n")
+
+cat("Interpretation: We estimate that approximately", round(p_hat * 100, 1), 
+    "% of patients in this\npopulation have verbal IQ scores below 95.\n")
+```
+
+The point estimate is $\hat{p} = \boxed{0.2692}$ (approximately 26.9%).
+
+
+### Part (c)
+
+**A colleague suggests using the sample proportion $\tilde{p} = \frac{\#\{X_i < 95\}}{n}$.**
+
+**Compute $\tilde{p}$ for the given data:**
+
+```{r}
+#| label: prob4c-compute
+# Count observations below 95
+below_95 <- iq_scores[iq_scores < 95]
+n_below_95 <- length(below_95)
+
+# Sample proportion
+p_tilde <- n_below_95 / n
+
+cat("Observations below 95:", paste(below_95, collapse = ", "), "\n")
+cat("Number below 95:", n_below_95, "\n")
+cat("Sample proportion: p̃ =", n_below_95, "/", n, "=", round(p_tilde, 4), "\n\n")
+
+cat("Comparison of estimators:\n")
+cat("  p̂ (model-based) =", round(p_hat, 4), "\n")
+cat("  p̃ (sample proportion) =", round(p_tilde, 4), "\n")
+```
+
+$\tilde{p} = \boxed{0.25}$ (or 3/12 = 1/4)
+
+**Is $\tilde{p}$ unbiased for $p = P(X < 95)$?**
+
+**Yes, $\tilde{p}$ is unbiased.** Here's why:
+
+Let $Y_i = I(X_i < 95)$ be an indicator variable that equals 1 if observation $i$ is below 95, and 0 otherwise. Then:
+$$\tilde{p} = \frac{1}{n}\sum_{i=1}^n Y_i$$
+
+For each $Y_i$:
+$$E(Y_i) = P(Y_i = 1) = P(X_i < 95) = p$$
+
+Therefore:
+$$E(\tilde{p}) = E\left(\frac{1}{n}\sum_{i=1}^n Y_i\right) = \frac{1}{n}\sum_{i=1}^n E(Y_i) = \frac{1}{n} \cdot np = p$$
+
+So $\tilde{p}$ is unbiased for $p$ **regardless of the distribution** of $X$ (it does not require normality).
+
+
+**(Optional bonus) Which estimator makes better use of the normality assumption?**
+
+$\hat{p}$ (the model-based estimator) makes **better use of the normality assumption** because:
+
+1. **It uses all the data** through $\bar{X}$ and $S$, not just the count of observations below the threshold. Every observation contributes to the estimate, not just whether it's above or below 95.
+
+2. **It leverages the parametric structure** of the normal distribution. If the data truly are normally distributed, the model-based approach "borrows information" across the entire range of values to estimate the shape of the distribution.
+
+3. **With small samples**, it tends to be more efficient because it doesn't waste information by dichotomizing the continuous measurements.
+
+However, $\tilde{p}$ is more **robust** if the normality assumption is violated. If the true distribution is not normal, the model-based estimator $\hat{p}$ could be quite biased, while $\tilde{p}$ remains unbiased regardless of the distribution.
+
+
+### Part (d)
+
+**Compute the estimated standard error of $\bar{X}$: $\widehat{SE}(\bar{X}) = \frac{S}{\sqrt{n}}$**
+
+```{r}
+#| label: prob4d
+# Estimated standard error
+se_xbar <- sigma_hat / sqrt(n)
+
+cat("Estimated standard error of X̄:\n\n")
+cat("  SE(X̄) = S / √n\n")
+cat("  SE(X̄) =", round(sigma_hat, 2), "/ √", n, "\n")
+cat("  SE(X̄) =", round(sigma_hat, 2), "/", round(sqrt(n), 4), "\n")
+cat("  SE(X̄) =", round(se_xbar, 2), "\n")
+```
+
+The estimated standard error is $\widehat{SE}(\bar{X}) = \boxed{2.51}$ points.
+
+**Interpretation:** 
+
+The standard error tells us about the sampling variability of the sample mean. If a different researcher collected a new sample of $n = 12$ patients from the same population:
+
+- Their sample mean would typically differ from ours by roughly **one standard error** (about $\pm 2.5$ points) due to random sampling variability
+- About 68% of sample means would fall within $\pm 2.5$ points of the true population mean
+- About 95% of sample means would fall within $\pm 5$ points (roughly two standard errors) of the true population mean
+
+So we would expect another researcher's sample mean to differ from ours by approximately **2-5 points** in either direction, just due to chance.

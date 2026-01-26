@@ -1,0 +1,19 @@
+---
+title: "Key Info and Announcements"
+subtitle: "Week 5 Day 1"
+date: "`r library(here); source(here('class_dates.R')); w5d1`"
+format: 
+  html:
+    link-external-newwindow: true
+editor_options: 
+  chunk_output_type: console
+---
+  
+## Announcements
+  
+  - **The class on Monday 2/2 will start at 10:45am**
+  - I will assign the midterm after we finish this material and give you ~a week to return it.
+
+
+
+

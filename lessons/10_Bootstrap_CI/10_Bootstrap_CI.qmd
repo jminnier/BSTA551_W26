@@ -1,0 +1,850 @@
+---
+title: "Lesson 10: Bootstrap Confidence Intervals"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w5d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 10 - Bootstrap Confidence Intervals
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 10: Bootstrap Confidence Intervals {background-color="#2c3e50"}
+
+## Review: Bootstrap Basics (Lesson 9)
+
+::: callout-important
+## The Bootstrap Principle
+1. **The sample represents the population** — resample from the sample
+2. **Sampling with replacement** creates variability
+3. **Bootstrap distribution approximates sampling distribution**
+:::
+
+. . .
+
+**Key algorithm:**
+
+1. Resample $n$ observations **with replacement** from the original sample
+2. Compute statistic $\hat{\theta}^*$ from bootstrap sample
+3. Repeat $B$ times (typically $B = 10,000$)
+4. Analyze the distribution of $\hat{\theta}^*_1, \ldots, \hat{\theta}^*_B$
+
+## Quick Review: What Bootstrap Can Estimate
+
+::: columns
+::: {.column width="50%"}
+**Can estimate:**
+
+- Standard error of $\hat{\theta}$
+- Bias of $\hat{\theta}$
+- Shape/skewness of sampling distribution
+- Confidence intervals
+:::
+
+::: {.column width="50%"}
+**Cannot improve:**
+
+- Point estimates (centered at $\hat{\theta}$, not $\theta$)
+- A bad/unrepresentative sample
+:::
+:::
+
+. . .
+
+**Today's Goals:**
+
+1. Compute bootstrap standard errors
+2. Construct bootstrap confidence intervals (percentile and t methods)
+3. Compare methods and know when to use each
+4. Apply bootstrap to complex statistics (trimmed means, ratios)
+
+## Running Example: Drug Response Times
+
+```{r}
+#| echo: true
+response_times <- c(8, 12, 15, 7, 22, 45, 11, 9, 14, 18, 10, 13)
+n <- length(response_times)
+
+cat("n =", n, "\n")
+cat("Mean:", round(mean(response_times), 2), "days\n")
+cat("Median:", median(response_times), "days\n")
+cat("SD:", round(sd(response_times), 2), "days")
+```
+
+Note the outlier at 45 days — this motivates robust methods!
+
+# Bootstrap Standard Errors {background-color="#e74c3c"}
+
+## Bootstrap Standard Error
+
+::: callout-important
+## Definition
+The **bootstrap standard error** of a statistic $\hat{\theta}$ is the standard deviation of its bootstrap distribution:
+
+$$SE_{boot}(\hat{\theta}) = \sqrt{\frac{1}{B-1}\sum_{b=1}^{B}(\hat{\theta}^*_b - \bar{\hat{\theta}}^*)^2}$$
+
+where $\bar{\hat{\theta}}^* = \frac{1}{B}\sum_{b=1}^{B}\hat{\theta}^*_b$
+:::
+
+. . .
+
+This gives us an **empirical estimate** of the standard error without assuming any specific distribution!
+
+## Medical Example: Blood Pressure Reduction
+
+A pilot study measures systolic blood pressure reduction (mmHg) after 8 weeks on a new antihypertensive:
+
+```{r}
+#| echo: true
+bp_reduction <- c(12, 8, 15, 22, 5, 18, 11, 14, 9, 25, 7, 16, 13, 10, 19)
+n_bp <- length(bp_reduction)
+
+cat("Sample size:", n_bp, "\n")
+cat("Mean reduction:", round(mean(bp_reduction), 2), "mmHg\n")
+cat("Sample SD:", round(sd(bp_reduction), 2), "mmHg\n")
+cat("Classical SE:", round(sd(bp_reduction)/sqrt(n_bp), 2), "mmHg")
+```
+
+## Bootstrap SE for Blood Pressure
+
+```{r}
+#| echo: true
+set.seed(551)
+B <- 10000
+boot_means_bp <- replicate(B, {
+  boot_sample <- sample(bp_reduction, n_bp, replace = TRUE)
+  mean(boot_sample)
+})
+
+# Compare standard errors
+classical_se <- sd(bp_reduction) / sqrt(n_bp)
+boot_se <- sd(boot_means_bp)
+
+cat("Classical SE (s/√n):", round(classical_se, 3), "\n")
+cat("Bootstrap SE:", round(boot_se, 3), "\n")
+cat("Ratio:", round(boot_se / classical_se, 3))
+```
+
+. . .
+
+The bootstrap SE is very close to the classical SE when assumptions are met!
+
+## When Bootstrap SE Shines: Trimmed Mean
+
+For **trimmed means** (robust to outliers), we don't have simple SE formulas.
+
+```{r}
+#| echo: true
+# Data with potential outlier
+response_times <- c(8, 12, 15, 7, 22, 45, 11, 9, 14, 18, 10, 13)
+
+# Bootstrap for 10% trimmed mean
+set.seed(551)
+boot_trimmed <- replicate(10000, {
+  x <- sample(response_times, length(response_times), replace = TRUE)
+  mean(x, trim = 0.10)  # Trim 10% from each end
+})
+
+cat("Sample mean:", round(mean(response_times), 2), "\n")
+cat("10% Trimmed mean:", round(mean(response_times, trim = 0.10), 2), "\n")
+cat("Bootstrap SE of trimmed mean:", round(sd(boot_trimmed), 2))
+```
+
+## Example: Database Administrator Salaries (Devore 8.18)
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Sample salaries (in thousands) - simulated based on Devore example
+set.seed(123)
+salaries <- round(c(rlnorm(100, log(80), 0.3), rlnorm(15, log(150), 0.4))) * 1000
+n_sal <- length(salaries)
+
+tibble(x = salaries) |>
+  ggplot(aes(x = x/1000)) +
+  geom_histogram(bins = 25, fill = "steelblue", alpha = 0.7) +
+  labs(x = "Salary (thousands $)", y = "Count",
+       title = "Distribution of Database Administrator Salaries",
+       subtitle = paste0("n = ", n_sal, ", with right skew"))
+```
+
+## Bootstrap for Trimmed Mean Salary
+
+```{r}
+#| echo: true
+# 10% trimmed mean
+xbar_tr <- mean(salaries, trim = 0.10)
+
+# Bootstrap
+set.seed(551)
+B <- 10000
+boot_trimmed_sal <- replicate(B, {
+  x <- sample(salaries, n_sal, replace = TRUE)
+  mean(x, trim = 0.10)
+})
+
+cat("10% Trimmed mean:", round(xbar_tr, 0), "\n")
+cat("Bootstrap SE:", round(sd(boot_trimmed_sal), 0), "\n")
+cat("Bootstrap mean of trimmed means:", round(mean(boot_trimmed_sal), 0))
+```
+
+## Visualizing the Bootstrap Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+tibble(x = boot_trimmed_sal) |>
+  ggplot(aes(x = x/1000)) +
+  geom_histogram(bins = 50, fill = "coral", alpha = 0.7) +
+  geom_vline(xintercept = xbar_tr/1000, color = "blue", linewidth = 1.2) +
+  labs(x = expression(bar(x)[tr]^"*" ~ "(thousands $)"), y = "Count",
+       title = "Bootstrap Distribution of 10% Trimmed Mean Salary",
+       subtitle = paste0("SE = $", round(sd(boot_trimmed_sal)/1000, 1), "k"))
+```
+
+The bootstrap distribution appears approximately normal — good for t-based intervals!
+
+## Bias in Bootstrap Distributions (Chihara 5.6)
+
+::: callout-note
+## Bootstrap Bias Estimate
+The **bootstrap estimate of bias** is:
+$$\widehat{\text{Bias}} = \bar{\hat{\theta}}^* - \hat{\theta}$$
+
+where $\bar{\hat{\theta}}^*$ is the mean of the bootstrap distribution and $\hat{\theta}$ is the original sample statistic.
+:::
+
+```{r}
+# Check bias for trimmed mean
+boot_bias <- mean(boot_trimmed_sal) - xbar_tr
+cat("Bootstrap bias estimate:", round(boot_bias, 0), "\n")
+cat("Bias as % of estimate:", round(100 * boot_bias / xbar_tr, 2), "%")
+```
+
+. . .
+
+Small bias suggests the bootstrap distribution is well-centered!
+
+# Bootstrap Confidence Intervals {background-color="#27ae60"}
+
+## Types of Bootstrap Confidence Intervals
+
+Several methods exist for constructing bootstrap CIs:
+
+1. **Bootstrap Percentile Interval** — Simple, intuitive
+2. **Bootstrap t Interval** — Better theoretical properties
+3. **BCa Interval** — Bias-corrected and accelerated (advanced)
+
+. . .
+
+::: callout-tip
+## Practical Guidance
+- **Percentile interval:** Good when bootstrap distribution is symmetric, low bias
+- **Bootstrap t interval:** Better for small samples, handles skewness
+- Both require the bootstrap distribution to be a reasonable approximation
+:::
+
+## Bootstrap Percentile Interval (Devore 8.5)
+
+::: callout-important
+## Definition
+A **95% bootstrap percentile interval** for parameter $\theta$ has endpoints equal to the **2.5th and 97.5th percentiles** of the bootstrap distribution.
+
+More generally, a $100(1-\alpha)\%$ bootstrap percentile interval uses the $\alpha/2$ and $1-\alpha/2$ quantiles:
+$$\left(\hat{\theta}^*_{\alpha/2}, \; \hat{\theta}^*_{1-\alpha/2}\right)$$
+:::
+
+. . .
+
+**Intuition:** If 95% of bootstrap statistics fall between $L$ and $U$, then $(L, U)$ is a plausible range for the true parameter.
+
+## Computing Percentile Intervals in R
+
+```{r}
+#| echo: true
+# Blood pressure reduction data
+set.seed(551)
+bp_reduction <- c(12, 8, 15, 22, 5, 18, 11, 14, 9, 25, 7, 16, 13, 10, 19)
+
+# Bootstrap
+boot_means_bp <- replicate(10000, mean(sample(bp_reduction, length(bp_reduction), replace = TRUE)))
+
+# 95% Percentile interval
+percentile_ci <- quantile(boot_means_bp, probs = c(0.025, 0.975))
+
+cat("Sample mean:", round(mean(bp_reduction), 2), "mmHg\n")
+cat("95% Bootstrap Percentile CI:", round(percentile_ci, 2), "mmHg\n")
+
+# Compare to t-interval
+t_ci <- t.test(bp_reduction)$conf.int
+cat("95% t-interval:", round(t_ci, 2), "mmHg")
+```
+
+## Visualizing the Percentile Interval
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+tibble(x = boot_means_bp) |>
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 50, fill = "steelblue", alpha = 0.7) +
+  geom_vline(xintercept = percentile_ci, color = "red", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = mean(bp_reduction), color = "black", linewidth = 1) +
+  annotate("rect", xmin = percentile_ci[1], xmax = percentile_ci[2], 
+           ymin = 0, ymax = Inf, alpha = 0.2, fill = "red") +
+  labs(x = expression(bar(x)^"*"), y = "Count",
+       title = "Bootstrap Distribution with 95% Percentile Interval",
+       subtitle = paste0("CI: (", round(percentile_ci[1], 1), ", ", round(percentile_ci[2], 1), ") mmHg"))
+```
+
+## Medical Example: Median Survival Time
+
+For **median** survival, we don't have simple formulas for CIs. Bootstrap is ideal!
+
+```{r}
+#| echo: true
+# Survival times (months) for 20 cancer patients
+survival_times <- c(4, 8, 12, 15, 18, 6, 9, 24, 36, 11,
+                    7, 14, 21, 10, 13, 5, 17, 22, 8, 19)
+
+# Bootstrap for median
+set.seed(551)
+boot_medians <- replicate(10000, {
+  median(sample(survival_times, length(survival_times), replace = TRUE))
+})
+
+# Results
+cat("Sample median:", median(survival_times), "months\n")
+cat("Bootstrap SE:", round(sd(boot_medians), 2), "months\n")
+cat("95% Percentile CI:", quantile(boot_medians, c(0.025, 0.975)), "months")
+```
+
+## Bootstrap Distribution of Median
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+med_ci <- quantile(boot_medians, c(0.025, 0.975))
+
+tibble(x = boot_medians) |>
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 30, fill = "darkgreen", alpha = 0.7) +
+  geom_vline(xintercept = med_ci, color = "red", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = median(survival_times), color = "black", linewidth = 1) +
+  labs(x = expression(tilde(x)^"*"), y = "Count",
+       title = "Bootstrap Distribution of Median Survival Time",
+       subtitle = "Notice: Discrete nature of the median")
+```
+
+The bootstrap median distribution takes on **few unique values** — this is typical!
+
+## Bootstrap t Confidence Interval (Devore 8.5)
+
+::: callout-important
+## Bootstrap t Interval (Simple Version)
+If the bootstrap distribution is approximately **normal** with small **bias**, use:
+$$\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$$
+
+where $SE_{boot}$ is the bootstrap standard error.
+:::
+
+. . .
+
+```{r}
+#| echo: true
+# Bootstrap t interval for trimmed mean salary
+xbar_tr <- mean(salaries, trim = 0.10)
+se_boot <- sd(boot_trimmed_sal)
+t_crit <- qt(0.975, df = length(salaries) - 1)
+
+ci_lower <- xbar_tr - t_crit * se_boot
+ci_upper <- xbar_tr + t_crit * se_boot
+
+cat("Bootstrap t 95% CI for trimmed mean salary:\n")
+cat("($", round(ci_lower, 0), ", $", round(ci_upper, 0), ")", sep = "")
+```
+
+## The Studentized Bootstrap t Interval (Chihara 7.5)
+
+::: callout-important
+## Bootstrap t Interval (More Sophisticated)
+For each bootstrap sample, compute:
+$$T^* = \frac{\bar{X}^* - \bar{x}}{S^*/\sqrt{n}}$$
+
+Use quantiles $Q^*_{\alpha/2}$ and $Q^*_{1-\alpha/2}$ of the bootstrap t distribution:
+$$\left(\bar{x} - Q^*_{1-\alpha/2} \cdot \frac{s}{\sqrt{n}}, \; \bar{x} - Q^*_{\alpha/2} \cdot \frac{s}{\sqrt{n}}\right)$$
+:::
+
+. . .
+
+This method adapts to **skewness** in the data!
+
+## Bootstrap t Interval: R Implementation
+
+```{r}
+#| echo: true
+bootstrap_t_interval <- function(data, B = 10000, conf = 0.95) {
+  n <- length(data)
+  xbar <- mean(data)
+  se <- sd(data) / sqrt(n)
+  
+  # Compute bootstrap t statistics
+  t_star <- replicate(B, {
+    boot_samp <- sample(data, n, replace = TRUE)
+    (mean(boot_samp) - xbar) / (sd(boot_samp) / sqrt(n))
+  })
+  
+  # Quantiles
+  alpha <- 1 - conf
+  q_lower <- quantile(t_star, alpha/2)
+  q_upper <- quantile(t_star, 1 - alpha/2)
+  
+  # CI (note the reversal!)
+  c(xbar - q_upper * se, xbar - q_lower * se)
+}
+
+# Apply to blood pressure data
+boot_t_ci <- bootstrap_t_interval(bp_reduction)
+cat("Bootstrap t CI:", round(boot_t_ci, 2), "mmHg")
+```
+
+## Why the Reversal in Bootstrap t?
+
+::: callout-note
+## Understanding the Bootstrap t Formula
+The percentile interval uses quantiles **directly**: $(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$
+
+The bootstrap t interval uses quantiles of the **t-statistics** with reversal:
+$$\left(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \; \bar{x} - Q^*_{\alpha/2} \cdot SE\right)$$
+
+The reversal accounts for the fact that if $T^*$ is large, then $\bar{X}^*$ was above $\bar{x}$, so the lower bound for $\mu$ should be reduced.
+:::
+
+. . .
+
+This is analogous to how the classical t-interval works: large $t$ values suggest the true mean might be lower than $\bar{x}$.
+
+## Comparing All Methods
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Compare all CI methods for BP reduction data
+set.seed(551)
+
+# Classical t
+t_result <- t.test(bp_reduction)$conf.int
+
+# Bootstrap percentile
+boot_stats <- replicate(10000, mean(sample(bp_reduction, length(bp_reduction), replace = TRUE)))
+pct_ci <- quantile(boot_stats, c(0.025, 0.975))
+
+# Bootstrap t
+boot_t_ci <- bootstrap_t_interval(bp_reduction)
+
+tibble(
+  Method = c("Classical t", "Bootstrap Percentile", "Bootstrap t"),
+  Lower = c(t_result[1], pct_ci[1], boot_t_ci[1]),
+  Upper = c(t_result[2], pct_ci[2], boot_t_ci[2])
+) |>
+  mutate(
+    Width = Upper - Lower,
+    across(Lower:Width, ~round(.x, 2))
+  )
+```
+
+## When Percentile May Be Suboptimal: Skewed Distributions
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+# Highly skewed data
+set.seed(551)
+skewed_data <- rexp(15, rate = 0.5)  # Exponential with mean 2
+
+boot_skewed <- replicate(10000, mean(sample(skewed_data, 15, replace = TRUE)))
+pct_ci_skew <- quantile(boot_skewed, c(0.025, 0.975))
+
+tibble(x = boot_skewed) |>
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 50, fill = "coral", alpha = 0.7) +
+  geom_vline(xintercept = pct_ci_skew, color = "blue", linewidth = 1.2, linetype = "dashed") +
+  geom_vline(xintercept = mean(skewed_data), color = "black", linewidth = 1) +
+  labs(x = expression(bar(x)^"*"), y = "Count",
+       title = "Bootstrap Distribution from Skewed Population",
+       subtitle = "Percentile interval may have incorrect coverage")
+```
+
+# Practical Considerations {background-color="#16a085"}
+
+## How Many Bootstrap Samples? (Chihara 5.9)
+
+::: callout-note
+## Guidelines
+- **Standard errors:** $B = 1,000$ is often sufficient
+- **Confidence intervals:** $B = 5,000$ to $10,000$ recommended
+- **Percentile tails:** More samples needed for accurate tail quantiles
+:::
+
+```{r}
+#| echo: true
+# Demonstrating convergence of bootstrap SE
+set.seed(551)
+B_values <- c(100, 500, 1000, 5000, 10000)
+
+convergence <- map_dfr(B_values, function(B) {
+  boot_means <- replicate(B, mean(sample(bp_reduction, length(bp_reduction), replace = TRUE)))
+  tibble(B = B, SE = sd(boot_means))
+})
+
+convergence
+```
+
+## Visualizing Bootstrap Convergence
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+set.seed(551)
+# Run multiple bootstrap analyses with different B
+running_se <- tibble(
+  B = 1:10000,
+  cumulative_se = accumulate(
+    replicate(10000, mean(sample(bp_reduction, length(bp_reduction), replace = TRUE))),
+    ~c(.x, .y),
+    .init = numeric(0)
+  )[-1] |> map_dbl(sd)
+)
+
+running_se |>
+  ggplot(aes(x = B, y = cumulative_se)) +
+  geom_line(color = "steelblue") +
+  geom_hline(yintercept = tail(running_se$cumulative_se, 1), linetype = "dashed", color = "red") +
+  labs(x = "Number of Bootstrap Samples (B)", y = "Bootstrap SE",
+       title = "Convergence of Bootstrap Standard Error") +
+  scale_x_log10()
+```
+
+## Classical vs. Bootstrap: Guidelines (Chihara 7.5.1)
+
+```{r}
+#| echo: false
+tibble(
+  Situation = c("Small n (≤10), normal data", 
+                "Small n (≤10), skewed data",
+                "Large n, normal data",
+                "Large n, skewed data",
+                "Complex statistic (trimmed mean, ratio)"),
+  Recommendation = c("Classical t preferred",
+                     "Bootstrap t (with caution)",
+                     "Either works well",
+                     "Bootstrap t preferred",
+                     "Bootstrap (no classical alternative)")
+) |>
+  knitr::kable()
+```
+
+. . .
+
+**Key insight:** The bootstrap **learns skewness from the sample**, but small samples may not accurately represent population skewness.
+
+## When Does Bootstrap Work Well?
+
+::: callout-tip
+## Bootstrap Works Well When:
+1. The sample is **representative** of the population
+2. The sample size is **not too small** ($n \geq 15$ typically)
+3. The statistic is **smooth** (means, variances, regression coefficients)
+4. The parameter is well-defined and has finite variance
+:::
+
+. . .
+
+::: callout-warning
+## Bootstrap May Struggle When:
+1. Sample is very small ($n < 10$)
+2. Data has extreme outliers not representative of population
+3. Statistic is very discrete (e.g., median with few unique values)
+4. Estimating extreme quantiles
+5. Population has infinite variance (Cauchy, Pareto with $\alpha \leq 2$)
+:::
+
+# Medical Applications {background-color="#9b59b6"}
+
+## Medical Application: Relative Risk (Chihara 5.5)
+
+In a cardiovascular study:
+
+- High BP group: 55 events in 3,338 men
+- Low BP group: 21 events in 2,676 men
+
+```{r}
+#| echo: true
+# Relative risk
+p1 <- 55/3338  # High BP group
+p2 <- 21/2676  # Low BP group
+rr_hat <- p1/p2
+
+cat("Risk (high BP):", round(p1 * 100, 2), "%\n")
+cat("Risk (low BP):", round(p2 * 100, 2), "%\n")
+cat("Relative Risk:", round(rr_hat, 2))
+```
+
+## Bootstrap for Relative Risk
+
+```{r}
+#| echo: true
+set.seed(551)
+n1 <- 3338; x1 <- 55
+n2 <- 2676; x2 <- 21
+
+# Bootstrap
+boot_rr <- replicate(10000, {
+  # Resample from each group (binary outcomes)
+  boot_p1 <- sum(sample(c(rep(1, x1), rep(0, n1 - x1)), n1, replace = TRUE)) / n1
+  boot_p2 <- sum(sample(c(rep(1, x2), rep(0, n2 - x2)), n2, replace = TRUE)) / n2
+  
+  # Handle division by zero
+  if (boot_p2 == 0) return(NA)
+  boot_p1 / boot_p2
+})
+
+boot_rr <- boot_rr[!is.na(boot_rr)]
+
+cat("Bootstrap SE:", round(sd(boot_rr), 3), "\n")
+cat("95% Percentile CI:", round(quantile(boot_rr, c(0.025, 0.975)), 2))
+```
+
+## Relative Risk: Bootstrap Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+rr_ci <- quantile(boot_rr, c(0.025, 0.975))
+
+tibble(x = boot_rr) |>
+  ggplot(aes(x = x)) +
+  geom_histogram(bins = 50, fill = "coral", alpha = 0.7) +
+  geom_vline(xintercept = rr_hat, color = "blue", linewidth = 1.2) +
+  geom_vline(xintercept = rr_ci, color = "red", linewidth = 1, linetype = "dashed") +
+  labs(x = "Relative Risk", y = "Count",
+       title = "Bootstrap Distribution of Relative Risk",
+       subtitle = paste0("RR = ", round(rr_hat, 2), ", 95% CI: (", 
+                        round(rr_ci[1], 2), ", ", round(rr_ci[2], 2), ")"))
+```
+
+**Interpretation:** High BP patients have 1.3 to 3.7 times the cardiovascular risk (95% CI).
+
+## Clinical Trial: Comparing Treatments
+
+A trial compares time to pain relief for two analgesics:
+
+```{r}
+#| echo: true
+set.seed(551)
+# Treatment A: faster, less variable
+drug_A <- c(12, 18, 15, 22, 14, 16, 20, 13, 17, 19)
+# Treatment B: slower, more variable  
+drug_B <- c(25, 18, 35, 22, 28, 15, 42, 20, 30, 24)
+
+cat("Drug A - Mean:", round(mean(drug_A), 1), ", SD:", round(sd(drug_A), 1), "\n")
+cat("Drug B - Mean:", round(mean(drug_B), 1), ", SD:", round(sd(drug_B), 1), "\n")
+cat("Difference (B - A):", round(mean(drug_B) - mean(drug_A), 1), "minutes")
+```
+
+## Two-Sample Bootstrap
+
+```{r}
+#| echo: true
+set.seed(551)
+# Bootstrap the difference in means
+boot_diff <- replicate(10000, {
+  boot_A <- sample(drug_A, length(drug_A), replace = TRUE)
+  boot_B <- sample(drug_B, length(drug_B), replace = TRUE)
+  mean(boot_B) - mean(boot_A)
+})
+
+# Results
+diff_ci <- quantile(boot_diff, c(0.025, 0.975))
+cat("Bootstrap SE:", round(sd(boot_diff), 2), "\n")
+cat("95% CI for difference:", round(diff_ci, 2), "minutes")
+```
+
+. . .
+
+Since CI excludes 0, there's evidence Drug B takes longer to provide relief.
+
+## Bootstrap for Odds Ratio
+
+In a case-control study of lung cancer and smoking:
+
+```{r}
+#| echo: true
+# Lung cancer cases
+cases_smokers <- 85; cases_nonsmokers <- 15
+# Controls
+controls_smokers <- 60; controls_nonsmokers <- 40
+
+# Sample odds ratio
+or_hat <- (cases_smokers * controls_nonsmokers) / (cases_nonsmokers * controls_smokers)
+cat("Sample Odds Ratio:", round(or_hat, 2))
+```
+
+## Bootstrap for Odds Ratio (cont.)
+
+```{r}
+#| echo: true
+set.seed(551)
+# Bootstrap
+n_cases <- cases_smokers + cases_nonsmokers
+n_controls <- controls_smokers + controls_nonsmokers
+
+boot_or <- replicate(10000, {
+  # Resample cases
+  boot_cases <- sample(c(rep(1, cases_smokers), rep(0, cases_nonsmokers)), 
+                       n_cases, replace = TRUE)
+  boot_case_smoke <- sum(boot_cases)
+  boot_case_nonsmoke <- n_cases - boot_case_smoke
+  
+  # Resample controls
+  boot_controls <- sample(c(rep(1, controls_smokers), rep(0, controls_nonsmokers)), 
+                          n_controls, replace = TRUE)
+  boot_ctrl_smoke <- sum(boot_controls)
+  boot_ctrl_nonsmoke <- n_controls - boot_ctrl_smoke
+  
+  # OR (with continuity correction)
+  (boot_case_smoke + 0.5) * (boot_ctrl_nonsmoke + 0.5) / 
+    ((boot_case_nonsmoke + 0.5) * (boot_ctrl_smoke + 0.5))
+})
+
+cat("95% CI for OR:", round(quantile(boot_or, c(0.025, 0.975)), 2))
+```
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## Bootstrap CIs Summary
+
+| Method | Formula | When to Use |
+|--------|---------|-------------|
+| **Percentile** | $(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$ | Symmetric bootstrap dist., low bias |
+| **Bootstrap t (simple)** | $\hat{\theta} \pm t_{\alpha/2} \cdot SE_{boot}$ | Normal bootstrap dist. |
+| **Bootstrap t (studentized)** | Uses bootstrap t-statistics | Skewed data, more accurate |
+
+. . .
+
+::: callout-tip
+## Key Point
+Bootstrap t intervals have better coverage than percentile intervals for skewed data, but require the bootstrap SE to be meaningful.
+:::
+
+## What the Bootstrap Can and Cannot Do (Chihara 5.2.2)
+
+::: columns
+::: {.column width="50%"}
+**Can estimate:**
+
+- Standard error
+- Bias
+- Skewness
+- Confidence intervals
+:::
+
+::: {.column width="50%"}
+**Cannot improve:**
+
+- Point estimates (still centered at $\hat{\theta}$, not $\theta$)
+- A bad/unrepresentative sample
+:::
+:::
+
+. . .
+
+::: callout-warning
+## Important Reminder
+The bootstrap does **not create new information**. It uses the sample you have to understand the variability of your estimate.
+:::
+
+## Choosing a Method: Decision Tree
+
+```{r}
+#| echo: false
+#| fig-height: 5
+tibble(
+  x = c(1, 0.5, 1.5, 0.25, 0.75, 1.25, 1.75),
+  y = c(3, 2, 2, 1, 1, 1, 1),
+  label = c("Is n ≥ 15?", "Classical t\n(if normal)", "Is data skewed?", 
+            "Bootstrap t\n(caution)", "", "Classical t\nor Percentile", "Bootstrap t"),
+  type = c("decision", "terminal", "decision", "terminal", "", "terminal", "terminal")
+) |>
+  ggplot(aes(x, y, label = label)) +
+  geom_segment(aes(x = 1, xend = 0.5, y = 2.9, yend = 2.1), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1, xend = 1.5, y = 2.9, yend = 2.1), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 1.25, y = 1.9, yend = 1.1), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_segment(aes(x = 1.5, xend = 1.75, y = 1.9, yend = 1.1), arrow = arrow(length = unit(0.2, "cm"))) +
+  geom_label(fill = "white", size = 4) +
+  annotate("text", x = 0.7, y = 2.5, label = "No", size = 4) +
+  annotate("text", x = 1.3, y = 2.5, label = "Yes", size = 4) +
+  annotate("text", x = 1.3, y = 1.5, label = "No", size = 4) +
+  annotate("text", x = 1.7, y = 1.5, label = "Yes", size = 4) +
+  theme_void() +
+  labs(title = "Choosing a CI Method")
+```
+
+## Looking Ahead
+
+**Next Topics:**
+
+- **Hypothesis testing framework** (Lesson 11)
+- Type I and Type II errors
+- P-values and their interpretation
+- Power and sample size
+
+. . .
+
+**Later:**
+
+- Two-sample inference
+- Permutation tests
+- Bootstrap hypothesis testing
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Section 8.5
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapters 5, 7
+-   Efron, B. and Tibshirani, R. (1993). *An Introduction to the Bootstrap*. Chapman & Hall.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+quarto render 10_Bootstrap_CI.qmd
+```
