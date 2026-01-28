@@ -792,26 +792,46 @@ The bootstrap does **not create new information**. It uses the sample you have t
 
 ```{r}
 #| echo: false
-#| fig-height: 5
-tibble(
-  x = c(1, 0.5, 1.5, 0.25, 0.75, 1.25, 1.75),
-  y = c(3, 2, 2, 1, 1, 1, 1),
-  label = c("Is n ≥ 15?", "Classical t\n(if normal)", "Is data skewed?", 
-            "Bootstrap t\n(caution)", "", "Classical t\nor Percentile", "Bootstrap t"),
-  type = c("decision", "terminal", "decision", "terminal", "", "terminal", "terminal")
-) |>
-  ggplot(aes(x, y, label = label)) +
-  geom_segment(aes(x = 1, xend = 0.5, y = 2.9, yend = 2.1), arrow = arrow(length = unit(0.2, "cm"))) +
-  geom_segment(aes(x = 1, xend = 1.5, y = 2.9, yend = 2.1), arrow = arrow(length = unit(0.2, "cm"))) +
-  geom_segment(aes(x = 1.5, xend = 1.25, y = 1.9, yend = 1.1), arrow = arrow(length = unit(0.2, "cm"))) +
-  geom_segment(aes(x = 1.5, xend = 1.75, y = 1.9, yend = 1.1), arrow = arrow(length = unit(0.2, "cm"))) +
-  geom_label(fill = "white", size = 4) +
-  annotate("text", x = 0.7, y = 2.5, label = "No", size = 4) +
-  annotate("text", x = 1.3, y = 2.5, label = "Yes", size = 4) +
-  annotate("text", x = 1.3, y = 1.5, label = "No", size = 4) +
-  annotate("text", x = 1.7, y = 1.5, label = "Yes", size = 4) +
+#| fig-height: 6
+#| fig-width: 10
+# Define nodes
+nodes <- tibble(
+  x = c(2,      1,       3,       0.5,     1.5,     2.5,     3.5),
+  y = c(3,      2,       2,       1,       1,       1,       1),
+  label = c("Is n ≥ 15?", 
+            "Is data\nnormal?", 
+            "Is data\nskewed?", 
+            "Bootstrap t\n(with caution)",
+            "Classical t",
+            "Classical t\nor Percentile", 
+            "Bootstrap t")
+)
+
+# Define edges
+edges <- tibble(
+  x = c(2, 2, 1, 1, 3, 3),
+  xend = c(1, 3, 0.5, 1.5, 2.5, 3.5),
+  y = c(2.85, 2.85, 1.85, 1.85, 1.85, 1.85),
+  yend = c(2.15, 2.15, 1.15, 1.15, 1.15, 1.15)
+)
+
+# Define edge labels
+edge_labels <- tibble(
+  x = c(1.4, 2.6, 0.65, 1.35, 2.65, 3.35),
+  y = c(2.5, 2.5, 1.5, 1.5, 1.5, 1.5),
+  label = c("No", "Yes", "No", "Yes", "No", "Yes")
+)
+
+ggplot() +
+  geom_segment(data = edges, aes(x = x, xend = xend, y = y, yend = yend),
+               arrow = arrow(length = unit(0.15, "cm")), color = "gray40") +
+  geom_label(data = nodes, aes(x = x, y = y, label = label), 
+             fill = "white", size = 3.5, label.padding = unit(0.4, "lines")) +
+  geom_text(data = edge_labels, aes(x = x, y = y, label = label), 
+            size = 3.5, fontface = "italic", color = "gray30") +
   theme_void() +
-  labs(title = "Choosing a CI Method")
+  coord_cartesian(xlim = c(-0.2, 4.2), ylim = c(0.5, 3.5)) +
+  labs(title = "Choosing a Confidence Interval Method")
 ```
 
 ## Looking Ahead
@@ -847,4 +867,10 @@ Thank you!
 #| eval: false
 #| include: false
 quarto render 10_Bootstrap_CI.qmd
+```
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/10_Bootstrap_CI/10_Bootstrap_CI.html lessons/10_Bootstrap_CI/10_Bootstrap_CI.pdf
 ```
