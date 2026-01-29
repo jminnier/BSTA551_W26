@@ -1023,28 +1023,6 @@ Without replacement:</code></pre>
 <li>Bootstrap shape ≈ sampling distribution shape</li>
 </ul>
 </div>
-</section>
-<section id="rate-of-convergence" class="slide level2">
-<h2>Rate of Convergence</h2>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Edgeworth Expansion Refinement</strong></p>
-</div>
-<div class="callout-content">
-<p>For the sample mean, classical confidence intervals have coverage error of order <span class="math inline">\(O(n^{-1/2})\)</span>.</p>
-<p><strong>Bootstrap percentile intervals:</strong> Also <span class="math inline">\(O(n^{-1/2})\)</span> — same as classical</p>
-<p><strong>Bootstrap t intervals:</strong> <span class="math inline">\(O(n^{-1})\)</span> — <strong>one order more accurate!</strong></p>
-<p>This is because the bootstrap t automatically corrects for skewness.</p>
-</div>
-</div>
-</div>
-<div class="fragment">
-<p><strong>Practical implication:</strong> Bootstrap t intervals are preferred for skewed distributions, especially with moderate sample sizes.</p>
-</div>
 </section></section>
 <section>
 <section id="when-bootstrap-fails" class="title-slide slide level1 center" data-background-color="#c0392b">

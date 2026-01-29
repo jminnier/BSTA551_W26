@@ -610,23 +610,6 @@ tibble(
 - Bootstrap SE ≈ sampling distribution SE
 - Bootstrap shape ≈ sampling distribution shape
 
-## Rate of Convergence
-
-::: callout-note
-## Edgeworth Expansion Refinement
-For the sample mean, classical confidence intervals have coverage error of order $O(n^{-1/2})$.
-
-**Bootstrap percentile intervals:** Also $O(n^{-1/2})$ — same as classical
-
-**Bootstrap t intervals:** $O(n^{-1})$ — **one order more accurate!**
-
-This is because the bootstrap t automatically corrects for skewness.
-:::
-
-. . .
-
-**Practical implication:** Bootstrap t intervals are preferred for skewed distributions, especially with moderate sample sizes.
-
 # When Bootstrap Fails {background-color="#c0392b"}
 
 ## Bootstrap Failure Modes
