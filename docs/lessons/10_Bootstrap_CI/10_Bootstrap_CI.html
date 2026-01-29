@@ -227,7 +227,7 @@ Jessica Minnier
 </div>
 <div class="callout-content">
 <ol type="1">
-<li><strong>The sample represents the population</strong> — resample from the sample</li>
+<li><strong>The sample represents the population</strong> â€” resample from the sample</li>
 <li><strong>Sampling with replacement</strong> creates variability</li>
 <li><strong>Bootstrap distribution approximates sampling distribution</strong></li>
 </ol>
@@ -295,7 +295,7 @@ Jessica Minnier
 <pre><code>SD: 10.27 days</code></pre>
 </div>
 </div>
-<p>Note the outlier at 45 days — this motivates robust methods!</p>
+<p>Note the outlier at 45 days â€” this motivates robust methods!</p>
 </section></section>
 <section>
 <section id="bootstrap-standard-errors" class="title-slide slide level1 center" data-background-color="#e74c3c">
@@ -362,9 +362,9 @@ Jessica Minnier
 <span id="cb17-9"><a></a>classical_se <span class="ot">&lt;-</span> <span class="fu">sd</span>(bp_reduction) <span class="sc">/</span> <span class="fu">sqrt</span>(n_bp)</span>
 <span id="cb17-10"><a></a>boot_se <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_means_bp)</span>
 <span id="cb17-11"><a></a></span>
-<span id="cb17-12"><a></a><span class="fu">cat</span>(<span class="st">"Classical SE (s/√n):"</span>, <span class="fu">round</span>(classical_se, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-12"><a></a><span class="fu">cat</span>(<span class="st">"Classical SE (s/âˆšn):"</span>, <span class="fu">round</span>(classical_se, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Classical SE (s/√n): 1.463 </code></pre>
+<pre><code>Classical SE (s/âˆšn): 1.463 </code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap SE:"</span>, <span class="fu">round</span>(boot_se, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -470,7 +470,7 @@ Jessica Minnier
 </details>
 
 </div>
-<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p>The bootstrap distribution appears approximately normal — good for t-based intervals!</p>
+<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-7-1.png" width="960" class="r-stretch"><p>The bootstrap distribution appears approximately normal â€” good for t-based intervals!</p>
 </section>
 <section id="bias-in-bootstrap-distributions-chihara-5.6" class="slide level2">
 <h2>Bias in Bootstrap Distributions (Chihara 5.6)</h2>
@@ -513,9 +513,9 @@ Jessica Minnier
 <h2>Types of Bootstrap Confidence Intervals</h2>
 <p>Several methods exist for constructing bootstrap CIs:</p>
 <ol type="1">
-<li><strong>Bootstrap Percentile Interval</strong> — Simple, intuitive</li>
-<li><strong>Bootstrap t Interval</strong> — Better theoretical properties</li>
-<li><strong>BCa Interval</strong> — Bias-corrected and accelerated (advanced)</li>
+<li><strong>Bootstrap Percentile Interval</strong> â€” Simple, intuitive</li>
+<li><strong>Bootstrap t Interval</strong> â€” Better theoretical properties</li>
+<li><strong>BCa Interval</strong> â€” Bias-corrected and accelerated (advanced)</li>
 </ol>
 <div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
@@ -652,7 +652,7 @@ Jessica Minnier
 </details>
 
 </div>
-<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><p>The bootstrap median distribution takes on <strong>few unique values</strong> — this is typical!</p>
+<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-12-1.png" width="960" class="r-stretch"><p>The bootstrap median distribution takes on <strong>few unique values</strong> â€” this is typical!</p>
 </section>
 <section id="bootstrap-t-confidence-interval-devore-8.5" class="slide level2">
 <h2>Bootstrap t Confidence Interval (Devore 8.5)</h2>
@@ -916,11 +916,11 @@ Jessica Minnier
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">Small n (≤10), normal data</td>
+<td style="text-align: left;">Small n (â‰¤10), normal data</td>
 <td style="text-align: left;">Classical t preferred</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">Small n (≤10), skewed data</td>
+<td style="text-align: left;">Small n (â‰¤10), skewed data</td>
 <td style="text-align: left;">Bootstrap t (with caution)</td>
 </tr>
 <tr class="odd">
@@ -1168,43 +1168,372 @@ Jessica Minnier
 </div>
 </section></section>
 <section>
-<section id="summary-and-looking-ahead" class="title-slide slide level1 center" data-background-color="#2c3e50">
-<h1>Summary and Looking Ahead</h1>
+<section id="comparing-bootstrap-ci-methods" class="title-slide slide level1 center" data-background-color="#8e44ad">
+<h1>Comparing Bootstrap CI Methods</h1>
 
 </section>
-<section id="bootstrap-cis-summary" class="slide level2">
-<h2>Bootstrap CIs Summary</h2>
-<table class="caption-top">
+<section id="review-three-bootstrap-ci-methods" class="slide level2">
+<h2>Review: Three Bootstrap CI Methods</h2>
+<p>We’ve now seen three approaches to bootstrap confidence intervals:</p>
+<table class="caption-top" style="width:100%;">
 <colgroup>
-<col style="width: 26%">
-<col style="width: 30%">
-<col style="width: 43%">
+<col style="width: 29%">
+<col style="width: 33%">
+<col style="width: 37%">
 </colgroup>
 <thead>
 <tr class="header">
 <th>Method</th>
 <th>Formula</th>
-<th>When to Use</th>
+<th>Key Idea</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td><strong>Percentile</strong></td>
 <td><span class="math inline">\((\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})\)</span></td>
-<td>Symmetric bootstrap dist., low bias</td>
+<td>Use quantiles of bootstrap distribution directly</td>
 </tr>
 <tr class="even">
-<td><strong>Bootstrap t (simple)</strong></td>
-<td><span class="math inline">\(\hat{\theta} \pm t_{\alpha/2} \cdot SE_{boot}\)</span></td>
-<td>Normal bootstrap dist.</td>
+<td><strong>Simple Bootstrap t</strong></td>
+<td><span class="math inline">\(\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}\)</span></td>
+<td>Bootstrap for SE, t-distribution for critical values</td>
 </tr>
 <tr class="odd">
-<td><strong>Bootstrap t (studentized)</strong></td>
-<td>Uses bootstrap t-statistics</td>
-<td>Skewed data, more accurate</td>
+<td><strong>Studentized Bootstrap t</strong></td>
+<td><span class="math inline">\((\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \; \bar{x} - Q^*_{\alpha/2} \cdot SE)\)</span></td>
+<td>Bootstrap t-statistics, use their quantiles</td>
 </tr>
 </tbody>
 </table>
+<div class="fragment">
+<p><strong>Key question:</strong> When should we use each method?</p>
+</div>
+</section>
+<section id="the-two-bootstrap-t-methods" class="slide level2">
+<h2>The Two “Bootstrap t” Methods</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important Distinction</strong></p>
+</div>
+<div class="callout-content">
+<p>There are actually <strong>two different methods</strong> both called “bootstrap t”:</p>
+</div>
+</div>
+</div>
+<p><strong>1. Simple Bootstrap t</strong> (Devore 8.5): <span class="math display">\[\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}\]</span></p>
+<ul>
+<li>Uses bootstrap <strong>only</strong> to estimate SE</li>
+<li>Uses standard t critical values (±1.96, ±2.045, etc.)</li>
+<li><strong>Assumes</strong> the bootstrap distribution is approximately normal</li>
+</ul>
+<div class="fragment">
+<p><strong>2. Studentized Bootstrap t</strong> (Chihara 7.5): <span class="math display">\[\left(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \;\; \bar{x} - Q^*_{\alpha/2} \cdot SE\right)\]</span></p>
+<ul>
+<li>Computes <span class="math inline">\(T^* = \frac{\bar{X}^* - \bar{x}}{S^*/\sqrt{n}}\)</span> for each resample</li>
+<li>Uses quantiles from the <strong>bootstrap t distribution</strong></li>
+<li><strong>Does NOT assume normality</strong> — adapts to skewness</li>
+</ul>
+</div>
+</section>
+<section id="a-common-misconception" class="slide level2 scrollable">
+<h2>A Common Misconception</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Intuition Trap</strong></p>
+</div>
+<div class="callout-content">
+<p>“The percentile interval can be asymmetric, so it should handle skewed distributions better than bootstrap t.”</p>
+<p><strong>This reasoning is incorrect!</strong></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The confusion arises from conflating two different questions:</p>
+<ol type="1">
+<li><strong>Can the interval be asymmetric?</strong> → Yes, both methods can produce asymmetric intervals</li>
+<li><strong>Does the interval correctly adjust for skewness?</strong> → The studentized bootstrap t does this better</li>
+</ol>
+</div>
+</section>
+<section id="why-studentized-bootstrap-t-handles-skewness-better" class="slide level2">
+<h2>Why Studentized Bootstrap t Handles Skewness Better</h2>
+<p>From Chihara and Hesterberg (Section 7.5.1):</p>
+<blockquote>
+<p>“The bootstrap percentile makes <strong>less of a skewness correction</strong> than does the bootstrap t.”</p>
+</blockquote>
+<div class="fragment">
+<p>The key insight is <strong>studentization</strong> — dividing by <span class="math inline">\(S^*/\sqrt{n}\)</span> creates a correction:</p>
+<ul>
+<li>For <strong>right-skewed data</strong>: When <span class="math inline">\(\bar{X}^* &gt; \bar{x}\)</span>, typically <span class="math inline">\(S^* &gt; s\)</span> also</li>
+<li>The larger denominator <strong>dampens</strong> extreme positive <span class="math inline">\(T^*\)</span> values</li>
+<li>This creates left-skew in <span class="math inline">\(T^*\)</span> that <strong>counteracts</strong> the coverage bias</li>
+</ul>
+</div>
+</section>
+<section id="visualizing-the-studentization-effect" class="slide level2">
+<h2>Visualizing the Studentization Effect</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a></a><span class="co"># Generate skewed data</span></span>
+<span id="cb92-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb92-3"><a></a>skewed_data <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">20</span>, <span class="at">rate =</span> <span class="fl">0.5</span>)</span>
+<span id="cb92-4"><a></a></span>
+<span id="cb92-5"><a></a><span class="co"># Bootstrap and track mean, SD, and t-stat</span></span>
+<span id="cb92-6"><a></a>boot_stats <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, {</span>
+<span id="cb92-7"><a></a>  boot_samp <span class="ot">&lt;-</span> <span class="fu">sample</span>(skewed_data, <span class="fu">length</span>(skewed_data), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb92-8"><a></a>  <span class="fu">c</span>(<span class="at">mean =</span> <span class="fu">mean</span>(boot_samp), </span>
+<span id="cb92-9"><a></a>    <span class="at">sd =</span> <span class="fu">sd</span>(boot_samp),</span>
+<span id="cb92-10"><a></a>    <span class="at">t =</span> (<span class="fu">mean</span>(boot_samp) <span class="sc">-</span> <span class="fu">mean</span>(skewed_data)) <span class="sc">/</span> (<span class="fu">sd</span>(boot_samp) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(skewed_data))))</span>
+<span id="cb92-11"><a></a>}, <span class="at">simplify =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb92-12"><a></a></span>
+<span id="cb92-13"><a></a><span class="co"># Calculate skewness manually</span></span>
+<span id="cb92-14"><a></a>calc_skewness <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb92-15"><a></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb92-16"><a></a>  m <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb92-17"><a></a>  s <span class="ot">&lt;-</span> <span class="fu">sd</span>(x)</span>
+<span id="cb92-18"><a></a>  <span class="fu">sum</span>((x <span class="sc">-</span> m)<span class="sc">^</span><span class="dv">3</span>) <span class="sc">/</span> (n <span class="sc">*</span> s<span class="sc">^</span><span class="dv">3</span>)</span>
+<span id="cb92-19"><a></a>}</span>
+<span id="cb92-20"><a></a></span>
+<span id="cb92-21"><a></a><span class="co"># Plot correlation and bootstrap t distribution</span></span>
+<span id="cb92-22"><a></a>p1 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(boot_stats, <span class="fu">aes</span>(<span class="at">x =</span> mean, <span class="at">y =</span> sd)) <span class="sc">+</span></span>
+<span id="cb92-23"><a></a>  <span class="fu">geom_point</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb92-24"><a></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">se =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb92-25"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="fu">expression</span>(S<span class="sc">^</span><span class="st">"*"</span>),</span>
+<span id="cb92-26"><a></a>       <span class="at">title =</span> <span class="st">"Positive Correlation"</span>) <span class="sc">+</span></span>
+<span id="cb92-27"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">min</span>(boot_stats<span class="sc">$</span>mean) <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="fu">max</span>(boot_stats<span class="sc">$</span>sd) <span class="sc">-</span> <span class="fl">0.1</span>,</span>
+<span id="cb92-28"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"r = "</span>, <span class="fu">round</span>(<span class="fu">cor</span>(boot_stats<span class="sc">$</span>mean, boot_stats<span class="sc">$</span>sd), <span class="dv">3</span>)),</span>
+<span id="cb92-29"><a></a>           <span class="at">size =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb92-30"><a></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>))</span>
+<span id="cb92-31"><a></a></span>
+<span id="cb92-32"><a></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(boot_stats, <span class="fu">aes</span>(<span class="at">x =</span> t)) <span class="sc">+</span></span>
+<span id="cb92-33"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>, <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb92-34"><a></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dt, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">df =</span> <span class="dv">19</span>), <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb92-35"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">quantile</span>(boot_stats<span class="sc">$</span>t, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>)), <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb92-36"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(T<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb92-37"><a></a>       <span class="at">title =</span> <span class="st">"Bootstrap t is Left-Skewed"</span>) <span class="sc">+</span></span>
+<span id="cb92-38"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="sc">-</span><span class="fl">4.5</span>, <span class="at">y =</span> <span class="fl">0.35</span>, </span>
+<span id="cb92-39"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Skewness = "</span>, <span class="fu">round</span>(<span class="fu">calc_skewness</span>(boot_stats<span class="sc">$</span>t), <span class="dv">2</span>)),</span>
+<span id="cb92-40"><a></a>           <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb92-41"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">1.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>, <span class="at">label =</span> <span class="st">"t(19) for</span><span class="sc">\n</span><span class="st">reference"</span>, <span class="at">color =</span> <span class="st">"blue"</span>, <span class="at">size =</span> <span class="dv">4</span>) <span class="sc">+</span></span>
+<span id="cb92-42"><a></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">16</span>)) <span class="sc">+</span></span>
+<span id="cb92-43"><a></a>  <span class="fu">xlim</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">4</span>)</span>
+<span id="cb92-44"><a></a></span>
+<span id="cb92-45"><a></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-27-1.png" width="1344" class="r-stretch"><p>The left tail of <span class="math inline">\(T^*\)</span> extends further than the right — this asymmetry adjusts for the skewness in the data.</p>
+</section>
+<section id="theoretical-accuracy-chihara-7.5.1" class="slide level2">
+<h2>Theoretical Accuracy (Chihara 7.5.1)</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Coverage Error Rates</strong></p>
+</div>
+<div class="callout-content">
+<p>As sample size <span class="math inline">\(n\)</span> increases by a factor of 10:</p>
+<ul>
+<li><strong>Studentized Bootstrap t</strong>: Coverage error decreases by factor of <strong>10</strong></li>
+<li><strong>Percentile</strong>: Coverage error decreases by factor of <strong><span class="math inline">\(\sqrt{10} \approx 3.2\)</span></strong></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>This means the studentized bootstrap t converges to correct coverage <strong>much faster</strong> than the percentile interval for skewed populations.</p>
+<p>The percentile interval and classical t have similar (slower) convergence rates.</p>
+</div>
+</section>
+<section id="simulation-coverage-comparison" class="slide level2">
+<h2>Simulation: Coverage Comparison</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a></a><span class="co"># Simulation comparing coverage rates for skewed data</span></span>
+<span id="cb93-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb93-3"><a></a>n_sim <span class="ot">&lt;-</span> <span class="dv">1000</span></span>
+<span id="cb93-4"><a></a>n <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb93-5"><a></a>true_mu <span class="ot">&lt;-</span> <span class="dv">2</span>  <span class="co"># True mean of Exp(0.5)</span></span>
+<span id="cb93-6"><a></a></span>
+<span id="cb93-7"><a></a>compute_coverage <span class="ot">&lt;-</span> <span class="cf">function</span>(n_sim, n, <span class="at">B =</span> <span class="dv">2000</span>) {</span>
+<span id="cb93-8"><a></a>  coverage <span class="ot">&lt;-</span> <span class="fu">replicate</span>(n_sim, {</span>
+<span id="cb93-9"><a></a>    x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="fl">0.5</span>)  <span class="co"># Right-skewed data</span></span>
+<span id="cb93-10"><a></a>    xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(x)</span>
+<span id="cb93-11"><a></a>    se <span class="ot">&lt;-</span> <span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb93-12"><a></a>    </span>
+<span id="cb93-13"><a></a>    <span class="co"># Classical t</span></span>
+<span id="cb93-14"><a></a>    t_ci <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, n<span class="dv">-1</span>) <span class="sc">*</span> se</span>
+<span id="cb93-15"><a></a>    </span>
+<span id="cb93-16"><a></a>    <span class="co"># Percentile</span></span>
+<span id="cb93-17"><a></a>    boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(x, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb93-18"><a></a>    pct_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb93-19"><a></a>    </span>
+<span id="cb93-20"><a></a>    <span class="co"># Studentized bootstrap t</span></span>
+<span id="cb93-21"><a></a>    boot_t <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb93-22"><a></a>      bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb93-23"><a></a>      (<span class="fu">mean</span>(bs) <span class="sc">-</span> xbar) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb93-24"><a></a>    })</span>
+<span id="cb93-25"><a></a>    q_t <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_t, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb93-26"><a></a>    boot_t_ci <span class="ot">&lt;-</span> <span class="fu">c</span>(xbar <span class="sc">-</span> q_t[<span class="dv">2</span>] <span class="sc">*</span> se, xbar <span class="sc">-</span> q_t[<span class="dv">1</span>] <span class="sc">*</span> se)</span>
+<span id="cb93-27"><a></a>    </span>
+<span id="cb93-28"><a></a>    <span class="fu">c</span>(<span class="at">classical =</span> (t_ci[<span class="dv">1</span>] <span class="sc">&lt;</span> true_mu <span class="sc">&amp;</span> true_mu <span class="sc">&lt;</span> t_ci[<span class="dv">2</span>]),</span>
+<span id="cb93-29"><a></a>      <span class="at">percentile =</span> (pct_ci[<span class="dv">1</span>] <span class="sc">&lt;</span> true_mu <span class="sc">&amp;</span> true_mu <span class="sc">&lt;</span> pct_ci[<span class="dv">2</span>]),</span>
+<span id="cb93-30"><a></a>      <span class="at">bootstrap_t =</span> (boot_t_ci[<span class="dv">1</span>] <span class="sc">&lt;</span> true_mu <span class="sc">&amp;</span> true_mu <span class="sc">&lt;</span> boot_t_ci[<span class="dv">2</span>]))</span>
+<span id="cb93-31"><a></a>  })</span>
+<span id="cb93-32"><a></a>  <span class="fu">rowMeans</span>(coverage)</span>
+<span id="cb93-33"><a></a>}</span>
+<span id="cb93-34"><a></a></span>
+<span id="cb93-35"><a></a>coverage_results <span class="ot">&lt;-</span> <span class="fu">compute_coverage</span>(n_sim, n)</span>
+<span id="cb93-36"><a></a></span>
+<span id="cb93-37"><a></a><span class="fu">tibble</span>(</span>
+<span id="cb93-38"><a></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">"Classical t"</span>, <span class="st">"Percentile"</span>, <span class="st">"Studentized Bootstrap t"</span>),</span>
+<span id="cb93-39"><a></a>  <span class="st">`</span><span class="at">Actual Coverage</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">paste0</span>(<span class="fu">round</span>(coverage_results <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>),</span>
+<span id="cb93-40"><a></a>  <span class="st">`</span><span class="at">Target</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"95%"</span></span>
+<span id="cb93-41"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb93-42"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="fu">paste0</span>(<span class="st">"Coverage for Exp(0.5) data, n = "</span>, n, <span class="st">" ("</span>, n_sim, <span class="st">" simulations)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Coverage for Exp(0.5) data, n = 15 (1000 simulations)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Actual Coverage</th>
+<th style="text-align: left;">Target</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Classical t</td>
+<td style="text-align: left;">92.9%</td>
+<td style="text-align: left;">95%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Percentile</td>
+<td style="text-align: left;">90.4%</td>
+<td style="text-align: left;">95%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Studentized Bootstrap t</td>
+<td style="text-align: left;">95.4%</td>
+<td style="text-align: left;">95%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="visualizing-the-intervals" class="slide level2">
+<h2>Visualizing the Intervals</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a></a><span class="co"># Compare intervals on a single skewed sample</span></span>
+<span id="cb94-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb94-3"><a></a>skewed_sample <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">20</span>, <span class="at">rate =</span> <span class="fl">0.5</span>)</span>
+<span id="cb94-4"><a></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(skewed_sample)</span>
+<span id="cb94-5"><a></a>se <span class="ot">&lt;-</span> <span class="fu">sd</span>(skewed_sample) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(skewed_sample))</span>
+<span id="cb94-6"><a></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb94-7"><a></a></span>
+<span id="cb94-8"><a></a><span class="co"># Bootstrap distributions</span></span>
+<span id="cb94-9"><a></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(skewed_sample, <span class="fu">length</span>(skewed_sample), <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb94-10"><a></a>boot_t <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb94-11"><a></a>  bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(skewed_sample, <span class="fu">length</span>(skewed_sample), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb94-12"><a></a>  (<span class="fu">mean</span>(bs) <span class="sc">-</span> xbar) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">length</span>(skewed_sample)))</span>
+<span id="cb94-13"><a></a>})</span>
+<span id="cb94-14"><a></a></span>
+<span id="cb94-15"><a></a><span class="co"># Compute all intervals</span></span>
+<span id="cb94-16"><a></a>ci_classical <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="fu">length</span>(skewed_sample) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> se</span>
+<span id="cb94-17"><a></a>ci_simple_boot_t <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="fu">length</span>(skewed_sample) <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sd</span>(boot_means)</span>
+<span id="cb94-18"><a></a>ci_percentile <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb94-19"><a></a>q_boot_t <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_t, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb94-20"><a></a>ci_studentized <span class="ot">&lt;-</span> <span class="fu">c</span>(xbar <span class="sc">-</span> q_boot_t[<span class="dv">2</span>] <span class="sc">*</span> se, xbar <span class="sc">-</span> q_boot_t[<span class="dv">1</span>] <span class="sc">*</span> se)</span>
+<span id="cb94-21"><a></a></span>
+<span id="cb94-22"><a></a>ci_comparison <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb94-23"><a></a>  <span class="at">Method =</span> <span class="fu">factor</span>(<span class="fu">c</span>(<span class="st">"Classical t"</span>, <span class="st">"Simple Bootstrap t"</span>, <span class="st">"Percentile"</span>, <span class="st">"Studentized Bootstrap t"</span>),</span>
+<span id="cb94-24"><a></a>                  <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Classical t"</span>, <span class="st">"Simple Bootstrap t"</span>, <span class="st">"Percentile"</span>, <span class="st">"Studentized Bootstrap t"</span>)),</span>
+<span id="cb94-25"><a></a>  <span class="at">Lower =</span> <span class="fu">c</span>(ci_classical[<span class="dv">1</span>], ci_simple_boot_t[<span class="dv">1</span>], ci_percentile[<span class="dv">1</span>], ci_studentized[<span class="dv">1</span>]),</span>
+<span id="cb94-26"><a></a>  <span class="at">Upper =</span> <span class="fu">c</span>(ci_classical[<span class="dv">2</span>], ci_simple_boot_t[<span class="dv">2</span>], ci_percentile[<span class="dv">2</span>], ci_studentized[<span class="dv">2</span>])</span>
+<span id="cb94-27"><a></a>)</span>
+<span id="cb94-28"><a></a></span>
+<span id="cb94-29"><a></a><span class="fu">ggplot</span>(ci_comparison, <span class="fu">aes</span>(<span class="at">y =</span> Method)) <span class="sc">+</span></span>
+<span id="cb94-30"><a></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> Lower, <span class="at">xend =</span> Upper, <span class="at">yend =</span> Method), <span class="at">linewidth =</span> <span class="fl">2.5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb94-31"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Lower), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb94-32"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> Upper), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb94-33"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> xbar, <span class="at">y =</span> Method), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb94-34"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb94-35"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fl">4.5</span>, <span class="at">label =</span> <span class="fu">expression</span>(mu <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> <span class="st">"(true mean)"</span>), </span>
+<span id="cb94-36"><a></a>           <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb94-37"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Value"</span>, <span class="at">y =</span> <span class="st">""</span>,</span>
+<span id="cb94-38"><a></a>       <span class="at">title =</span> <span class="st">"Comparison of 95% CIs for Right-Skewed Data"</span>,</span>
+<span id="cb94-39"><a></a>       <span class="at">subtitle =</span> <span class="st">"Studentized bootstrap t extends further right to capture the true mean"</span>) <span class="sc">+</span></span>
+<span id="cb94-40"><a></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
+<section id="summary-normality-assumptions" class="slide level2">
+<h2>Summary: Normality Assumptions</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 27%">
+<col style="width: 31%">
+<col style="width: 18%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Assumes Normal Population?</th>
+<th style="text-align: left;">Assumes Normal Bootstrap Dist?</th>
+<th style="text-align: left;">Handles Skewness?</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Classical t</td>
+<td style="text-align: left;">Yes (or large n for CLT)</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: left;">Poorly</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Simple Bootstrap t</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Yes</td>
+<td style="text-align: left;">Poorly</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Studentized Bootstrap t</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Well</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Percentile</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">No</td>
+<td style="text-align: left;">Moderately</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 <div class="fragment">
 <div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
@@ -1212,31 +1541,33 @@ Jessica Minnier
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Key Point</strong></p>
+<p><strong>Key Insight</strong></p>
 </div>
 <div class="callout-content">
-<p>Bootstrap t intervals have better coverage than percentile intervals for skewed data, but require the bootstrap SE to be meaningful.</p>
+<p>The <strong>studentized bootstrap t</strong> is the only method that adapts to skewness without assuming normality. It does this through studentization, not by assuming any particular distribution.</p>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="what-the-bootstrap-can-and-cannot-do-chihara-5.2.2" class="slide level2">
-<h2>What the Bootstrap Can and Cannot Do (Chihara 5.2.2)</h2>
+<section id="when-to-use-each-method" class="slide level2">
+<h2>When to Use Each Method</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><strong>Can estimate:</strong></p>
+<p><strong>Percentile Interval</strong></p>
 <ul>
-<li>Standard error</li>
-<li>Bias</li>
-<li>Skewness</li>
-<li>Confidence intervals</li>
+<li>Bootstrap distribution is symmetric</li>
+<li>Low bias</li>
+<li>Simplicity is important</li>
+<li>SE is hard to compute (e.g., median)</li>
 </ul>
 </div><div class="column" style="width:50%;">
-<p><strong>Cannot improve:</strong></p>
+<p><strong>Studentized Bootstrap t</strong></p>
 <ul>
-<li>Point estimates (still centered at <span class="math inline">\(\hat{\theta}\)</span>, not <span class="math inline">\(\theta\)</span>)</li>
-<li>A bad/unrepresentative sample</li>
+<li>Data is skewed</li>
+<li>Accurate coverage is critical</li>
+<li>Sample size is moderate (<span class="math inline">\(n \geq 15\)</span>)</li>
+<li>SE can be computed for each resample</li>
 </ul>
 </div></div>
 <div class="fragment">
@@ -1246,19 +1577,82 @@ Jessica Minnier
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Important Reminder</strong></p>
+<p><strong>Small Sample Warning</strong></p>
 </div>
 <div class="callout-content">
-<p>The bootstrap does <strong>not create new information</strong>. It uses the sample you have to understand the variability of your estimate.</p>
+<p>For <span class="math inline">\(n &lt; 10\)</span>: <strong>Classical t may be better!</strong> The bootstrap cannot accurately estimate skewness from too few observations.</p>
+<p>From Chihara &amp; Hesterberg: “We recommend the formula t if <span class="math inline">\(n \leq 10\)</span>, and the bootstrap t otherwise.”</p>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="choosing-a-method-decision-tree" class="slide level2">
-<h2>Choosing a Method: Decision Tree</h2>
+<section id="decision-guide" class="slide level2">
+<h2>Decision Guide</h2>
 
-<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
+<img data-src="10_Bootstrap_CI_files/figure-revealjs/unnamed-chunk-31-1.png" width="960" class="r-stretch"></section></section>
+<section>
+<section id="summary" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Summary</h1>
+
+</section>
+<section id="key-takeaways" class="slide level2 scrollable">
+<h2>Key Takeaways</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Bootstrap CI Selection</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><p><strong>Percentile interval</strong>: Simple, intuitive, but provides less skewness correction</p></li>
+<li><p><strong>Simple bootstrap t</strong>: Uses bootstrap SE with t critical values; assumes approximate normality of bootstrap distribution</p></li>
+<li><p><strong>Studentized bootstrap t</strong>: Uses bootstrap t-statistics; adapts to skewness without assuming normality; best coverage for skewed data</p></li>
+<li><p><strong>For small samples</strong> (<span class="math inline">\(n &lt; 10\)</span>): Classical t may be preferable—bootstrap can’t estimate skewness well</p></li>
+<li><p><strong>BCa interval</strong>: An advanced option that corrects for both bias and skewness (available in R packages)</p></li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="what-the-bootstrap-cannot-do" class="slide level2">
+<h2>What the Bootstrap Cannot Do</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Bootstrap CAN estimate:</strong></p>
+<ul>
+<li>Standard errors</li>
+<li>Bias</li>
+<li>Skewness of sampling distribution</li>
+<li>Confidence intervals</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<p><strong>Bootstrap CANNOT:</strong></p>
+<ul>
+<li>Improve point estimates</li>
+<li>Fix a bad/unrepresentative sample</li>
+<li>Create new information</li>
+</ul>
+</div></div>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Remember</strong></p>
+</div>
+<div class="callout-content">
+<p>The bootstrap tells you about the <strong>variability</strong> of your estimate. It does not tell you whether your sample was good in the first place!</p>
+</div>
+</div>
+</div>
+</div>
+</section>
 <section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
 <p><strong>Next Topics:</strong></p>

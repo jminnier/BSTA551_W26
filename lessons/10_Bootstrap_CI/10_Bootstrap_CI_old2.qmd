@@ -744,50 +744,14 @@ boot_or <- replicate(10000, {
 cat("95% CI for OR:", round(quantile(boot_or, c(0.025, 0.975)), 2))
 ```
 
-# Comparing Bootstrap CI Methods {background-color="#8e44ad"}
 
-## Review: Three Bootstrap CI Methods
-
-We've now seen three approaches to bootstrap confidence intervals:
-
-| Method | Formula | Key Idea |
-|--------|---------|----------|
-| **Percentile** | $(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$ | Use quantiles of bootstrap distribution directly |
-| **Simple Bootstrap t** | $\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$ | Bootstrap for SE, t-distribution for critical values |
-| **Studentized Bootstrap t** | $(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \; \bar{x} - Q^*_{\alpha/2} \cdot SE)$ | Bootstrap t-statistics, use their quantiles |
-
-. . .
-
-**Key question:** When should we use each method?
-
-## The Two "Bootstrap t" Methods
-
-::: callout-note
-## Important Distinction
-There are actually **two different methods** both called "bootstrap t":
-:::
-
-**1. Simple Bootstrap t** (Devore 8.5):
-$$\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$$
-
-- Uses bootstrap **only** to estimate SE
-- Uses standard t critical values (±1.96, ±2.045, etc.)
-- **Assumes** the bootstrap distribution is approximately normal
-
-. . .
-
-**2. Studentized Bootstrap t** (Chihara 7.5):
-$$\left(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \;\; \bar{x} - Q^*_{\alpha/2} \cdot SE\right)$$
-
-- Computes $T^* = \frac{\bar{X}^* - \bar{x}}{S^*/\sqrt{n}}$ for each resample
-- Uses quantiles from the **bootstrap t distribution**
-- **Does NOT assume normality** — adapts to skewness
+# Deeper Understanding: Percentile vs Bootstrap t {background-color="#8e44ad"}
 
 ## A Common Misconception
 
 ::: callout-warning
 ## The Intuition Trap
-"The percentile interval can be asymmetric, so it should handle skewed distributions better than bootstrap t."
+"The percentile interval can be asymmetric, so it should handle skewed distributions better."
 
 **This reasoning is incorrect!**
 :::
@@ -796,30 +760,29 @@ $$\left(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \;\; \bar{x} - Q^*_{\alpha/2} \cdot
 
 The confusion arises from conflating two different questions:
 
-1. **Can the interval be asymmetric?** → Yes, both methods can produce asymmetric intervals
-2. **Does the interval correctly adjust for skewness?** → The studentized bootstrap t does this better
+1. **Can the interval be asymmetric?** (Both methods can!)
+2. **Does the interval correctly capture skewness for proper coverage?** (Bootstrap t does this better)
 
-## Why Studentized Bootstrap t Handles Skewness Better
+## Why Bootstrap t Handles Skewness Better (Chihara 7.5.1)
 
-From Chihara and Hesterberg (Section 7.5.1):
+From Chihara and Hesterberg:
 
 > "The bootstrap percentile makes **less of a skewness correction** than does the bootstrap t."
 
 . . .
 
-The key insight is **studentization** — dividing by $S^*/\sqrt{n}$ creates a correction:
+The key insight is **studentization** — dividing by SE creates a correction:
 
-- For **right-skewed data**: When $\bar{X}^* > \bar{x}$, typically $S^* > s$ also
-- The larger denominator **dampens** extreme positive $T^*$ values
-- This creates left-skew in $T^*$ that **counteracts** the coverage bias
+- For **right-skewed data**: When $\bar{X}^* > \bar{x}$, typically $S^* > s$
+- The larger denominator **dampens** extreme positive values
+- This creates negative skew in $T^*$ that counteracts the bias
 
-## Visualizing the Studentization Effect
+## The Mechanism: Correlation Between Mean and SD
 
 ```{r}
 #| echo: true
 #| code-fold: true
-#| fig-height: 5
-#| fig-width: 14
+#| fig-height: 5.5
 # Generate skewed data
 set.seed(551)
 skewed_data <- rexp(20, rate = 0.5)
@@ -832,226 +795,276 @@ boot_stats <- replicate(5000, {
     t = (mean(boot_samp) - mean(skewed_data)) / (sd(boot_samp) / sqrt(length(skewed_data))))
 }, simplify = FALSE) |> bind_rows()
 
-# Calculate skewness manually
-calc_skewness <- function(x) {
-  n <- length(x)
-  m <- mean(x)
-  s <- sd(x)
-  sum((x - m)^3) / (n * s^3)
-}
-
-# Plot correlation and bootstrap t distribution
+# Plot correlation
 p1 <- ggplot(boot_stats, aes(x = mean, y = sd)) +
   geom_point(alpha = 0.2, color = "steelblue") +
   geom_smooth(method = "lm", color = "red", se = FALSE) +
   labs(x = expression(bar(X)^"*"), y = expression(S^"*"),
-       title = "Positive Correlation") +
-  annotate("text", x = min(boot_stats$mean) + 0.3, y = max(boot_stats$sd) - 0.1,
-           label = paste0("r = ", round(cor(boot_stats$mean, boot_stats$sd), 3)),
-           size = 5, hjust = 0) +
-  theme(plot.title = element_text(size = 16))
+       title = "Strong Positive Correlation",
+       subtitle = paste0("r = ", round(cor(boot_stats$mean, boot_stats$sd), 3)))
 
 p2 <- ggplot(boot_stats, aes(x = t)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 60, fill = "coral", alpha = 0.7) +
-  stat_function(fun = dt, args = list(df = 19), color = "blue", linewidth = 1.2, linetype = "dashed") +
-  geom_vline(xintercept = quantile(boot_stats$t, c(0.025, 0.975)), color = "darkred", linewidth = 1) +
-  labs(x = expression(T^"*"), y = "Density",
-       title = "Bootstrap t is Left-Skewed") +
-  annotate("text", x = -4.5, y = 0.35, 
-           label = paste0("Skewness = ", round(calc_skewness(boot_stats$t), 2)),
-           size = 4.5, hjust = 0) +
-  annotate("text", x = 1.5, y = 0.25, label = "t(19) for\nreference", color = "blue", size = 4) +
-  theme(plot.title = element_text(size = 16)) +
-  xlim(-6, 4)
+  geom_histogram(bins = 50, fill = "coral", alpha = 0.7) +
+  geom_vline(xintercept = c(-1.96, 1.96), linetype = "dashed", color = "blue") +
+  labs(x = expression(T^"*"), y = "Count",
+       title = "Bootstrap t Distribution",
+       subtitle = "Left-skewed due to correlation")
 
-p1 + p2 + plot_layout(widths = c(1, 1.2))
+p1 + p2
 ```
 
-The left tail of $T^*$ extends further than the right — this asymmetry adjusts for the skewness in the data.
-
-## Theoretical Accuracy (Chihara 7.5.1)
+## Coverage Error Rates (Chihara 7.5.1)
 
 ::: callout-important
-## Coverage Error Rates
+## Theoretical Result
 As sample size $n$ increases by a factor of 10:
 
-- **Studentized Bootstrap t**: Coverage error decreases by factor of **10**
-- **Percentile**: Coverage error decreases by factor of **$\sqrt{10} \approx 3.2$**
+- **Bootstrap t** coverage error decreases by factor of **10** (first-order accurate)
+- **Percentile** coverage error decreases by factor of **$\sqrt{10}$** (second-order accurate)
 :::
 
 . . .
 
-This means the studentized bootstrap t converges to correct coverage **much faster** than the percentile interval for skewed populations.
+This means the bootstrap t interval converges to correct coverage **much faster** for skewed populations!
 
-The percentile interval and classical t have similar (slower) convergence rates.
-
-## Simulation: Coverage Comparison
+## Simulation: Coverage Comparison for Skewed Data
 
 ```{r}
 #| echo: true
 #| code-fold: true
 #| cache: true
-# Simulation comparing coverage rates for skewed data
+# Simulation comparing coverage rates
 set.seed(551)
 n_sim <- 1000
 n <- 15
 true_mu <- 2  # True mean of Exp(0.5)
 
+# Function to compute intervals
 compute_coverage <- function(n_sim, n, B = 2000) {
   coverage <- replicate(n_sim, {
-    x <- rexp(n, rate = 0.5)  # Right-skewed data
+    # Generate skewed data (exponential)
+    x <- rexp(n, rate = 0.5)
     xbar <- mean(x)
     se <- sd(x) / sqrt(n)
     
-    # Classical t
+    # Classical t interval
     t_ci <- xbar + c(-1, 1) * qt(0.975, n-1) * se
     
-    # Percentile
+    # Percentile interval
     boot_means <- replicate(B, mean(sample(x, n, replace = TRUE)))
     pct_ci <- quantile(boot_means, c(0.025, 0.975))
     
-    # Studentized bootstrap t
+    # Bootstrap t interval
     boot_t <- replicate(B, {
-      bs <- sample(x, n, replace = TRUE)
-      (mean(bs) - xbar) / (sd(bs) / sqrt(n))
+      boot_samp <- sample(x, n, replace = TRUE)
+      (mean(boot_samp) - xbar) / (sd(boot_samp) / sqrt(n))
     })
     q_t <- quantile(boot_t, c(0.025, 0.975))
     boot_t_ci <- c(xbar - q_t[2] * se, xbar - q_t[1] * se)
     
+    # Check coverage
     c(classical = (t_ci[1] < true_mu & true_mu < t_ci[2]),
       percentile = (pct_ci[1] < true_mu & true_mu < pct_ci[2]),
       bootstrap_t = (boot_t_ci[1] < true_mu & true_mu < boot_t_ci[2]))
   })
+  
   rowMeans(coverage)
 }
 
 coverage_results <- compute_coverage(n_sim, n)
 
 tibble(
-  Method = c("Classical t", "Percentile", "Studentized Bootstrap t"),
-  `Actual Coverage` = paste0(round(coverage_results * 100, 1), "%"),
-  `Target` = "95%"
+  Method = c("Classical t", "Percentile", "Bootstrap t"),
+  Coverage = round(coverage_results * 100, 1),
+  Target = 95.0
 ) |>
-  knitr::kable(caption = paste0("Coverage for Exp(0.5) data, n = ", n, " (", n_sim, " simulations)"))
+  knitr::kable(col.names = c("Method", "Actual Coverage (%)", "Target (%)"),
+               caption = paste0("Coverage rates for Exp(0.5) data, n = ", n, ", ", n_sim, " simulations"))
 ```
 
-## Visualizing the Intervals
+## Two Types of "Bootstrap t" Intervals
 
-```{r}
-#| echo: true
-#| code-fold: true
-#| fig-height: 5.5
-# Compare intervals on a single skewed sample
-set.seed(551)
-skewed_sample <- rexp(20, rate = 0.5)
-xbar <- mean(skewed_sample)
-se <- sd(skewed_sample) / sqrt(length(skewed_sample))
-B <- 10000
+::: callout-note
+## Important Distinction
+There are actually **two different methods** both called "bootstrap t":
+:::
 
-# Bootstrap distributions
-boot_means <- replicate(B, mean(sample(skewed_sample, length(skewed_sample), replace = TRUE)))
-boot_t <- replicate(B, {
-  bs <- sample(skewed_sample, length(skewed_sample), replace = TRUE)
-  (mean(bs) - xbar) / (sd(bs) / sqrt(length(skewed_sample)))
-})
+. . .
 
-# Compute all intervals
-ci_classical <- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * se
-ci_simple_boot_t <- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * sd(boot_means)
-ci_percentile <- quantile(boot_means, c(0.025, 0.975))
-q_boot_t <- quantile(boot_t, c(0.025, 0.975))
-ci_studentized <- c(xbar - q_boot_t[2] * se, xbar - q_boot_t[1] * se)
+**1. Simple Bootstrap t** (uses t critical values):
+$$\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$$
 
-ci_comparison <- tibble(
-  Method = factor(c("Classical t", "Simple Bootstrap t", "Percentile", "Studentized Bootstrap t"),
-                  levels = c("Classical t", "Simple Bootstrap t", "Percentile", "Studentized Bootstrap t")),
-  Lower = c(ci_classical[1], ci_simple_boot_t[1], ci_percentile[1], ci_studentized[1]),
-  Upper = c(ci_classical[2], ci_simple_boot_t[2], ci_percentile[2], ci_studentized[2])
-)
+- Uses bootstrap only for SE estimation
+- Still relies on t-distribution for critical values
+- **Assumes** bootstrap distribution is approximately normal
 
-ggplot(ci_comparison, aes(y = Method)) +
-  geom_segment(aes(x = Lower, xend = Upper, yend = Method), linewidth = 2.5, color = "steelblue") +
-  geom_point(aes(x = Lower), size = 3, color = "red") +
-  geom_point(aes(x = Upper), size = 3, color = "red") +
-  geom_point(aes(x = xbar, y = Method), size = 3, color = "black") +
-  geom_vline(xintercept = 2, linetype = "dashed", color = "darkgreen", linewidth = 1.2) +
-  annotate("text", x = 2, y = 4.5, label = expression(mu == 2 ~ "(true mean)"), 
-           color = "darkgreen", size = 5) +
-  labs(x = "Value", y = "",
-       title = "Comparison of 95% CIs for Right-Skewed Data",
-       subtitle = "Studentized bootstrap t extends further right to capture the true mean") +
-  theme_minimal(base_size = 16)
-```
+. . .
 
-## Summary: Normality Assumptions
+**2. Studentized Bootstrap t** (uses bootstrap quantiles):
+$$\left(\bar{x} - Q^*_{1-\alpha/2} \cdot SE, \;\; \bar{x} - Q^*_{\alpha/2} \cdot SE\right)$$
+
+- Uses quantiles from the bootstrap t distribution
+- **Does NOT assume normality** — adapts to skewness
+- This is the method that handles skewed data well
+
+## Normality Assumptions: A Clear Summary
 
 ```{r}
 #| echo: false
 tibble(
-  Method = c("Classical t", "Simple Bootstrap t", "Studentized Bootstrap t", "Percentile"),
-  `Assumes Normal Population?` = c("Yes (or large n for CLT)", "No", "No", "No"),
-  `Assumes Normal Bootstrap Dist?` = c("—", "Yes", "No", "No"),
-  `Handles Skewness?` = c("Poorly", "Poorly", "Well", "Moderately")
+  Method = c("Classical t", "Simple Bootstrap t", "Studentized Bootstrap t", "Percentile", "BCa"),
+  `Population Normal?` = c("Yes (or large n)", "No", "No", "No", "No"),
+  `Bootstrap Dist Normal?` = c("N/A", "Yes", "No", "No", "No"),
+  `Handles Skewness?` = c("Poorly", "Poorly", "Well", "Moderately", "Well"),
+  `Bias Correction?` = c("No", "No", "Partial", "No", "Yes")
 ) |>
-  knitr::kable()
+  knitr::kable(caption = "Comparison of Normality Assumptions Across Methods")
 ```
 
-. . .
-
-::: callout-tip
-## Key Insight
-The **studentized bootstrap t** is the only method that adapts to skewness without assuming normality. It does this through studentization, not by assuming any particular distribution.
-:::
-
-## When to Use Each Method
+## When to Use Each Method: Updated Guidelines
 
 ::: columns
 ::: {.column width="50%"}
-**Percentile Interval**
+**Use Percentile When:**
 
 - Bootstrap distribution is symmetric
-- Low bias
-- Simplicity is important
-- SE is hard to compute (e.g., median)
+- Bias is small
+- Simplicity is valued
+- Computing SE is difficult
 :::
 
 ::: {.column width="50%"}
-**Studentized Bootstrap t**
+**Use Studentized Bootstrap t When:**
 
 - Data is skewed
 - Accurate coverage is critical
-- Sample size is moderate ($n \geq 15$)
+- Sample size is moderate (15-50)
 - SE can be computed for each resample
 :::
 :::
 
 . . .
 
-::: callout-warning
-## Small Sample Warning
-For $n < 10$: **Classical t may be better!** The bootstrap cannot accurately estimate skewness from too few observations.
-
-From Chihara & Hesterberg: "We recommend the formula t if $n \leq 10$, and the bootstrap t otherwise."
+::: callout-tip
+## Practical Advice
+For small samples ($n < 10$): Classical t may actually be **better** because bootstrap cannot accurately estimate skewness from too few observations (Chihara 7.5.1).
 :::
 
-## Decision Guide
+## Visualizing the Intervals for Skewed Data
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+# Compare all methods on skewed data
+set.seed(551)
+skewed_sample <- rexp(20, rate = 0.5)
+xbar <- mean(skewed_sample)
+se <- sd(skewed_sample) / sqrt(length(skewed_sample))
+B <- 10000
+
+# Bootstrap samples
+boot_means <- replicate(B, mean(sample(skewed_sample, length(skewed_sample), replace = TRUE)))
+boot_t <- replicate(B, {
+  bs <- sample(skewed_sample, length(skewed_sample), replace = TRUE)
+  (mean(bs) - xbar) / (sd(bs) / sqrt(length(skewed_sample)))
+})
+
+# Intervals
+ci_classical <- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * se
+ci_simple_boot_t <- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * sd(boot_means)
+ci_percentile <- quantile(boot_means, c(0.025, 0.975))
+q_boot_t <- quantile(boot_t, c(0.025, 0.975))
+ci_studentized <- c(xbar - q_boot_t[2] * se, xbar - q_boot_t[1] * se)
+
+# Create comparison data frame
+ci_comparison <- tibble(
+  Method = factor(c("Classical t", "Simple Boot t", "Percentile", "Studentized Boot t"),
+                  levels = c("Classical t", "Simple Boot t", "Percentile", "Studentized Boot t")),
+  Lower = c(ci_classical[1], ci_simple_boot_t[1], ci_percentile[1], ci_studentized[1]),
+  Upper = c(ci_classical[2], ci_simple_boot_t[2], ci_percentile[2], ci_studentized[2]),
+  Center = xbar
+)
+
+ggplot(ci_comparison, aes(y = Method)) +
+  geom_segment(aes(x = Lower, xend = Upper, yend = Method), linewidth = 2, color = "steelblue") +
+  geom_point(aes(x = Center), size = 3, color = "black") +
+  geom_point(aes(x = Lower), size = 2, color = "red") +
+  geom_point(aes(x = Upper), size = 2, color = "red") +
+  geom_vline(xintercept = 2, linetype = "dashed", color = "darkgreen", linewidth = 1) +
+  annotate("text", x = 2, y = 4.4, label = expression(mu == 2 ~ "(true mean)"), 
+           color = "darkgreen", size = 4) +
+  labs(x = "Value", y = "",
+       title = "Comparison of 95% CIs for Skewed Data (Exp(0.5), n = 20)",
+       subtitle = "Studentized bootstrap t stretches further right to capture the true mean") +
+  theme_minimal(base_size = 14)
+```
+
+
+# Summary and Looking Ahead {background-color="#2c3e50"}
+
+## Bootstrap CIs Summary
+
+| Method | Formula | When to Use |
+|--------|---------|-------------|
+| **Percentile** | $(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$ | Symmetric bootstrap dist., low bias |
+| **Bootstrap t (simple)** | $\hat{\theta} \pm t_{\alpha/2} \cdot SE_{boot}$ | Normal bootstrap dist. |
+| **Bootstrap t (studentized)** | Uses bootstrap t-statistics | Skewed data, more accurate |
+
+. . .
+
+::: callout-tip
+## Key Point
+Bootstrap t intervals have better coverage than percentile intervals for skewed data, but require the bootstrap SE to be meaningful.
+:::
+
+## What the Bootstrap Can and Cannot Do (Chihara 5.2.2)
+
+::: columns
+::: {.column width="50%"}
+**Can estimate:**
+
+- Standard error
+- Bias
+- Skewness
+- Confidence intervals
+:::
+
+::: {.column width="50%"}
+**Cannot improve:**
+
+- Point estimates (still centered at $\hat{\theta}$, not $\theta$)
+- A bad/unrepresentative sample
+:::
+:::
+
+. . .
+
+::: callout-warning
+## Important Reminder
+The bootstrap does **not create new information**. It uses the sample you have to understand the variability of your estimate.
+:::
+
+## Choosing a Method: Decision Tree
 
 ```{r}
 #| echo: false
 #| fig-height: 6
 #| fig-width: 10
+# Define nodes
 nodes <- tibble(
   x = c(2,      1,       3,       0.5,     1.5,     2.5,     3.5),
   y = c(3,      2,       2,       1,       1,       1,       1),
-  label = c("Is n ≥ 15?", 
+  label = c("Is n â‰¥ 15?", 
             "Is data\nnormal?", 
             "Is data\nskewed?", 
             "Bootstrap t\n(with caution)",
             "Classical t",
             "Classical t\nor Percentile", 
-            "Studentized\nBootstrap t")
+            "Bootstrap t")
 )
 
+# Define edges
 edges <- tibble(
   x = c(2, 2, 1, 1, 3, 3),
   xend = c(1, 3, 0.5, 1.5, 2.5, 3.5),
@@ -1059,6 +1072,7 @@ edges <- tibble(
   yend = c(2.15, 2.15, 1.15, 1.15, 1.15, 1.15)
 )
 
+# Define edge labels
 edge_labels <- tibble(
   x = c(1.4, 2.6, 0.65, 1.35, 2.65, 3.35),
   y = c(2.5, 2.5, 1.5, 1.5, 1.5, 1.5),
@@ -1067,61 +1081,34 @@ edge_labels <- tibble(
 
 ggplot() +
   geom_segment(data = edges, aes(x = x, xend = xend, y = y, yend = yend),
-               arrow = arrow(length = unit(0.2, "cm")), color = "gray40", linewidth = 1) +
+               arrow = arrow(length = unit(0.15, "cm")), color = "gray40") +
   geom_label(data = nodes, aes(x = x, y = y, label = label), 
-             fill = "white", size = 5, label.padding = unit(0.5, "lines")) +
+             fill = "white", size = 3.5, label.padding = unit(0.4, "lines")) +
   geom_text(data = edge_labels, aes(x = x, y = y, label = label), 
-            size = 5, fontface = "italic", color = "gray30") +
+            size = 3.5, fontface = "italic", color = "gray30") +
   theme_void() +
   coord_cartesian(xlim = c(-0.2, 4.2), ylim = c(0.5, 3.5)) +
   labs(title = "Choosing a Confidence Interval Method")
 ```
 
-# Summary {background-color="#2c3e50"}
 
 ## Key Takeaways
 
 ::: callout-important
-## Bootstrap CI Selection
+## Summary: Bootstrap Interval Selection
 
-1. **Percentile interval**: Simple, intuitive, but provides less skewness correction
-
-2. **Simple bootstrap t**: Uses bootstrap SE with t critical values; assumes approximate normality of bootstrap distribution
-
-3. **Studentized bootstrap t**: Uses bootstrap t-statistics; adapts to skewness without assuming normality; best coverage for skewed data
-
-4. **For small samples** ($n < 10$): Classical t may be preferable—bootstrap can't estimate skewness well
-
-5. **BCa interval**: An advanced option that corrects for both bias and skewness (available in R packages)
-:::
-
-## What the Bootstrap Cannot Do
-
-::: columns
-::: {.column width="50%"}
-**Bootstrap CAN estimate:**
-
-- Standard errors
-- Bias
-- Skewness of sampling distribution
-- Confidence intervals
-:::
-
-::: {.column width="50%"}
-**Bootstrap CANNOT:**
-
-- Improve point estimates
-- Fix a bad/unrepresentative sample
-- Create new information
-:::
+1. **Percentile interval** is simple but provides less skewness correction
+2. **Studentized bootstrap t** handles skewness better through studentization
+3. The studentized method does **NOT** assume normality — it adapts to the data
+4. For very small samples, classical methods may be preferable
+5. **BCa** (bias-corrected accelerated) is another option that handles both bias and skewness
 :::
 
 . . .
 
-::: callout-warning
-## Remember
-The bootstrap tells you about the **variability** of your estimate. It does not tell you whether your sample was good in the first place!
-:::
+From Chihara & Hesterberg: 
+
+> "We recommend the formula t if $n \leq 10$, and the bootstrap t otherwise."
 
 ## Looking Ahead
 

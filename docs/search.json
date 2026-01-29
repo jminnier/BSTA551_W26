@@ -7739,7 +7739,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#review-bootstrap-basics-lesson-9",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Review: Bootstrap Basics (Lesson 9)",
-    "text": "Review: Bootstrap Basics (Lesson 9)\n\n\n\n\n\n\nThe Bootstrap Principle\n\n\n\nThe sample represents the population — resample from the sample\nSampling with replacement creates variability\nBootstrap distribution approximates sampling distribution\n\n\n\n\n\nKey algorithm:\n\nResample \\(n\\) observations with replacement from the original sample\nCompute statistic \\(\\hat{\\theta}^*\\) from bootstrap sample\nRepeat \\(B\\) times (typically \\(B = 10,000\\))\nAnalyze the distribution of \\(\\hat{\\theta}^*_1, \\ldots, \\hat{\\theta}^*_B\\)"
+    "text": "Review: Bootstrap Basics (Lesson 9)\n\n\n\n\n\n\nThe Bootstrap Principle\n\n\n\nThe sample represents the population â€” resample from the sample\nSampling with replacement creates variability\nBootstrap distribution approximates sampling distribution\n\n\n\n\n\nKey algorithm:\n\nResample \\(n\\) observations with replacement from the original sample\nCompute statistic \\(\\hat{\\theta}^*\\) from bootstrap sample\nRepeat \\(B\\) times (typically \\(B = 10,000\\))\nAnalyze the distribution of \\(\\hat{\\theta}^*_1, \\ldots, \\hat{\\theta}^*_B\\)"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#quick-review-what-bootstrap-can-estimate",
@@ -7753,7 +7753,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#running-example-drug-response-times",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Running Example: Drug Response Times",
-    "text": "Running Example: Drug Response Times\n\nresponse_times &lt;- c(8, 12, 15, 7, 22, 45, 11, 9, 14, 18, 10, 13)\nn &lt;- length(response_times)\n\ncat(\"n =\", n, \"\\n\")\n\nn = 12 \n\ncat(\"Mean:\", round(mean(response_times), 2), \"days\\n\")\n\nMean: 15.33 days\n\ncat(\"Median:\", median(response_times), \"days\\n\")\n\nMedian: 12.5 days\n\ncat(\"SD:\", round(sd(response_times), 2), \"days\")\n\nSD: 10.27 days\n\n\nNote the outlier at 45 days — this motivates robust methods!"
+    "text": "Running Example: Drug Response Times\n\nresponse_times &lt;- c(8, 12, 15, 7, 22, 45, 11, 9, 14, 18, 10, 13)\nn &lt;- length(response_times)\n\ncat(\"n =\", n, \"\\n\")\n\nn = 12 \n\ncat(\"Mean:\", round(mean(response_times), 2), \"days\\n\")\n\nMean: 15.33 days\n\ncat(\"Median:\", median(response_times), \"days\\n\")\n\nMedian: 12.5 days\n\ncat(\"SD:\", round(sd(response_times), 2), \"days\")\n\nSD: 10.27 days\n\n\nNote the outlier at 45 days â€” this motivates robust methods!"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bootstrap-standard-error",
@@ -7774,7 +7774,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bootstrap-se-for-blood-pressure",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Bootstrap SE for Blood Pressure",
-    "text": "Bootstrap SE for Blood Pressure\n\nset.seed(551)\nB &lt;- 10000\nboot_means_bp &lt;- replicate(B, {\n  boot_sample &lt;- sample(bp_reduction, n_bp, replace = TRUE)\n  mean(boot_sample)\n})\n\n# Compare standard errors\nclassical_se &lt;- sd(bp_reduction) / sqrt(n_bp)\nboot_se &lt;- sd(boot_means_bp)\n\ncat(\"Classical SE (s/√n):\", round(classical_se, 3), \"\\n\")\n\nClassical SE (s/√n): 1.463 \n\ncat(\"Bootstrap SE:\", round(boot_se, 3), \"\\n\")\n\nBootstrap SE: 1.41 \n\ncat(\"Ratio:\", round(boot_se / classical_se, 3))\n\nRatio: 0.964\n\n\n\nThe bootstrap SE is very close to the classical SE when assumptions are met!"
+    "text": "Bootstrap SE for Blood Pressure\n\nset.seed(551)\nB &lt;- 10000\nboot_means_bp &lt;- replicate(B, {\n  boot_sample &lt;- sample(bp_reduction, n_bp, replace = TRUE)\n  mean(boot_sample)\n})\n\n# Compare standard errors\nclassical_se &lt;- sd(bp_reduction) / sqrt(n_bp)\nboot_se &lt;- sd(boot_means_bp)\n\ncat(\"Classical SE (s/âˆšn):\", round(classical_se, 3), \"\\n\")\n\nClassical SE (s/âˆšn): 1.463 \n\ncat(\"Bootstrap SE:\", round(boot_se, 3), \"\\n\")\n\nBootstrap SE: 1.41 \n\ncat(\"Ratio:\", round(boot_se / classical_se, 3))\n\nRatio: 0.964\n\n\n\nThe bootstrap SE is very close to the classical SE when assumptions are met!"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-bootstrap-se-shines-trimmed-mean",
@@ -7802,7 +7802,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-bootstrap-distribution",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Visualizing the Bootstrap Distribution",
-    "text": "Visualizing the Bootstrap Distribution\n\n\nCode\ntibble(x = boot_trimmed_sal) |&gt;\n  ggplot(aes(x = x/1000)) +\n  geom_histogram(bins = 50, fill = \"coral\", alpha = 0.7) +\n  geom_vline(xintercept = xbar_tr/1000, color = \"blue\", linewidth = 1.2) +\n  labs(x = expression(bar(x)[tr]^\"*\" ~ \"(thousands $)\"), y = \"Count\",\n       title = \"Bootstrap Distribution of 10% Trimmed Mean Salary\",\n       subtitle = paste0(\"SE = $\", round(sd(boot_trimmed_sal)/1000, 1), \"k\"))\n\n\n\nThe bootstrap distribution appears approximately normal — good for t-based intervals!"
+    "text": "Visualizing the Bootstrap Distribution\n\n\nCode\ntibble(x = boot_trimmed_sal) |&gt;\n  ggplot(aes(x = x/1000)) +\n  geom_histogram(bins = 50, fill = \"coral\", alpha = 0.7) +\n  geom_vline(xintercept = xbar_tr/1000, color = \"blue\", linewidth = 1.2) +\n  labs(x = expression(bar(x)[tr]^\"*\" ~ \"(thousands $)\"), y = \"Count\",\n       title = \"Bootstrap Distribution of 10% Trimmed Mean Salary\",\n       subtitle = paste0(\"SE = $\", round(sd(boot_trimmed_sal)/1000, 1), \"k\"))\n\n\n\nThe bootstrap distribution appears approximately normal â€” good for t-based intervals!"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bias-in-bootstrap-distributions-chihara-5.6",
@@ -7816,7 +7816,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#types-of-bootstrap-confidence-intervals",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Types of Bootstrap Confidence Intervals",
-    "text": "Types of Bootstrap Confidence Intervals\nSeveral methods exist for constructing bootstrap CIs:\n\nBootstrap Percentile Interval — Simple, intuitive\nBootstrap t Interval — Better theoretical properties\nBCa Interval — Bias-corrected and accelerated (advanced)\n\n\n\n\n\n\n\n\nPractical Guidance\n\n\n\nPercentile interval: Good when bootstrap distribution is symmetric, low bias\nBootstrap t interval: Better for small samples, handles skewness\nBoth require the bootstrap distribution to be a reasonable approximation"
+    "text": "Types of Bootstrap Confidence Intervals\nSeveral methods exist for constructing bootstrap CIs:\n\nBootstrap Percentile Interval â€” Simple, intuitive\nBootstrap t Interval â€” Better theoretical properties\nBCa Interval â€” Bias-corrected and accelerated (advanced)\n\n\n\n\n\n\n\n\nPractical Guidance\n\n\n\nPercentile interval: Good when bootstrap distribution is symmetric, low bias\nBootstrap t interval: Better for small samples, handles skewness\nBoth require the bootstrap distribution to be a reasonable approximation"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bootstrap-percentile-interval-devore-8.5",
@@ -7851,7 +7851,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bootstrap-distribution-of-median",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Bootstrap Distribution of Median",
-    "text": "Bootstrap Distribution of Median\n\n\nCode\nmed_ci &lt;- quantile(boot_medians, c(0.025, 0.975))\n\ntibble(x = boot_medians) |&gt;\n  ggplot(aes(x = x)) +\n  geom_histogram(bins = 30, fill = \"darkgreen\", alpha = 0.7) +\n  geom_vline(xintercept = med_ci, color = \"red\", linewidth = 1.2, linetype = \"dashed\") +\n  geom_vline(xintercept = median(survival_times), color = \"black\", linewidth = 1) +\n  labs(x = expression(tilde(x)^\"*\"), y = \"Count\",\n       title = \"Bootstrap Distribution of Median Survival Time\",\n       subtitle = \"Notice: Discrete nature of the median\")\n\n\n\nThe bootstrap median distribution takes on few unique values — this is typical!"
+    "text": "Bootstrap Distribution of Median\n\n\nCode\nmed_ci &lt;- quantile(boot_medians, c(0.025, 0.975))\n\ntibble(x = boot_medians) |&gt;\n  ggplot(aes(x = x)) +\n  geom_histogram(bins = 30, fill = \"darkgreen\", alpha = 0.7) +\n  geom_vline(xintercept = med_ci, color = \"red\", linewidth = 1.2, linetype = \"dashed\") +\n  geom_vline(xintercept = median(survival_times), color = \"black\", linewidth = 1) +\n  labs(x = expression(tilde(x)^\"*\"), y = \"Count\",\n       title = \"Bootstrap Distribution of Median Survival Time\",\n       subtitle = \"Notice: Discrete nature of the median\")\n\n\n\nThe bootstrap median distribution takes on few unique values â€” this is typical!"
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#bootstrap-t-confidence-interval-devore-8.5",
@@ -7914,7 +7914,7 @@
     "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#classical-vs.-bootstrap-guidelines-chihara-7.5.1",
     "title": "Lesson 10: Bootstrap Confidence Intervals",
     "section": "Classical vs. Bootstrap: Guidelines (Chihara 7.5.1)",
-    "text": "Classical vs. Bootstrap: Guidelines (Chihara 7.5.1)\n\n\n\n\n\n\n\n\n\nSituation\nRecommendation\n\n\n\n\nSmall n (≤10), normal data\nClassical t preferred\n\n\nSmall n (≤10), skewed data\nBootstrap t (with caution)\n\n\nLarge n, normal data\nEither works well\n\n\nLarge n, skewed data\nBootstrap t preferred\n\n\nComplex statistic (trimmed mean, ratio)\nBootstrap (no classical alternative)\n\n\n\n\n\n\nKey insight: The bootstrap learns skewness from the sample, but small samples may not accurately represent population skewness."
+    "text": "Classical vs. Bootstrap: Guidelines (Chihara 7.5.1)\n\n\n\n\n\n\n\n\n\nSituation\nRecommendation\n\n\n\n\nSmall n (â‰¤10), normal data\nClassical t preferred\n\n\nSmall n (â‰¤10), skewed data\nBootstrap t (with caution)\n\n\nLarge n, normal data\nEither works well\n\n\nLarge n, skewed data\nBootstrap t preferred\n\n\nComplex statistic (trimmed mean, ratio)\nBootstrap (no classical alternative)\n\n\n\n\n\n\nKey insight: The bootstrap learns skewness from the sample, but small samples may not accurately represent population skewness."
   },
   {
     "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-does-bootstrap-work-well",
@@ -8678,5 +8678,152 @@
     "title": "Homework 4 Solutions",
     "section": "Problem 6: Sample Size and CI Width",
     "text": "Problem 6: Sample Size and CI Width\n\nn_pilot &lt;- 20\nxbar_pilot &lt;- 47\ns_pilot &lt;- 18\n\n\nPart (a): Required Sample Size\nFor a margin of error \\(E = 5\\) minutes with 95% confidence:\n\\[n = \\left(\\frac{z_{\\alpha/2} \\cdot \\sigma}{E}\\right)^2\\]\n\nE &lt;- 5  # desired margin of error\nz &lt;- qnorm(0.975)\nsigma_est &lt;- s_pilot\n\nn_required &lt;- (z * sigma_est / E)^2\ncat(\"Required sample size:\", ceiling(n_required), \"patients\")\n\nRequired sample size: 50 patients\n\n\nWe need at least 50 patients to achieve a margin of error of 5 minutes.\n\n\nPart (b): Margin of Error for n = 100\n\nn_available &lt;- 100\nmargin_100 &lt;- z * sigma_est / sqrt(n_available)\ncat(\"Expected margin of error with n = 100:\", round(margin_100, 2), \"minutes\")\n\nExpected margin of error with n = 100: 3.53 minutes\n\n\nWith 100 patients, the expected margin of error is approximately 3.5 minutes.\n\n\nPart (c): CI from Pilot Data\n\n# Using t-interval since sigma is unknown\nt_crit &lt;- qt(0.975, df = n_pilot - 1)\nse_pilot &lt;- s_pilot / sqrt(n_pilot)\nmargin_pilot &lt;- t_crit * se_pilot\n\nci_pilot &lt;- xbar_pilot + c(-1, 1) * margin_pilot\n\ncat(\"95% CI for mean wait time: (\", round(ci_pilot[1], 2), \",\", \n    round(ci_pilot[2], 2), \") minutes\\n\\n\")\n\n95% CI for mean wait time: ( 38.58 , 55.42 ) minutes\n\ncat(\"Hospital target: 45 minutes\\n\")\n\nHospital target: 45 minutes\n\ncat(\"Is 45 in the CI?\", (ci_pilot[1] &lt; 45) & (45 &lt; ci_pilot[2]), \"\\n\")\n\nIs 45 in the CI? TRUE \n\ncat(\"Lower bound of CI:\", round(ci_pilot[1], 2), \"minutes\")\n\nLower bound of CI: 38.58 minutes\n\n\nInterpretation: The 95% CI is approximately (38.6, 55.4) minutes. Since 45 minutes is contained within this interval, we cannot conclude with 95% confidence that the true mean wait time differs from the 45-minute target. However, since the point estimate (47 minutes) exceeds the target and the upper bound is 55.4 minutes, there is some concern that wait times may exceed the target. A larger study would provide more precision."
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#a-common-misconception",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#a-common-misconception",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "A Common Misconception",
+    "text": "A Common Misconception\n\n\n\n\n\n\nThe Intuition Trap\n\n\n“The percentile interval can be asymmetric, so it should handle skewed distributions better than bootstrap t.”\nThis reasoning is incorrect!\n\n\n\n\nThe confusion arises from conflating two different questions:\n\nCan the interval be asymmetric? → Yes, both methods can produce asymmetric intervals\nDoes the interval correctly adjust for skewness? → The studentized bootstrap t does this better"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#why-bootstrap-t-handles-skewness-better-chihara-7.5.1",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#why-bootstrap-t-handles-skewness-better-chihara-7.5.1",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Why Bootstrap t Handles Skewness Better (Chihara 7.5.1)",
+    "text": "Why Bootstrap t Handles Skewness Better (Chihara 7.5.1)\nFrom Chihara and Hesterberg:\n\n“The bootstrap percentile makes less of a skewness correction than does the bootstrap t.”\n\n\nThe key insight is studentization — dividing by SE creates a correction:\n\nFor right-skewed data: When \\(\\bar{X}^* &gt; \\bar{x}\\), typically \\(S^* &gt; s\\)\nThe larger denominator dampens extreme positive values\nThis creates negative skew in \\(T^*\\) that counteracts the bias"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#the-mechanism-correlation-between-mean-and-sd",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#the-mechanism-correlation-between-mean-and-sd",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "The Mechanism: Correlation Between Mean and SD",
+    "text": "The Mechanism: Correlation Between Mean and SD\n\n\nCode\n# Generate skewed data\nset.seed(551)\nskewed_data &lt;- rexp(20, rate = 0.5)\n\n# Bootstrap and track mean, SD, and t-stat\nboot_stats &lt;- replicate(5000, {\n  boot_samp &lt;- sample(skewed_data, length(skewed_data), replace = TRUE)\n  c(mean = mean(boot_samp), \n    sd = sd(boot_samp),\n    t = (mean(boot_samp) - mean(skewed_data)) / (sd(boot_samp) / sqrt(length(skewed_data))))\n}, simplify = FALSE) |&gt; bind_rows()\n\n# Plot correlation\np1 &lt;- ggplot(boot_stats, aes(x = mean, y = sd)) +\n  geom_point(alpha = 0.2, color = \"steelblue\") +\n  geom_smooth(method = \"lm\", color = \"red\", se = FALSE) +\n  labs(x = expression(bar(X)^\"*\"), y = expression(S^\"*\"),\n       title = \"Strong Positive Correlation\",\n       subtitle = paste0(\"r = \", round(cor(boot_stats$mean, boot_stats$sd), 3)))\n\np2 &lt;- ggplot(boot_stats, aes(x = t)) +\n  geom_histogram(bins = 50, fill = \"coral\", alpha = 0.7) +\n  geom_vline(xintercept = c(-1.96, 1.96), linetype = \"dashed\", color = \"blue\") +\n  labs(x = expression(T^\"*\"), y = \"Count\",\n       title = \"Bootstrap t Distribution\",\n       subtitle = \"Left-skewed due to correlation\")\n\np1 + p2"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#coverage-error-rates-chihara-7.5.1",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#coverage-error-rates-chihara-7.5.1",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Coverage Error Rates (Chihara 7.5.1)",
+    "text": "Coverage Error Rates (Chihara 7.5.1)\n\n\n\n\n\n\nTheoretical Result\n\n\nAs sample size \\(n\\) increases by a factor of 10:\n\nBootstrap t coverage error decreases by factor of 10 (first-order accurate)\nPercentile coverage error decreases by factor of \\(\\sqrt{10}\\) (second-order accurate)\n\n\n\n\n\nThis means the bootstrap t interval converges to correct coverage much faster for skewed populations!"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#simulation-coverage-comparison-for-skewed-data",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#simulation-coverage-comparison-for-skewed-data",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Simulation: Coverage Comparison for Skewed Data",
+    "text": "Simulation: Coverage Comparison for Skewed Data\n\n\nCode\n# Simulation comparing coverage rates\nset.seed(551)\nn_sim &lt;- 1000\nn &lt;- 15\ntrue_mu &lt;- 2  # True mean of Exp(0.5)\n\n# Function to compute intervals\ncompute_coverage &lt;- function(n_sim, n, B = 2000) {\n  coverage &lt;- replicate(n_sim, {\n    # Generate skewed data (exponential)\n    x &lt;- rexp(n, rate = 0.5)\n    xbar &lt;- mean(x)\n    se &lt;- sd(x) / sqrt(n)\n    \n    # Classical t interval\n    t_ci &lt;- xbar + c(-1, 1) * qt(0.975, n-1) * se\n    \n    # Percentile interval\n    boot_means &lt;- replicate(B, mean(sample(x, n, replace = TRUE)))\n    pct_ci &lt;- quantile(boot_means, c(0.025, 0.975))\n    \n    # Bootstrap t interval\n    boot_t &lt;- replicate(B, {\n      boot_samp &lt;- sample(x, n, replace = TRUE)\n      (mean(boot_samp) - xbar) / (sd(boot_samp) / sqrt(n))\n    })\n    q_t &lt;- quantile(boot_t, c(0.025, 0.975))\n    boot_t_ci &lt;- c(xbar - q_t[2] * se, xbar - q_t[1] * se)\n    \n    # Check coverage\n    c(classical = (t_ci[1] &lt; true_mu & true_mu &lt; t_ci[2]),\n      percentile = (pct_ci[1] &lt; true_mu & true_mu &lt; pct_ci[2]),\n      bootstrap_t = (boot_t_ci[1] &lt; true_mu & true_mu &lt; boot_t_ci[2]))\n  })\n  \n  rowMeans(coverage)\n}\n\ncoverage_results &lt;- compute_coverage(n_sim, n)\n\ntibble(\n  Method = c(\"Classical t\", \"Percentile\", \"Bootstrap t\"),\n  Coverage = round(coverage_results * 100, 1),\n  Target = 95.0\n) |&gt;\n  knitr::kable(col.names = c(\"Method\", \"Actual Coverage (%)\", \"Target (%)\"),\n               caption = paste0(\"Coverage rates for Exp(0.5) data, n = \", n, \", \", n_sim, \" simulations\"))\n\n\n\nCoverage rates for Exp(0.5) data, n = 15, 1000 simulations\n\n\nMethod\nActual Coverage (%)\nTarget (%)\n\n\n\n\nClassical t\n92.9\n95\n\n\nPercentile\n90.4\n95\n\n\nBootstrap t\n95.4\n95"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#two-types-of-bootstrap-t-intervals",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#two-types-of-bootstrap-t-intervals",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Two Types of “Bootstrap t” Intervals",
+    "text": "Two Types of “Bootstrap t” Intervals\n\n\n\n\n\n\nImportant Distinction\n\n\nThere are actually two different methods both called “bootstrap t”:\n\n\n\n\n1. Simple Bootstrap t (uses t critical values): \\[\\hat{\\theta} \\pm t_{\\alpha/2, n-1} \\cdot SE_{boot}\\]\n\nUses bootstrap only for SE estimation\nStill relies on t-distribution for critical values\nAssumes bootstrap distribution is approximately normal\n\n\n\n2. Studentized Bootstrap t (uses bootstrap quantiles): \\[\\left(\\bar{x} - Q^*_{1-\\alpha/2} \\cdot SE, \\;\\; \\bar{x} - Q^*_{\\alpha/2} \\cdot SE\\right)\\]\n\nUses quantiles from the bootstrap t distribution\nDoes NOT assume normality — adapts to skewness\nThis is the method that handles skewed data well"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#normality-assumptions-a-clear-summary",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#normality-assumptions-a-clear-summary",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Normality Assumptions: A Clear Summary",
+    "text": "Normality Assumptions: A Clear Summary\n\n\n\nComparison of Normality Assumptions Across Methods\n\n\n\n\n\n\n\n\n\nMethod\nPopulation Normal?\nBootstrap Dist Normal?\nHandles Skewness?\nBias Correction?\n\n\n\n\nClassical t\nYes (or large n)\nN/A\nPoorly\nNo\n\n\nSimple Bootstrap t\nNo\nYes\nPoorly\nNo\n\n\nStudentized Bootstrap t\nNo\nNo\nWell\nPartial\n\n\nPercentile\nNo\nNo\nModerately\nNo\n\n\nBCa\nNo\nNo\nWell\nYes"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-to-use-each-method-updated-guidelines",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-to-use-each-method-updated-guidelines",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "When to Use Each Method: Updated Guidelines",
+    "text": "When to Use Each Method: Updated Guidelines\n\n\nUse Percentile When:\n\nBootstrap distribution is symmetric\nBias is small\nSimplicity is valued\nComputing SE is difficult\n\n\nUse Studentized Bootstrap t When:\n\nData is skewed\nAccurate coverage is critical\nSample size is moderate (15-50)\nSE can be computed for each resample\n\n\n\n\n\n\n\n\n\nPractical Advice\n\n\nFor small samples (\\(n &lt; 10\\)): Classical t may actually be better because bootstrap cannot accurately estimate skewness from too few observations (Chihara 7.5.1)."
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-intervals-for-skewed-data",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-intervals-for-skewed-data",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Visualizing the Intervals for Skewed Data",
+    "text": "Visualizing the Intervals for Skewed Data\n\n\nCode\n# Compare all methods on skewed data\nset.seed(551)\nskewed_sample &lt;- rexp(20, rate = 0.5)\nxbar &lt;- mean(skewed_sample)\nse &lt;- sd(skewed_sample) / sqrt(length(skewed_sample))\nB &lt;- 10000\n\n# Bootstrap samples\nboot_means &lt;- replicate(B, mean(sample(skewed_sample, length(skewed_sample), replace = TRUE)))\nboot_t &lt;- replicate(B, {\n  bs &lt;- sample(skewed_sample, length(skewed_sample), replace = TRUE)\n  (mean(bs) - xbar) / (sd(bs) / sqrt(length(skewed_sample)))\n})\n\n# Intervals\nci_classical &lt;- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * se\nci_simple_boot_t &lt;- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * sd(boot_means)\nci_percentile &lt;- quantile(boot_means, c(0.025, 0.975))\nq_boot_t &lt;- quantile(boot_t, c(0.025, 0.975))\nci_studentized &lt;- c(xbar - q_boot_t[2] * se, xbar - q_boot_t[1] * se)\n\n# Create comparison data frame\nci_comparison &lt;- tibble(\n  Method = factor(c(\"Classical t\", \"Simple Boot t\", \"Percentile\", \"Studentized Boot t\"),\n                  levels = c(\"Classical t\", \"Simple Boot t\", \"Percentile\", \"Studentized Boot t\")),\n  Lower = c(ci_classical[1], ci_simple_boot_t[1], ci_percentile[1], ci_studentized[1]),\n  Upper = c(ci_classical[2], ci_simple_boot_t[2], ci_percentile[2], ci_studentized[2]),\n  Center = xbar\n)\n\nggplot(ci_comparison, aes(y = Method)) +\n  geom_segment(aes(x = Lower, xend = Upper, yend = Method), linewidth = 2, color = \"steelblue\") +\n  geom_point(aes(x = Center), size = 3, color = \"black\") +\n  geom_point(aes(x = Lower), size = 2, color = \"red\") +\n  geom_point(aes(x = Upper), size = 2, color = \"red\") +\n  geom_vline(xintercept = 2, linetype = \"dashed\", color = \"darkgreen\", linewidth = 1) +\n  annotate(\"text\", x = 2, y = 4.4, label = expression(mu == 2 ~ \"(true mean)\"), \n           color = \"darkgreen\", size = 4) +\n  labs(x = \"Value\", y = \"\",\n       title = \"Comparison of 95% CIs for Skewed Data (Exp(0.5), n = 20)\",\n       subtitle = \"Studentized bootstrap t stretches further right to capture the true mean\") +\n  theme_minimal(base_size = 14)"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#key-takeaways",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#key-takeaways",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\n\n\n\n\n\nBootstrap CI Selection\n\n\n\nPercentile interval: Simple, intuitive, but provides less skewness correction\nSimple bootstrap t: Uses bootstrap SE with t critical values; assumes approximate normality of bootstrap distribution\nStudentized bootstrap t: Uses bootstrap t-statistics; adapts to skewness without assuming normality; best coverage for skewed data\nFor small samples (\\(n &lt; 10\\)): Classical t may be preferable—bootstrap can’t estimate skewness well\nBCa interval: An advanced option that corrects for both bias and skewness (available in R packages)"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#review-three-bootstrap-ci-methods",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#review-three-bootstrap-ci-methods",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Review: Three Bootstrap CI Methods",
+    "text": "Review: Three Bootstrap CI Methods\nWe’ve now seen three approaches to bootstrap confidence intervals:\n\n\n\n\n\n\n\n\nMethod\nFormula\nKey Idea\n\n\n\n\nPercentile\n\\((\\hat{\\theta}^*_{\\alpha/2}, \\hat{\\theta}^*_{1-\\alpha/2})\\)\nUse quantiles of bootstrap distribution directly\n\n\nSimple Bootstrap t\n\\(\\hat{\\theta} \\pm t_{\\alpha/2, n-1} \\cdot SE_{boot}\\)\nBootstrap for SE, t-distribution for critical values\n\n\nStudentized Bootstrap t\n\\((\\bar{x} - Q^*_{1-\\alpha/2} \\cdot SE, \\; \\bar{x} - Q^*_{\\alpha/2} \\cdot SE)\\)\nBootstrap t-statistics, use their quantiles\n\n\n\n\nKey question: When should we use each method?"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#the-two-bootstrap-t-methods",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#the-two-bootstrap-t-methods",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "The Two “Bootstrap t” Methods",
+    "text": "The Two “Bootstrap t” Methods\n\n\n\n\n\n\nImportant Distinction\n\n\nThere are actually two different methods both called “bootstrap t”:\n\n\n\n1. Simple Bootstrap t (Devore 8.5): \\[\\hat{\\theta} \\pm t_{\\alpha/2, n-1} \\cdot SE_{boot}\\]\n\nUses bootstrap only to estimate SE\nUses standard t critical values (±1.96, ±2.045, etc.)\nAssumes the bootstrap distribution is approximately normal\n\n\n2. Studentized Bootstrap t (Chihara 7.5): \\[\\left(\\bar{x} - Q^*_{1-\\alpha/2} \\cdot SE, \\;\\; \\bar{x} - Q^*_{\\alpha/2} \\cdot SE\\right)\\]\n\nComputes \\(T^* = \\frac{\\bar{X}^* - \\bar{x}}{S^*/\\sqrt{n}}\\) for each resample\nUses quantiles from the bootstrap t distribution\nDoes NOT assume normality — adapts to skewness"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#why-studentized-bootstrap-t-handles-skewness-better",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#why-studentized-bootstrap-t-handles-skewness-better",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Why Studentized Bootstrap t Handles Skewness Better",
+    "text": "Why Studentized Bootstrap t Handles Skewness Better\nFrom Chihara and Hesterberg (Section 7.5.1):\n\n“The bootstrap percentile makes less of a skewness correction than does the bootstrap t.”\n\n\nThe key insight is studentization — dividing by \\(S^*/\\sqrt{n}\\) creates a correction:\n\nFor right-skewed data: When \\(\\bar{X}^* &gt; \\bar{x}\\), typically \\(S^* &gt; s\\) also\nThe larger denominator dampens extreme positive \\(T^*\\) values\nThis creates left-skew in \\(T^*\\) that counteracts the coverage bias"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-studentization-effect",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-studentization-effect",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Visualizing the Studentization Effect",
+    "text": "Visualizing the Studentization Effect\n\n\nCode\n# Generate skewed data\nset.seed(551)\nskewed_data &lt;- rexp(20, rate = 0.5)\n\n# Bootstrap and track mean, SD, and t-stat\nboot_stats &lt;- replicate(5000, {\n  boot_samp &lt;- sample(skewed_data, length(skewed_data), replace = TRUE)\n  c(mean = mean(boot_samp), \n    sd = sd(boot_samp),\n    t = (mean(boot_samp) - mean(skewed_data)) / (sd(boot_samp) / sqrt(length(skewed_data))))\n}, simplify = FALSE) |&gt; bind_rows()\n\n# Calculate skewness manually\ncalc_skewness &lt;- function(x) {\n  n &lt;- length(x)\n  m &lt;- mean(x)\n  s &lt;- sd(x)\n  sum((x - m)^3) / (n * s^3)\n}\n\n# Plot correlation and bootstrap t distribution\np1 &lt;- ggplot(boot_stats, aes(x = mean, y = sd)) +\n  geom_point(alpha = 0.2, color = \"steelblue\") +\n  geom_smooth(method = \"lm\", color = \"red\", se = FALSE) +\n  labs(x = expression(bar(X)^\"*\"), y = expression(S^\"*\"),\n       title = \"Positive Correlation\") +\n  annotate(\"text\", x = min(boot_stats$mean) + 0.3, y = max(boot_stats$sd) - 0.1,\n           label = paste0(\"r = \", round(cor(boot_stats$mean, boot_stats$sd), 3)),\n           size = 5, hjust = 0) +\n  theme(plot.title = element_text(size = 16))\n\np2 &lt;- ggplot(boot_stats, aes(x = t)) +\n  geom_histogram(aes(y = after_stat(density)), bins = 60, fill = \"coral\", alpha = 0.7) +\n  stat_function(fun = dt, args = list(df = 19), color = \"blue\", linewidth = 1.2, linetype = \"dashed\") +\n  geom_vline(xintercept = quantile(boot_stats$t, c(0.025, 0.975)), color = \"darkred\", linewidth = 1) +\n  labs(x = expression(T^\"*\"), y = \"Density\",\n       title = \"Bootstrap t is Left-Skewed\") +\n  annotate(\"text\", x = -4.5, y = 0.35, \n           label = paste0(\"Skewness = \", round(calc_skewness(boot_stats$t), 2)),\n           size = 4.5, hjust = 0) +\n  annotate(\"text\", x = 1.5, y = 0.25, label = \"t(19) for\\nreference\", color = \"blue\", size = 4) +\n  theme(plot.title = element_text(size = 16)) +\n  xlim(-6, 4)\n\np1 + p2 + plot_layout(widths = c(1, 1.2))\n\n\n\nThe left tail of \\(T^*\\) extends further than the right — this asymmetry adjusts for the skewness in the data."
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#theoretical-accuracy-chihara-7.5.1",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#theoretical-accuracy-chihara-7.5.1",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Theoretical Accuracy (Chihara 7.5.1)",
+    "text": "Theoretical Accuracy (Chihara 7.5.1)\n\n\n\n\n\n\nCoverage Error Rates\n\n\nAs sample size \\(n\\) increases by a factor of 10:\n\nStudentized Bootstrap t: Coverage error decreases by factor of 10\nPercentile: Coverage error decreases by factor of \\(\\sqrt{10} \\approx 3.2\\)\n\n\n\n\n\nThis means the studentized bootstrap t converges to correct coverage much faster than the percentile interval for skewed populations.\nThe percentile interval and classical t have similar (slower) convergence rates."
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#simulation-coverage-comparison",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#simulation-coverage-comparison",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Simulation: Coverage Comparison",
+    "text": "Simulation: Coverage Comparison\n\n\nCode\n# Simulation comparing coverage rates for skewed data\nset.seed(551)\nn_sim &lt;- 1000\nn &lt;- 15\ntrue_mu &lt;- 2  # True mean of Exp(0.5)\n\ncompute_coverage &lt;- function(n_sim, n, B = 2000) {\n  coverage &lt;- replicate(n_sim, {\n    x &lt;- rexp(n, rate = 0.5)  # Right-skewed data\n    xbar &lt;- mean(x)\n    se &lt;- sd(x) / sqrt(n)\n    \n    # Classical t\n    t_ci &lt;- xbar + c(-1, 1) * qt(0.975, n-1) * se\n    \n    # Percentile\n    boot_means &lt;- replicate(B, mean(sample(x, n, replace = TRUE)))\n    pct_ci &lt;- quantile(boot_means, c(0.025, 0.975))\n    \n    # Studentized bootstrap t\n    boot_t &lt;- replicate(B, {\n      bs &lt;- sample(x, n, replace = TRUE)\n      (mean(bs) - xbar) / (sd(bs) / sqrt(n))\n    })\n    q_t &lt;- quantile(boot_t, c(0.025, 0.975))\n    boot_t_ci &lt;- c(xbar - q_t[2] * se, xbar - q_t[1] * se)\n    \n    c(classical = (t_ci[1] &lt; true_mu & true_mu &lt; t_ci[2]),\n      percentile = (pct_ci[1] &lt; true_mu & true_mu &lt; pct_ci[2]),\n      bootstrap_t = (boot_t_ci[1] &lt; true_mu & true_mu &lt; boot_t_ci[2]))\n  })\n  rowMeans(coverage)\n}\n\ncoverage_results &lt;- compute_coverage(n_sim, n)\n\ntibble(\n  Method = c(\"Classical t\", \"Percentile\", \"Studentized Bootstrap t\"),\n  `Actual Coverage` = paste0(round(coverage_results * 100, 1), \"%\"),\n  `Target` = \"95%\"\n) |&gt;\n  knitr::kable(caption = paste0(\"Coverage for Exp(0.5) data, n = \", n, \" (\", n_sim, \" simulations)\"))\n\n\n\nCoverage for Exp(0.5) data, n = 15 (1000 simulations)\n\n\nMethod\nActual Coverage\nTarget\n\n\n\n\nClassical t\n92.9%\n95%\n\n\nPercentile\n90.4%\n95%\n\n\nStudentized Bootstrap t\n95.4%\n95%"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-intervals",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#visualizing-the-intervals",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Visualizing the Intervals",
+    "text": "Visualizing the Intervals\n\n\nCode\n# Compare intervals on a single skewed sample\nset.seed(551)\nskewed_sample &lt;- rexp(20, rate = 0.5)\nxbar &lt;- mean(skewed_sample)\nse &lt;- sd(skewed_sample) / sqrt(length(skewed_sample))\nB &lt;- 10000\n\n# Bootstrap distributions\nboot_means &lt;- replicate(B, mean(sample(skewed_sample, length(skewed_sample), replace = TRUE)))\nboot_t &lt;- replicate(B, {\n  bs &lt;- sample(skewed_sample, length(skewed_sample), replace = TRUE)\n  (mean(bs) - xbar) / (sd(bs) / sqrt(length(skewed_sample)))\n})\n\n# Compute all intervals\nci_classical &lt;- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * se\nci_simple_boot_t &lt;- xbar + c(-1, 1) * qt(0.975, length(skewed_sample) - 1) * sd(boot_means)\nci_percentile &lt;- quantile(boot_means, c(0.025, 0.975))\nq_boot_t &lt;- quantile(boot_t, c(0.025, 0.975))\nci_studentized &lt;- c(xbar - q_boot_t[2] * se, xbar - q_boot_t[1] * se)\n\nci_comparison &lt;- tibble(\n  Method = factor(c(\"Classical t\", \"Simple Bootstrap t\", \"Percentile\", \"Studentized Bootstrap t\"),\n                  levels = c(\"Classical t\", \"Simple Bootstrap t\", \"Percentile\", \"Studentized Bootstrap t\")),\n  Lower = c(ci_classical[1], ci_simple_boot_t[1], ci_percentile[1], ci_studentized[1]),\n  Upper = c(ci_classical[2], ci_simple_boot_t[2], ci_percentile[2], ci_studentized[2])\n)\n\nggplot(ci_comparison, aes(y = Method)) +\n  geom_segment(aes(x = Lower, xend = Upper, yend = Method), linewidth = 2.5, color = \"steelblue\") +\n  geom_point(aes(x = Lower), size = 3, color = \"red\") +\n  geom_point(aes(x = Upper), size = 3, color = \"red\") +\n  geom_point(aes(x = xbar, y = Method), size = 3, color = \"black\") +\n  geom_vline(xintercept = 2, linetype = \"dashed\", color = \"darkgreen\", linewidth = 1.2) +\n  annotate(\"text\", x = 2, y = 4.5, label = expression(mu == 2 ~ \"(true mean)\"), \n           color = \"darkgreen\", size = 5) +\n  labs(x = \"Value\", y = \"\",\n       title = \"Comparison of 95% CIs for Right-Skewed Data\",\n       subtitle = \"Studentized bootstrap t extends further right to capture the true mean\") +\n  theme_minimal(base_size = 16)"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#summary-normality-assumptions",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#summary-normality-assumptions",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Summary: Normality Assumptions",
+    "text": "Summary: Normality Assumptions\n\n\n\n\n\n\n\n\n\n\n\nMethod\nAssumes Normal Population?\nAssumes Normal Bootstrap Dist?\nHandles Skewness?\n\n\n\n\nClassical t\nYes (or large n for CLT)\n—\nPoorly\n\n\nSimple Bootstrap t\nNo\nYes\nPoorly\n\n\nStudentized Bootstrap t\nNo\nNo\nWell\n\n\nPercentile\nNo\nNo\nModerately\n\n\n\n\n\n\n\n\n\n\n\n\nKey Insight\n\n\nThe studentized bootstrap t is the only method that adapts to skewness without assuming normality. It does this through studentization, not by assuming any particular distribution."
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-to-use-each-method",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#when-to-use-each-method",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "When to Use Each Method",
+    "text": "When to Use Each Method\n\n\nPercentile Interval\n\nBootstrap distribution is symmetric\nLow bias\nSimplicity is important\nSE is hard to compute (e.g., median)\n\n\nStudentized Bootstrap t\n\nData is skewed\nAccurate coverage is critical\nSample size is moderate (\\(n \\geq 15\\))\nSE can be computed for each resample\n\n\n\n\n\n\n\n\n\nSmall Sample Warning\n\n\nFor \\(n &lt; 10\\): Classical t may be better! The bootstrap cannot accurately estimate skewness from too few observations.\nFrom Chihara & Hesterberg: “We recommend the formula t if \\(n \\leq 10\\), and the bootstrap t otherwise.”"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#decision-guide",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#decision-guide",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "Decision Guide",
+    "text": "Decision Guide"
+  },
+  {
+    "objectID": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#what-the-bootstrap-cannot-do",
+    "href": "lessons/10_Bootstrap_CI/10_Bootstrap_CI.html#what-the-bootstrap-cannot-do",
+    "title": "Lesson 10: Bootstrap Confidence Intervals",
+    "section": "What the Bootstrap Cannot Do",
+    "text": "What the Bootstrap Cannot Do\n\n\nBootstrap CAN estimate:\n\nStandard errors\nBias\nSkewness of sampling distribution\nConfidence intervals\n\n\nBootstrap CANNOT:\n\nImprove point estimates\nFix a bad/unrepresentative sample\nCreate new information\n\n\n\n\n\n\n\n\n\nRemember\n\n\nThe bootstrap tells you about the variability of your estimate. It does not tell you whether your sample was good in the first place!"
   }
 ]
