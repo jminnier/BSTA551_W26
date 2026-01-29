@@ -4,7 +4,7 @@ subtitle: "BSTA 551: Statistical Inference"
 author: "Jessica Minnier"
 title-slide-attributes:
     data-background-color: "#006a4e"
-date: "`r library(here); source(here('class_dates.R')); w5d1`"
+date: "`r library(here); source(here('class_dates.R')); w4d2`"
 format: 
   revealjs:
     theme: "../simple_NW.scss"

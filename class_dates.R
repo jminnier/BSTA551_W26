@@ -40,14 +40,15 @@ w5d2 = cal_dates[31]
 hw4 = cal_dates[32]
 hw3sol = cal_dates[35]
 gp_eval1 = cal_dates[32]
+mid_open = cal_dates[29]
+mid_close = cal_dates[44]
 
 ## Week 6 dates
 w6d1 = cal_dates[36]
 w6d2 = cal_dates[38]
 hw5 = cal_dates[39]
 hw4sol = cal_dates[42]
-q2_open = cal_dates[38]
-q2_close = cal_dates[42]
+
 
 ## Week 7 dates
 w7d1 = cal_dates[43]

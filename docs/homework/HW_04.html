@@ -21,6 +21,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -69,6 +104,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -125,7 +189,15 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-confidence-intervals-for-proportions-devore-section-8.3" id="toc-problem-1-confidence-intervals-for-proportions-devore-section-8.3" class="nav-link" data-scroll-target="#problem-1-confidence-intervals-for-proportions-devore-section-8.3">Problem 1: Confidence Intervals for Proportions (Devore Section 8.3)</a></li>
+  <li><a href="#problem-2-bootstrap-confidence-intervals-devore-section-8.5" id="toc-problem-2-bootstrap-confidence-intervals-devore-section-8.5" class="nav-link" data-scroll-target="#problem-2-bootstrap-confidence-intervals-devore-section-8.5">Problem 2: Bootstrap Confidence Intervals (Devore Section 8.5)</a></li>
+  <li><a href="#problem-3-two-sample-bootstrap" id="toc-problem-3-two-sample-bootstrap" class="nav-link" data-scroll-target="#problem-3-two-sample-bootstrap">Problem 3: Two-Sample Bootstrap</a></li>
+  <li><a href="#problem-4-bootstrap-for-the-median-devore-8.64-style" id="toc-problem-4-bootstrap-for-the-median-devore-8.64-style" class="nav-link" data-scroll-target="#problem-4-bootstrap-for-the-median-devore-8.64-style">Problem 4: Bootstrap for the Median (Devore 8.64 style)</a></li>
+  <li><a href="#problem-5-devore-8.63-study-hours" id="toc-problem-5-devore-8.63-study-hours" class="nav-link" data-scroll-target="#problem-5-devore-8.63-study-hours">Problem 5: Devore 8.63 (Study Hours)</a></li>
+  <li><a href="#problem-6-sample-size-and-ci-width" id="toc-problem-6-sample-size-and-ci-width" class="nav-link" data-scroll-target="#problem-6-sample-size-and-ci-width">Problem 6: Sample Size and CI Width</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_04.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -152,7 +224,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 27, 2026</p>
+      <p class="date-modified">January 28, 2026</p>
     </div>
   </div>
     
@@ -165,14 +237,95 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="directions" class="level2">
 <h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf or html format.</p>
-<p>You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.</p>
+<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf format or in html rendered from a qmd (or Rmd) file (please also include source qmd or Rmd).</p>
 <p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 7-10: Confidence Intervals, t-Intervals and Population Proportions, and Bootstrap Methods.</p>
+<p>For bootstrap problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_04.qmd">github link</a></p>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-confidence-intervals-for-proportions-devore-section-8.3" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-confidence-intervals-for-proportions-devore-section-8.3">Problem 1: Confidence Intervals for Proportions (Devore Section 8.3)</h3>
+<p>In a pilot study for a new antibiotic, 8 out of 60 patients experienced gastrointestinal side effects.</p>
+<p><strong>(a)</strong> Compute the sample proportion <span class="math inline">\(\hat{p}\)</span> and construct a 95% confidence interval using the <strong>Wald interval</strong>: <span class="math inline">\(\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\)</span></p>
+<p><strong>(b)</strong> Compute the 95% <strong>Score (Wilson) interval</strong> using <code>prop.test(x, n, correct = FALSE)</code>. Compare to the Wald interval.</p>
+<p><strong>(c)</strong> Explain why the Score interval is generally preferred over the Wald interval, especially when <span class="math inline">\(\hat{p}\)</span> is close to 0 or 1.</p>
+<p><strong>(d)</strong> The FDA requires that the upper bound of the 95% CI for side effect rate be below 20% for approval. Based on your Score interval, would this drug meet that criterion?</p>
+</section>
+<section id="problem-2-bootstrap-confidence-intervals-devore-section-8.5" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-bootstrap-confidence-intervals-devore-section-8.5">Problem 2: Bootstrap Confidence Intervals (Devore Section 8.5)</h3>
+<p>A study measures serum ferritin levels (ng/mL) in <span class="math inline">\(n = 12\)</span> patients with chronic fatigue:</p>
+<p><span class="math display">\[X = \{23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33\}\]</span></p>
+<p>Note the potential outlier at 88 ng/mL.</p>
+<p><strong>(a)</strong> Compute the sample mean, median, and standard deviation. Create a histogram or Q-Q plot and comment on the distribution.</p>
+<p><strong>(b)</strong> Generate <span class="math inline">\(B = 10,000\)</span> bootstrap samples. For each, compute the bootstrap mean. Report the bootstrap standard error and compare it to <span class="math inline">\(s/\sqrt{n}\)</span>.</p>
+<p><strong>(c)</strong> Construct a <strong>95% bootstrap percentile interval</strong> for the population mean <span class="math inline">\(\mu\)</span> using the 2.5th and 97.5th percentiles of the bootstrap distribution.</p>
+<p><strong>(d)</strong> Construct a <strong>95% bootstrap t interval</strong>: <span class="math inline">\(\bar{x} \pm t_{\alpha/2, n-1} \cdot SE_{boot}\)</span></p>
+<p><strong>(e)</strong> Compare your bootstrap intervals to the classical t-interval from <code>t.test()</code>. Which interval would you report for this data and why?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">18</span>, <span class="dv">45</span>, <span class="dv">27</span>, <span class="dv">52</span>, <span class="dv">34</span>, <span class="dv">29</span>, <span class="dv">38</span>, <span class="dv">24</span>, <span class="dv">88</span>, <span class="dv">33</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-3-two-sample-bootstrap" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-two-sample-bootstrap">Problem 3: Two-Sample Bootstrap</h3>
+<p>A randomized trial compares recovery time (days) after knee surgery for two rehabilitation protocols:</p>
+<p><strong>Standard:</strong> <span class="math inline">\(\{42, 38, 51, 44, 47, 55, 40, 49\}\)</span></p>
+<p><strong>Accelerated:</strong> <span class="math inline">\(\{35, 32, 41, 38, 36, 44, 33, 39\}\)</span></p>
+<p><strong>(a)</strong> Compute the sample means and the observed difference <span class="math inline">\(\bar{X}_{std} - \bar{X}_{acc}\)</span>.</p>
+<p><strong>(b)</strong> Perform a two-sample bootstrap (<span class="math inline">\(B = 10,000\)</span>) to construct a <strong>95% percentile confidence interval</strong> for <span class="math inline">\(\mu_{std} - \mu_{acc}\)</span>. Resample independently from each group.</p>
+<p><strong>(c)</strong> Does the confidence interval suggest a significant difference between protocols? Interpret the result clinically.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>standard <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">42</span>, <span class="dv">38</span>, <span class="dv">51</span>, <span class="dv">44</span>, <span class="dv">47</span>, <span class="dv">55</span>, <span class="dv">40</span>, <span class="dv">49</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>accelerated <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">35</span>, <span class="dv">32</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">36</span>, <span class="dv">44</span>, <span class="dv">33</span>, <span class="dv">39</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-4-bootstrap-for-the-median-devore-8.64-style" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-bootstrap-for-the-median-devore-8.64-style">Problem 4: Bootstrap for the Median (Devore 8.64 style)</h3>
+<p>Using the ferritin data from Problem 2:</p>
+<p><span class="math display">\[X = \{23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33\}\]</span></p>
+<p><strong>(a)</strong> Generate <span class="math inline">\(B = 10,000\)</span> bootstrap samples and compute the median for each. Create a histogram of the bootstrap distribution of medians.</p>
+<p><strong>(b)</strong> Construct a <strong>95% bootstrap percentile interval</strong> for the population median <span class="math inline">\(\tilde{\mu}\)</span>.</p>
+<p><strong>(c)</strong> Comment on the shape of the bootstrap distribution for the median. Why does it look different from the bootstrap distribution of means? Is the bootstrap t interval appropriate for the median?</p>
+<p><strong>(d)</strong> Given the outlier in this data, would you prefer to report a CI for the mean or the median? Justify your answer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">18</span>, <span class="dv">45</span>, <span class="dv">27</span>, <span class="dv">52</span>, <span class="dv">34</span>, <span class="dv">29</span>, <span class="dv">38</span>, <span class="dv">24</span>, <span class="dv">88</span>, <span class="dv">33</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-5-devore-8.63-study-hours" class="level3">
+<h3 class="anchored" data-anchor-id="problem-5-devore-8.63-study-hours">Problem 5: Devore 8.63 (Study Hours)</h3>
+<p>In a survey, students reported their study time per week (hours):</p>
+<p><span class="math display">\[X = \{15, 10, 10, 15, 25, 7, 3, 8, 10, 10, 11, 7, 5, 15, 7.5, 7.5, 12, 7, 10.5, 6, 10, 7.5\}\]</span></p>
+<p><strong>(a)</strong> Compute the classical t-based 95% confidence interval for the population mean <span class="math inline">\(\mu\)</span>.</p>
+<p><strong>(b)</strong> Create a normal probability plot. Is normality questionable?</p>
+<p><strong>(c)</strong> Generate <span class="math inline">\(B = 10,000\)</span> bootstrap samples of means. Compute the 95% bootstrap percentile interval.</p>
+<p><strong>(d)</strong> Compare the t-interval and bootstrap percentile interval. Which would you report and why?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>study_hours <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">25</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">7</span>, </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                 <span class="dv">5</span>, <span class="dv">15</span>, <span class="fl">7.5</span>, <span class="fl">7.5</span>, <span class="dv">12</span>, <span class="dv">7</span>, <span class="fl">10.5</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="fl">7.5</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-6-sample-size-and-ci-width" class="level3">
+<h3 class="anchored" data-anchor-id="problem-6-sample-size-and-ci-width">Problem 6: Sample Size and CI Width</h3>
+<p>A hospital administrator wants to estimate the average emergency department wait time with a margin of error of at most 5 minutes using a 95% confidence interval. A pilot study of <span class="math inline">\(n = 20\)</span> patients found <span class="math inline">\(\bar{x} = 47\)</span> minutes with <span class="math inline">\(s = 18\)</span> minutes.</p>
+<p><strong>(a)</strong> Using the pilot study estimate of <span class="math inline">\(\sigma \approx 18\)</span> minutes, what sample size is needed to achieve the desired precision?</p>
+<p><strong>(b)</strong> If the administrator can only afford to sample 100 patients, what margin of error should they expect (at 95% confidence)?</p>
+<p><strong>(c)</strong> Compute a 95% CI for the mean wait time using the pilot study data. Does this interval suggest wait times may exceed the hospital’s 45-minute target?</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

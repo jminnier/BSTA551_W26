@@ -23,10 +23,144 @@ source(here("class_dates.R"))
 
 ## Directions
 
-**Please turn in this homework on Sakai.** Please submit your homework in pdf or html format. 
-
-You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.
+**Please turn in this homework on Sakai.** Please submit your homework in pdf format or in html rendered from a qmd (or Rmd) file (please also include source qmd or Rmd). 
 
 *You must show all of your work to receive credit.*
 
+This homework covers material from Lessons 7-10: Confidence Intervals, t-Intervals and Population Proportions, and Bootstrap Methods.
+
+For bootstrap problems, set your seed to `set.seed(551)` for reproducibility.
+
+For the qmd of this Homework page, see this [github link](https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_04.qmd)
+
 ## Questions
+
+
+### Problem 1: Confidence Intervals for Proportions (Devore Section 8.3)
+
+In a pilot study for a new antibiotic, 8 out of 60 patients experienced gastrointestinal side effects.
+
+**(a)** Compute the sample proportion $\hat{p}$ and construct a 95% confidence interval using the **Wald interval**: $\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
+
+**(b)** Compute the 95% **Score (Wilson) interval** using `prop.test(x, n, correct = FALSE)`. Compare to the Wald interval.
+
+**(c)** Explain why the Score interval is generally preferred over the Wald interval, especially when $\hat{p}$ is close to 0 or 1.
+
+**(d)** The FDA requires that the upper bound of the 95% CI for side effect rate be below 20% for approval. Based on your Score interval, would this drug meet that criterion?
+
+
+### Problem 2: Bootstrap Confidence Intervals (Devore Section 8.5)
+
+A study measures serum ferritin levels (ng/mL) in $n = 12$ patients with chronic fatigue:
+
+$$X = \{23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33\}$$
+
+Note the potential outlier at 88 ng/mL.
+
+**(a)** Compute the sample mean, median, and standard deviation. Create a histogram or Q-Q plot and comment on the distribution.
+
+**(b)** Generate $B = 10,000$ bootstrap samples. For each, compute the bootstrap mean. Report the bootstrap standard error and compare it to $s/\sqrt{n}$.
+
+**(c)** Construct a **95% bootstrap percentile interval** for the population mean $\mu$ using the 2.5th and 97.5th percentiles of the bootstrap distribution.
+
+**(d)** Construct a **95% bootstrap t interval**: $\bar{x} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$
+
+**(e)** Compare your bootstrap intervals to the classical t-interval from `t.test()`. Which interval would you report for this data and why?
+
+```{r}
+#| label: prob2-template
+#| eval: false
+ferritin <- c(23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33)
+
+set.seed(551)
+# Your code here
+
+```
+
+
+### Problem 3: Two-Sample Bootstrap
+
+A randomized trial compares recovery time (days) after knee surgery for two rehabilitation protocols:
+
+**Standard:** $\{42, 38, 51, 44, 47, 55, 40, 49\}$
+
+**Accelerated:** $\{35, 32, 41, 38, 36, 44, 33, 39\}$
+
+**(a)** Compute the sample means and the observed difference $\bar{X}_{std} - \bar{X}_{acc}$.
+
+**(b)** Perform a two-sample bootstrap ($B = 10,000$) to construct a **95% percentile confidence interval** for $\mu_{std} - \mu_{acc}$. Resample independently from each group.
+
+**(c)** Does the confidence interval suggest a significant difference between protocols? Interpret the result clinically.
+
+```{r}
+#| label: prob3-template
+#| eval: false
+standard <- c(42, 38, 51, 44, 47, 55, 40, 49)
+accelerated <- c(35, 32, 41, 38, 36, 44, 33, 39)
+
+set.seed(551)
+# Your code here
+
+```
+
+
+### Problem 4: Bootstrap for the Median (Devore 8.64 style)
+
+Using the ferritin data from Problem 2:
+
+$$X = \{23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33\}$$
+
+**(a)** Generate $B = 10,000$ bootstrap samples and compute the median for each. Create a histogram of the bootstrap distribution of medians.
+
+**(b)** Construct a **95% bootstrap percentile interval** for the population median $\tilde{\mu}$.
+
+**(c)** Comment on the shape of the bootstrap distribution for the median. Why does it look different from the bootstrap distribution of means? Is the bootstrap t interval appropriate for the median?
+
+**(d)** Given the outlier in this data, would you prefer to report a CI for the mean or the median? Justify your answer.
+
+```{r}
+#| label: prob4-template
+#| eval: false
+ferritin <- c(23, 31, 18, 45, 27, 52, 34, 29, 38, 24, 88, 33)
+
+set.seed(551)
+# Your code here
+
+```
+
+
+### Problem 5: Devore 8.63 (Study Hours)
+
+In a survey, students reported their study time per week (hours):
+
+$$X = \{15, 10, 10, 15, 25, 7, 3, 8, 10, 10, 11, 7, 5, 15, 7.5, 7.5, 12, 7, 10.5, 6, 10, 7.5\}$$
+
+**(a)** Compute the classical t-based 95% confidence interval for the population mean $\mu$.
+
+**(b)** Create a normal probability plot. Is normality questionable?
+
+**(c)** Generate $B = 10,000$ bootstrap samples of means. Compute the 95% bootstrap percentile interval.
+
+**(d)** Compare the t-interval and bootstrap percentile interval. Which would you report and why?
+
+```{r}
+#| label: prob5-template
+#| eval: false
+study_hours <- c(15, 10, 10, 15, 25, 7, 3, 8, 10, 10, 11, 7, 
+                 5, 15, 7.5, 7.5, 12, 7, 10.5, 6, 10, 7.5)
+
+set.seed(551)
+# Your code here
+
+```
+
+
+### Problem 6: Sample Size and CI Width
+
+A hospital administrator wants to estimate the average emergency department wait time with a margin of error of at most 5 minutes using a 95% confidence interval. A pilot study of $n = 20$ patients found $\bar{x} = 47$ minutes with $s = 18$ minutes.
+ 
+**(a)** Using the pilot study estimate of $\sigma \approx 18$ minutes, what sample size is needed to achieve the desired precision?
+
+**(b)** If the administrator can only afford to sample 100 patients, what margin of error should they expect (at 95% confidence)?
+
+**(c)** Compute a 95% CI for the mean wait time using the pilot study data. Does this interval suggest wait times may exceed the hospital's 45-minute target?
