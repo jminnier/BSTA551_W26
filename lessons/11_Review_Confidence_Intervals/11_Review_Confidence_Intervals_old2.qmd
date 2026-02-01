@@ -1,0 +1,1021 @@
+---
+title: "Lesson 11: Review of Confidence Intervals"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w5d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 11 - CI Review
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 11: Confidence Intervals Review {background-color="#2c3e50"}
+
+## What We've Covered (Lessons 7-10)
+
+::: incremental
+1. **Lesson 7:** CI fundamentals — interpretation, pivotal quantities, z-intervals
+2. **Lesson 8:** t-intervals ($\sigma$ unknown), CIs for proportions (Wald, Score, Agresti-Coull)
+3. **Lesson 9:** Bootstrap principles — resampling, bootstrap distribution
+4. **Lesson 10:** Bootstrap CIs — percentile, simple t, studentized t
+:::
+
+. . .
+
+**Today's Goals:**
+
+1. Review the three main CI construction approaches
+2. Extend Wald intervals to other distributions and functions of MLEs
+3. Learn the **delta method** for variance of transformed estimators
+4. See score intervals for non-proportion parameters
+
+# The Big Picture {background-color="#e74c3c"}
+
+## Three Approaches to CI Construction
+
+```{r}
+#| echo: false
+#| fig-height: 8
+#| fig-width: 16
+approach_data <- tibble(
+  Approach = factor(c("Pivotal\nQuantity", "Asymptotic\n(Wald, Score)", "Bootstrap"),
+                    levels = c("Pivotal\nQuantity", "Asymptotic\n(Wald, Score)", "Bootstrap")),
+  x = c(1, 2, 3),
+  y = c(1, 1, 1)
+)
+
+ggplot(approach_data, aes(x = x, y = y)) +
+  geom_point(size = 95, color = c("#3498db", "#e74c3c", "#27ae60")) +
+  geom_text(aes(label = Approach), size = 9, fontface = "bold", color = "white") +
+  annotate("text", x = 1, y = 0.45, size = 7, 
+           label = "Exact distribution\nknown (z, t, χ²)") +
+  annotate("text", x = 2, y = 0.45, size = 7,
+           label = "Large sample\nnormality of MLE and Score") +
+  annotate("text", x = 3, y = 0.45, size = 7,
+           label = "Resample from\ndata itself") +
+  xlim(0.2, 3.8) + ylim(0.2, 1.5) +
+  theme_void() +
+  labs(title = "Three Main Approaches to Confidence Interval Construction")
+```
+
+## Quick Reference: CI Formulas
+
+| Parameter | Method | Formula |
+|-----------|--------|---------|
+| $\mu$ ($\sigma$ known) | Pivotal (z) | $\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$ |
+| $\mu$ ($\sigma$ unknown) | Pivotal (t) | $\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}$ |
+| $p$ (proportion) | Wald | $\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$ |
+| $p$ (proportion) | Score | $\frac{\hat{p} + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n} + \frac{z^2}{4n^2}}}{1 + z^2/n}$ |
+| $\lambda$ (Poisson) | Score | $\frac{X + z^2/2 \pm z\sqrt{X + z^2/4}}{n}$ |
+| Any $\theta$ | Bootstrap Percentile | $(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$ |
+| Any $\theta$ | Simple Bootstrap t | $\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}$ |
+| Any $\theta$ | Studentized Bootstrap t | $(\hat{\theta} - t^*_{1-\alpha/2} \cdot SE_{\hat{\theta}}, \; \hat{\theta} - t^*_{\alpha/2} \cdot SE_{\hat{\theta}})$ |
+
+## Correct CI Interpretation
+
+::: callout-tip
+## Valid Interpretations
+- "We are 95% confident that the true parameter lies in (L, U)"
+- "The interval (L, U) is a plausible range for the parameter"
+- "In repeated sampling, 95% of such intervals contain the true parameter"
+:::
+
+::: callout-warning
+## Invalid Interpretations
+- "There is a 95% probability that $\theta$ is in (L, U)" ✗
+- "95% of the data falls between L and U" ✗
+- "The true parameter varies between L and U" ✗
+:::
+
+# Wald Intervals: General Framework {background-color="#9b59b6"}
+
+## The Wald Interval Principle
+
+::: callout-important
+## Asymptotic Normality of MLEs
+Under regularity conditions, the MLE $\hat{\theta}$ is asymptotically normal:
+$$\hat{\theta} \stackrel{approx}{\sim} N\left(\theta, \frac{1}{I_n(\theta)}\right)$$
+where $I_n(\theta) = nI_1(\theta)$ is the **total Fisher information** for $n$ observations, and $I_1(\theta)$ is the Fisher information for a single observation.
+:::
+
+. . .
+
+**The Wald CI** plugs in $\hat{\theta}$ for unknown quantities in the variance:
+$$\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})$$
+
+where $\widehat{SE}(\hat{\theta}) = \sqrt{1/I_n(\hat{\theta})}$ or the observed information.
+
+## Wald Interval: Poisson Rate
+
+**Setting:** Count data $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\lambda)$
+
+. . .
+
+**MLE:** $\hat{\lambda} = \bar{X}$
+
+**Fisher Information:** $I_1(\lambda) = 1/\lambda$, so $I_n(\lambda) = n/\lambda$
+
+**Asymptotic Variance:** $\text{Var}(\hat{\lambda}) \approx 1/I_n(\lambda) = \lambda/n$
+
+. . .
+
+::: callout-note
+## Wald CI for Poisson Rate
+$$\hat{\lambda} \pm z_{\alpha/2} \sqrt{\frac{\hat{\lambda}}{n}}$$
+:::
+
+## Medical Example: Hospital Infection Rate
+
+A hospital monitors central line-associated bloodstream infections (CLABSI). Over $n = 500$ patient-days, they observe $X = 8$ infections.
+
+```{r}
+#| echo: true
+x <- 8          # observed infections
+n <- 500        # patient-days
+lambda_hat <- x / n  # MLE (rate per patient-day)
+
+# Wald CI
+se_wald <- sqrt(lambda_hat / n)
+z <- qnorm(0.975)
+wald_ci <- lambda_hat + c(-1, 1) * z * se_wald
+
+cat("MLE (rate per 1000 patient-days):", round(lambda_hat * 1000, 2), "\n")
+cat("95% Wald CI:", round(wald_ci * 1000, 3), "per 1000 patient-days")
+```
+
+. . .
+
+**Note:** The lower bound is positive, but for very small counts, Wald can give negative bounds!
+
+## Wald Interval: Exponential Rate
+
+**Setting:** Failure times $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exp}(\lambda)$
+
+**MLE:** $\hat{\lambda} = 1/\bar{X}$
+
+**Fisher Information:** $I_1(\lambda) = 1/\lambda^2$, so $I_n(\lambda) = n/\lambda^2$
+
+**Asymptotic Variance:** $\text{Var}(\hat{\lambda}) \approx 1/I_n(\lambda) = \lambda^2/n$
+
+. . .
+
+::: callout-note
+## Wald CI for Exponential Rate
+$$\hat{\lambda} \pm z_{\alpha/2} \frac{\hat{\lambda}}{\sqrt{n}}$$
+:::
+
+## Medical Example: Time to Symptom Relief
+
+A clinical trial measures time (hours) until symptom relief for $n = 30$ patients taking a new analgesic:
+
+```{r}
+#| echo: true
+# Simulated relief times (hours)
+set.seed(551)
+relief_times <- rexp(30, rate = 0.5)  # True rate = 0.5 (mean = 2 hours)
+
+n <- length(relief_times)
+lambda_hat <- 1 / mean(relief_times)
+
+# Wald CI for rate
+se_lambda <- lambda_hat / sqrt(n)
+wald_ci_lambda <- lambda_hat + c(-1, 1) * qnorm(0.975) * se_lambda
+
+cat("Sample mean relief time:", round(mean(relief_times), 2), "hours\n")
+cat("MLE of rate:", round(lambda_hat, 3), "per hour\n")
+cat("95% Wald CI for rate:", round(wald_ci_lambda, 3), "per hour")
+```
+
+## When Wald Intervals Struggle
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+# Simulation: Wald coverage for Poisson with small lambda
+set.seed(551)
+n_sim <- 5000
+sample_sizes <- c(10, 25, 50, 100)
+true_lambda <- 0.5
+
+coverage_results <- expand_grid(n = sample_sizes, sim = 1:n_sim) |>
+  mutate(
+    x_total = map_dbl(n, ~sum(rpois(.x, true_lambda))),
+    lambda_hat = x_total / n,
+    se = sqrt(lambda_hat / n),
+    lower = lambda_hat - 1.96 * se,
+    upper = lambda_hat + 1.96 * se,
+    covers = (lower < true_lambda) & (true_lambda < upper)
+  ) |>
+  group_by(n) |>
+  summarise(coverage = mean(covers), .groups = "drop")
+
+ggplot(coverage_results, aes(x = factor(n), y = coverage)) +
+  geom_col(fill = "steelblue", alpha = 0.8, width = 0.6) +
+  geom_hline(yintercept = 0.95, linetype = "dashed", color = "red", linewidth = 1) +
+  geom_text(aes(label = paste0(round(coverage * 100, 1), "%")), 
+            vjust = -0.5, size = 5) +
+  labs(x = "Sample Size", y = "Actual Coverage",
+       title = expression("Wald CI Coverage for Poisson(" * lambda * " = 0.5)"),
+       subtitle = "Target: 95% (dashed line)") +
+  ylim(0.85, 1) +
+  theme_minimal(base_size = 18)
+```
+
+**Takeaway:** Wald intervals can have poor coverage for small samples or extreme parameters.
+
+# The Delta Method {background-color="#16a085"}
+
+## Motivation: Functions of MLEs
+
+Often we want a CI for a **function** of the parameter, not the parameter itself.
+
+. . .
+
+**Examples:**
+
+- Mean survival time $\mu = 1/\lambda$ when we estimate $\hat{\lambda}$
+- Odds $\omega = p/(1-p)$ when we estimate $\hat{p}$
+- Log-odds $\eta = \log(p/(1-p))$ for logistic regression
+
+. . .
+
+**Question:** If $\hat{\theta} \stackrel{approx}{\sim} N(\theta, \sigma^2_{\hat{\theta}})$, what is the distribution of $g(\hat{\theta})$?
+
+## The Delta Method
+
+::: callout-important
+## Delta Method (First-Order Approximation)
+If $\hat{\theta} \stackrel{approx}{\sim} N(\theta, \sigma^2_{\hat{\theta}})$ and $g$ is differentiable at $\theta$ with $g'(\theta) \neq 0$, then:
+
+$$g(\hat{\theta}) \stackrel{approx}{\sim} N\left(g(\theta), \; [g'(\theta)]^2 \cdot \sigma^2_{\hat{\theta}}\right)$$
+:::
+
+. . .
+
+**Intuition:** Taylor expansion around $\theta$:
+$$g(\hat{\theta}) \approx g(\theta) + g'(\theta)(\hat{\theta} - \theta)$$
+
+So $\text{Var}[g(\hat{\theta})] \approx [g'(\theta)]^2 \cdot \text{Var}(\hat{\theta})$
+
+## Delta Method: Variance Formula
+
+::: callout-note
+## Practical Formula
+$$\widehat{SE}[g(\hat{\theta})] = |g'(\hat{\theta})| \cdot \widehat{SE}(\hat{\theta})$$
+
+**Wald CI for $g(\theta)$:**
+$$g(\hat{\theta}) \pm z_{\alpha/2} \cdot |g'(\hat{\theta})| \cdot \widehat{SE}(\hat{\theta})$$
+:::
+
+## Example: CI for Mean Survival Time
+
+**Setting:** $X_1, \ldots, X_n \sim \text{Exp}(\lambda)$, want CI for mean $\mu = 1/\lambda = g(\lambda)$
+
+. . .
+
+**Step 1:** We have $\hat{\lambda} = 1/\bar{X}$ with $SE(\hat{\lambda}) \approx \hat{\lambda}/\sqrt{n}$
+
+. . .
+
+**Step 2:** Compute derivative: $g(\lambda) = 1/\lambda \Rightarrow g'(\lambda) = -1/\lambda^2$
+
+. . .
+
+**Step 3:** Apply delta method:
+$$SE(\hat{\mu}) = |g'(\hat{\lambda})| \cdot SE(\hat{\lambda}) = \frac{1}{\hat{\lambda}^2} \cdot \frac{\hat{\lambda}}{\sqrt{n}} = \frac{1}{\hat{\lambda}\sqrt{n}} = \frac{\bar{X}}{\sqrt{n}}$$
+
+. . .
+
+This is just $SE(\bar{X}) = s/\sqrt{n}$ when $s \approx \bar{X}$ for exponential data!
+
+## Medical Example: Mean Time to Relief (continued)
+
+```{r}
+#| echo: true
+# From earlier: relief_times data
+xbar <- mean(relief_times)
+n <- length(relief_times)
+lambda_hat <- 1 / xbar
+
+# Delta method SE for mean (mu = 1/lambda)
+# g'(lambda) = -1/lambda^2, so SE(mu) = SE(lambda)/lambda^2 = 1/(lambda * sqrt(n))
+se_mu_delta <- 1 / (lambda_hat * sqrt(n))
+
+# Equivalently: se_mu_delta = xbar / sqrt(n)
+cat("Delta method SE for mean:", round(se_mu_delta, 3), "\n")
+cat("Direct SE (s/sqrt(n)):", round(sd(relief_times)/sqrt(n), 3), "\n\n")
+
+# 95% CI for mean survival time
+ci_mu <- xbar + c(-1, 1) * qnorm(0.975) * se_mu_delta
+cat("95% CI for mean relief time:", round(ci_mu, 2), "hours")
+```
+
+## Example: CI for Odds from Proportion
+
+**Setting:** $X \sim \text{Binomial}(n, p)$, want CI for odds $\omega = p/(1-p)$
+
+. . .
+
+**Step 1:** We have $\hat{p} = X/n$ with $SE(\hat{p}) = \sqrt{\frac{\hat{p}(1-\hat{p})}{n}}$
+
+. . .
+
+**Step 2:** Define $g(p) = \frac{p}{1-p}$ and compute the derivative:
+$$g'(p) = \frac{(1-p) \cdot 1 - p \cdot (-1)}{(1-p)^2} = \frac{1-p+p}{(1-p)^2} = \frac{1}{(1-p)^2}$$
+
+. . .
+
+**Step 3:** Apply delta method:
+$$SE(\hat{\omega}) = |g'(\hat{p})| \cdot SE(\hat{p}) = \frac{1}{(1-\hat{p})^2} \cdot \sqrt{\frac{\hat{p}(1-\hat{p})}{n}} = \frac{\sqrt{\hat{p}(1-\hat{p})}}{(1-\hat{p})^2\sqrt{n}}$$
+
+## Example: CI for Odds (Calculation)
+
+```{r}
+#| echo: true
+# Clinical trial: 45 of 120 patients respond to treatment
+x <- 45; n <- 120
+p_hat <- x / n
+omega_hat <- p_hat / (1 - p_hat)  # Estimated odds
+
+# Step-by-step delta method calculation
+se_p <- sqrt(p_hat * (1 - p_hat) / n)
+cat("SE(p̂) =", round(se_p, 4), "\n\n")
+
+g_prime <- 1 / (1 - p_hat)^2
+cat("g'(p̂) = 1/(1-p̂)² =", round(g_prime, 4), "\n\n")
+
+se_omega <- abs(g_prime) * se_p
+cat("SE(ω̂) = |g'(p̂)| × SE(p̂) =", round(g_prime, 4), "×", round(se_p, 4), "=", round(se_omega, 4), "\n\n")
+
+# 95% CI for odds
+z <- qnorm(0.975)
+ci_omega <- omega_hat + c(-1, 1) * z * se_omega
+
+cat("Estimated odds:", round(omega_hat, 3), "\n")
+cat("95% CI for odds:", round(ci_omega, 3))
+```
+
+## Log Transformation: Often Better
+
+For positive parameters (rates, odds), working on the **log scale** often improves coverage.
+
+. . .
+
+**Why?** The sampling distribution of $\log(\hat{\omega})$ is often more symmetric than $\hat{\omega}$.
+
+. . .
+
+**Step 1:** Define $h(\omega) = \log(\omega)$, so $h'(\omega) = 1/\omega$
+
+. . .
+
+**Step 2:** Apply delta method to get SE of log-odds:
+$$SE[\log(\hat{\omega})] = |h'(\hat{\omega})| \cdot SE(\hat{\omega}) = \frac{1}{\hat{\omega}} \cdot SE(\hat{\omega})$$
+
+. . .
+
+**Step 3:** Build CI on log scale, then exponentiate back.
+
+## Log Transformation: Calculation
+
+```{r}
+#| echo: true
+# Continuing from odds example
+log_omega_hat <- log(omega_hat)
+
+# Delta method for log(omega): h(omega) = log(omega), h'(omega) = 1/omega
+h_prime <- 1 / omega_hat
+se_log_omega <- abs(h_prime) * se_omega
+
+cat("log(ω̂) =", round(log_omega_hat, 4), "\n")
+cat("h'(ω̂) = 1/ω̂ =", round(h_prime, 4), "\n")
+cat("SE[log(ω̂)] = |h'(ω̂)| × SE(ω̂) =", round(h_prime, 4), "×", round(se_omega, 4), "=", 
+    round(se_log_omega, 4), "\n\n")
+
+# CI on log scale
+ci_log_omega <- log_omega_hat + c(-1, 1) * qnorm(0.975) * se_log_omega
+cat("95% CI for log(odds):", round(ci_log_omega, 3), "\n\n")
+
+# Exponentiate to get CI for odds
+ci_omega_transformed <- exp(ci_log_omega)
+
+cat("95% CI for odds (direct Wald):       ", round(ci_omega, 3), "\n")
+cat("95% CI for odds (log-transformed):   ", round(ci_omega_transformed, 3))
+```
+
+. . .
+
+The log-transformed CI is **asymmetric** around the estimate — often more appropriate for positive quantities!
+
+## Delta Method: Summary
+
+```{r}
+#| echo: false
+tibble(
+  `Original Parameter` = c("λ (Exp rate)", "p (proportion)", "p (proportion)", "λ (Poisson)"),
+  `Function g(θ)` = c("μ = 1/λ", "odds = p/(1-p)", "log-odds = log(p/(1-p))", "log(λ)"),
+  `Derivative g'(θ)` = c("-1/λ²", "1/(1-p)²", "1/(p(1-p))", "1/λ"),
+  `SE[g(θ̂)]` = c("1/(λ̂√n)", "SE(p̂)/(1-p̂)²", "1/√(np̂(1-p̂))", "1/√(nλ̂)")
+) |>
+  knitr::kable(caption = "Common Delta Method Applications")
+```
+
+# Score Intervals: Beyond Proportions {background-color="#f39c12"}
+
+## Score Intervals: The General Principle
+
+::: callout-important
+## Score Interval Derivation
+The score interval inverts the **score test**. The score statistic is:
+$$S(\theta) = \frac{[\ell'(\theta)]^2}{I_n(\theta)} \stackrel{approx}{\sim} \chi^2_1$$
+
+The $100(1-\alpha)\%$ score CI contains all $\theta$ such that $S(\theta) \leq z_{\alpha/2}^2$.
+:::
+
+. . .
+
+**Equivalently:** Find all $\theta$ where
+$$\left|\frac{\ell'(\theta)}{\sqrt{I_n(\theta)}}\right| \leq z_{\alpha/2}$$
+
+## Understanding the Score Statistic
+
+::: callout-note
+## Components of the Score Statistic
+$$S(\theta) = \frac{[\ell'(\theta)]^2}{I_n(\theta)} = \frac{(\text{Score Function})^2}{\text{Fisher Information}}$$
+
+- **Numerator:** $\ell'(\theta) = \frac{\partial}{\partial\theta}\log L(\theta) = \sum_{i=1}^n \frac{\partial}{\partial\theta}\log f(X_i; \theta)$ is the **score function** — measures how much the log-likelihood is "pulling" away from $\theta$
+
+- **Denominator:** $I_n(\theta) = \text{Var}[\ell'(\theta)] = -E[\ell''(\theta)] = nI_1(\theta)$ is the **total Fisher information** — the variance of the score function (which equals $n$ times the single-observation information)
+:::
+
+. . .
+
+**Intuition:** At the true $\theta$, the score function should be close to zero (since MLE maximizes likelihood). The score statistic measures how far $\ell'(\theta)$ is from zero, standardized by its variance.
+
+## Score vs Wald: Where the Variance is Evaluated
+
+| Aspect | Wald Interval | Score Interval |
+|--------|---------------|----------------|
+| Test statistic | $\frac{\hat{\theta} - \theta}{\sqrt{I_n(\hat{\theta})^{-1}}}$ | $\frac{\ell'(\theta)}{\sqrt{I_n(\theta)}}$ |
+| Variance evaluated at | $\hat{\theta}$ (the MLE) | $\theta$ (the hypothesized value) |
+| Computation | Direct formula | Solve equation in $\theta$ |
+| Coverage | Can be poor for extreme $\theta$ | Generally better |
+| Bounds | May violate parameter space | Respects constraints |
+
+. . .
+
+**Key insight:** Score intervals evaluate variance at each candidate $\theta$, not just at $\hat{\theta}$!
+
+## Score Interval for Proportion: Derivation
+
+**Setting:** $X \sim \text{Binomial}(n, p)$, $\hat{p} = X/n$
+
+**Score equation:** Find $p$ such that
+$$\frac{(\hat{p} - p)^2}{p(1-p)/n} \leq z_{\alpha/2}^2$$
+
+. . .
+
+**Rearranging:**
+$$(\hat{p} - p)^2 \leq z^2 \cdot \frac{p(1-p)}{n}$$
+$$n(\hat{p} - p)^2 \leq z^2 p(1-p)$$
+$$n\hat{p}^2 - 2n\hat{p}p + np^2 \leq z^2p - z^2p^2$$
+
+. . .
+
+**Collecting terms in $p$:**
+$$(n + z^2)p^2 - (2n\hat{p} + z^2)p + n\hat{p}^2 \leq 0$$
+
+This is a quadratic in $p$ — solve with the quadratic formula!
+
+## Score Interval for Proportion: Solution
+
+The Wilson (Score) interval endpoints are:
+
+$$p = \frac{2n\hat{p} + z^2 \pm \sqrt{z^4 + 4n\hat{p}z^2(1-\hat{p})}}{2(n + z^2)}$$
+
+. . .
+
+Which simplifies to:
+$$\tilde{p} = \frac{\hat{p} + \frac{z^2}{2n} \pm z\sqrt{\frac{\hat{p}(1-\hat{p})}{n} + \frac{z^2}{4n^2}}}{1 + \frac{z^2}{n}}$$
+
+```{r}
+#| echo: true
+# Compare Score vs Wald for extreme proportion
+x <- 3; n <- 50; p_hat <- x/n
+z <- qnorm(0.975)
+
+# Wald
+wald_ci <- p_hat + c(-1, 1) * z * sqrt(p_hat * (1 - p_hat) / n)
+
+# Score (Wilson)
+score_ci <- prop.test(x, n, correct = FALSE)$conf.int
+
+cat("p̂ =", p_hat, "\n")
+cat("Wald CI: ", round(wald_ci, 4), "(Note: lower bound close to 0)\n")
+cat("Score CI:", round(as.numeric(score_ci), 4))
+```
+
+## Score Interval for Poisson: Derivation
+
+**Setting:** $X \sim \text{Poisson}(n\lambda)$ (sum of $n$ iid Poisson($\lambda$))
+
+**MLE:** $\hat{\lambda} = X/n$
+
+**Variance under $\lambda$:** $\text{Var}(\hat{\lambda}) = \lambda/n$
+
+. . .
+
+**Score equation:** Find $\lambda$ such that
+$$\frac{(\hat{\lambda} - \lambda)^2}{\lambda/n} \leq z^2$$
+
+. . .
+
+**Rearranging:**
+$$n(\hat{\lambda} - \lambda)^2 \leq z^2 \lambda$$
+$$n\hat{\lambda}^2 - 2n\hat{\lambda}\lambda + n\lambda^2 - z^2\lambda \leq 0$$
+$$n\lambda^2 - (2n\hat{\lambda} + z^2)\lambda + n\hat{\lambda}^2 \leq 0$$
+
+## Score Interval for Poisson: Solution
+
+Using the quadratic formula with $a = n$, $b = -(2n\hat{\lambda} + z^2)$, $c = n\hat{\lambda}^2$:
+
+$$\lambda = \frac{(2n\hat{\lambda} + z^2) \pm \sqrt{(2n\hat{\lambda} + z^2)^2 - 4n^2\hat{\lambda}^2}}{2n}$$
+
+. . .
+
+Simplifying:
+$$\lambda = \hat{\lambda} + \frac{z^2}{2n} \pm \frac{z}{n}\sqrt{n\hat{\lambda} + \frac{z^2}{4}}$$
+
+Or equivalently:
+$$\lambda = \frac{X + z^2/2 \pm z\sqrt{X + z^2/4}}{n}$$
+
+## Medical Example: Hospital Infection Rate
+
+```{r}
+#| echo: true
+# Hospital infection data (CLABSI)
+x <- 8          # infections
+n <- 500        # patient-days
+z <- qnorm(0.975)
+
+# Wald CI
+lambda_hat <- x / n
+wald_ci <- lambda_hat + c(-1, 1) * z * sqrt(lambda_hat / n)
+
+# Score CI (using derived formula)
+score_lower <- (x + z^2/2 - z * sqrt(x + z^2/4)) / n
+score_upper <- (x + z^2/2 + z * sqrt(x + z^2/4)) / n
+
+cat("Observed rate:", lambda_hat * 1000, "per 1000 patient-days\n\n")
+cat("Wald 95% CI (per 1000):", round(wald_ci * 1000, 2), "\n")
+cat("Score 95% CI (per 1000):", round(c(score_lower, score_upper) * 1000, 2))
+```
+
+## Comparing Score vs Wald: Small Counts
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+# Compare intervals for various observed counts
+compare_poisson_ci <- function(x, n = 100) {
+  z <- qnorm(0.975)
+  lambda_hat <- x / n
+  
+  # Wald
+  se_wald <- sqrt(lambda_hat / n)
+  wald <- c(lambda_hat - z * se_wald, lambda_hat + z * se_wald)
+  
+  # Score
+  score_lower <- (x + z^2/2 - z * sqrt(x + z^2/4)) / n
+  score_upper <- (x + z^2/2 + z * sqrt(x + z^2/4)) / n
+  
+  tibble(x = x, 
+         method = c("Wald", "Score"),
+         lower = c(wald[1], score_lower),
+         upper = c(wald[2], score_upper),
+         estimate = lambda_hat)
+}
+
+ci_comparison <- map_dfr(c(1, 3, 5, 10, 20), compare_poisson_ci)
+
+ggplot(ci_comparison, aes(x = factor(x), color = method)) +
+  geom_errorbar(aes(ymin = lower, ymax = upper), 
+                position = position_dodge(0.4), width = 0.3, linewidth = 1.2) +
+  geom_point(aes(y = estimate), position = position_dodge(0.4), size = 3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray50") +
+  scale_color_manual(values = c("Wald" = "#e74c3c", "Score" = "#3498db")) +
+  labs(x = "Observed Count (X)", y = expression(lambda),
+       title = "Poisson CI Comparison (n = 100 patient-days)",
+       subtitle = "Score intervals avoid negative bounds for small counts") +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "top")
+```
+
+## Medical Example: Rare Adverse Events
+
+```{r}
+#| echo: true
+# Very rare adverse event: 2 events in 500 patient-years
+x <- 2; n <- 500
+z <- qnorm(0.975)
+lambda_hat <- x / n
+
+# Wald CI
+se_wald <- sqrt(lambda_hat / n)
+wald_ci <- lambda_hat + c(-1, 1) * z * se_wald
+
+# Score CI
+score_lower <- (x + z^2/2 - z * sqrt(x + z^2/4)) / n
+score_upper <- (x + z^2/2 + z * sqrt(x + z^2/4)) / n
+
+cat("Observed rate:", lambda_hat * 1000, "per 1000 patient-years\n\n")
+cat("Wald 95% CI (per 1000):", round(wald_ci * 1000, 3), "\n")
+cat("  Problem: Lower bound is NEGATIVE!\n\n")
+cat("Score 95% CI (per 1000):", round(c(score_lower, score_upper) * 1000, 3), "\n")
+cat("  Score CI correctly stays positive")
+```
+
+# Exact (Pivotal) Intervals {background-color="#8e44ad"}
+
+## Score vs Exact Intervals: Key Distinction
+
+::: callout-warning
+## Don't Confuse Score and Exact Intervals!
+
+**Score Interval:** Based on *asymptotic* normality of the score statistic. Derived by inverting the score test. Approximate.
+
+**Exact (Pivotal) Interval:** Based on an *exact* distributional result (e.g., chi-squared, t, F). No approximation needed.
+:::
+
+. . .
+
+**When both are available, the exact interval is generally preferred!**
+
+## Exact CI for Exponential Mean
+
+**Setting:** $X_1, \ldots, X_n \sim \text{Exp}(\lambda)$
+
+**Pivotal quantity:** $2\lambda \sum_{i=1}^n X_i \sim \chi^2_{2n}$ (exact!)
+
+. . .
+
+**Derivation:**
+$$P\left(\chi^2_{1-\alpha/2, 2n} < 2\lambda \sum X_i < \chi^2_{\alpha/2, 2n}\right) = 1 - \alpha$$
+
+. . .
+
+**Solving for $\lambda$:**
+$$\frac{\chi^2_{1-\alpha/2, 2n}}{2\sum X_i} < \lambda < \frac{\chi^2_{\alpha/2, 2n}}{2\sum X_i}$$
+
+. . .
+
+**CI for mean $\mu = 1/\lambda$:**
+$$\frac{2\sum X_i}{\chi^2_{\alpha/2, 2n}} < \mu < \frac{2\sum X_i}{\chi^2_{1-\alpha/2, 2n}}$$
+
+## Exact vs Wald CI: Exponential Rate
+
+```{r}
+#| echo: true
+# Relief time data
+set.seed(551)
+relief_times <- rexp(30, rate = 0.5)
+n <- length(relief_times)
+sum_x <- sum(relief_times)
+lambda_hat <- 1 / mean(relief_times)
+z <- qnorm(0.975)
+
+# EXACT CI for λ using chi-squared pivotal quantity
+exact_ci_lambda <- c(
+  qchisq(0.025, df = 2*n) / (2 * sum_x),
+  qchisq(0.975, df = 2*n) / (2 * sum_x)
+)
+
+# WALD CI for λ (asymptotic)
+wald_ci_lambda <- lambda_hat + c(-1, 1) * z * lambda_hat / sqrt(n)
+
+cat("MLE λ̂ =", round(lambda_hat, 3), "\n\n")
+cat("Exact (χ²) CI for λ:", round(exact_ci_lambda, 3), "\n")
+cat("Wald CI for λ:       ", round(wald_ci_lambda, 3), "\n\n")
+
+# CI for mean μ = 1/λ
+exact_ci_mu <- c(2 * sum_x / qchisq(0.975, df = 2*n),
+                  2 * sum_x / qchisq(0.025, df = 2*n))
+cat("Exact CI for mean μ:", round(exact_ci_mu, 2), "hours")
+```
+
+## Exact CI for Normal Variance
+
+**Setting:** $X_1, \ldots, X_n \sim N(\mu, \sigma^2)$ with $\mu$ unknown
+
+**Pivotal quantity:** $\frac{(n-1)S^2}{\sigma^2} \sim \chi^2_{n-1}$ (exact!)
+
+. . .
+
+**Derivation:**
+$$P\left(\chi^2_{1-\alpha/2, n-1} < \frac{(n-1)S^2}{\sigma^2} < \chi^2_{\alpha/2, n-1}\right) = 1 - \alpha$$
+
+. . .
+
+**Solving for $\sigma^2$:**
+$$\frac{(n-1)S^2}{\chi^2_{\alpha/2, n-1}} < \sigma^2 < \frac{(n-1)S^2}{\chi^2_{1-\alpha/2, n-1}}$$
+
+## Medical Example: Drug Concentration Variability
+
+```{r}
+#| echo: true
+# Simulated concentration data (mg/L)
+set.seed(551)
+conc <- rnorm(20, mean = 15, sd = 3)
+
+n <- length(conc)
+s2 <- var(conc)
+
+# EXACT CI for variance (uses chi-squared pivotal quantity)
+ci_var <- c(
+  (n - 1) * s2 / qchisq(0.975, df = n - 1),
+  (n - 1) * s2 / qchisq(0.025, df = n - 1)
+)
+
+# CI for standard deviation
+ci_sd <- sqrt(ci_var)
+
+cat("Sample variance:", round(s2, 2), "(mg/L)²\n")
+cat("95% CI for variance:", round(ci_var, 2), "(mg/L)²\n\n")
+cat("Sample SD:", round(sd(conc), 2), "mg/L\n")
+cat("95% CI for SD:", round(ci_sd, 2), "mg/L")
+```
+
+# Bootstrap Review {background-color="#27ae60"}
+
+## When to Use Bootstrap
+
+```{r}
+#| echo: false
+tibble(
+  Situation = c("Normal data, σ unknown",
+                "Non-normal data, large n",
+                "Non-normal data, small n",
+                "Complex statistic (median, trimmed mean)",
+                "Ratio or correlation",
+                "Very small n (< 10)"),
+  `Best Method` = c("t-interval",
+                    "t-interval or Bootstrap",
+                    "Bootstrap (studentized t)",
+                    "Bootstrap (percentile or studentized)",
+                    "Bootstrap",
+                    "Classical t (bootstrap unreliable)")
+) |>
+  knitr::kable()
+```
+
+## Bootstrap CI Methods Comparison
+
+```{r}
+#| echo: false
+tibble(
+  Method = c("Percentile", "Simple Bootstrap t", "Studentized Bootstrap t"),
+  Formula = c("(θ̂*[α/2], θ̂*[1-α/2])", 
+              "θ̂ ± t·SE_boot",
+              "θ̂ - t*[1-α/2]·SE, θ̂ - t*[α/2]·SE"),
+  `Best When` = c("Symmetric bootstrap dist, low bias",
+                  "Approx normal bootstrap dist",
+                  "Skewed data, need accurate coverage"),
+  `Coverage` = c("O(n^{-1/2})", "O(n^{-1/2})", "O(n^{-1})")
+) |>
+  knitr::kable()
+```
+
+## New Example: Ratio of Means (Vaccine Efficacy)
+
+In a clinical trial, we want to estimate the **relative risk reduction**:
+$$\text{Efficacy} = 1 - \frac{\text{Attack rate in vaccinated}}{\text{Attack rate in placebo}}$$
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Simulated trial data
+set.seed(551)
+n_vax <- 200; n_placebo <- 200
+cases_vax <- rbinom(1, n_vax, 0.02)    # ~2% attack rate
+cases_placebo <- rbinom(1, n_placebo, 0.08)  # ~8% attack rate
+
+# Point estimate
+rr <- (cases_vax / n_vax) / (cases_placebo / n_placebo)
+efficacy <- 1 - rr
+
+cat("Vaccinated: ", cases_vax, "/", n_vax, " (", round(cases_vax/n_vax*100, 1), "%)\n", sep = "")
+cat("Placebo:    ", cases_placebo, "/", n_placebo, " (", round(cases_placebo/n_placebo*100, 1), "%)\n", sep = "")
+cat("Relative Risk:", round(rr, 3), "\n")
+cat("Vaccine Efficacy:", round(efficacy * 100, 1), "%")
+```
+
+## Bootstrap CI for Vaccine Efficacy
+
+```{r}
+#| echo: true
+# Bootstrap for ratio - need to resample both groups
+set.seed(551)
+B <- 10000
+
+boot_efficacy <- replicate(B, {
+  # Resample cases (treating as binomial outcomes)
+  boot_vax <- rbinom(1, n_vax, cases_vax / n_vax)
+  boot_placebo <- rbinom(1, n_placebo, cases_placebo / n_placebo)
+  
+  # Handle zero in denominator
+  if (boot_placebo == 0) return(NA)
+  
+  boot_rr <- (boot_vax / n_vax) / (boot_placebo / n_placebo)
+  1 - boot_rr
+})
+
+boot_efficacy <- boot_efficacy[!is.na(boot_efficacy)]
+
+# Percentile CI
+pct_ci <- quantile(boot_efficacy, c(0.025, 0.975))
+cat("Bootstrap SE:", round(sd(boot_efficacy) * 100, 1), "%\n")
+cat("95% Percentile CI for efficacy:", round(pct_ci * 100, 1), "%")
+```
+
+## Visualizing Bootstrap Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+tibble(efficacy = boot_efficacy) |>
+  ggplot(aes(x = efficacy * 100)) +
+  geom_histogram(bins = 50, fill = "forestgreen", alpha = 0.7, color = "white") +
+  geom_vline(xintercept = efficacy * 100, color = "black", linewidth = 1.2) +
+  geom_vline(xintercept = pct_ci * 100, color = "red", linewidth = 1, linetype = "dashed") +
+  annotate("rect", xmin = pct_ci[1] * 100, xmax = pct_ci[2] * 100,
+           ymin = 0, ymax = Inf, alpha = 0.15, fill = "red") +
+  labs(x = "Vaccine Efficacy (%)", y = "Count",
+       title = "Bootstrap Distribution of Vaccine Efficacy",
+       subtitle = paste0("95% CI: (", round(pct_ci[1]*100, 1), "%, ", 
+                        round(pct_ci[2]*100, 1), "%)")) +
+  theme_minimal(base_size = 18)
+```
+
+# Summary and Decision Guide {background-color="#2c3e50"}
+
+## CI Method Selection Flowchart
+
+```{r}
+#| echo: false
+#| fig-height: 8
+#| fig-width: 14
+# Create an improved decision flowchart
+nodes <- tibble(
+  x = c(4,           # Start: Exact pivot?
+        2, 6,        # Level 2: Yes->Exact, No->MLE available?
+        4, 8,        # Level 3: MLE yes->sample size, MLE no->Bootstrap
+        2.5, 5.5,    # Level 4: n large->Wald/Score, n small->Bootstrap or classical
+        1.5, 3.5, 5.5, 8),  # Level 5: Final methods
+  y = c(5,           # Start
+        4, 4,        # Level 2
+        3, 3,        # Level 3
+        2, 2,        # Level 4
+        1, 1, 1, 1), # Level 5
+  label = c("Exact pivotal\nquantity available?",
+            "Use Exact\n(z, t, χ²)", "MLE with known\nasymptotic variance?",
+            "n ≥ 20-30?", "Bootstrap\n(percentile or\nstudentized t)",
+            "θ near boundary\nor small n?", "Consider\nBootstrap",
+            "Score\n(better coverage)", "Wald\n(simpler)", "Bootstrap t\n(skewed data)", ""),
+  fill = c("white",
+           "#3498db", "white",
+           "white", "#27ae60",
+           "white", "#27ae60",
+           "#f39c12", "#9b59b6", "#27ae60", "white")
+)
+
+# Remove the empty node
+nodes <- nodes |> filter(label != "")
+
+edges <- tibble(
+  x =    c(4,   4,   6,   6,   4,   4,   2.5, 2.5, 5.5),
+  xend = c(2,   6,   4,   8,   2.5, 5.5, 1.5, 3.5, 5.5),
+  y =    c(4.85, 4.85, 3.85, 3.85, 2.85, 2.85, 1.85, 1.85, 1.85),
+  yend = c(4.15, 4.15, 3.15, 3.15, 2.15, 2.15, 1.15, 1.15, 1.15)
+)
+
+edge_labels <- tibble(
+  x = c(2.8, 5.2, 4.8, 7.2, 3.1, 5.0, 1.85, 3.15),
+  y = c(4.5, 4.5, 3.5, 3.5, 2.5, 2.5, 1.5, 1.5),
+  label = c("Yes", "No", "Yes", "No", "Yes", "No", "Yes", "No")
+)
+
+ggplot() +
+  geom_segment(data = edges, aes(x = x, xend = xend, y = y, yend = yend),
+               arrow = arrow(length = unit(0.15, "cm")), color = "gray40", linewidth = 0.8) +
+  geom_label(data = nodes, aes(x = x, y = y, label = label, fill = fill),
+             size = 4.5, label.padding = unit(0.4, "lines"), color = "black") +
+  geom_text(data = edge_labels, aes(x = x, y = y, label = label),
+            size = 4, fontface = "italic", color = "gray30") +
+  scale_fill_identity() +
+  theme_void() +
+  coord_cartesian(xlim = c(0.5, 9), ylim = c(0.5, 5.5)) +
+  labs(title = "Confidence Interval Method Selection",
+       subtitle = "Score intervals preferred when parameter near boundary (e.g., p close to 0 or 1) or when Wald gives invalid bounds")
+```
+
+## When to Prefer Each Method
+
+| Situation | Recommended Method | Reason |
+|-----------|-------------------|--------|
+| Normal data, $\sigma$ known | z-interval (exact) | Pivotal quantity available |
+| Normal data, $\sigma$ unknown | t-interval (exact) | Pivotal quantity available |
+| Proportion, large n, p not extreme | Wald | Simple, adequate coverage |
+| Proportion, small n or p near 0/1 | Score (Wilson) | Respects [0,1], better coverage |
+| Poisson rate, small counts | Score | Avoids negative bounds |
+| Exponential mean | Exact (χ²) | Pivotal quantity exists |
+| Median, trimmed mean, correlation | Bootstrap | No simple SE formula |
+| Ratio of parameters | Bootstrap | Complex sampling distribution |
+| Skewed data, n ≥ 15 | Studentized Bootstrap t | Adapts to skewness |
+| Very small n (< 10) | Classical (t) | Bootstrap unreliable |
+
+## Key Formulas Reference Card
+
+::: columns
+::: {.column width="50%"}
+**Wald Intervals:**
+$$\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})$$
+
+**Delta Method:**
+$$SE[g(\hat{\theta})] \approx |g'(\hat{\theta})| \cdot SE(\hat{\theta})$$
+
+**Score Principle:**
+Solve $\frac{(\hat{\theta} - \theta)^2}{\text{Var}_\theta(\hat{\theta})} = z_{\alpha/2}^2$
+:::
+
+::: {.column width="50%"}
+**Bootstrap Percentile:**
+$$(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})$$
+
+**Studentized Bootstrap t:**
+$$\hat{\theta} - t^*_{1-\alpha/2} \cdot SE, \; \hat{\theta} - t^*_{\alpha/2} \cdot SE$$
+
+where $t^*_b = \frac{\hat{\theta}^*_b - \hat{\theta}}{SE^*_b}$
+:::
+:::
+
+## Looking Ahead
+
+**Next Lesson: Hypothesis Testing**
+
+- Null and alternative hypotheses
+- Type I and Type II errors
+- Test statistics and rejection regions
+- P-values and their interpretation
+
+. . .
+
+**Connection to CIs:**
+
+A $100(1-\alpha)\%$ CI contains exactly those parameter values that would **not** be rejected by a two-sided $\alpha$-level test.
+
+## References
+
+::: nonincremental
+- Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 8.
+- Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapters 5, 7.
+- Casella and Berger. *Statistical Inference* (2nd ed). Section 10.1 (Delta Method).
+- Agresti, A. (2013). *Categorical Data Analysis* (3rd ed). Chapter 1 (Score intervals).
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+**Midterm covers Lessons 1-11**
+
+Good luck on your exam!
+
+```{bash}
+#| eval: false
+#| include: false
+quarto render 11_Review_Confidence_Intervals.qmd
+```

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jessica Minnier">
+<meta name="dcterms.date" content="2026-02-02">
+
+<title>Lesson 11: Review of Confidence Intervals – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lesson-11-confidence-intervals-review" id="toc-lesson-11-confidence-intervals-review" class="nav-link active" data-scroll-target="#lesson-11-confidence-intervals-review">Lesson 11: Confidence Intervals Review</a>
+  <ul class="collapse">
+  <li><a href="#what-weve-covered-lessons-7-10" id="toc-what-weve-covered-lessons-7-10" class="nav-link" data-scroll-target="#what-weve-covered-lessons-7-10">What We’ve Covered (Lessons 7-10)</a></li>
+  </ul></li>
+  <li><a href="#the-big-picture" id="toc-the-big-picture" class="nav-link" data-scroll-target="#the-big-picture">The Big Picture</a>
+  <ul class="collapse">
+  <li><a href="#three-approaches-to-ci-construction" id="toc-three-approaches-to-ci-construction" class="nav-link" data-scroll-target="#three-approaches-to-ci-construction">Three Approaches to CI Construction</a></li>
+  <li><a href="#quick-reference-ci-formulas" id="toc-quick-reference-ci-formulas" class="nav-link" data-scroll-target="#quick-reference-ci-formulas">Quick Reference: CI Formulas</a></li>
+  <li><a href="#correct-ci-interpretation" id="toc-correct-ci-interpretation" class="nav-link" data-scroll-target="#correct-ci-interpretation">Correct CI Interpretation</a></li>
+  </ul></li>
+  <li><a href="#wald-intervals-general-framework" id="toc-wald-intervals-general-framework" class="nav-link" data-scroll-target="#wald-intervals-general-framework">Wald Intervals: General Framework</a>
+  <ul class="collapse">
+  <li><a href="#the-wald-interval-principle" id="toc-the-wald-interval-principle" class="nav-link" data-scroll-target="#the-wald-interval-principle">The Wald Interval Principle</a></li>
+  <li><a href="#wald-interval-poisson-rate" id="toc-wald-interval-poisson-rate" class="nav-link" data-scroll-target="#wald-interval-poisson-rate">Wald Interval: Poisson Rate</a></li>
+  <li><a href="#medical-example-hospital-infection-rate" id="toc-medical-example-hospital-infection-rate" class="nav-link" data-scroll-target="#medical-example-hospital-infection-rate">Medical Example: Hospital Infection Rate</a></li>
+  <li><a href="#wald-interval-exponential-rate" id="toc-wald-interval-exponential-rate" class="nav-link" data-scroll-target="#wald-interval-exponential-rate">Wald Interval: Exponential Rate</a></li>
+  <li><a href="#medical-example-time-to-symptom-relief" id="toc-medical-example-time-to-symptom-relief" class="nav-link" data-scroll-target="#medical-example-time-to-symptom-relief">Medical Example: Time to Symptom Relief</a></li>
+  <li><a href="#when-wald-intervals-struggle" id="toc-when-wald-intervals-struggle" class="nav-link" data-scroll-target="#when-wald-intervals-struggle">When Wald Intervals Struggle</a></li>
+  </ul></li>
+  <li><a href="#the-delta-method" id="toc-the-delta-method" class="nav-link" data-scroll-target="#the-delta-method">The Delta Method</a>
+  <ul class="collapse">
+  <li><a href="#motivation-functions-of-mles" id="toc-motivation-functions-of-mles" class="nav-link" data-scroll-target="#motivation-functions-of-mles">Motivation: Functions of MLEs</a></li>
+  <li><a href="#the-delta-method-1" id="toc-the-delta-method-1" class="nav-link" data-scroll-target="#the-delta-method-1">The Delta Method</a></li>
+  <li><a href="#delta-method-variance-formula" id="toc-delta-method-variance-formula" class="nav-link" data-scroll-target="#delta-method-variance-formula">Delta Method: Variance Formula</a></li>
+  <li><a href="#example-ci-for-mean-survival-time" id="toc-example-ci-for-mean-survival-time" class="nav-link" data-scroll-target="#example-ci-for-mean-survival-time">Example: CI for Mean Survival Time</a></li>
+  <li><a href="#medical-example-mean-time-to-relief-continued" id="toc-medical-example-mean-time-to-relief-continued" class="nav-link" data-scroll-target="#medical-example-mean-time-to-relief-continued">Medical Example: Mean Time to Relief (continued)</a></li>
+  <li><a href="#example-ci-for-odds-from-proportion" id="toc-example-ci-for-odds-from-proportion" class="nav-link" data-scroll-target="#example-ci-for-odds-from-proportion">Example: CI for Odds from Proportion</a></li>
+  <li><a href="#log-transformation-often-better" id="toc-log-transformation-often-better" class="nav-link" data-scroll-target="#log-transformation-often-better">Log Transformation: Often Better</a></li>
+  <li><a href="#delta-method-summary" id="toc-delta-method-summary" class="nav-link" data-scroll-target="#delta-method-summary">Delta Method: Summary</a></li>
+  </ul></li>
+  <li><a href="#score-intervals-beyond-proportions" id="toc-score-intervals-beyond-proportions" class="nav-link" data-scroll-target="#score-intervals-beyond-proportions">Score Intervals: Beyond Proportions</a>
+  <ul class="collapse">
+  <li><a href="#the-score-interval-principle" id="toc-the-score-interval-principle" class="nav-link" data-scroll-target="#the-score-interval-principle">The Score Interval Principle</a></li>
+  <li><a href="#score-interval-for-poisson-rate" id="toc-score-interval-for-poisson-rate" class="nav-link" data-scroll-target="#score-interval-for-poisson-rate">Score Interval for Poisson Rate</a></li>
+  <li><a href="#medical-example-clabsi-rate-score-vs-wald" id="toc-medical-example-clabsi-rate-score-vs-wald" class="nav-link" data-scroll-target="#medical-example-clabsi-rate-score-vs-wald">Medical Example: CLABSI Rate (Score vs Wald)</a></li>
+  <li><a href="#comparing-score-vs-wald-small-counts" id="toc-comparing-score-vs-wald-small-counts" class="nav-link" data-scroll-target="#comparing-score-vs-wald-small-counts">Comparing Score vs Wald: Small Counts</a></li>
+  <li><a href="#score-interval-for-exponential-mean" id="toc-score-interval-for-exponential-mean" class="nav-link" data-scroll-target="#score-interval-for-exponential-mean">Score Interval for Exponential Mean</a></li>
+  <li><a href="#medical-example-time-to-relief-exact-vs-wald" id="toc-medical-example-time-to-relief-exact-vs-wald" class="nav-link" data-scroll-target="#medical-example-time-to-relief-exact-vs-wald">Medical Example: Time to Relief (Exact vs Wald)</a></li>
+  <li><a href="#score-interval-for-normal-variance" id="toc-score-interval-for-normal-variance" class="nav-link" data-scroll-target="#score-interval-for-normal-variance">Score Interval for Normal Variance</a></li>
+  <li><a href="#medical-example-variability-in-drug-concentration" id="toc-medical-example-variability-in-drug-concentration" class="nav-link" data-scroll-target="#medical-example-variability-in-drug-concentration">Medical Example: Variability in Drug Concentration</a></li>
+  </ul></li>
+  <li><a href="#bootstrap-review" id="toc-bootstrap-review" class="nav-link" data-scroll-target="#bootstrap-review">Bootstrap Review</a>
+  <ul class="collapse">
+  <li><a href="#when-to-use-bootstrap" id="toc-when-to-use-bootstrap" class="nav-link" data-scroll-target="#when-to-use-bootstrap">When to Use Bootstrap</a></li>
+  <li><a href="#bootstrap-ci-methods-comparison" id="toc-bootstrap-ci-methods-comparison" class="nav-link" data-scroll-target="#bootstrap-ci-methods-comparison">Bootstrap CI Methods Comparison</a></li>
+  <li><a href="#new-example-ratio-of-means-vaccine-efficacy" id="toc-new-example-ratio-of-means-vaccine-efficacy" class="nav-link" data-scroll-target="#new-example-ratio-of-means-vaccine-efficacy">New Example: Ratio of Means (Vaccine Efficacy)</a></li>
+  <li><a href="#bootstrap-ci-for-vaccine-efficacy" id="toc-bootstrap-ci-for-vaccine-efficacy" class="nav-link" data-scroll-target="#bootstrap-ci-for-vaccine-efficacy">Bootstrap CI for Vaccine Efficacy</a></li>
+  <li><a href="#visualizing-bootstrap-distribution" id="toc-visualizing-bootstrap-distribution" class="nav-link" data-scroll-target="#visualizing-bootstrap-distribution">Visualizing Bootstrap Distribution</a></li>
+  </ul></li>
+  <li><a href="#summary-and-decision-guide" id="toc-summary-and-decision-guide" class="nav-link" data-scroll-target="#summary-and-decision-guide">Summary and Decision Guide</a>
+  <ul class="collapse">
+  <li><a href="#ci-method-selection-flowchart" id="toc-ci-method-selection-flowchart" class="nav-link" data-scroll-target="#ci-method-selection-flowchart">CI Method Selection Flowchart</a></li>
+  <li><a href="#key-formulas-reference-card" id="toc-key-formulas-reference-card" class="nav-link" data-scroll-target="#key-formulas-reference-card">Key Formulas Reference Card</a></li>
+  <li><a href="#looking-ahead" id="toc-looking-ahead" class="nav-link" data-scroll-target="#looking-ahead">Looking Ahead</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions?</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="11_Review_Confidence_Intervals_old.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lesson 11: Review of Confidence Intervals</h1>
+<p class="subtitle lead">BSTA 551: Statistical Inference</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jessica Minnier </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 2, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="lesson-11-confidence-intervals-review" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Lesson 11: Confidence Intervals Review</h1>
+<section id="what-weve-covered-lessons-7-10" class="level2">
+<h2 class="anchored" data-anchor-id="what-weve-covered-lessons-7-10">What We’ve Covered (Lessons 7-10)</h2>
+<div class="incremental">
+<ol class="incremental" type="1">
+<li><strong>Lesson 7:</strong> CI fundamentals — interpretation, pivotal quantities, z-intervals</li>
+<li><strong>Lesson 8:</strong> t-intervals (<span class="math inline">\(\sigma\)</span> unknown), CIs for proportions (Wald, Score, Agresti-Coull)</li>
+<li><strong>Lesson 9:</strong> Bootstrap principles — resampling, bootstrap distribution</li>
+<li><strong>Lesson 10:</strong> Bootstrap CIs — percentile, simple t, studentized t</li>
+</ol>
+</div>
+<p>. . .</p>
+<p><strong>Today’s Goals:</strong></p>
+<ol type="1">
+<li>Review the three main CI construction approaches</li>
+<li>Extend Wald intervals to other distributions and functions of MLEs</li>
+<li>Learn the <strong>delta method</strong> for variance of transformed estimators</li>
+<li>See score intervals for non-proportion parameters</li>
+</ol>
+</section>
+</section>
+<section id="the-big-picture" class="level1" data-background-color="#e74c3c">
+<h1 data-background-color="#e74c3c">The Big Picture</h1>
+<section id="three-approaches-to-ci-construction" class="level2">
+<h2 class="anchored" data-anchor-id="three-approaches-to-ci-construction">Three Approaches to CI Construction</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11_Review_Confidence_Intervals_old_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="quick-reference-ci-formulas" class="level2">
+<h2 class="anchored" data-anchor-id="quick-reference-ci-formulas">Quick Reference: CI Formulas</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 39%">
+<col style="width: 28%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Method</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mu\)</span> (<span class="math inline">\(\sigma\)</span> known)</td>
+<td>Pivotal (z)</td>
+<td><span class="math inline">\(\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\mu\)</span> (<span class="math inline">\(\sigma\)</span> unknown)</td>
+<td>Pivotal (t)</td>
+<td><span class="math inline">\(\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(p\)</span> (proportion)</td>
+<td>Wald</td>
+<td><span class="math inline">\(\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(p\)</span> (proportion)</td>
+<td>Score</td>
+<td>Solve <span class="math inline">\(\frac{(\hat{p} - p)^2}{p(1-p)/n} = z_{\alpha/2}^2\)</span></td>
+</tr>
+<tr class="odd">
+<td>Any <span class="math inline">\(\theta\)</span></td>
+<td>Bootstrap Percentile</td>
+<td><span class="math inline">\((\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})\)</span></td>
+</tr>
+<tr class="even">
+<td>Any <span class="math inline">\(\theta\)</span></td>
+<td>Bootstrap t</td>
+<td><span class="math inline">\(\hat{\theta} \pm t^*_{\alpha/2} \cdot SE_{boot}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="correct-ci-interpretation" class="level2">
+<h2 class="anchored" data-anchor-id="correct-ci-interpretation">Correct CI Interpretation</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Valid Interpretations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>“We are 95% confident that the true parameter lies in (L, U)”</li>
+<li>“The interval (L, U) is a plausible range for the parameter”</li>
+<li>“In repeated sampling, 95% of such intervals contain the true parameter”</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Invalid Interpretations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>“There is a 95% probability that <span class="math inline">\(\theta\)</span> is in (L, U)” ✗</li>
+<li>“95% of the data falls between L and U” ✗</li>
+<li>“The true parameter varies between L and U” ✗</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="wald-intervals-general-framework" class="level1" data-background-color="#9b59b6">
+<h1 data-background-color="#9b59b6">Wald Intervals: General Framework</h1>
+<section id="the-wald-interval-principle" class="level2">
+<h2 class="anchored" data-anchor-id="the-wald-interval-principle">The Wald Interval Principle</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Asymptotic Normality of MLEs
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Under regularity conditions, the MLE <span class="math inline">\(\hat{\theta}\)</span> is asymptotically normal: <span class="math display">\[\hat{\theta} \stackrel{approx}{\sim} N\left(\theta, \frac{1}{I(\theta)}\right)\]</span> where <span class="math inline">\(I(\theta)\)</span> is the Fisher information.</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>The Wald CI</strong> plugs in <span class="math inline">\(\hat{\theta}\)</span> for unknown quantities in the variance: <span class="math display">\[\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})\]</span></p>
+<p>where <span class="math inline">\(\widehat{SE}(\hat{\theta}) = \sqrt{1/I(\hat{\theta})}\)</span> or the observed information.</p>
+</section>
+<section id="wald-interval-poisson-rate" class="level2">
+<h2 class="anchored" data-anchor-id="wald-interval-poisson-rate">Wald Interval: Poisson Rate</h2>
+<p><strong>Setting:</strong> Count data <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span></p>
+<p>. . .</p>
+<p><strong>MLE:</strong> <span class="math inline">\(\hat{\lambda} = \bar{X}\)</span></p>
+<p><strong>Fisher Information:</strong> <span class="math inline">\(I(\lambda) = n/\lambda\)</span></p>
+<p><strong>Asymptotic Variance:</strong> <span class="math inline">\(\text{Var}(\hat{\lambda}) \approx \lambda/n\)</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wald CI for Poisson Rate
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\hat{\lambda} \pm z_{\alpha/2} \sqrt{\frac{\hat{\lambda}}{n}}\]</span></p>
+</div>
+</div>
+</section>
+<section id="medical-example-hospital-infection-rate" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-hospital-infection-rate">Medical Example: Hospital Infection Rate</h2>
+<p>A hospital monitors central line-associated bloodstream infections (CLABSI). Over <span class="math inline">\(n = 500\)</span> patient-days, they observe <span class="math inline">\(X = 8\)</span> infections.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">8</span>          <span class="co"># observed infections</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span>        <span class="co"># patient-days</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n  <span class="co"># MLE (rate per patient-day)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Wald CI</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>se_wald <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(lambda_hat <span class="sc">/</span> n)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>wald_ci <span class="ot">&lt;-</span> lambda_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> se_wald</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE (rate per 1000 patient-days):"</span>, <span class="fu">round</span>(lambda_hat <span class="sc">*</span> <span class="dv">1000</span>, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE (rate per 1000 patient-days): 16 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Wald CI:"</span>, <span class="fu">round</span>(wald_ci <span class="sc">*</span> <span class="dv">1000</span>, <span class="dv">3</span>), <span class="st">"per 1000 patient-days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Wald CI: 4.913 27.087 per 1000 patient-days</code></pre>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Note:</strong> The lower bound is positive, but for very small counts, Wald can give negative bounds!</p>
+</section>
+<section id="wald-interval-exponential-rate" class="level2">
+<h2 class="anchored" data-anchor-id="wald-interval-exponential-rate">Wald Interval: Exponential Rate</h2>
+<p><strong>Setting:</strong> Failure times <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exp}(\lambda)\)</span></p>
+<p><strong>MLE:</strong> <span class="math inline">\(\hat{\lambda} = 1/\bar{X}\)</span></p>
+<p><strong>Fisher Information:</strong> <span class="math inline">\(I(\lambda) = n/\lambda^2\)</span></p>
+<p><strong>Asymptotic Variance:</strong> <span class="math inline">\(\text{Var}(\hat{\lambda}) \approx \lambda^2/n\)</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Wald CI for Exponential Rate
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\hat{\lambda} \pm z_{\alpha/2} \frac{\hat{\lambda}}{\sqrt{n}}\]</span></p>
+</div>
+</div>
+</section>
+<section id="medical-example-time-to-symptom-relief" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-time-to-symptom-relief">Medical Example: Time to Symptom Relief</h2>
+<p>A clinical trial measures time (hours) until symptom relief for <span class="math inline">\(n = 30\)</span> patients taking a new analgesic:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulated relief times (hours)</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>relief_times <span class="ot">&lt;-</span> <span class="fu">rexp</span>(<span class="dv">30</span>, <span class="at">rate =</span> <span class="fl">0.5</span>)  <span class="co"># True rate = 0.5 (mean = 2 hours)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(relief_times)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> <span class="fu">mean</span>(relief_times)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Wald CI for rate</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>se_lambda <span class="ot">&lt;-</span> lambda_hat <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>wald_ci_lambda <span class="ot">&lt;-</span> lambda_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se_lambda</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean relief time:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(relief_times), <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean relief time: 2.01 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"MLE of rate:"</span>, <span class="fu">round</span>(lambda_hat, <span class="dv">3</span>), <span class="st">"per hour</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>MLE of rate: 0.498 per hour</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Wald CI for rate:"</span>, <span class="fu">round</span>(wald_ci_lambda, <span class="dv">3</span>), <span class="st">"per hour"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Wald CI for rate: 0.32 0.677 per hour</code></pre>
+</div>
+</div>
+</section>
+<section id="when-wald-intervals-struggle" class="level2">
+<h2 class="anchored" data-anchor-id="when-wald-intervals-struggle">When Wald Intervals Struggle</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulation: Wald coverage for Poisson with small lambda</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>sample_sizes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>, <span class="dv">100</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>true_lambda <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>coverage_results <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">n =</span> sample_sizes, <span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sim) <span class="sc">|&gt;</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_total =</span> <span class="fu">map_dbl</span>(n, <span class="sc">~</span><span class="fu">sum</span>(<span class="fu">rpois</span>(.x, true_lambda))),</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda_hat =</span> x_total <span class="sc">/</span> n,</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">se =</span> <span class="fu">sqrt</span>(lambda_hat <span class="sc">/</span> n),</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">lower =</span> lambda_hat <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> se,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">upper =</span> lambda_hat <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> se,</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">covers =</span> (lower <span class="sc">&lt;</span> true_lambda) <span class="sc">&amp;</span> (true_lambda <span class="sc">&lt;</span> upper)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(n) <span class="sc">|&gt;</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">coverage =</span> <span class="fu">mean</span>(covers), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(coverage_results, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(n), <span class="at">y =</span> coverage)) <span class="sc">+</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.95</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(coverage <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>)), </span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Sample Size"</span>, <span class="at">y =</span> <span class="st">"Actual Coverage"</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Wald CI Coverage for Poisson("</span> <span class="sc">*</span> lambda <span class="sc">*</span> <span class="st">" = 0.5)"</span>),</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Target: 95% (dashed line)"</span>) <span class="sc">+</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylim</span>(<span class="fl">0.85</span>, <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11_Review_Confidence_Intervals_old_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Takeaway:</strong> Wald intervals can have poor coverage for small samples or extreme parameters.</p>
+</section>
+</section>
+<section id="the-delta-method" class="level1" data-background-color="#16a085">
+<h1 data-background-color="#16a085">The Delta Method</h1>
+<section id="motivation-functions-of-mles" class="level2">
+<h2 class="anchored" data-anchor-id="motivation-functions-of-mles">Motivation: Functions of MLEs</h2>
+<p>Often we want a CI for a <strong>function</strong> of the parameter, not the parameter itself.</p>
+<p>. . .</p>
+<p><strong>Examples:</strong></p>
+<ul>
+<li>Mean survival time <span class="math inline">\(\mu = 1/\lambda\)</span> when we estimate <span class="math inline">\(\hat{\lambda}\)</span></li>
+<li>Odds <span class="math inline">\(\omega = p/(1-p)\)</span> when we estimate <span class="math inline">\(\hat{p}\)</span></li>
+<li>Log-odds <span class="math inline">\(\eta = \log(p/(1-p))\)</span> for logistic regression</li>
+</ul>
+<p>. . .</p>
+<p><strong>Question:</strong> If <span class="math inline">\(\hat{\theta} \stackrel{approx}{\sim} N(\theta, \sigma^2_{\hat{\theta}})\)</span>, what is the distribution of <span class="math inline">\(g(\hat{\theta})\)</span>?</p>
+</section>
+<section id="the-delta-method-1" class="level2">
+<h2 class="anchored" data-anchor-id="the-delta-method-1">The Delta Method</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Delta Method (First-Order Approximation)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>If <span class="math inline">\(\hat{\theta} \stackrel{approx}{\sim} N(\theta, \sigma^2_{\hat{\theta}})\)</span> and <span class="math inline">\(g\)</span> is differentiable at <span class="math inline">\(\theta\)</span> with <span class="math inline">\(g'(\theta) \neq 0\)</span>, then:</p>
+<p><span class="math display">\[g(\hat{\theta}) \stackrel{approx}{\sim} N\left(g(\theta), \; [g'(\theta)]^2 \cdot \sigma^2_{\hat{\theta}}\right)\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Intuition:</strong> Taylor expansion around <span class="math inline">\(\theta\)</span>: <span class="math display">\[g(\hat{\theta}) \approx g(\theta) + g'(\theta)(\hat{\theta} - \theta)\]</span></p>
+<p>So <span class="math inline">\(\text{Var}[g(\hat{\theta})] \approx [g'(\theta)]^2 \cdot \text{Var}(\hat{\theta})\)</span></p>
+</section>
+<section id="delta-method-variance-formula" class="level2">
+<h2 class="anchored" data-anchor-id="delta-method-variance-formula">Delta Method: Variance Formula</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Practical Formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\widehat{SE}[g(\hat{\theta})] = |g'(\hat{\theta})| \cdot \widehat{SE}(\hat{\theta})\]</span></p>
+<p><strong>Wald CI for <span class="math inline">\(g(\theta)\)</span>:</strong> <span class="math display">\[g(\hat{\theta}) \pm z_{\alpha/2} \cdot |g'(\hat{\theta})| \cdot \widehat{SE}(\hat{\theta})\]</span></p>
+</div>
+</div>
+</section>
+<section id="example-ci-for-mean-survival-time" class="level2">
+<h2 class="anchored" data-anchor-id="example-ci-for-mean-survival-time">Example: CI for Mean Survival Time</h2>
+<p><strong>Setting:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim \text{Exp}(\lambda)\)</span>, want CI for mean <span class="math inline">\(\mu = 1/\lambda = g(\lambda)\)</span></p>
+<p>. . .</p>
+<p><strong>Step 1:</strong> We have <span class="math inline">\(\hat{\lambda} = 1/\bar{X}\)</span> with <span class="math inline">\(SE(\hat{\lambda}) \approx \hat{\lambda}/\sqrt{n}\)</span></p>
+<p>. . .</p>
+<p><strong>Step 2:</strong> Compute derivative: <span class="math inline">\(g(\lambda) = 1/\lambda \Rightarrow g'(\lambda) = -1/\lambda^2\)</span></p>
+<p>. . .</p>
+<p><strong>Step 3:</strong> Apply delta method: <span class="math display">\[SE(\hat{\mu}) = |g'(\hat{\lambda})| \cdot SE(\hat{\lambda}) = \frac{1}{\hat{\lambda}^2} \cdot \frac{\hat{\lambda}}{\sqrt{n}} = \frac{1}{\hat{\lambda}\sqrt{n}} = \frac{\bar{X}}{\sqrt{n}}\]</span></p>
+<p>. . .</p>
+<p>This is just <span class="math inline">\(SE(\bar{X}) = s/\sqrt{n}\)</span> when <span class="math inline">\(s \approx \bar{X}\)</span> for exponential data!</p>
+</section>
+<section id="medical-example-mean-time-to-relief-continued" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-mean-time-to-relief-continued">Medical Example: Mean Time to Relief (continued)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># From earlier: relief_times data</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(relief_times)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(relief_times)</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> xbar</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Delta method SE for mean (mu = 1/lambda)</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="co"># g'(lambda) = -1/lambda^2, so SE(mu) = SE(lambda)/lambda^2 = 1/(lambda * sqrt(n))</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>se_mu_delta <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (lambda_hat <span class="sc">*</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Equivalently: se_mu_delta = xbar / sqrt(n)</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Delta method SE for mean:"</span>, <span class="fu">round</span>(se_mu_delta, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Delta method SE for mean: 0.366 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Direct SE (s/sqrt(n)):"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(relief_times)<span class="sc">/</span><span class="fu">sqrt</span>(n), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Direct SE (s/sqrt(n)): 0.287 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% CI for mean survival time</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>ci_mu <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se_mu_delta</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for mean relief time:"</span>, <span class="fu">round</span>(ci_mu, <span class="dv">2</span>), <span class="st">"hours"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for mean relief time: 1.29 2.72 hours</code></pre>
+</div>
+</div>
+</section>
+<section id="example-ci-for-odds-from-proportion" class="level2">
+<h2 class="anchored" data-anchor-id="example-ci-for-odds-from-proportion">Example: CI for Odds from Proportion</h2>
+<p><strong>Setting:</strong> <span class="math inline">\(X \sim \text{Binomial}(n, p)\)</span>, want CI for odds <span class="math inline">\(\omega = p/(1-p)\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clinical trial: 45 of 120 patients respond to treatment</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">45</span>; n <span class="ot">&lt;-</span> <span class="dv">120</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>omega_hat <span class="ot">&lt;-</span> p_hat <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat)  <span class="co"># Estimated odds</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Delta method: g(p) = p/(1-p), g'(p) = 1/(1-p)^2</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>se_p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(p_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat) <span class="sc">/</span> n)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>g_prime <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>se_omega <span class="ot">&lt;-</span> <span class="fu">abs</span>(g_prime) <span class="sc">*</span> se_p</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% CI for odds</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>ci_omega <span class="ot">&lt;-</span> omega_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se_omega</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Response rate:"</span>, <span class="fu">round</span>(p_hat, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response rate: 0.375 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Estimated odds:"</span>, <span class="fu">round</span>(omega_hat, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Estimated odds: 0.6 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for odds:"</span>, <span class="fu">round</span>(ci_omega, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for odds: 0.378 0.822</code></pre>
+</div>
+</div>
+</section>
+<section id="log-transformation-often-better" class="level2">
+<h2 class="anchored" data-anchor-id="log-transformation-often-better">Log Transformation: Often Better</h2>
+<p>For positive parameters (rates, odds), working on the <strong>log scale</strong> often improves coverage:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># CI for log(odds), then exponentiate</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>log_omega_hat <span class="ot">&lt;-</span> <span class="fu">log</span>(omega_hat)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Delta method for log(omega): g(omega) = log(omega), g'(omega) = 1/omega</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>se_log_omega <span class="ot">&lt;-</span> se_omega <span class="sc">/</span> omega_hat</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>ci_log_omega <span class="ot">&lt;-</span> log_omega_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se_log_omega</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>ci_omega_transformed <span class="ot">&lt;-</span> <span class="fu">exp</span>(ci_log_omega)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for odds (direct Wald):"</span>, <span class="fu">round</span>(ci_omega, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for odds (direct Wald): 0.378 0.822 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for odds (log-transformed):"</span>, <span class="fu">round</span>(ci_omega_transformed, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for odds (log-transformed): 0.415 0.868</code></pre>
+</div>
+</div>
+<p>. . .</p>
+<p>The log-transformed CI is <strong>asymmetric</strong> around the estimate — often more appropriate!</p>
+</section>
+<section id="delta-method-summary" class="level2">
+<h2 class="anchored" data-anchor-id="delta-method-summary">Delta Method: Summary</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Common Delta Method Applications</caption>
+<colgroup>
+<col style="width: 26%">
+<col style="width: 32%">
+<col style="width: 23%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Original Parameter</th>
+<th style="text-align: left;">Function g(θ)</th>
+<th style="text-align: left;">Derivative g’(θ)</th>
+<th style="text-align: left;">SE[g(θ̂)]</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">λ (Exp rate)</td>
+<td style="text-align: left;">μ = 1/λ</td>
+<td style="text-align: left;">-1/λ²</td>
+<td style="text-align: left;">1/(λ̂√n)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">p (proportion)</td>
+<td style="text-align: left;">odds = p/(1-p)</td>
+<td style="text-align: left;">1/(1-p)²</td>
+<td style="text-align: left;">SE(p̂)/(1-p̂)²</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">p (proportion)</td>
+<td style="text-align: left;">log-odds = log(p/(1-p))</td>
+<td style="text-align: left;">1/(p(1-p))</td>
+<td style="text-align: left;">1/√(np̂(1-p̂))</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">λ (Poisson)</td>
+<td style="text-align: left;">log(λ)</td>
+<td style="text-align: left;">1/λ</td>
+<td style="text-align: left;">1/√(nλ̂)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="score-intervals-beyond-proportions" class="level1" data-background-color="#f39c12">
+<h1 data-background-color="#f39c12">Score Intervals: Beyond Proportions</h1>
+<section id="the-score-interval-principle" class="level2">
+<h2 class="anchored" data-anchor-id="the-score-interval-principle">The Score Interval Principle</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Score (Wald) Test Inversion
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Instead of plugging in <span class="math inline">\(\hat{\theta}\)</span> for the variance, the <strong>score interval</strong> keeps <span class="math inline">\(\theta\)</span> in the variance and finds all <span class="math inline">\(\theta\)</span> values where: <span class="math display">\[\frac{(\hat{\theta} - \theta)^2}{\text{Var}_\theta(\hat{\theta})} \leq z_{\alpha/2}^2\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Advantages over Wald:</strong></p>
+<ul>
+<li>Often has better coverage, especially for extreme parameters</li>
+<li>Stays within parameter bounds (e.g., <span class="math inline">\([0, 1]\)</span> for proportions)</li>
+<li>Doesn’t require asymptotic variance to be estimated</li>
+</ul>
+</section>
+<section id="score-interval-for-poisson-rate" class="level2">
+<h2 class="anchored" data-anchor-id="score-interval-for-poisson-rate">Score Interval for Poisson Rate</h2>
+<p><strong>Setting:</strong> Observe <span class="math inline">\(X = \sum X_i \sim \text{Poisson}(n\lambda)\)</span></p>
+<p><strong>Score equation:</strong> Find <span class="math inline">\(\lambda\)</span> such that <span class="math display">\[\frac{(X - n\lambda)^2}{n\lambda} \leq z_{\alpha/2}^2\]</span></p>
+<p>. . .</p>
+<p>This is a quadratic in <span class="math inline">\(\lambda\)</span>! Solving gives:</p>
+<p><span class="math display">\[\lambda \in \left(\frac{X + z^2/2 - z\sqrt{X + z^2/4}}{n}, \; \frac{X + z^2/2 + z\sqrt{X + z^2/4}}{n}\right)\]</span></p>
+</section>
+<section id="medical-example-clabsi-rate-score-vs-wald" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-clabsi-rate-score-vs-wald">Medical Example: CLABSI Rate (Score vs Wald)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hospital infection data</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">8</span>          <span class="co"># infections</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">500</span>        <span class="co"># patient-days</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Wald CI</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>lambda_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>wald_ci <span class="ot">&lt;-</span> lambda_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> <span class="fu">sqrt</span>(lambda_hat <span class="sc">/</span> n)</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Score CI (quadratic solution)</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>score_lower <span class="ot">&lt;-</span> (x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> z <span class="sc">*</span> <span class="fu">sqrt</span>(x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">4</span>)) <span class="sc">/</span> n</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>score_upper <span class="ot">&lt;-</span> (x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> z <span class="sc">*</span> <span class="fu">sqrt</span>(x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">4</span>)) <span class="sc">/</span> n</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wald 95% CI (per 1000 pt-days):"</span>, <span class="fu">round</span>(wald_ci <span class="sc">*</span> <span class="dv">1000</span>, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Wald 95% CI (per 1000 pt-days): 4.91 27.09 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Score 95% CI (per 1000 pt-days):"</span>, <span class="fu">round</span>(<span class="fu">c</span>(score_lower, score_upper) <span class="sc">*</span> <span class="dv">1000</span>, <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Score 95% CI (per 1000 pt-days): 8.11 31.58</code></pre>
+</div>
+</div>
+</section>
+<section id="comparing-score-vs-wald-small-counts" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-score-vs-wald-small-counts">Comparing Score vs Wald: Small Counts</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare intervals for various observed counts</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>compare_poisson_ci <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n =</span> <span class="dv">100</span>) {</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  lambda_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Wald</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  se_wald <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(lambda_hat <span class="sc">/</span> n)</span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  wald <span class="ot">&lt;-</span> <span class="fu">c</span>(lambda_hat <span class="sc">-</span> z <span class="sc">*</span> se_wald, lambda_hat <span class="sc">+</span> z <span class="sc">*</span> se_wald)</span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Score</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>  score_lower <span class="ot">&lt;-</span> (x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> z <span class="sc">*</span> <span class="fu">sqrt</span>(x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">4</span>)) <span class="sc">/</span> n</span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>  score_upper <span class="ot">&lt;-</span> (x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">+</span> z <span class="sc">*</span> <span class="fu">sqrt</span>(x <span class="sc">+</span> z<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">4</span>)) <span class="sc">/</span> n</span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb32-14"><a href="#cb32-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(<span class="at">x =</span> x, </span>
+<span id="cb32-15"><a href="#cb32-15" aria-hidden="true" tabindex="-1"></a>         <span class="at">method =</span> <span class="fu">c</span>(<span class="st">"Wald"</span>, <span class="st">"Score"</span>),</span>
+<span id="cb32-16"><a href="#cb32-16" aria-hidden="true" tabindex="-1"></a>         <span class="at">lower =</span> <span class="fu">c</span>(wald[<span class="dv">1</span>], score_lower),</span>
+<span id="cb32-17"><a href="#cb32-17" aria-hidden="true" tabindex="-1"></a>         <span class="at">upper =</span> <span class="fu">c</span>(wald[<span class="dv">2</span>], score_upper),</span>
+<span id="cb32-18"><a href="#cb32-18" aria-hidden="true" tabindex="-1"></a>         <span class="at">estimate =</span> lambda_hat)</span>
+<span id="cb32-19"><a href="#cb32-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb32-20"><a href="#cb32-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-21"><a href="#cb32-21" aria-hidden="true" tabindex="-1"></a>ci_comparison <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>), compare_poisson_ci)</span>
+<span id="cb32-22"><a href="#cb32-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-23"><a href="#cb32-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(ci_comparison, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(x), <span class="at">color =</span> method)) <span class="sc">+</span></span>
+<span id="cb32-24"><a href="#cb32-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbar</span>(<span class="fu">aes</span>(<span class="at">ymin =</span> lower, <span class="at">ymax =</span> upper), </span>
+<span id="cb32-25"><a href="#cb32-25" aria-hidden="true" tabindex="-1"></a>                <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.4</span>), <span class="at">width =</span> <span class="fl">0.3</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb32-26"><a href="#cb32-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> estimate), <span class="at">position =</span> <span class="fu">position_dodge</span>(<span class="fl">0.4</span>), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb32-27"><a href="#cb32-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray50"</span>) <span class="sc">+</span></span>
+<span id="cb32-28"><a href="#cb32-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Wald"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"Score"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>)) <span class="sc">+</span></span>
+<span id="cb32-29"><a href="#cb32-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Observed Count (X)"</span>, <span class="at">y =</span> <span class="fu">expression</span>(lambda),</span>
+<span id="cb32-30"><a href="#cb32-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Poisson CI Comparison (n = 100 patient-days)"</span>,</span>
+<span id="cb32-31"><a href="#cb32-31" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="st">"Score intervals avoid negative bounds for small counts"</span>) <span class="sc">+</span></span>
+<span id="cb32-32"><a href="#cb32-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>) <span class="sc">+</span></span>
+<span id="cb32-33"><a href="#cb32-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"top"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11_Review_Confidence_Intervals_old_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="score-interval-for-exponential-mean" class="level2">
+<h2 class="anchored" data-anchor-id="score-interval-for-exponential-mean">Score Interval for Exponential Mean</h2>
+<p><strong>Setting:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim \text{Exp}(\lambda)\)</span>, want CI for mean <span class="math inline">\(\mu = 1/\lambda\)</span></p>
+<p>Using the pivotal quantity <span class="math inline">\(2\lambda \sum X_i \sim \chi^2_{2n}\)</span>:</p>
+<p><span class="math display">\[P\left(\chi^2_{1-\alpha/2, 2n} &lt; 2\lambda \sum X_i &lt; \chi^2_{\alpha/2, 2n}\right) = 1 - \alpha\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exact CI for Exponential Mean
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\left(\frac{2\sum X_i}{\chi^2_{\alpha/2, 2n}}, \; \frac{2\sum X_i}{\chi^2_{1-\alpha/2, 2n}}\right)\]</span></p>
+</div>
+</div>
+</section>
+<section id="medical-example-time-to-relief-exact-vs-wald" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-time-to-relief-exact-vs-wald">Medical Example: Time to Relief (Exact vs Wald)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Relief time data from earlier</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>sum_x <span class="ot">&lt;-</span> <span class="fu">sum</span>(relief_times)</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(relief_times)</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Exact CI based on chi-squared</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>exact_ci_mu <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> sum_x <span class="sc">/</span> <span class="fu">qchisq</span>(<span class="fl">0.975</span>, <span class="at">df =</span> <span class="dv">2</span> <span class="sc">*</span> n),</span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> sum_x <span class="sc">/</span> <span class="fu">qchisq</span>(<span class="fl">0.025</span>, <span class="at">df =</span> <span class="dv">2</span> <span class="sc">*</span> n)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Wald CI (from delta method earlier)</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(relief_times)</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>wald_ci_mu <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> <span class="fu">sd</span>(relief_times) <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a><span class="co"># t-interval for comparison</span></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a>t_ci <span class="ot">&lt;-</span> <span class="fu">t.test</span>(relief_times)<span class="sc">$</span>conf.int</span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean relief time:"</span>, <span class="fu">round</span>(xbar, <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean relief time: 2.01 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Exact (chi-sq) 95% CI:"</span>, <span class="fu">round</span>(exact_ci_mu, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Exact (chi-sq) 95% CI: 1.45 2.97 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wald (delta) 95% CI:"</span>, <span class="fu">round</span>(wald_ci_mu, <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Wald (delta) 95% CI: 1.44 2.57 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"t-interval 95% CI:"</span>, <span class="fu">round</span>(<span class="fu">as.numeric</span>(t_ci), <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t-interval 95% CI: 1.42 2.59</code></pre>
+</div>
+</div>
+</section>
+<section id="score-interval-for-normal-variance" class="level2">
+<h2 class="anchored" data-anchor-id="score-interval-for-normal-variance">Score Interval for Normal Variance</h2>
+<p><strong>Setting:</strong> <span class="math inline">\(X_1, \ldots, X_n \sim N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\mu\)</span> unknown</p>
+<p>The pivotal quantity <span class="math inline">\((n-1)S^2/\sigma^2 \sim \chi^2_{n-1}\)</span> gives:</p>
+<p><span class="math display">\[P\left(\chi^2_{1-\alpha/2, n-1} &lt; \frac{(n-1)S^2}{\sigma^2} &lt; \chi^2_{\alpha/2, n-1}\right) = 1 - \alpha\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exact CI for Variance
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\left(\frac{(n-1)s^2}{\chi^2_{\alpha/2, n-1}}, \; \frac{(n-1)s^2}{\chi^2_{1-\alpha/2, n-1}}\right)\]</span></p>
+</div>
+</div>
+</section>
+<section id="medical-example-variability-in-drug-concentration" class="level2">
+<h2 class="anchored" data-anchor-id="medical-example-variability-in-drug-concentration">Medical Example: Variability in Drug Concentration</h2>
+<p>A pharmacokinetics study measures peak drug concentration in <span class="math inline">\(n = 20\)</span> patients:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulated concentration data (mg/L)</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>conc <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">20</span>, <span class="at">mean =</span> <span class="dv">15</span>, <span class="at">sd =</span> <span class="dv">3</span>)</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(conc)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">var</span>(conc)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="co"># CI for variance</span></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a>ci_var <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a>  (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> s2 <span class="sc">/</span> <span class="fu">qchisq</span>(<span class="fl">0.975</span>, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>),</span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a>  (n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> s2 <span class="sc">/</span> <span class="fu">qchisq</span>(<span class="fl">0.025</span>, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="co"># CI for standard deviation</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>ci_sd <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(ci_var)</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample variance:"</span>, <span class="fu">round</span>(s2, <span class="dv">2</span>), <span class="st">"(mg/L)²</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample variance: 9.5 (mg/L)²</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for variance:"</span>, <span class="fu">round</span>(ci_var, <span class="dv">2</span>), <span class="st">"(mg/L)²</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for variance: 5.5 20.27 (mg/L)²</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample SD:"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(conc), <span class="dv">2</span>), <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample SD: 3.08 mg/L</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for SD:"</span>, <span class="fu">round</span>(ci_sd, <span class="dv">2</span>), <span class="st">"mg/L"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for SD: 2.34 4.5 mg/L</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="bootstrap-review" class="level1" data-background-color="#27ae60">
+<h1 data-background-color="#27ae60">Bootstrap Review</h1>
+<section id="when-to-use-bootstrap" class="level2">
+<h2 class="anchored" data-anchor-id="when-to-use-bootstrap">When to Use Bootstrap</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 51%">
+<col style="width: 48%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Situation</th>
+<th style="text-align: left;">Best Method</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Normal data, σ unknown</td>
+<td style="text-align: left;">t-interval</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Non-normal data, large n</td>
+<td style="text-align: left;">t-interval or Bootstrap</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Non-normal data, small n</td>
+<td style="text-align: left;">Bootstrap (studentized t)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Complex statistic (median, trimmed mean)</td>
+<td style="text-align: left;">Bootstrap (percentile or studentized)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Ratio or correlation</td>
+<td style="text-align: left;">Bootstrap</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Very small n (&lt; 10)</td>
+<td style="text-align: left;">Classical t (bootstrap unreliable)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="bootstrap-ci-methods-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="bootstrap-ci-methods-comparison">Bootstrap CI Methods Comparison</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 22%">
+<col style="width: 31%">
+<col style="width: 34%">
+<col style="width: 11%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Formula</th>
+<th style="text-align: left;">Best When</th>
+<th style="text-align: left;">Coverage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Percentile</td>
+<td style="text-align: left;">(θ̂<em>[α/2], θ̂</em>[1-α/2])</td>
+<td style="text-align: left;">Symmetric bootstrap dist, low bias</td>
+<td style="text-align: left;">O(n^{-1/2})</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Simple Bootstrap t</td>
+<td style="text-align: left;">θ̂ ± t·SE_boot</td>
+<td style="text-align: left;">Approx normal bootstrap dist</td>
+<td style="text-align: left;">O(n^{-1/2})</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Studentized Bootstrap t</td>
+<td style="text-align: left;">θ̂ - t<em>[1-α/2]·SE, θ̂ - t</em>[α/2]·SE</td>
+<td style="text-align: left;">Skewed data, need accurate coverage</td>
+<td style="text-align: left;">O(n^{-1})</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="new-example-ratio-of-means-vaccine-efficacy" class="level2">
+<h2 class="anchored" data-anchor-id="new-example-ratio-of-means-vaccine-efficacy">New Example: Ratio of Means (Vaccine Efficacy)</h2>
+<p>In a clinical trial, we want to estimate the <strong>relative risk reduction</strong>: <span class="math display">\[\text{Efficacy} = 1 - \frac{\text{Attack rate in vaccinated}}{\text{Attack rate in placebo}}\]</span></p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulated trial data</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>n_vax <span class="ot">&lt;-</span> <span class="dv">200</span>; n_placebo <span class="ot">&lt;-</span> <span class="dv">200</span></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>cases_vax <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, n_vax, <span class="fl">0.02</span>)    <span class="co"># ~2% attack rate</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>cases_placebo <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, n_placebo, <span class="fl">0.08</span>)  <span class="co"># ~8% attack rate</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Point estimate</span></span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>rr <span class="ot">&lt;-</span> (cases_vax <span class="sc">/</span> n_vax) <span class="sc">/</span> (cases_placebo <span class="sc">/</span> n_placebo)</span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a>efficacy <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> rr</span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Vaccinated: "</span>, cases_vax, <span class="st">"/"</span>, n_vax, <span class="st">" ("</span>, <span class="fu">round</span>(cases_vax<span class="sc">/</span>n_vax<span class="sc">*</span><span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%)</span><span class="sc">\n</span><span class="st">"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Vaccinated: 6/200 (3%)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Placebo:    "</span>, cases_placebo, <span class="st">"/"</span>, n_placebo, <span class="st">" ("</span>, <span class="fu">round</span>(cases_placebo<span class="sc">/</span>n_placebo<span class="sc">*</span><span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%)</span><span class="sc">\n</span><span class="st">"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Placebo:    12/200 (6%)</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Relative Risk:"</span>, <span class="fu">round</span>(rr, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Relative Risk: 0.5 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Vaccine Efficacy:"</span>, <span class="fu">round</span>(efficacy <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Vaccine Efficacy: 50 %</code></pre>
+</div>
+</div>
+</section>
+<section id="bootstrap-ci-for-vaccine-efficacy" class="level2">
+<h2 class="anchored" data-anchor-id="bootstrap-ci-for-vaccine-efficacy">Bootstrap CI for Vaccine Efficacy</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Bootstrap for ratio - need to resample both groups</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>boot_efficacy <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Resample cases (treating as binomial outcomes)</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  boot_vax <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, n_vax, cases_vax <span class="sc">/</span> n_vax)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  boot_placebo <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, n_placebo, cases_placebo <span class="sc">/</span> n_placebo)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Handle zero in denominator</span></span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (boot_placebo <span class="sc">==</span> <span class="dv">0</span>) <span class="fu">return</span>(<span class="cn">NA</span>)</span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a>  boot_rr <span class="ot">&lt;-</span> (boot_vax <span class="sc">/</span> n_vax) <span class="sc">/</span> (boot_placebo <span class="sc">/</span> n_placebo)</span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>  <span class="dv">1</span> <span class="sc">-</span> boot_rr</span>
+<span id="cb57-15"><a href="#cb57-15" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb57-16"><a href="#cb57-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-17"><a href="#cb57-17" aria-hidden="true" tabindex="-1"></a>boot_efficacy <span class="ot">&lt;-</span> boot_efficacy[<span class="sc">!</span><span class="fu">is.na</span>(boot_efficacy)]</span>
+<span id="cb57-18"><a href="#cb57-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-19"><a href="#cb57-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Percentile CI</span></span>
+<span id="cb57-20"><a href="#cb57-20" aria-hidden="true" tabindex="-1"></a>pct_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_efficacy, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb57-21"><a href="#cb57-21" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bootstrap SE:"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(boot_efficacy) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap SE: 30.3 %</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Percentile CI for efficacy:"</span>, <span class="fu">round</span>(pct_ci <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Percentile CI for efficacy: -25 86.7 %</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-bootstrap-distribution" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-bootstrap-distribution">Visualizing Bootstrap Distribution</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">efficacy =</span> boot_efficacy) <span class="sc">|&gt;</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> efficacy <span class="sc">*</span> <span class="dv">100</span>)) <span class="sc">+</span></span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">50</span>, <span class="at">fill =</span> <span class="st">"forestgreen"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> efficacy <span class="sc">*</span> <span class="dv">100</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> pct_ci <span class="sc">*</span> <span class="dv">100</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> pct_ci[<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="at">xmax =</span> pct_ci[<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>, <span class="at">fill =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb61-8"><a href="#cb61-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Vaccine Efficacy (%)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>,</span>
+<span id="cb61-9"><a href="#cb61-9" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">"Bootstrap Distribution of Vaccine Efficacy"</span>,</span>
+<span id="cb61-10"><a href="#cb61-10" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"95% CI: ("</span>, <span class="fu">round</span>(pct_ci[<span class="dv">1</span>]<span class="sc">*</span><span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%, "</span>, </span>
+<span id="cb61-11"><a href="#cb61-11" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">round</span>(pct_ci[<span class="dv">2</span>]<span class="sc">*</span><span class="dv">100</span>, <span class="dv">1</span>), <span class="st">"%)"</span>)) <span class="sc">+</span></span>
+<span id="cb61-12"><a href="#cb61-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">18</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11_Review_Confidence_Intervals_old_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary-and-decision-guide" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Summary and Decision Guide</h1>
+<section id="ci-method-selection-flowchart" class="level2">
+<h2 class="anchored" data-anchor-id="ci-method-selection-flowchart">CI Method Selection Flowchart</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="11_Review_Confidence_Intervals_old_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-formulas-reference-card" class="level2">
+<h2 class="anchored" data-anchor-id="key-formulas-reference-card">Key Formulas Reference Card</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p><strong>Wald Intervals:</strong> <span class="math display">\[\hat{\theta} \pm z_{\alpha/2} \cdot \widehat{SE}(\hat{\theta})\]</span></p>
+<p><strong>Delta Method:</strong> <span class="math display">\[SE[g(\hat{\theta})] \approx |g'(\hat{\theta})| \cdot SE(\hat{\theta})\]</span></p>
+<p><strong>Score Principle:</strong> Solve <span class="math inline">\(\frac{(\hat{\theta} - \theta)^2}{\text{Var}_\theta(\hat{\theta})} = z_{\alpha/2}^2\)</span></p>
+</div><div class="column" style="width:50%;">
+<p><strong>Bootstrap Percentile:</strong> <span class="math display">\[(\hat{\theta}^*_{\alpha/2}, \hat{\theta}^*_{1-\alpha/2})\]</span></p>
+<p><strong>Studentized Bootstrap t:</strong> <span class="math display">\[\hat{\theta} - t^*_{1-\alpha/2} \cdot SE, \; \hat{\theta} - t^*_{\alpha/2} \cdot SE\]</span></p>
+<p>where <span class="math inline">\(t^*_b = \frac{\hat{\theta}^*_b - \hat{\theta}}{SE^*_b}\)</span></p>
+</div>
+</div>
+</section>
+<section id="looking-ahead" class="level2">
+<h2 class="anchored" data-anchor-id="looking-ahead">Looking Ahead</h2>
+<p><strong>Next Lesson: Hypothesis Testing</strong></p>
+<ul>
+<li>Null and alternative hypotheses</li>
+<li>Type I and Type II errors</li>
+<li>Test statistics and rejection regions</li>
+<li>P-values and their interpretation</li>
+</ul>
+<p>. . .</p>
+<p><strong>Connection to CIs:</strong></p>
+<p>A <span class="math inline">\(100(1-\alpha)\%\)</span> CI contains exactly those parameter values that would <strong>not</strong> be rejected by a two-sided <span class="math inline">\(\alpha\)</span>-level test.</p>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<div class="nonincremental">
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Chapter 8.</li>
+<li>Chihara and Hesterberg. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapters 5, 7.</li>
+<li>Casella and Berger. <em>Statistical Inference</em> (2nd ed). Section 10.1 (Delta Method).</li>
+<li>Agresti, A. (2013). <em>Categorical Data Analysis</em> (3rd ed). Chapter 1 (Score intervals).</li>
+</ul>
+</div>
+</section>
+<section id="questions" class="level2 center" data-background-color="#3498db">
+<h2 class="center anchored" data-background-color="#3498db" data-anchor-id="questions">Questions?</h2>
+<p>Thank you!</p>
+<p><strong>Midterm covers Lessons 1-11</strong></p>
+<p>Good luck on your exam!</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

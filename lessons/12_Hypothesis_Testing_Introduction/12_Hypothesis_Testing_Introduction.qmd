@@ -1,0 +1,1051 @@
+---
+title: "Lesson 12: Introduction to Hypothesis Testing"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r Sys.Date()`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 12 - Introduction to Hypothesis Testing
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 12: Introduction to Hypothesis Testing {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lessons 9-11: Bootstrap Methods and Confidence Intervals**
+
+-   Bootstrap principle: resample from sample to estimate sampling distribution
+-   Bootstrap percentile and t intervals
+-   Relationship between confidence intervals and plausible parameter values
+
+. . .
+
+**The Next Step:** What if we want to make a **decision** rather than just estimate?
+
+. . .
+
+**Today's Goals:**
+
+1. Understand the hypothesis testing framework
+2. Define null and alternative hypotheses
+3. Learn about test statistics and rejection regions
+4. Understand Type I and Type II errors
+5. Apply these concepts to medical research examples
+
+## From Estimation to Testing
+
+::: columns
+::: {.column width="50%"}
+**Confidence Intervals**
+
+- "What is a plausible range for the parameter?"
+- Example: "95% CI for mean reduction in blood pressure is (8, 16) mmHg"
+- Provides a range of values
+:::
+
+::: {.column width="50%"}
+**Hypothesis Testing**
+
+- "Is there evidence that the parameter differs from a specific value?"
+- Example: "Does this drug reduce blood pressure at all?"
+- Provides a yes/no decision
+:::
+:::
+
+. . .
+
+::: callout-note
+## Key Insight (Devore 9.1)
+Hypothesis testing is about deciding which of two contradictory claims about a parameter is correct based on sample data.
+:::
+
+# The Hypothesis Testing Framework {background-color="#3498db"}
+
+## What is a Statistical Hypothesis?
+
+::: callout-important
+## Definition (Devore 9.1)
+A **statistical hypothesis** is a claim or assertion about the value of a single parameter, about the values of several parameters, or about the form of an entire probability distribution.
+:::
+
+. . .
+
+**Examples:**
+
+- The claim $\mu = 120$ mmHg, where $\mu$ is the true average systolic blood pressure
+- The statement $p < 0.10$, where $p$ is the proportion of patients who experience adverse events
+- The assertion $\mu_{\text{treatment}} - \mu_{\text{control}} > 0$
+
+## The Two Competing Hypotheses
+
+In any hypothesis testing problem, we have two contradictory hypotheses:
+
+. . .
+
+::: callout-important
+## Definitions (Devore 9.1)
+
+**Null Hypothesis ($H_0$):** The claim that is initially assumed to be true (the "prior belief" or "status quo" claim).
+
+**Alternative Hypothesis ($H_a$ or $H_A$):** The assertion that is contradictory to $H_0$ — what we might conclude if the data provides strong evidence against $H_0$.
+:::
+
+. . .
+
+The null hypothesis will be rejected in favor of the alternative **only if** sample evidence strongly suggests that $H_0$ is false.
+
+## The Courtroom Analogy
+
+::: columns
+::: {.column width="50%"}
+**Criminal Trial (US)**
+
+- **Initial assumption:** Defendant is innocent
+- **Burden of proof:** On prosecution
+- **Standard:** "Beyond reasonable doubt"
+- **Decision:** Guilty or Not Guilty
+
+*Note:* "Not Guilty" $\neq$ "Innocent"
+:::
+
+::: {.column width="50%"}
+**Hypothesis Testing**
+
+- **Initial assumption:** $H_0$ is true
+- **Burden of proof:** On data to contradict $H_0$
+- **Standard:** Significance level $\alpha$
+- **Decision:** Reject $H_0$ or Fail to Reject $H_0$
+
+*Note:* "Fail to Reject" $\neq$ "$H_0$ is True"
+:::
+:::
+
+## Visualizing the Analogy
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+#| fig-width: 12
+# Create a visual comparison with plain text that renders reliably
+trial_data <- tibble(
+  Category = rep(c("Courtroom", "Statistics"), each = 4),
+  Element = rep(c("Initial Belief", "Evidence", "Decision 1", "Decision 2"), 2),
+  x_pos = rep(1:4, 2),
+  y_pos = c(rep(1, 4), rep(2, 4))
+)
+
+# Base plot with tiles
+p <- trial_data |>
+  mutate(Element = factor(Element, levels = c("Initial Belief", "Evidence", "Decision 1", "Decision 2"))) |>
+  ggplot(aes(x = Element, y = Category)) +
+  geom_tile(aes(fill = Category), alpha = 0.3, color = "white", linewidth = 2) +
+  scale_fill_manual(values = c("Courtroom" = "steelblue", "Statistics" = "coral")) +
+  labs(title = "The Hypothesis Testing Analogy", x = "", y = "") +
+  theme_minimal(base_size = 16) +
+  theme(legend.position = "none",
+        axis.text.y = element_text(face = "bold", size = 14))
+
+# Add courtroom labels (plain text)
+p <- p +
+  annotate("text", x = 1, y = 1, label = "Innocent until\nproven guilty", size = 5) +
+  annotate("text", x = 2, y = 1, label = "Prosecution\npresents evidence", size = 5) +
+  annotate("text", x = 3, y = 1, label = "Guilty\n(reject innocence)", size = 5) +
+  annotate("text", x = 4, y = 1, label = "Not Guilty\n(fail to reject)", size = 5)
+
+# Add statistics labels using expression() for proper subscripts
+p <- p +
+  annotate("text", x = 1, y = 2, size = 5, parse = TRUE,
+           label = 'atop(H[0]~"assumed", "true")') +
+  annotate("text", x = 2, y = 2, label = "Sample data\ncollected", size = 5) +
+  annotate("text", x = 3, y = 2, size = 5, parse = TRUE,
+           label = 'atop("Reject"~H[0], "(favor"~H[a]*")")') +
+  annotate("text", x = 4, y = 2, size = 5, parse = TRUE,
+           label = 'atop("Fail to reject"~H[0], "("*H[0]~"plausible)")')
+
+p
+```
+
+## Two Possible Conclusions
+
+::: callout-warning
+## Important Distinction
+A hypothesis test can only lead to one of two conclusions:
+
+1. **Reject $H_0$** — Evidence strongly suggests $H_0$ is false
+2. **Fail to reject $H_0$** — Evidence does not strongly contradict $H_0$
+
+We **never** say "Accept $H_0$" because failing to reject is not the same as proving $H_0$ is true!
+:::
+
+. . .
+
+**Analogy:** A "Not Guilty" verdict doesn't prove innocence — it means there wasn't enough evidence to convict.
+
+# Formulating Hypotheses {background-color="#8e44ad"}
+
+## Example 1: New Antihypertensive Drug
+
+A pharmaceutical company has developed a new drug to lower blood pressure. The current standard treatment has a mean reduction of 10 mmHg. Let $\mu$ denote the true mean BP reduction with the new drug.
+
+. . .
+
+**Question:** Is the new drug better than the standard?
+
+. . .
+
+**Hypotheses:**
+$$H_0: \mu = 10 \quad \text{(no improvement over standard)}$$
+$$H_a: \mu > 10 \quad \text{(new drug is better)}$$
+
+. . .
+
+The company will only switch to the new drug if there is **convincing evidence** of improvement.
+
+## Example 2: Is Normal Body Temperature Really 98.6°F?
+
+The widely accepted "normal" human body temperature of 98.6°F (37°C) dates back to a 19th century German study. Recent research suggests this value may be inaccurate.
+
+Let $\mu$ denote the true mean body temperature of healthy adults.
+
+. . .
+
+**Hypotheses:**
+$$H_0: \mu = 98.6 \quad \text{(traditional value is correct)}$$
+$$H_a: \mu \neq 98.6 \quad \text{(traditional value is wrong — either direction)}$$
+
+. . .
+
+This is a **two-sided** test because departures in either direction would be scientifically important.
+
+## Example 3: Adverse Event Rate
+
+An investigational drug is considered safe if the rate of serious adverse events is at most 5%. In a clinical trial, researchers want to determine if the drug exceeds this threshold.
+
+Let $p$ denote the true proportion of patients experiencing serious adverse events.
+
+. . .
+
+**Hypotheses:**
+$$H_0: p = 0.05 \quad \text{(drug meets safety threshold)}$$
+$$H_a: p > 0.05 \quad \text{(drug exceeds threshold — unsafe)}$$
+
+. . .
+
+This is a **one-sided** (upper-tailed) test because only a rate higher than 5% would be concerning.
+
+## General Structure of Hypotheses
+
+The null hypothesis is typically stated as an **equality**:
+$$H_0: \theta = \theta_0$$
+where $\theta_0$ is called the **null value** of the parameter.
+
+. . .
+
+The alternative hypothesis takes one of three forms:
+
+| Alternative | Test Type | Example Context |
+|-------------|-----------|-----------------|
+| $H_a: \theta > \theta_0$ | Upper-tailed | New treatment better than standard |
+| $H_a: \theta < \theta_0$ | Lower-tailed | Reduced error rate |
+| $H_a: \theta \neq \theta_0$ | Two-tailed | Testing for any difference |
+
+## Choosing the Alternative: Research vs. Null
+
+::: callout-tip
+## Practical Guidance (Devore 9.1)
+- $H_a$ is often called the **research hypothesis** — what the investigator wants to demonstrate
+- $H_0$ represents the **status quo** or "no effect/no difference"
+- The burden of proof is on showing $H_a$ is true
+
+This is **conservative**: we only claim an effect when the data provides strong evidence.
+:::
+
+. . .
+
+**Medical Research Context:**
+
+- New treatment must **prove** it's better than standard
+- We protect against false claims of efficacy
+- FDA approval requires strong evidence that benefits outweigh risks
+
+# Test Procedures {background-color="#e74c3c"}
+
+## Components of a Test Procedure
+
+::: callout-important
+## Definition (Devore 9.1)
+A **test procedure** is specified by:
+
+1. A **test statistic**: a function of the sample data used to make the decision
+2. A **rejection region** (critical region): the set of test statistic values for which $H_0$ will be rejected
+
+The null hypothesis is rejected if and only if the observed test statistic value falls in the rejection region.
+:::
+
+## Example: Testing Vaccine Efficacy
+
+A new vaccine is tested. Let $p$ be the true proportion of vaccinated individuals who develop the disease. We test $H_0: p = 0.20$ vs $H_a: p < 0.20$.
+
+In a trial of $n = 200$ vaccinated individuals:
+
+. . .
+
+**Test Statistic:** $X$ = number who develop disease
+
+**Rejection Region:** Reject $H_0$ if $X \leq 30$
+
+. . .
+
+```{r}
+#| echo: true
+# Under H0: X ~ Binomial(200, 0.20)
+# Expected value under H0
+n <- 200
+p0 <- 0.20
+expected_X <- n * p0
+cat("Expected X under H0:", expected_X, "\n")
+cat("Rejection region: X ≤ 30 (substantially less than 40)")
+```
+
+## Visualizing the Rejection Region
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+# Binomial distribution under H0
+x_vals <- 0:80
+probs <- dbinom(x_vals, size = 200, prob = 0.20)
+
+tibble(x = x_vals, prob = probs) |>
+  mutate(region = ifelse(x <= 30, "Rejection Region", "Non-rejection Region")) |>
+  ggplot(aes(x = x, y = prob, fill = region)) +
+  geom_col(width = 0.8) +
+  geom_vline(xintercept = 40, linetype = "dashed", color = "black", linewidth = 1) +
+  scale_fill_manual(values = c("Rejection Region" = "coral", 
+                                "Non-rejection Region" = "steelblue")) +
+  annotate("text", x = 40, y = 0.06, label = expression(E(X) == 40), hjust = -0.1, size = 5) +
+  annotate("text", x = 15, y = 0.03, label = expression("Reject"~H[0]), color = "white", size = 6, fontface = "bold") +
+  labs(x = "X (number who develop disease)", y = "Probability",
+       title = expression(paste("Distribution of X under ", H[0], ": p = 0.20")),
+       subtitle = "Rejection region: X ≤ 30") +
+  theme(legend.position = "bottom", legend.title = element_blank())
+```
+
+## Example: Testing Engine Fuel Efficiency (Devore Example 9.3)
+
+A manufacturer considers modifying truck engines to improve fuel efficiency. Current mean: 25 mpg, SD: 3 mpg (known). Let $\mu$ = true mean mpg for modified engines.
+
+$$H_0: \mu = 25 \quad \text{vs} \quad H_a: \mu > 25$$
+
+. . .
+
+Test with $n = 10$ trucks:
+
+**Test Statistic:** $\bar{X}$ = sample mean fuel efficiency
+
+**Possible Rejection Region:** Reject $H_0$ if $\bar{X} \geq 27.5$
+
+. . .
+
+**Key Question:** How do we choose the cutoff value (27.5 vs 26 vs 28)?
+
+## The Tradeoff in Choosing the Cutoff
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+# Show two different rejection regions
+sigma <- 3
+n <- 10
+se <- sigma / sqrt(n)
+mu0 <- 25
+
+x_seq <- seq(22, 30, length.out = 300)
+y_H0 <- dnorm(x_seq, mean = mu0, sd = se)
+
+p1 <- tibble(x = x_seq, y = y_H0) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(x = x_seq[x_seq >= 26], y = y_H0[x_seq >= 26]),
+            aes(x = x, y = y), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = 26, linetype = "dashed", color = "red") +
+  labs(title = "Cutoff = 26 mpg", 
+       subtitle = bquote("P(Reject"~H[0]~"|"~H[0]~"true) ="~.(round(1 - pnorm(26, mu0, se), 3))),
+       x = expression(bar(X)), y = "Density") +
+  annotate("text", x = 27.5, y = 0.15, label = "Rejection\nRegion", color = "red", size = 5)
+
+p2 <- tibble(x = x_seq, y = y_H0) |>
+  ggplot(aes(x = x, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(x = x_seq[x_seq >= 27.5], y = y_H0[x_seq >= 27.5]),
+            aes(x = x, y = y), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = 27.5, linetype = "dashed", color = "red") +
+  labs(title = "Cutoff = 27.5 mpg", 
+       subtitle = bquote("P(Reject"~H[0]~"|"~H[0]~"true) ="~.(round(1 - pnorm(27.5, mu0, se), 3))),
+       x = expression(bar(X)), y = "Density") +
+  annotate("text", x = 28.5, y = 0.05, label = "Rejection\nRegion", color = "red", size = 5)
+
+p1 + p2
+```
+
+**Lower cutoff:** More likely to reject $H_0$ (even when true!)
+
+**Higher cutoff:** Less likely to reject $H_0$ (even when false!)
+
+# Type I and Type II Errors {background-color="#16a085"}
+
+## Two Types of Errors
+
+When making a decision based on sample data, two types of errors are possible:
+
+. . .
+
+::: callout-important
+## Definitions (Devore 9.1)
+
+**Type I Error:** Rejecting $H_0$ when it is actually **true** (false positive)
+
+**Type II Error:** Failing to reject $H_0$ when it is actually **false** (false negative)
+:::
+
+. . .
+
+| | $H_0$ True | $H_0$ False |
+|---|:---:|:---:|
+| Reject $H_0$ | **Type I Error** | Correct Decision |
+| Fail to Reject $H_0$ | Correct Decision | **Type II Error** |
+
+## Error Probabilities
+
+::: callout-important
+## Notation
+$$\alpha = P(\text{Type I Error}) = P(\text{Reject } H_0 \mid H_0 \text{ is true})$$
+
+$$\beta = P(\text{Type II Error}) = P(\text{Fail to reject } H_0 \mid H_0 \text{ is false})$$
+
+**Power** = $1 - \beta$ = $P(\text{Reject } H_0 \mid H_0 \text{ is false})$
+:::
+
+. . .
+
+- $\alpha$ is called the **significance level** of the test
+- Common choices: $\alpha = 0.05$, $\alpha = 0.01$, $\alpha = 0.10$
+
+## Medical Context: Errors Have Consequences
+
+**Example:** Testing whether a new cancer drug is effective
+
+. . .
+
+**Type I Error (False Positive):**
+
+- Conclude drug works when it doesn't
+- Patients receive ineffective treatment
+- Resources wasted on worthless drug
+- *Consequence:* Harm to patients, wasted resources
+
+. . .
+
+**Type II Error (False Negative):**
+
+- Conclude drug doesn't work when it does
+- Effective treatment never reaches patients
+- *Consequence:* Missed opportunity to save lives
+
+## Example: Drug Approval Errors (Devore Example 9.4)
+
+**Scenario:** Testing a new antihypertensive drug against standard care.
+
+$H_0: \mu_{\text{new}} = \mu_{\text{standard}}$ (no improvement)
+
+$H_a: \mu_{\text{new}} > \mu_{\text{standard}}$ (new drug is better)
+
+. . .
+
+| Error Type | What Happens | Consequence |
+|------------|--------------|-------------|
+| Type I | Approve ineffective drug | Patients get worse care; company invested in useless drug |
+| Type II | Reject effective drug | Patients miss beneficial treatment; opportunity loss |
+
+. . .
+
+**FDA Approach:** Keep $\alpha$ small (typically 0.05) — protect against approving ineffective drugs.
+
+## Visualizing Type I and Type II Errors
+
+```{r}
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+# Parameters
+mu0 <- 25  # Null hypothesis mean
+mu_a <- 27  # Alternative (true mean if H0 false)
+sigma <- 3
+n <- 10
+se <- sigma / sqrt(n)
+cutoff <- 26.5  # Rejection cutoff
+
+x_seq <- seq(21, 31, length.out = 500)
+
+# Create data for both distributions
+df_null <- tibble(
+  x = x_seq,
+  y = dnorm(x_seq, mu0, se),
+  dist = "Under H0 (mu = 25)"
+)
+
+df_alt <- tibble(
+  x = x_seq,
+  y = dnorm(x_seq, mu_a, se),
+  dist = "Under Ha (mu = 27)"
+)
+
+# Plot
+ggplot() +
+  # Null distribution
+  geom_line(data = df_null, aes(x = x, y = y), color = "steelblue", linewidth = 1.5) +
+  geom_area(data = df_null |> filter(x >= cutoff), 
+            aes(x = x, y = y), fill = "coral", alpha = 0.5) +
+  # Alternative distribution  
+  geom_line(data = df_alt, aes(x = x, y = y), color = "darkgreen", linewidth = 1.5) +
+  geom_area(data = df_alt |> filter(x < cutoff),
+            aes(x = x, y = y), fill = "purple", alpha = 0.3) +
+  # Cutoff line
+  geom_vline(xintercept = cutoff, linetype = "dashed", color = "black", linewidth = 1.2) +
+  # Labels
+  annotate("text", x = 28, y = 0.12, label = expression(alpha~"(Type I)"), 
+           color = "red", size = 6, fontface = "bold") +
+  annotate("text", x = 24.5, y = 0.08, label = expression(beta~"(Type II)"), 
+           color = "purple", size = 6, fontface = "bold") +
+  annotate("text", x = cutoff, y = 0.45, label = paste0("Cutoff = ", cutoff), 
+           hjust = -0.1, size = 5) +
+  annotate("text", x = 23, y = 0.35, label = expression(paste("Distribution under ", H[0])), 
+           color = "steelblue", size = 5) +
+  annotate("text", x = 29, y = 0.35, label = expression(paste("Distribution under ", H[a])), 
+           color = "darkgreen", size = 5) +
+  labs(x = expression(bar(X)), y = "Density",
+       title = "Type I and Type II Errors Visualized",
+       subtitle = expression("Fuel efficiency example:"~H[0]*":"~mu==25~"vs"~H[a]*":"~mu>25)) +
+  theme(legend.position = "none")
+```
+
+## Computing Error Probabilities: Example
+
+For the fuel efficiency test with cutoff $\bar{x} \geq 27.5$:
+
+```{r}
+#| echo: true
+mu0 <- 25
+sigma <- 3
+n <- 10
+se <- sigma / sqrt(n)
+cutoff <- 27.5
+
+# Type I error: P(reject H0 | H0 true)
+alpha <- 1 - pnorm(cutoff, mean = mu0, sd = se)
+cat("α = P(X̄ ≥", cutoff, "| μ =", mu0, ") =", round(alpha, 4), "\n")
+
+# Type II error: P(fail to reject | H0 false)
+# Suppose true mean is μ = 26.5
+mu_true <- 26.5
+beta <- pnorm(cutoff, mean = mu_true, sd = se)
+cat("β = P(X̄ <", cutoff, "| μ =", mu_true, ") =", round(beta, 4), "\n")
+cat("Power = 1 - β =", round(1 - beta, 4))
+```
+
+## The Fundamental Tradeoff
+
+::: callout-warning
+## The Tradeoff (Devore 9.1)
+For a **fixed sample size**, decreasing $\alpha$ (Type I error) necessarily **increases** $\beta$ (Type II error), and vice versa.
+
+The only way to decrease **both** error probabilities simultaneously is to **increase the sample size**.
+:::
+
+. . .
+
+```{r}
+#| echo: true
+# Demonstrate tradeoff with different cutoffs
+cutoffs <- c(26, 26.5, 27, 27.5, 28)
+alpha_vals <- 1 - pnorm(cutoffs, mu0, se)
+beta_vals <- pnorm(cutoffs, mean = 27, sd = se)  # assuming true mu = 27
+
+tibble(Cutoff = cutoffs, Alpha = round(alpha_vals, 4), Beta = round(beta_vals, 4)) |>
+  mutate(Power = 1 - Beta)
+```
+
+## Visualizing the Tradeoff
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+cutoffs_seq <- seq(24, 29, by = 0.1)
+error_data <- tibble(
+  cutoff = cutoffs_seq,
+  alpha = 1 - pnorm(cutoffs_seq, mu0, se),
+  beta = pnorm(cutoffs_seq, mean = 27, sd = se)
+) |>
+  pivot_longer(cols = c(alpha, beta), names_to = "error_type", values_to = "probability")
+
+ggplot(error_data, aes(x = cutoff, y = probability, color = error_type)) +
+  geom_line(linewidth = 1.5) +
+  scale_color_manual(values = c("alpha" = "coral", "beta" = "purple"),
+                     labels = c(expression(alpha~"(Type I)"), expression(beta~"(Type II)"))) +
+  geom_vline(xintercept = 26.56, linetype = "dashed", alpha = 0.5) +
+  annotate("text", x = 26.56, y = 0.8, label = "Equal error rates", hjust = -0.1) +
+  labs(x = "Cutoff Value", y = "Error Probability",
+       title = "The α-β Tradeoff (Fixed n = 10, True μ = 27)",
+       color = "Error Type") +
+  theme(legend.position = "right")
+```
+
+## Simulation: Demonstrating Error Types
+
+```{r}
+#| echo: true
+#| code-fold: true
+set.seed(551)
+n_simulations <- 10000
+n <- 10
+sigma <- 3
+cutoff <- 26.5
+
+# Simulate under H0 (mu = 25)
+samples_H0 <- replicate(n_simulations, {
+  x <- rnorm(n, mean = 25, sd = sigma)
+  mean(x)
+})
+type_I_rate <- mean(samples_H0 >= cutoff)
+
+# Simulate under Ha (mu = 27)
+samples_Ha <- replicate(n_simulations, {
+  x <- rnorm(n, mean = 27, sd = sigma)
+  mean(x)
+})
+type_II_rate <- mean(samples_Ha < cutoff)
+
+cat("Simulated Type I Error Rate:", round(type_I_rate, 4), "\n")
+cat("Theoretical α:", round(1 - pnorm(cutoff, 25, sigma/sqrt(n)), 4), "\n\n")
+cat("Simulated Type II Error Rate:", round(type_II_rate, 4), "\n")
+cat("Theoretical β:", round(pnorm(cutoff, 27, sigma/sqrt(n)), 4))
+```
+
+## Visualizing Simulated Decisions
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+p1 <- tibble(xbar = samples_H0) |>
+  mutate(decision = ifelse(xbar >= cutoff, "Reject H0 (Type I Error)", "Correct")) |>
+  ggplot(aes(x = xbar, fill = decision)) +
+  geom_histogram(bins = 50, alpha = 0.7, position = "identity") +
+  geom_vline(xintercept = cutoff, linetype = "dashed", linewidth = 1.2) +
+  scale_fill_manual(values = c("Correct" = "steelblue", "Reject H0 (Type I Error)" = "coral")) +
+  labs(x = expression(bar(X)), y = "Count",
+       title = expression(paste("Under ", H[0], ": ", mu, " = 25")),
+       subtitle = paste0("Type I Error Rate: ", round(type_I_rate * 100, 1), "%"),
+       fill = "Decision") +
+  theme(legend.position = "bottom")
+
+p2 <- tibble(xbar = samples_Ha) |>
+  mutate(decision = ifelse(xbar >= cutoff, "Correct (Reject)", "Fail to Reject (Type II Error)")) |>
+  ggplot(aes(x = xbar, fill = decision)) +
+  geom_histogram(bins = 50, alpha = 0.7, position = "identity") +
+  geom_vline(xintercept = cutoff, linetype = "dashed", linewidth = 1.2) +
+  scale_fill_manual(values = c("Correct (Reject)" = "darkgreen", 
+                                "Fail to Reject (Type II Error)" = "purple")) +
+  labs(x = expression(bar(X)), y = "Count",
+       title = expression(paste("Under ", H[a], ": ", mu, " = 27")),
+       subtitle = paste0("Type II Error Rate: ", round(type_II_rate * 100, 1), "%"),
+       fill = "Decision") +
+  theme(legend.position = "bottom")
+
+p1 + p2
+```
+
+# Significance Level and Rejection Regions {background-color="#9b59b6"}
+
+## The Significance Level
+
+::: callout-important
+## Definition
+The **significance level** $\alpha$ of a test is the probability of making a Type I error — rejecting $H_0$ when it is actually true.
+
+$$\alpha = P(\text{Reject } H_0 \mid H_0 \text{ is true})$$
+
+Common choices: $\alpha = 0.05$, $\alpha = 0.01$, $\alpha = 0.10$
+:::
+
+. . .
+
+**Why prioritize controlling Type I error?**
+
+- Type I errors can lead to **false claims** (e.g., ineffective drugs approved)
+- Scientific community uses $\alpha = 0.05$ as a standard threshold
+- $\alpha$ is chosen **before** collecting data
+
+## Constructing Rejection Regions
+
+Once $\alpha$ is chosen, we determine the rejection region:
+
+**Upper-tailed test** ($H_a: \mu > \mu_0$):
+$$\text{Reject } H_0 \text{ if } \bar{X} \geq \mu_0 + z_\alpha \cdot \frac{\sigma}{\sqrt{n}}$$
+
+**Lower-tailed test** ($H_a: \mu < \mu_0$):
+$$\text{Reject } H_0 \text{ if } \bar{X} \leq \mu_0 - z_\alpha \cdot \frac{\sigma}{\sqrt{n}}$$
+
+**Two-tailed test** ($H_a: \mu \neq \mu_0$):
+$$\text{Reject } H_0 \text{ if } |\bar{X} - \mu_0| \geq z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+
+## Example: Calculating Critical Values
+
+For the fuel efficiency test at $\alpha = 0.05$:
+
+```{r}
+#| echo: true
+alpha <- 0.05
+mu0 <- 25
+sigma <- 3
+n <- 10
+se <- sigma / sqrt(n)
+
+# Critical value for upper-tailed test
+z_alpha <- qnorm(1 - alpha)
+critical_value <- mu0 + z_alpha * se
+
+cat("z_α =", round(z_alpha, 3), "\n")
+cat("Critical value: X̄ ≥", round(critical_value, 3), "\n")
+cat("Rejection region: X̄ ≥", round(critical_value, 3))
+```
+
+## Visualizing Critical Regions by Tail Type
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 16
+x_seq <- seq(21, 29, length.out = 500)
+y <- dnorm(x_seq, mu0, se)
+
+z_alpha <- qnorm(1 - alpha)
+z_alpha2 <- qnorm(1 - alpha/2)
+
+crit_upper <- mu0 + z_alpha * se
+crit_lower <- mu0 - z_alpha * se
+crit_two_upper <- mu0 + z_alpha2 * se
+crit_two_lower <- mu0 - z_alpha2 * se
+
+df <- tibble(x = x_seq, y = y)
+
+p1 <- ggplot(df, aes(x, y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = df |> filter(x >= crit_upper), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = crit_upper, linetype = "dashed", color = "red") +
+  annotate("text", x = crit_upper, y = 0.35, label = paste0("c = ", round(crit_upper, 2)), hjust = -0.1) +
+  labs(title = expression(paste("Upper-tailed: ", H[a], ": μ > 25")),
+       subtitle = "Reject if X̄ ≥ c", x = expression(bar(X)), y = "Density")
+
+p2 <- ggplot(df, aes(x, y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = df |> filter(x <= crit_lower), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = crit_lower, linetype = "dashed", color = "red") +
+  annotate("text", x = crit_lower, y = 0.35, label = paste0("c = ", round(crit_lower, 2)), hjust = 1.1) +
+  labs(title = expression(paste("Lower-tailed: ", H[a], ": μ < 25")),
+       subtitle = "Reject if X̄ ≤ c", x = expression(bar(X)), y = "Density")
+
+p3 <- ggplot(df, aes(x, y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = df |> filter(x >= crit_two_upper | x <= crit_two_lower), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = c(crit_two_lower, crit_two_upper), linetype = "dashed", color = "red") +
+  labs(title = expression(paste("Two-tailed: ", H[a], ": μ ≠ 25")),
+       subtitle = "Reject if |X̄ - 25| ≥ c", x = expression(bar(X)), y = "Density")
+
+p1 + p2 + p3
+```
+
+# Medical Research Example: Clinical Trial {background-color="#2c3e50"}
+
+## Complete Example: Blood Pressure Drug Trial
+
+**Setting:** Testing a new antihypertensive drug.
+
+**Data:** $n = 25$ patients, mean BP reduction $\bar{x} = 12.5$ mmHg, known population SD $\sigma = 8$ mmHg.
+
+**Question:** Is there evidence that the true mean reduction exceeds 10 mmHg?
+
+. . .
+
+**Step 1: State Hypotheses**
+$$H_0: \mu = 10 \quad \text{vs} \quad H_a: \mu > 10$$
+
+**Step 2: Choose significance level**
+$$\alpha = 0.05$$
+
+## Step 3: Identify Test Statistic and Rejection Region
+
+```{r}
+#| echo: true
+# Given data
+xbar <- 12.5
+sigma <- 8
+n <- 25
+mu0 <- 10
+alpha <- 0.05
+
+# Standard error
+se <- sigma / sqrt(n)
+
+# Test statistic: Z = (X̄ - μ₀) / (σ/√n)
+z_stat <- (xbar - mu0) / se
+cat("Test statistic: z =", round(z_stat, 3), "\n")
+
+# Critical value for α = 0.05 (upper-tailed)
+z_crit <- qnorm(1 - alpha)
+cat("Critical value: z_α =", round(z_crit, 3), "\n")
+
+# Rejection region
+cat("Rejection region: z ≥", round(z_crit, 3))
+```
+
+## Step 4: Make Decision
+
+```{r}
+#| echo: true
+# Decision
+if (z_stat >= z_crit) {
+  cat("Decision: Reject H₀\n\n")
+  cat("Interpretation: There is statistically significant evidence at α = 0.05\n")
+  cat("that the true mean BP reduction exceeds 10 mmHg.")
+} else {
+  cat("Decision: Fail to reject H₀\n\n")
+  cat("Interpretation: There is insufficient evidence at α = 0.05\n")
+  cat("to conclude that the true mean BP reduction exceeds 10 mmHg.")
+}
+```
+
+## Visualizing the Test Result
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+z_seq <- seq(-4, 4, length.out = 500)
+y <- dnorm(z_seq)
+
+tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq >= z_crit], 
+                          y = dnorm(z_seq[z_seq >= z_crit])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.5) +
+  geom_vline(xintercept = z_crit, linetype = "dashed", color = "red", linewidth = 1) +
+  geom_vline(xintercept = z_stat, color = "darkgreen", linewidth = 1.5) +
+  annotate("text", x = z_crit + 0.1, y = 0.35, 
+           label = expression(z[alpha] == 1.645), hjust = 0, size = 5, color = "red") +
+  annotate("text", x = z_stat + 0.1, y = 0.25, 
+           label = paste0("z = ", round(z_stat, 2)), hjust = 0, size = 5, color = "darkgreen") +
+  annotate("text", x = 2.5, y = 0.05, label = expression(alpha == 0.05), color = "coral", size = 5) +
+  labs(x = "z", y = "Density",
+       title = "Hypothesis Test for Blood Pressure Drug",
+       subtitle = expression("Test statistic falls in rejection region"~symbol("\256")~"Reject"~H[0]))
+```
+
+## Error Analysis for This Test
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Type I error (fixed at α)
+cat("Type I Error Probability: α =", alpha, "\n\n")
+
+# Type II error for different true values of μ
+mu_true_vals <- c(11, 12, 13, 14, 15)
+beta_vals <- pnorm(mu0 + z_crit * se, mean = mu_true_vals, sd = se)
+
+error_table <- tibble(
+  `True μ` = mu_true_vals,
+  `β (Type II)` = round(beta_vals, 4),
+  `Power (1-β)` = round(1 - beta_vals, 4)
+)
+
+cat("Type II Error and Power for different true μ values:\n")
+print(error_table)
+```
+
+## Power Curve
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+mu_range <- seq(10, 18, by = 0.1)
+power_vals <- 1 - pnorm(mu0 + z_crit * se, mean = mu_range, sd = se)
+
+tibble(mu = mu_range, power = power_vals) |>
+  ggplot(aes(x = mu, y = power)) +
+  geom_line(linewidth = 1.5, color = "darkgreen") +
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = 10, linetype = "dotted", alpha = 0.5) +
+  annotate("text", x = 17, y = 0.82, label = "80% Power", color = "red", size = 5) +
+  annotate("text", x = 10.2, y = 0.5, label = expression(H[0]: mu == 10), hjust = 0, size = 5) +
+  labs(x = expression(paste("True ", mu)), y = "Power",
+       title = "Power Function for Blood Pressure Test",
+       subtitle = "Power increases as true μ moves away from null value") +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))
+```
+
+# Connection to Confidence Intervals {background-color="#3498db"}
+
+## CIs and Tests: Two Sides of the Same Coin
+
+::: callout-important
+## Key Relationship
+A $100(1-\alpha)\%$ confidence interval contains all parameter values that would **not** be rejected by a two-sided test at level $\alpha$.
+
+- If the CI **excludes** the null value $\theta_0$ → Reject $H_0$
+- If the CI **includes** the null value $\theta_0$ → Fail to reject $H_0$
+:::
+
+## Example: Connecting CI and Test
+
+For our blood pressure example:
+
+```{r}
+#| echo: true
+# 95% confidence interval (two-sided)
+ci_lower <- xbar - qnorm(0.975) * se
+ci_upper <- xbar + qnorm(0.975) * se
+
+cat("95% CI for μ: (", round(ci_lower, 2), ",", round(ci_upper, 2), ")\n")
+cat("Null value μ₀ = 10\n\n")
+
+if (ci_lower > 10) {
+  cat("Since 10 is below the CI, we would reject H₀: μ = 10\n")
+  cat("in favor of Hₐ: μ ≠ 10 at α = 0.05")
+} else if (ci_upper < 10) {
+  cat("Since 10 is above the CI, we would reject H₀: μ = 10")
+} else {
+  cat("Since 10 is within the CI, we would fail to reject H₀: μ = 10\n")
+  cat("at α = 0.05")
+}
+```
+
+## CI-Test Duality Visualized
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+# Show CI and null value
+tibble(
+  x = xbar,
+  lower = ci_lower,
+  upper = ci_upper
+) |>
+  ggplot(aes(y = 1)) +
+  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.1, linewidth = 2, color = "steelblue") +
+  geom_point(aes(x = x), size = 5, color = "steelblue") +
+  geom_vline(xintercept = 10, linetype = "dashed", color = "red", linewidth = 1.5) +
+  annotate("text", x = 10, y = 1.15, label = expression(H[0]: mu == 10), color = "red", size = 6) +
+  annotate("text", x = xbar, y = 0.85, label = paste0("x̄ = ", xbar), size = 5) +
+  annotate("text", x = (ci_lower + ci_upper)/2, y = 1.1, 
+           label = paste0("95% CI: (", round(ci_lower, 1), ", ", round(ci_upper, 1), ")"), 
+           size = 5, color = "steelblue") +
+  coord_cartesian(xlim = c(7, 18), ylim = c(0.7, 1.3)) +
+  labs(x = expression(mu), y = "",
+       title = "Confidence Interval and Hypothesis Test",
+       subtitle = expression("Null value (10) is below the CI"~symbol("\256")~"Reject"~H[0])) +
+  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())
+```
+
+# Summary and Key Takeaways {background-color="#2c3e50"}
+
+## The Hypothesis Testing Framework
+
+::: callout-important
+## Core Components
+1. **Null Hypothesis ($H_0$):** The status quo claim (initially assumed true)
+2. **Alternative Hypothesis ($H_a$):** What we want to show (contradicts $H_0$)
+3. **Test Statistic:** Function of sample data for making decisions
+4. **Rejection Region:** Values of test statistic leading to rejection
+5. **Significance Level ($\alpha$):** Probability of Type I error
+:::
+
+## The Two Types of Errors
+
+| | $H_0$ True | $H_0$ False |
+|---|:---:|:---:|
+| Reject $H_0$ | Type I Error ($\alpha$) | Correct (Power) |
+| Fail to Reject | Correct | Type II Error ($\beta$) |
+
+. . .
+
+**Key points:**
+
+- We control $\alpha$ by choosing it before the test
+- $\beta$ depends on the true parameter value
+- Power = $1 - \beta$ = probability of correctly rejecting false $H_0$
+- Tradeoff: Can't minimize both errors without increasing $n$
+
+## Connection to Previous Material
+
+| Topic | Lesson | Connection to Testing |
+|-------|--------|----------------------|
+| Point Estimation | 2-4 | Test statistics are often MLEs |
+| Sufficient Statistics | 5 | Best tests use sufficient statistics |
+| Confidence Intervals | 7-8 | CIs give all non-rejected values |
+| Bootstrap | 9-11 | Bootstrap hypothesis tests use resampling |
+
+## Looking Ahead
+
+**Coming up in this course:**
+
+- **P-values:** Continuous measure of evidence against $H_0$
+- **Power and sample size:** How many subjects do we need?
+- **Tests for specific parameters:** Mean (z and t), proportion, variance
+- **Two-sample tests:** Comparing populations
+- **Bootstrap hypothesis tests:** Resampling-based testing
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 9.1
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 3.1-3.2, 8.1-8.2
+-   Wasserman, L. (2004). *All of Statistics*. Chapter 10.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.pdf
+```
