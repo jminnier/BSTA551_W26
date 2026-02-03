@@ -4,7 +4,7 @@
     "href": "schedule.html",
     "title": "Schedule",
     "section": "",
-    "text": "Week\nDate\nExit tix\nLesson\nTopics\nTB\nKey Info\nSlides HTML\nSlides PDF\nSlides Notes\nMuddy Points\n\n\n1\n01/05\n\n0\nWelcome\n\n\n\n\n\n\n\n\n\n\n\n1\nIntroduction to Statistical Inference; Statistics\n6.1, 6.2\n\n\n\n\n\n\n\n\n\n\n2\nPoint estimation; Bias, variance, and MSE of estimators\n7.1\n\n\n\n\n\n\n\n\n01/07\n\n2\nctd.\n\n\n\n\n\n\n\n\n\n\n\n3\nUnbiased estimators, MVUE, Likelihood Theory\n7.1, 7.4\n\n\n\n\n\n\n\n\n01/08\n\n\nHW 0 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2\n01/12\n\n3\nctd.\n\n\n\n\n\n\n\n\n\n\n\n4\nMethod of Moments and MLE\n7.2\n\n\n\n\n\n\n\n\n01/14\n\n5\nSufficient Statistics\n7.3\n\n\n\n\n\n\n\n\n01/15\n\n\nHW 1 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3\n01/19\n\nNo class\n\n\n\n\n\n\n\n\n\n\n01/21\n\n6\nReview Point Estimation\n7\n\n\n\n\n\n\n\n\n\n\n7\nInterval estimation\n8.1\n\n\n\n\n\n\n\n\n01/22\n\n\nHW 2 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n4\n01/26\n\n8\nInterval estimation: single sample, one-sample t, population proportions\n8.1-8.4\n\n\n\n\n\n\n\n\n01/28\n\n9\nBootstrap Introduction\n8.1-8.4\n\n\n\n\n\n\n\n\n\n\n10\nBootstrap confidence intervals\n8.5\n\n\n\n\n\n\n\n\n01/29\n\n\nHW 3 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5\n02/02\n\n11\nMore Confidence Intervals + Review\n8\n\n\n\n\n\n\n\n\n02/02\n\n\nMidterm assigned 02/02 (take-home)\n\n\n\n\n\n\n\n\n\n02/04\n\n12\nHypotheses and Test Procedures; Type I and Type II Errors\n9.1\n\n\n\n\n\n\n\n\n02/05\n\n\nHW 4 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6\n02/09\n\n\nTests About a Population Mean (z and t tests); Tests About a Population Proportion\n9.2-9.3\n\n\n\n\n\n\n\n\n02/11\n\nNo class\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7\n02/16\n\nNo class\n\n\n\n\n\n\n\n\n\n\n02/17\n\n\nMidterm due 11pm\n\n\n\n\n\n\n\n\n\n02/18\n\n\nP-Values; Power and Sample Size Determination\n9.2-9.24\n\n\n\n\n\n\n\n\n02/22\n\n\nHW 5 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8\n02/23\n\n\nNeyman-Pearson Lemma; Likelihood Ratio Tests\n9.5\n\n\n\n\n\n\n\n\n02/25\n\n\nFurther Aspects of Hypothesis Testing; Bootstrap Hypothesis Testing; Relationship between Testing and Interval Estimation\n9.6, C&H 8\n\n\n\n\n\n\n\n\n02/26\n\n\nHW 6 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n9\n03/02\n\n\nTwo-Sample z and t Confidence Intervals and Tests\n9.5\n\n\n\n\n\n\n\n\n03/04\n\n\nTwo-Sample Inference for Population Proportions; Inferences About Two Variances\n9.6\n\n\n\n\n\n\n\n\n03/05\n\n\nHW 7 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n10\n03/09\n\n\nAnalysis of Paired Data\n10.3\n\n\n\n\n\n\n\n\n03/11\n\n\nBootstrap and Permutation Methods for Two Samples; Course Review\n10.6, C&H 3,5\n\n\n\n\n\n\n\n\n03/12\n\n\nHW 8 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n11\n03/16\n\n\nFinals week (no class)\n\n\n\n\n\n\n\n\n\n03/19\n\n\nFinal Exam due 11 pm"
+    "text": "Week\nDate\nExit tix\nLesson\nTopics\nTB\nKey Info\nSlides HTML\nSlides PDF\nSlides Notes\nMuddy Points\n\n\n1\n01/05\n\n0\nWelcome\n\n\n\n\n\n\n\n\n\n\n\n1\nIntroduction to Statistical Inference; Statistics\n6.1, 6.2\n\n\n\n\n\n\n\n\n\n\n2\nPoint estimation; Bias, variance, and MSE of estimators\n7.1\n\n\n\n\n\n\n\n\n01/07\n\n2\nctd.\n\n\n\n\n\n\n\n\n\n\n\n3\nUnbiased estimators, MVUE, Likelihood Theory\n7.1, 7.4\n\n\n\n\n\n\n\n\n01/08\n\n\nHW 0 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n2\n01/12\n\n3\nctd.\n\n\n\n\n\n\n\n\n\n\n\n4\nMethod of Moments and MLE\n7.2\n\n\n\n\n\n\n\n\n01/14\n\n5\nSufficient Statistics\n7.3\n\n\n\n\n\n\n\n\n01/15\n\n\nHW 1 due 11pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3\n01/19\n\nNo class\n\n\n\n\n\n\n\n\n\n\n01/21\n\n6\nReview Point Estimation\n7\n\n\n\n\n\n\n\n\n\n\n7\nInterval estimation\n8.1\n\n\n\n\n\n\n\n\n01/22\n\n\nHW 2 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n4\n01/26\n\n8\nInterval estimation: single sample, one-sample t, population proportions\n8.1-8.4\n\n\n\n\n\n\n\n\n01/28\n\n9\nBootstrap Introduction\n8.1-8.4\n\n\n\n\n\n\n\n\n\n\n10\nBootstrap confidence intervals\n8.5\n\n\n\n\n\n\n\n\n01/29\n\n\nHW 3 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n5\n02/02\n\n11\nMore Confidence Intervals + Review\n8\n\n\n\n\n\n\n\n\n02/02\n\n\nMidterm assigned 02/02 (take-home)\n\n\n\n\n\n\n\n\n\n02/04\n\n12\nHypotheses and Test Procedures; Type I and Type II Errors\n9.1\n\n\n\n\n\n\n\n\n02/05\n\n\nHW 4 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n6\n02/09\n\n13\nTests About a Population Mean (z and t tests); Tests About a Population Proportion\n9.2-9.3\n\n\n\n\n\n\n\n\n02/11\n\nNo class\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n7\n02/16\n\nNo class\n\n\n\n\n\n\n\n\n\n\n02/17\n\n\nMidterm due 11pm\n\n\n\n\n\n\n\n\n\n02/18\n\n14\nP-Values; Power and Sample Size Determination\n9.4\n\n\n\n\n\n\n\n\n02/22\n\n\nHW 5 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n8\n02/23\n\n15\nNeyman-Pearson Lemma; Likelihood Ratio Tests\n9.5\n\n\n\n\n\n\n\n\n02/25\n\n\nFurther Aspects of Hypothesis Testing; Bootstrap Hypothesis Testing; Relationship between Testing and Interval Estimation\n9.6, C&H 8\n\n\n\n\n\n\n\n\n02/26\n\n\nHW 6 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n9\n03/02\n\n\nTwo-Sample z and t Confidence Intervals and Tests\n9.5\n\n\n\n\n\n\n\n\n03/04\n\n\nTwo-Sample Inference for Population Proportions; Inferences About Two Variances\n9.6\n\n\n\n\n\n\n\n\n03/05\n\n\nHW 7 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n10\n03/09\n\n\nAnalysis of Paired Data\n10.3\n\n\n\n\n\n\n\n\n03/11\n\n\nBootstrap and Permutation Methods for Two Samples; Course Review\n10.6, C&H 3,5\n\n\n\n\n\n\n\n\n03/12\n\n\nHW 8 due 11 pm\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n11\n03/16\n\n\nFinals week (no class)\n\n\n\n\n\n\n\n\n\n03/19\n\n\nFinal Exam due 11 pm"
   },
   {
     "objectID": "lessons/07_Confidence_Intervals/07_Confidence_Intervals_old2_long.html#review-what-weve-learned-about-estimation",
@@ -10469,7 +10469,7 @@
     "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#the-courtroom-analogy",
     "title": "Lesson 12: Introduction to Hypothesis Testing",
     "section": "The Courtroom Analogy",
-    "text": "The Courtroom Analogy\n\n\nCriminal Trial (US)\n\nInitial assumption: Defendant is innocent\nBurden of proof: On prosecution\nStandard: “Beyond reasonable doubt”\nDecision: Guilty or Not Guilty\n\nNote: “Not Guilty” \\(\\neq\\) “Innocent”\n\nHypothesis Testing\n\nInitial assumption: \\(H_0\\) is true\nBurden of proof: On data to contradict \\(H_0\\)\nStandard: Significance level \\(\\alpha\\)\nDecision: Reject \\(H_0\\) or Fail to Reject \\(H_0\\)\n\nNote: “Fail to Reject” \\(\\neq\\) “\\(H_0\\) is True”"
+    "text": "The Courtroom Analogy\n\n\nCriminal Trial\n\nInitial assumption: Defendant is innocent\nBurden of proof: On prosecution\nStandard: “Beyond reasonable doubt”\nDecision: Guilty or Not Guilty\n\nNote: “Not Guilty” \\(\\neq\\) “Innocent”\n\nHypothesis Testing\n\nInitial assumption: \\(H_0\\) is true\nBurden of proof: On data to contradict \\(H_0\\)\nStandard: Significance level \\(\\alpha\\)\nDecision: Reject \\(H_0\\) or Fail to Reject \\(H_0\\)\n\nNote: “Fail to Reject” \\(\\neq\\) “\\(H_0\\) is True”"
   },
   {
     "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#visualizing-the-analogy",
@@ -10609,7 +10609,7 @@
     "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#visualizing-the-tradeoff",
     "title": "Lesson 12: Introduction to Hypothesis Testing",
     "section": "Visualizing the Tradeoff",
-    "text": "Visualizing the Tradeoff\n\n\nCode\ncutoffs_seq &lt;- seq(24, 29, by = 0.1)\nerror_data &lt;- tibble(\n  cutoff = cutoffs_seq,\n  alpha = 1 - pnorm(cutoffs_seq, mu0, se),\n  beta = pnorm(cutoffs_seq, mean = 27, sd = se)\n) |&gt;\n  pivot_longer(cols = c(alpha, beta), names_to = \"error_type\", values_to = \"probability\")\n\nggplot(error_data, aes(x = cutoff, y = probability, color = error_type)) +\n  geom_line(linewidth = 1.5) +\n  scale_color_manual(values = c(\"alpha\" = \"coral\", \"beta\" = \"purple\"),\n                     labels = c(expression(alpha~\"(Type I)\"), expression(beta~\"(Type II)\"))) +\n  geom_vline(xintercept = 26.56, linetype = \"dashed\", alpha = 0.5) +\n  annotate(\"text\", x = 26.56, y = 0.8, label = \"Equal error rates\", hjust = -0.1) +\n  labs(x = \"Cutoff Value\", y = \"Error Probability\",\n       title = \"The α-β Tradeoff (Fixed n = 10, True μ = 27)\",\n       color = \"Error Type\") +\n  theme(legend.position = \"right\")"
+    "text": "Visualizing the Tradeoff\n\n\nCode\ncutoffs_seq &lt;- seq(24, 29, by = 0.1)\nerror_data &lt;- tibble(\n  cutoff = cutoffs_seq,\n  alpha = 1 - pnorm(cutoffs_seq, mu0, se),\n  beta = pnorm(cutoffs_seq, mean = 27, sd = se)\n) |&gt;\n  pivot_longer(cols = c(alpha, beta), names_to = \"error_type\", values_to = \"probability\")\n\n# Find the actual crossing point where alpha = beta\ncrossing &lt;- uniroot(\n  function(c) (1 - pnorm(c, mu0, se)) - pnorm(c, mean = 27, sd = se),\n  interval = c(24, 29)\n)\nequal_error_cutoff &lt;- crossing$root\nequal_error_prob &lt;- 1 - pnorm(equal_error_cutoff, mu0, se)\n\nggplot(error_data, aes(x = cutoff, y = probability, color = error_type)) +\n  geom_line(linewidth = 1.5) +\n  scale_color_manual(values = c(\"alpha\" = \"coral\", \"beta\" = \"purple\"),\n                     labels = c(expression(alpha~\"(Type I)\"), expression(beta~\"(Type II)\"))) +\n  geom_vline(xintercept = equal_error_cutoff, linetype = \"dashed\", alpha = 0.5) +\n  annotate(\"point\", x = equal_error_cutoff, y = equal_error_prob, size = 3) +\n  annotate(\"text\", x = equal_error_cutoff, y = equal_error_prob + 0.06, \n           label = paste0(\"Equal error rates\\n(cutoff = \", round(equal_error_cutoff, 2), \n                          \", prob = \", round(equal_error_prob, 3), \")\"),\n           hjust = 0.5, size = 4.5) +\n  labs(x = \"Cutoff Value\", y = \"Error Probability\",\n       title = bquote(\"The\"~alpha*\"-\"*beta~\"Tradeoff (Fixed n = 10, True\"~mu~\"= 27)\"),\n       color = \"Error Type\") +\n  theme(legend.position = \"right\")"
   },
   {
     "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#simulation-demonstrating-error-types",
@@ -10651,7 +10651,7 @@
     "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#visualizing-critical-regions-by-tail-type",
     "title": "Lesson 12: Introduction to Hypothesis Testing",
     "section": "Visualizing Critical Regions by Tail Type",
-    "text": "Visualizing Critical Regions by Tail Type\n\n\nCode\nx_seq &lt;- seq(21, 29, length.out = 500)\ny &lt;- dnorm(x_seq, mu0, se)\n\nz_alpha &lt;- qnorm(1 - alpha)\nz_alpha2 &lt;- qnorm(1 - alpha/2)\n\ncrit_upper &lt;- mu0 + z_alpha * se\ncrit_lower &lt;- mu0 - z_alpha * se\ncrit_two_upper &lt;- mu0 + z_alpha2 * se\ncrit_two_lower &lt;- mu0 - z_alpha2 * se\n\ndf &lt;- tibble(x = x_seq, y = y)\n\np1 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &gt;= crit_upper), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = crit_upper, linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = crit_upper, y = 0.35, label = paste0(\"c = \", round(crit_upper, 2)), hjust = -0.1) +\n  labs(title = expression(paste(\"Upper-tailed: \", H[a], \": μ &gt; 25\")),\n       subtitle = \"Reject if X̄ ≥ c\", x = expression(bar(X)), y = \"Density\")\n\np2 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &lt;= crit_lower), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = crit_lower, linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = crit_lower, y = 0.35, label = paste0(\"c = \", round(crit_lower, 2)), hjust = 1.1) +\n  labs(title = expression(paste(\"Lower-tailed: \", H[a], \": μ &lt; 25\")),\n       subtitle = \"Reject if X̄ ≤ c\", x = expression(bar(X)), y = \"Density\")\n\np3 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &gt;= crit_two_upper | x &lt;= crit_two_lower), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = c(crit_two_lower, crit_two_upper), linetype = \"dashed\", color = \"red\") +\n  labs(title = expression(paste(\"Two-tailed: \", H[a], \": μ ≠ 25\")),\n       subtitle = \"Reject if |X̄ - 25| ≥ c\", x = expression(bar(X)), y = \"Density\")\n\np1 + p2 + p3"
+    "text": "Visualizing Critical Regions by Tail Type\n\n\nCode\nx_seq &lt;- seq(21, 29, length.out = 500)\ny &lt;- dnorm(x_seq, mu0, se)\n\nz_alpha &lt;- qnorm(1 - alpha)\nz_alpha2 &lt;- qnorm(1 - alpha/2)\n\ncrit_upper &lt;- mu0 + z_alpha * se\ncrit_lower &lt;- mu0 - z_alpha * se\ncrit_two_upper &lt;- mu0 + z_alpha2 * se\ncrit_two_lower &lt;- mu0 - z_alpha2 * se\n\ndf &lt;- tibble(x = x_seq, y = y)\n\np1 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &gt;= crit_upper), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = crit_upper, linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = crit_upper, y = 0.35, label = paste0(\"c = \", round(crit_upper, 2)), hjust = -0.1) +\n  labs(title = expression(\"Upper-tailed:\"~H[a]*\":\"~mu &gt; 25),\n       subtitle = expression(\"Reject if\"~bar(X) &gt;= c), x = expression(bar(X)), y = \"Density\")\n\np2 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &lt;= crit_lower), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = crit_lower, linetype = \"dashed\", color = \"red\") +\n  annotate(\"text\", x = crit_lower, y = 0.35, label = paste0(\"c = \", round(crit_lower, 2)), hjust = 1.1) +\n  labs(title = expression(\"Lower-tailed:\"~H[a]*\":\"~mu &lt; 25),\n       subtitle = expression(\"Reject if\"~bar(X) &lt;= c), x = expression(bar(X)), y = \"Density\")\n\np3 &lt;- ggplot(df, aes(x, y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = df |&gt; filter(x &gt;= crit_two_upper), fill = \"coral\", alpha = 0.5) +\n  geom_area(data = df |&gt; filter(x &lt;= crit_two_lower), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = c(crit_two_lower, crit_two_upper), linetype = \"dashed\", color = \"red\") +\n  labs(title = expression(\"Two-tailed:\"~H[a]*\":\"~mu != 25),\n       subtitle = expression(\"Reject if\"~group(\"|\", bar(X) - 25, \"|\") &gt;= c), x = expression(bar(X)), y = \"Density\")\n\np1 + p2 + p3"
   },
   {
     "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#complete-example-blood-pressure-drug-trial",
@@ -10714,7 +10714,7 @@
     "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#ci-test-duality-visualized",
     "title": "Lesson 12: Introduction to Hypothesis Testing",
     "section": "CI-Test Duality Visualized",
-    "text": "CI-Test Duality Visualized\n\n\nCode\n# Show CI and null value\ntibble(\n  x = xbar,\n  lower = ci_lower,\n  upper = ci_upper\n) |&gt;\n  ggplot(aes(y = 1)) +\n  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.1, linewidth = 2, color = \"steelblue\") +\n  geom_point(aes(x = x), size = 5, color = \"steelblue\") +\n  geom_vline(xintercept = 10, linetype = \"dashed\", color = \"red\", linewidth = 1.5) +\n  annotate(\"text\", x = 10, y = 1.15, label = expression(H[0]: mu == 10), color = \"red\", size = 6) +\n  annotate(\"text\", x = xbar, y = 0.85, label = paste0(\"x̄ = \", xbar), size = 5) +\n  annotate(\"text\", x = (ci_lower + ci_upper)/2, y = 1.1, \n           label = paste0(\"95% CI: (\", round(ci_lower, 1), \", \", round(ci_upper, 1), \")\"), \n           size = 5, color = \"steelblue\") +\n  coord_cartesian(xlim = c(7, 18), ylim = c(0.7, 1.3)) +\n  labs(x = expression(mu), y = \"\",\n       title = \"Confidence Interval and Hypothesis Test\",\n       subtitle = expression(\"Null value (10) is below the CI\"~symbol(\"\\256\")~\"Reject\"~H[0])) +\n  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())"
+    "text": "CI-Test Duality Visualized\n\n\nCode\n# Show CI and null value\ntibble(\n  x = xbar,\n  lower = ci_lower,\n  upper = ci_upper\n) |&gt;\n  ggplot(aes(y = 1)) +\n  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.1, linewidth = 2, color = \"steelblue\") +\n  geom_point(aes(x = x), size = 5, color = \"steelblue\") +\n  geom_vline(xintercept = 10, linetype = \"dashed\", color = \"red\", linewidth = 1.5) +\n  annotate(\"text\", x = 10, y = 1.15, label = expression(H[0]:~mu == 10), color = \"red\", size = 6) +\n  annotate(\"text\", x = xbar, y = 0.85, label = bquote(bar(x) == .(xbar)), size = 5) +\n  annotate(\"text\", x = (ci_lower + ci_upper)/2, y = 1.1, \n           label = paste0(\"95% CI: (\", round(ci_lower, 1), \", \", round(ci_upper, 1), \")\"), \n           size = 5, color = \"steelblue\") +\n  coord_cartesian(xlim = c(7, 18), ylim = c(0.7, 1.3)) +\n  labs(x = expression(mu), y = \"\",\n       title = \"Confidence Interval and Hypothesis Test\",\n       subtitle = expression(\"Null value (10) is below the CI\"~symbol(\"\\256\")~\"Reject\"~H[0])) +\n  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())"
   },
   {
     "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#the-hypothesis-testing-framework-1",
@@ -10834,5 +10834,537 @@
     "title": "Midterm Exam Solutions",
     "section": "Bonus Question (5 points)",
     "text": "Bonus Question (5 points)\nRare mutation: \\(x = 3\\) successes, \\(n = 500\\)\n\nPart (a): Three intervals (2 points)\n\nx &lt;- 3\nn &lt;- 500\np_hat &lt;- x / n\nz &lt;- qnorm(0.975)\n\n# Wald interval\nse_wald &lt;- sqrt(p_hat * (1 - p_hat) / n)\nwald_ci &lt;- p_hat + c(-1, 1) * z * se_wald\n\n# Score interval\nscore_ci &lt;- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int\n\n# Agresti-Coull\np_tilde &lt;- (x + 2) / (n + 4)\nse_ac &lt;- sqrt(p_tilde * (1 - p_tilde) / (n + 4))\nac_ci &lt;- p_tilde + c(-1, 1) * z * se_ac\n\ncat(\"Sample proportion:\", p_hat, \"=\", round(p_hat * 100, 2), \"%\\n\\n\")\n\nSample proportion: 0.006 = 0.6 %\n\ncat(\"Wald 95% CI:          (\", round(wald_ci[1] * 100, 4), \"%,\", \n    round(wald_ci[2] * 100, 4), \"%)\\n\")\n\nWald 95% CI:          ( -0.0769 %, 1.2769 %)\n\ncat(\"Score 95% CI:         (\", round(score_ci[1] * 100, 4), \"%,\", \n    round(score_ci[2] * 100, 4), \"%)\\n\")\n\nScore 95% CI:         ( 0.2043 %, 1.749 %)\n\ncat(\"Agresti-Coull 95% CI: (\", round(ac_ci[1] * 100, 4), \"%,\", \n    round(ac_ci[2] * 100, 4), \"%)\\n\")\n\nAgresti-Coull 95% CI: ( 0.1268 %, 1.8573 %)\n\n\nProblem with Wald interval: The lower bound is negative (-0.07%), which is impossible for a proportion. This is a clear indicator that the Wald interval is inappropriate for rare events.\n\n\nPart (b): Why Score and Agresti-Coull are better (3 points)\nKey properties that make Score and Agresti-Coull better:\n\nThey stay within [0, 1]: The Score interval is derived by solving a quadratic equation that naturally constrains the bounds to valid probability values. The Agresti-Coull “shrinks” extreme estimates toward 0.5 by adding pseudocounts.\nBetter coverage probability: Research has shown that Wald intervals have poor coverage for \\(p\\) near 0 or 1. The Score interval maintains nominal coverage across all values of \\(p\\).\nAsymmetry: When \\(p\\) is near a boundary, the true sampling distribution is highly skewed. Score and Agresti-Coull produce asymmetric intervals that better reflect this skewness, while Wald forces symmetry.\nThe “shrinkage” effect: Agresti-Coull adds 2 successes and 2 failures, effectively pulling the estimate away from extreme values (0 or 1) toward 0.5. This improves coverage because it accounts for the fact that extreme observed proportions likely underestimate the true variability.\n\nConclusion: For rare events, always use Score (Wilson) or Agresti-Coull intervals, never Wald.\n\nEnd of Solutions"
+  },
+  {
+    "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#step-3-choose-test-statistic",
+    "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#step-3-choose-test-statistic",
+    "title": "Lesson 12: Introduction to Hypothesis Testing",
+    "section": "Step 3: Choose Test Statistic",
+    "text": "Step 3: Choose Test Statistic\nSince \\(\\sigma\\) is known, our natural estimator for \\(\\mu\\) is the sample mean \\(\\bar{X}\\). Under \\(H_0\\):\n\\[\\bar{X} \\sim N\\left(\\mu_0, \\frac{\\sigma^2}{n}\\right) = N\\left(10, \\frac{8^2}{25}\\right) = N(10, 2.56)\\]\n\nWe standardize to obtain the z test statistic:\n\\[Z = \\frac{\\bar{X} - \\mu_0}{\\sigma / \\sqrt{n}} = \\frac{\\bar{X} - 10}{8/\\sqrt{25}} = \\frac{\\bar{X} - 10}{1.6}\\]\n\n\nWhy Z? Under \\(H_0\\), \\(Z \\sim N(0,1)\\) regardless of the specific \\(\\mu_0\\), \\(\\sigma\\), and \\(n\\). This lets us use standard normal critical values to determine the rejection region.\nRejection region: Since \\(H_a: \\mu &gt; 10\\) (upper-tailed), we reject \\(H_0\\) when \\(Z \\geq z_\\alpha = z_{0.05} = 1.645\\)."
+  },
+  {
+    "objectID": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#step-3-continued-compute-in-r",
+    "href": "lessons/12_Hypothesis_Testing_Introduction/12_Hypothesis_Testing_Introduction.html#step-3-continued-compute-in-r",
+    "title": "Lesson 12: Introduction to Hypothesis Testing",
+    "section": "Step 3 (continued): Compute in R",
+    "text": "Step 3 (continued): Compute in R\n\n# Given data\nxbar &lt;- 12.5\nsigma &lt;- 8\nn &lt;- 25\nmu0 &lt;- 10\nalpha &lt;- 0.05\n\n# Standard error\nse &lt;- sigma / sqrt(n)\n\n# Test statistic: Z = (X̄ - μ₀) / (σ/√n)\nz_stat &lt;- (xbar - mu0) / se\ncat(\"Test statistic: z =\", round(z_stat, 3), \"\\n\")\n\nTest statistic: z = 1.562 \n\n# Critical value for α = 0.05 (upper-tailed)\nz_crit &lt;- qnorm(1 - alpha)\ncat(\"Critical value: z_α =\", round(z_crit, 3), \"\\n\")\n\nCritical value: z_α = 1.645 \n\n# Rejection region\ncat(\"Rejection region: z ≥\", round(z_crit, 3))\n\nRejection region: z ≥ 1.645"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#review-where-we-left-off",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#review-where-we-left-off",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Review: Where We Left Off",
+    "text": "Review: Where We Left Off\nLesson 12: Introduction to Hypothesis Testing\n\nNull and alternative hypotheses (\\(H_0\\) vs \\(H_a\\))\nTest statistics and rejection regions\nType I error (\\(\\alpha\\)) and Type II error (\\(\\beta\\))\nPower = \\(1 - \\beta\\)\nConnection between CIs and hypothesis tests\n\n\nToday’s Goals:\n\nApply the one-sample z test for \\(\\mu\\) (\\(\\sigma\\) known)\nDevelop the one-sample t test for \\(\\mu\\) (\\(\\sigma\\) unknown)\nUnderstand when to use z vs t tests\nConduct tests about a population proportion \\(p\\)\nImplement all tests in R with medical research examples"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#roadmap-for-today",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#roadmap-for-today",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Roadmap for Today",
+    "text": "Roadmap for Today\n\n\n\n\n\n\n\n\n\nTopic\nAssumption\nTest Statistic\nTextbook\n\n\n\n\nz test for \\(\\mu\\)\n\\(\\sigma\\) known\n\\(Z = \\frac{\\bar{X} - \\mu_0}{\\sigma/\\sqrt{n}}\\)\nDevore 9.2\n\n\nt test for \\(\\mu\\)\n\\(\\sigma\\) unknown\n\\(T = \\frac{\\bar{X} - \\mu_0}{S/\\sqrt{n}}\\)\nDevore 9.2\n\n\nz test for \\(p\\)\nLarge \\(n\\)\n\\(Z = \\frac{\\hat{p} - p_0}{\\sqrt{p_0(1-p_0)/n}}\\)\nDevore 9.3\n\n\n\n\n\n\n\n\n\n\nConnection to CIs\n\n\nEach test today has a corresponding confidence interval from Lessons 7–8. The CI contains all values of the parameter that would not be rejected by the corresponding test."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#setup-and-assumptions",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#setup-and-assumptions",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Setup and Assumptions",
+    "text": "Setup and Assumptions\nAssumptions:\n\n\\(X_1, X_2, \\ldots, X_n\\) is a random sample from a normal distribution\nThe population standard deviation \\(\\sigma\\) is known\n\n\nNull hypothesis: \\(H_0: \\mu = \\mu_0\\)\nTest statistic:\n\\[Z = \\frac{\\bar{X} - \\mu_0}{\\sigma / \\sqrt{n}}\\]\nUnder \\(H_0\\): \\(Z \\sim N(0, 1)\\)"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-sample-z-test-rejection-regions",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-sample-z-test-rejection-regions",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "The One-Sample z Test: Rejection Regions",
+    "text": "The One-Sample z Test: Rejection Regions\n\n\n\n\n\n\nOne-Sample z Test (Devore 9.2)\n\n\n\n\n\nAlternative\nRejection Region\nType\n\n\n\n\n\\(H_a: \\mu &gt; \\mu_0\\)\n\\(z \\geq z_\\alpha\\)\nUpper-tailed\n\n\n\\(H_a: \\mu &lt; \\mu_0\\)\n\\(z \\leq -z_\\alpha\\)\nLower-tailed\n\n\n\\(H_a: \\mu \\neq \\mu_0\\)\n\\(|z| \\geq z_{\\alpha/2}\\)\nTwo-tailed\n\n\n\n\n\n\n\nKey idea: The standardized test statistic \\(Z\\) measures how many standard errors \\(\\bar{x}\\) is from \\(\\mu_0\\). Rejection occurs when this distance is “too large” in the direction specified by \\(H_a\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#seven-step-procedure-devore-9.2",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#seven-step-procedure-devore-9.2",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Seven-Step Procedure (Devore 9.2)",
+    "text": "Seven-Step Procedure (Devore 9.2)\n\n\n\n\n\n\nRecommended Steps for Any Hypothesis Test\n\n\n\nIdentify the parameter of interest and describe it in context\nState the null and alternative hypotheses\nCheck assumptions for the test procedure\nWrite the formula for the test statistic\nState the rejection region for the chosen \\(\\alpha\\)\nCompute the test statistic value from sample data\nDecide whether to reject \\(H_0\\) and state the conclusion in context\n\n\n\n\n\nWe will use this structured approach throughout the course."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-screening",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-screening",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Neonatal Birth Weight Screening",
+    "text": "Example: Neonatal Birth Weight Screening\nSetting: A neonatal unit monitors the average birth weight of infants. Historically, the mean birth weight in this hospital is 3300 g with known \\(\\sigma = 450\\) g. After a change in prenatal care protocol, a sample of \\(n = 36\\) births yields \\(\\bar{x} = 3180\\) g.\nQuestion: Is there evidence that the new protocol has changed the mean birth weight?\n\nStep 1: \\(\\mu\\) = true mean birth weight (g) under the new protocol\nStep 2: \\(H_0: \\mu = 3300\\) vs \\(H_a: \\mu \\neq 3300\\) (two-tailed — either direction is concerning)\nStep 3: \\(\\sigma = 450\\) is known; \\(n = 36\\) is large enough for CLT"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-continued",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-continued",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Neonatal Birth Weight (continued)",
+    "text": "Example: Neonatal Birth Weight (continued)\nStep 4: Test statistic: \\[Z = \\frac{\\bar{X} - 3300}{450/\\sqrt{36}} = \\frac{\\bar{X} - 3300}{75}\\]\nStep 5: For \\(\\alpha = 0.05\\): Reject \\(H_0\\) if \\(|z| \\geq z_{0.025} = 1.96\\)\n\n# Step 6: Compute test statistic\nxbar &lt;- 3180\nmu0 &lt;- 3300\nsigma &lt;- 450\nn &lt;- 36\nse &lt;- sigma / sqrt(n)\n\nz_stat &lt;- (xbar - mu0) / se\ncat(\"Test statistic: z =\", round(z_stat, 3), \"\\n\")\n\nTest statistic: z = -1.6 \n\n# Critical value\nz_crit &lt;- qnorm(1 - 0.05/2)\ncat(\"Critical value: z_{alpha/2} =\", round(z_crit, 3), \"\\n\")\n\nCritical value: z_{alpha/2} = 1.96 \n\ncat(\"Rejection region: |z| &gt;=\", round(z_crit, 3))\n\nRejection region: |z| &gt;= 1.96"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-decision",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-neonatal-birth-weight-decision",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Neonatal Birth Weight (decision)",
+    "text": "Example: Neonatal Birth Weight (decision)\n\n# Step 7: Decision\ncat(\"|z| =\", round(abs(z_stat), 3), \"\\n\")\n\n|z| = 1.6 \n\ncat(\"Critical value =\", round(z_crit, 3), \"\\n\\n\")\n\nCritical value = 1.96 \n\nif (abs(z_stat) &gt;= z_crit) {\n  cat(\"Decision: Reject H0 at alpha = 0.05\\n\\n\")\n  cat(\"Conclusion: There is statistically significant evidence that\\n\")\n  cat(\"the true mean birth weight under the new protocol differs from 3300 g.\")\n} else {\n  cat(\"Decision: Fail to reject H0 at alpha = 0.05\\n\\n\")\n  cat(\"Conclusion: There is insufficient evidence that the true mean\\n\")\n  cat(\"birth weight differs from 3300 g under the new protocol.\")\n}\n\nDecision: Fail to reject H0 at alpha = 0.05\n\nConclusion: There is insufficient evidence that the true mean\nbirth weight differs from 3300 g under the new protocol."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Visualizing the Test",
+    "text": "Visualizing the Test\n\n\nCode\nz_seq &lt;- seq(-4, 4, length.out = 500)\ny &lt;- dnorm(z_seq)\n\ntibble(z = z_seq, y = y) |&gt;\n  ggplot(aes(x = z, y = y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = tibble(z = z_seq[z_seq &gt;= z_crit], \n                          y = dnorm(z_seq[z_seq &gt;= z_crit])),\n            aes(x = z, y = y), fill = \"coral\", alpha = 0.5) +\n  geom_area(data = tibble(z = z_seq[z_seq &lt;= -z_crit], \n                          y = dnorm(z_seq[z_seq &lt;= -z_crit])),\n            aes(x = z, y = y), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = c(-z_crit, z_crit), linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  geom_vline(xintercept = z_stat, color = \"darkgreen\", linewidth = 1.5) +\n  annotate(\"text\", x = z_crit + 0.1, y = 0.35, hjust = 0, size = 5, color = \"red\",\n           label = paste0(\"z_{0.025} = \", round(z_crit, 2))) +\n  annotate(\"text\", x = -z_crit - 0.1, y = 0.35, hjust = 1, size = 5, color = \"red\",\n           label = paste0(\"-z_{0.025} = \", round(-z_crit, 2))) +\n  annotate(\"text\", x = z_stat - 0.1, y = 0.25, hjust = 1, size = 5, color = \"darkgreen\",\n           label = paste0(\"z = \", round(z_stat, 2))) +\n  annotate(\"text\", x = 3, y = 0.05, label = expression(alpha/2 == 0.025), \n           color = \"coral\", size = 5) +\n  annotate(\"text\", x = -3, y = 0.05, label = expression(alpha/2 == 0.025), \n           color = \"coral\", size = 5) +\n  labs(x = \"z\", y = \"Density\",\n       title = \"Two-Tailed z Test: Neonatal Birth Weight\",\n       subtitle = expression(\"Test statistic falls in rejection region\" ~\n                             symbol(\"\\256\") ~ \"Reject\" ~ H[0]))"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#confirming-with-a-confidence-interval",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#confirming-with-a-confidence-interval",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Confirming with a Confidence Interval",
+    "text": "Confirming with a Confidence Interval\nRecall the CI-test duality: the 95% CI contains all \\(\\mu_0\\) values that would not be rejected.\n\n# 95% CI for mu\nci_lower &lt;- xbar - z_crit * se\nci_upper &lt;- xbar + z_crit * se\ncat(\"95% CI for mu: (\", round(ci_lower, 1), \",\", round(ci_upper, 1), \")\\n\")\n\n95% CI for mu: ( 3033 , 3327 )\n\ncat(\"Null value mu_0 = 3300\\n\\n\")\n\nNull value mu_0 = 3300\n\ncat(\"Since 3300 is NOT in the CI, we reject H0 -- consistent with our test!\")\n\nSince 3300 is NOT in the CI, we reject H0 -- consistent with our test!\n\n\n\n\nCode\ntibble(x = xbar, lower = ci_lower, upper = ci_upper) |&gt;\n  ggplot(aes(y = 1)) +\n  geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.1, linewidth = 2, color = \"steelblue\") +\n  geom_point(aes(x = x), size = 5, color = \"steelblue\") +\n  geom_vline(xintercept = 3300, linetype = \"dashed\", color = \"red\", linewidth = 1.5) +\n  annotate(\"text\", x = 3300, y = 1.15, label = expression(H[0]:~mu == 3300), \n           color = \"red\", size = 6) +\n  annotate(\"text\", x = xbar, y = 0.85, size = 5,\n           label = bquote(bar(x) == .(xbar))) +\n  coord_cartesian(xlim = c(3000, 3400), ylim = c(0.7, 1.3)) +\n  labs(x = \"Birth Weight (g)\", y = \"\",\n       title = \"95% Confidence Interval vs Null Value\") +\n  theme(axis.text.y = element_blank(), axis.ticks.y = element_blank())"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#type-ii-error-and-power-for-the-z-test-devore-9.2",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#type-ii-error-and-power-for-the-z-test-devore-9.2",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Type II Error and Power for the z Test (Devore 9.2)",
+    "text": "Type II Error and Power for the z Test (Devore 9.2)\nFor the z test, we have closed-form expressions for \\(\\beta(\\mu')\\):\n\n\n\n\n\n\n\nAlternative\n\\(\\beta(\\mu')\\)\n\n\n\n\n\\(H_a: \\mu &gt; \\mu_0\\)\n\\(\\Phi\\!\\left(z_\\alpha + \\frac{\\mu_0 - \\mu'}{\\sigma/\\sqrt{n}}\\right)\\)\n\n\n\\(H_a: \\mu &lt; \\mu_0\\)\n\\(1 - \\Phi\\!\\left(-z_\\alpha + \\frac{\\mu_0 - \\mu'}{\\sigma/\\sqrt{n}}\\right)\\)\n\n\n\\(H_a: \\mu \\neq \\mu_0\\)\n\\(\\Phi\\!\\left(z_{\\alpha/2} + \\frac{\\mu_0 - \\mu'}{\\sigma/\\sqrt{n}}\\right) - \\Phi\\!\\left(-z_{\\alpha/2} + \\frac{\\mu_0 - \\mu'}{\\sigma/\\sqrt{n}}\\right)\\)\n\n\n\nwhere \\(\\Phi(z)\\) is the standard normal CDF. Power = \\(1 - \\beta(\\mu')\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power-curve-birth-weight-example",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power-curve-birth-weight-example",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Power Curve: Birth Weight Example",
+    "text": "Power Curve: Birth Weight Example\n\n\nCode\nalpha &lt;- 0.05\nmu_range &lt;- seq(3000, 3600, by = 5)\n\n# Two-tailed power\npower_vals &lt;- map_dbl(mu_range, \\(mu_prime) {\n  beta &lt;- pnorm(z_crit + (mu0 - mu_prime) / se) - \n          pnorm(-z_crit + (mu0 - mu_prime) / se)\n  1 - beta\n})\n\ntibble(mu = mu_range, power = power_vals) |&gt;\n  ggplot(aes(x = mu, y = power)) +\n  geom_line(linewidth = 1.5, color = \"darkgreen\") +\n  geom_hline(yintercept = 0.8, linetype = \"dashed\", color = \"red\") +\n  geom_hline(yintercept = 0.05, linetype = \"dotted\", color = \"gray50\") +\n  geom_vline(xintercept = mu0, linetype = \"dotted\", alpha = 0.5) +\n  annotate(\"text\", x = 3550, y = 0.82, label = \"80% Power\", color = \"red\", size = 5) +\n  annotate(\"text\", x = 3300, y = 0.12, size = 5,\n           label = expression(H[0]:~mu == 3300)) +\n  annotate(\"text\", x = 3550, y = 0.07, label = expression(alpha == 0.05), \n           color = \"gray50\", size = 4) +\n  labs(x = expression(\"True \" * mu * \" (g)\"), y = \"Power\",\n       title = \"Power Function: Birth Weight Two-Tailed z Test\",\n       subtitle = expression(n == 36 ~ \", \" ~ sigma == 450 ~ \", \" ~ alpha == 0.05)) +\n  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2))"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#sample-size-determination-for-the-z-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#sample-size-determination-for-the-z-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Sample Size Determination for the z Test",
+    "text": "Sample Size Determination for the z Test\nThe sample size \\(n\\) for which a level \\(\\alpha\\) test also satisfies \\(\\beta(\\mu') = \\beta\\) is:\n\\[n = \\begin{cases} \\left[\\frac{\\sigma(z_\\alpha + z_\\beta)}{\\mu_0 - \\mu'}\\right]^2 & \\text{one-tailed test} \\\\[10pt] \\left[\\frac{\\sigma(z_{\\alpha/2} + z_\\beta)}{\\mu_0 - \\mu'}\\right]^2 & \\text{two-tailed test (approx)} \\end{cases}\\]\n\n# How many births to detect a 100g decrease with 80% power?\ndelta &lt;- 100  # clinically meaningful difference\nalpha &lt;- 0.05\nbeta_target &lt;- 0.20  # want power = 0.80\nsigma &lt;- 450\n\n# Two-tailed test\nn_needed &lt;- (sigma * (qnorm(1 - alpha/2) + qnorm(1 - beta_target)) / delta)^2\ncat(\"Sample size needed:\", ceiling(n_needed), \"births\")\n\nSample size needed: 159 births\n\n\n\n\n\n\n\n\n\nClinical Relevance\n\n\nIn medical research, we should determine the clinically meaningful difference before planning the study. A 100 g difference in birth weight may be clinically important; a 10 g difference likely is not."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#from-z-to-t-the-realistic-case",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#from-z-to-t-the-realistic-case",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "From z to t: The Realistic Case",
+    "text": "From z to t: The Realistic Case\nThe Problem: In practice, we rarely know \\(\\sigma\\).\n\nSolution: Replace \\(\\sigma\\) with the sample standard deviation \\(S\\):\n\\[Z = \\frac{\\bar{X} - \\mu_0}{\\sigma/\\sqrt{n}} \\quad \\longrightarrow \\quad T = \\frac{\\bar{X} - \\mu_0}{S/\\sqrt{n}}\\]\n\n\nKey result (from Lesson 8): When sampling from a normal population,\n\\[T = \\frac{\\bar{X} - \\mu_0}{S/\\sqrt{n}} \\sim t_{n-1} \\quad \\text{when } H_0 \\text{ is true}\\]\nThe \\(t_{n-1}\\) distribution has heavier tails than the standard normal, reflecting the additional uncertainty from estimating \\(\\sigma\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-sample-t-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-sample-t-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "The One-Sample t Test",
+    "text": "The One-Sample t Test\n\n\n\n\n\n\nOne-Sample t Test (Devore 9.2)\n\n\nNull hypothesis: \\(H_0: \\mu = \\mu_0\\)\nTest statistic: \\(\\displaystyle t = \\frac{\\bar{x} - \\mu_0}{s/\\sqrt{n}}\\)\n\n\n\nAlternative\nRejection Region\n\n\n\n\n\\(H_a: \\mu &gt; \\mu_0\\)\n\\(t \\geq t_{\\alpha, n-1}\\)\n\n\n\\(H_a: \\mu &lt; \\mu_0\\)\n\\(t \\leq -t_{\\alpha, n-1}\\)\n\n\n\\(H_a: \\mu \\neq \\mu_0\\)\n\\(|t| \\geq t_{\\alpha/2, n-1}\\)\n\n\n\n\n\n\n\nAssumptions:\n\nThe data are a random sample from a normal distribution\nFor large \\(n\\) (say \\(n &gt; 40\\)), the test is robust to non-normality"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#z-vs-t-comparison-of-critical-values",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#z-vs-t-comparison-of-critical-values",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "z vs t: Comparison of Critical Values",
+    "text": "z vs t: Comparison of Critical Values\n\n\nCode\n# Compare z and t critical values\ndf_vals &lt;- c(5, 10, 20, 50, 100, Inf)\nalpha &lt;- 0.05\n\ncrit_table &lt;- tibble(\n  df = df_vals,\n  `t critical value` = qt(1 - alpha/2, df = df_vals),\n  `z critical value` = qnorm(1 - alpha/2)\n) |&gt;\n  mutate(df_label = ifelse(is.infinite(df), \"Inf (z)\", as.character(df)))\n\ncrit_table |&gt;\n  select(-df_label) |&gt;\n  mutate(across(where(is.numeric) & !df, \\(x) round(x, 4)))\n\n\n# A tibble: 6 × 3\n     df `t critical value` `z critical value`\n  &lt;dbl&gt;              &lt;dbl&gt;              &lt;dbl&gt;\n1     5               2.57               1.96\n2    10               2.23               1.96\n3    20               2.09               1.96\n4    50               2.01               1.96\n5   100               1.98               1.96\n6   Inf               1.96               1.96\n\n\n\n\n\nCode\nx_seq &lt;- seq(-4, 4, length.out = 500)\n\ntibble(\n  x = rep(x_seq, 3),\n  density = c(dnorm(x_seq), dt(x_seq, df = 5), dt(x_seq, df = 15)),\n  dist = rep(c(\"N(0,1)\", \"t (df=5)\", \"t (df=15)\"), each = length(x_seq))\n) |&gt;\n  mutate(dist = factor(dist, levels = c(\"N(0,1)\", \"t (df=15)\", \"t (df=5)\"))) |&gt;\n  ggplot(aes(x = x, y = density, color = dist)) +\n  geom_line(linewidth = 1.3) +\n  scale_color_manual(values = c(\"N(0,1)\" = \"steelblue\", \"t (df=15)\" = \"darkgreen\", \"t (df=5)\" = \"coral\")) +\n  labs(x = \"x\", y = \"Density\", color = \"Distribution\",\n       title = \"Standard Normal vs t Distributions\",\n       subtitle = \"t distributions have heavier tails, especially with small df\") +\n  theme(legend.position = \"right\")"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-hemoglobin-a1c-monitoring-devore-9.2-style",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-hemoglobin-a1c-monitoring-devore-9.2-style",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Hemoglobin A1c Monitoring (Devore 9.2 Style)",
+    "text": "Example: Hemoglobin A1c Monitoring (Devore 9.2 Style)\nSetting: A diabetes clinic monitors glycated hemoglobin (HbA1c). The target for well-controlled diabetes is HbA1c \\(\\leq\\) 7.0%. A sample of \\(n = 15\\) patients on a new medication yields:\n\nhba1c &lt;- c(6.8, 7.2, 6.5, 7.8, 6.9, 7.4, 6.3, 7.1, 6.7, \n            7.5, 6.6, 7.0, 7.3, 6.4, 7.6)\n\n# Summary statistics\nxbar &lt;- mean(hba1c)\ns &lt;- sd(hba1c)\nn &lt;- length(hba1c)\ncat(\"n =\", n, \"\\n\")\n\nn = 15 \n\ncat(\"x-bar =\", round(xbar, 3), \"\\n\")\n\nx-bar = 7.007 \n\ncat(\"s =\", round(s, 3))\n\ns = 0.459\n\n\nQuestion: Is there evidence that the true mean HbA1c for patients on this medication exceeds the 7.0% target?"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#hba1c-example-check-assumptions",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#hba1c-example-check-assumptions",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "HbA1c Example: Check Assumptions",
+    "text": "HbA1c Example: Check Assumptions\nStep 3: Check normality assumption.\n\n\nCode\np1 &lt;- tibble(hba1c = hba1c) |&gt;\n  ggplot(aes(x = hba1c)) +\n  geom_histogram(bins = 7, fill = \"steelblue\", color = \"white\", alpha = 0.7) +\n  geom_vline(xintercept = 7.0, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  labs(x = \"HbA1c (%)\", y = \"Count\", title = \"Distribution of HbA1c Values\") +\n  annotate(\"text\", x = 7.0, y = 4.2, label = \"Target = 7.0%\", \n           color = \"red\", hjust = -0.1, size = 5)\n\np2 &lt;- tibble(hba1c = hba1c) |&gt;\n  ggplot(aes(sample = hba1c)) +\n  stat_qq(size = 3, color = \"steelblue\") +\n  stat_qq_line(color = \"red\", linewidth = 1) +\n  labs(x = \"Theoretical Quantiles\", y = \"Sample Quantiles\",\n       title = \"Normal Q-Q Plot\")\n\np1 + p2\n\n\n\nThe Q-Q plot shows approximately linear pattern — normality assumption is reasonable for \\(n = 15\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#hba1c-example-conduct-the-t-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#hba1c-example-conduct-the-t-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "HbA1c Example: Conduct the t Test",
+    "text": "HbA1c Example: Conduct the t Test\n\n# Step 1-2: mu = true mean HbA1c; H0: mu = 7.0 vs Ha: mu &gt; 7.0\nmu0 &lt;- 7.0\nalpha &lt;- 0.05\n\n# Step 4: Test statistic\nse &lt;- s / sqrt(n)\nt_stat &lt;- (xbar - mu0) / se\ncat(\"Test statistic: t =\", round(t_stat, 3), \"\\n\")\n\nTest statistic: t = 0.056 \n\n# Step 5: Critical value (upper-tailed, df = n-1)\nt_crit &lt;- qt(1 - alpha, df = n - 1)\ncat(\"Critical value: t_{0.05, 14} =\", round(t_crit, 3), \"\\n\")\n\nCritical value: t_{0.05, 14} = 1.761 \n\n# Step 7: Decision\ncat(\"\\nDecision:\", \n    ifelse(t_stat &gt;= t_crit, \"Reject H0\", \"Fail to reject H0\"))\n\n\nDecision: Fail to reject H0\n\n\n\nStep 7 Interpretation: There is insufficient evidence at \\(\\alpha = 0.05\\) to conclude that the true mean HbA1c exceeds the 7.0% target."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-rs-t.test-function",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-rs-t.test-function",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Using R’s t.test() Function",
+    "text": "Using R’s t.test() Function\n\n# R's built-in t.test function\nt_result &lt;- t.test(hba1c, mu = 7.0, alternative = \"greater\")\nt_result\n\n\n    One Sample t-test\n\ndata:  hba1c\nt = 0.056254, df = 14, p-value = 0.478\nalternative hypothesis: true mean is greater than 7\n95 percent confidence interval:\n 6.797935      Inf\nsample estimates:\nmean of x \n 7.006667 \n\n\n\n\n# Extract tidy results\ntidy(t_result)\n\n# A tibble: 1 × 8\n  estimate statistic p.value parameter conf.low conf.high method     alternative\n     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      \n1     7.01    0.0563   0.478        14     6.80       Inf One Sampl… greater"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-t-test-result",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-t-test-result",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Visualizing the t Test Result",
+    "text": "Visualizing the t Test Result\n\n\nCode\ndf_t &lt;- n - 1\nx_seq &lt;- seq(-4, 4, length.out = 500)\ny &lt;- dt(x_seq, df = df_t)\n\ntibble(x = x_seq, y = y) |&gt;\n  ggplot(aes(x = x, y = y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = tibble(x = x_seq[x_seq &gt;= t_crit],\n                          y = dt(x_seq[x_seq &gt;= t_crit], df = df_t)),\n            aes(x = x, y = y), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = t_crit, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  geom_vline(xintercept = t_stat, color = \"darkgreen\", linewidth = 1.5) +\n  annotate(\"text\", x = t_crit + 0.15, y = 0.33, hjust = 0, size = 5, color = \"red\",\n           label = bquote(t[list(0.05, 14)] == .(round(t_crit, 3)))) +\n  annotate(\"text\", x = t_stat + 0.15, y = 0.25, hjust = 0, size = 5, color = \"darkgreen\",\n           label = paste0(\"t = \", round(t_stat, 3))) +\n  annotate(\"text\", x = 2.8, y = 0.05, label = expression(alpha == 0.05), \n           color = \"coral\", size = 5) +\n  labs(x = \"t\", y = \"Density\",\n       title = expression(\"Upper-Tailed t Test: HbA1c (\" * t[14] * \" distribution)\"),\n       subtitle = expression(\"Test statistic does NOT fall in rejection region\" ~\n                             symbol(\"\\256\") ~ \"Fail to reject\" ~ H[0]))"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-body-temperature-revisited-two-tailed-t-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-body-temperature-revisited-two-tailed-t-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Body Temperature Revisited (Two-Tailed t Test)",
+    "text": "Example: Body Temperature Revisited (Two-Tailed t Test)\nThe widely cited “normal” body temperature of 98.6°F comes from a 19th century study. Mackowiak et al. (1992, JAMA) measured temperatures in 130 healthy adults.\n\n# Simulated data consistent with the Mackowiak et al. findings\nset.seed(1992)\nbody_temp &lt;- rnorm(130, mean = 98.2, sd = 0.73)\n\ncat(\"n =\", length(body_temp), \"\\n\")\n\nn = 130 \n\ncat(\"x-bar =\", round(mean(body_temp), 3), \"\\n\")\n\nx-bar = 98.195 \n\ncat(\"s =\", round(sd(body_temp), 3))\n\ns = 0.668\n\n\n\nHypotheses: \\(H_0: \\mu = 98.6\\) vs \\(H_a: \\mu \\neq 98.6\\)"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#body-temperature-t-test-in-r",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#body-temperature-t-test-in-r",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Body Temperature: t Test in R",
+    "text": "Body Temperature: t Test in R\n\n# Two-tailed t test\ntemp_test &lt;- t.test(body_temp, mu = 98.6, alternative = \"two.sided\")\ntemp_test\n\n\n    One Sample t-test\n\ndata:  body_temp\nt = -6.9161, df = 129, p-value = 1.934e-10\nalternative hypothesis: true mean is not equal to 98.6\n95 percent confidence interval:\n 98.07896 98.31076\nsample estimates:\nmean of x \n 98.19486 \n\n\n\n\n# Extract key quantities\ncat(\"t statistic:\", round(temp_test$statistic, 3), \"\\n\")\n\nt statistic: -6.916 \n\ncat(\"p-value:\", format.pval(temp_test$p.value, digits = 3), \"\\n\")\n\np-value: 1.93e-10 \n\ncat(\"95% CI: (\", round(temp_test$conf.int[1], 3), \",\", \n    round(temp_test$conf.int[2], 3), \")\\n\\n\")\n\n95% CI: ( 98.079 , 98.311 )\n\ncat(\"Since 98.6 is NOT in the 95% CI, we reject H0.\\n\")\n\nSince 98.6 is NOT in the 95% CI, we reject H0.\n\ncat(\"Evidence strongly suggests true mean body temperature differs from 98.6 F.\")\n\nEvidence strongly suggests true mean body temperature differs from 98.6 F."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-can-we-use-the-t-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-can-we-use-the-t-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "When Can We Use the t Test?",
+    "text": "When Can We Use the t Test?\n\n\n\n\n\n\nGuidelines for the One-Sample t Test\n\n\nNormality is critical when \\(n\\) is small:\n\n\n\n\n\n\n\nSample Size\nGuideline\n\n\n\n\n\\(n &lt; 15\\)\nUse t test only if data appear close to normal (check Q-Q plot)\n\n\n\\(15 \\leq n \\leq 40\\)\nMild skewness is acceptable; avoid if heavily skewed or outliers present\n\n\n\\(n &gt; 40\\)\nt test is robust to non-normality by CLT; can use for most distributions\n\n\n\n\n\n\n\n\n\n\n\n\n\nPractical Advice (Devore 9.2)\n\n\nFor moderate sample sizes, examine a normal probability plot (Q-Q plot) before using the t test. If the data show substantial departures from normality, consider a bootstrap test (Lesson 15) or a nonparametric test instead."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#simulation-coverage-of-the-t-test-under-non-normality",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#simulation-coverage-of-the-t-test-under-non-normality",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Simulation: Coverage of the t Test Under Non-Normality",
+    "text": "Simulation: Coverage of the t Test Under Non-Normality\n\n\nCode\nset.seed(551)\nn_sims &lt;- 10000\nalpha &lt;- 0.05\nmu0 &lt;- 5\n\n# Simulate Type I error rate for different distributions\nsimulate_type1 &lt;- function(rdist, n, ...) {\n  rejections &lt;- replicate(n_sims, {\n    x &lt;- rdist(n, ...)\n    test &lt;- t.test(x, mu = mu0)\n    test$p.value &lt; alpha\n  })\n  mean(rejections)\n}\n\nresults &lt;- tibble(\n  Distribution = c(\"Normal\", \"Normal\", \"Exp (shifted)\", \"Exp (shifted)\", \n                    \"t(3) (shifted)\", \"t(3) (shifted)\"),\n  n = rep(c(10, 50), 3),\n  `Type I Error Rate` = c(\n    simulate_type1(rnorm, 10, mean = 5, sd = 1),\n    simulate_type1(rnorm, 50, mean = 5, sd = 1),\n    simulate_type1(\\(n, ...) rexp(n, rate = 1) + 4, 10),\n    simulate_type1(\\(n, ...) rexp(n, rate = 1) + 4, 50),\n    simulate_type1(\\(n, ...) rt(n, df = 3) + 5, 10),\n    simulate_type1(\\(n, ...) rt(n, df = 3) + 5, 50)\n  )\n)\n\nresults |&gt; mutate(`Type I Error Rate` = round(`Type I Error Rate`, 4))\n\n\n# A tibble: 6 × 3\n  Distribution       n `Type I Error Rate`\n  &lt;chr&gt;          &lt;dbl&gt;               &lt;dbl&gt;\n1 Normal            10              1     \n2 Normal            50              1     \n3 Exp (shifted)     10              0.0989\n4 Exp (shifted)     50              0.066 \n5 t(3) (shifted)    10              0.0394\n6 t(3) (shifted)    50              0.047 \n\n\n\nThe t test maintains \\(\\alpha \\approx 0.05\\) well for normal and heavy-tailed symmetric distributions, but may be anticonservative for skewed distributions with small \\(n\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-particulate-matter",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-particulate-matter",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Devore Example 9.12: Particulate Matter",
+    "text": "Devore Example 9.12: Particulate Matter\nRoadside measurements of particle sizes (\\(d_{50}\\) in microns) at \\(n = 9\\) assays near a North Carolina highway:\n\nd50 &lt;- c(82.9, 56.8, 66.5, 49.4, 105.4, 79.5, 82.5, 50.7, 43.0)\n\n# Summary statistics\ncat(\"n =\", length(d50), \"\\n\")\n\nn = 9 \n\ncat(\"x-bar =\", round(mean(d50), 2), \"\\n\")\n\nx-bar = 68.52 \n\ncat(\"s =\", round(sd(d50), 2))\n\ns = 20.49\n\n\nPrevious studies indicated that the typical \\(d_{50}\\) value alongside similar roads is 44 microns.\nHypotheses: \\(H_0: \\mu = 44\\) vs \\(H_a: \\mu \\neq 44\\) at \\(\\alpha = 0.01\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-solution",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-solution",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Devore Example 9.12: Solution",
+    "text": "Devore Example 9.12: Solution\n\n# Check normality\n\n\n\nCode\ntibble(d50 = d50) |&gt;\n  ggplot(aes(sample = d50)) +\n  stat_qq(size = 3, color = \"steelblue\") +\n  stat_qq_line(color = \"red\", linewidth = 1) +\n  labs(title = \"Q-Q Plot: Particle Size Data\", \n       x = \"Theoretical Quantiles\", y = \"Sample Quantiles\")"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.13-large-sample-t-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.13-large-sample-t-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Devore Example 9.13: Large-Sample t Test",
+    "text": "Devore Example 9.13: Large-Sample t Test\nA sample of \\(n = 70\\) tip percentages at a restaurant. Summary statistics: \\(\\bar{x} = 17.986\\), \\(s = 5.937\\).\nQuestion: Is there evidence that the true average tip percentage exceeds 15%?\n\n# Given summary statistics (large n, don't need raw data)\nxbar_tip &lt;- 17.986\ns_tip &lt;- 5.937\nn_tip &lt;- 70\nmu0_tip &lt;- 15\nalpha &lt;- 0.05\n\n# t test statistic\nse_tip &lt;- s_tip / sqrt(n_tip)\nt_stat_tip &lt;- (xbar_tip - mu0_tip) / se_tip\nt_crit_tip &lt;- qt(1 - alpha, df = n_tip - 1)\n\ncat(\"t =\", round(t_stat_tip, 2), \"\\n\")\n\nt = 4.21 \n\ncat(\"t_{0.05, 69} =\", round(t_crit_tip, 3), \"\\n\")\n\nt_{0.05, 69} = 1.667 \n\ncat(\"Decision:\", ifelse(t_stat_tip &gt;= t_crit_tip, \"Reject H0\", \"Fail to reject H0\"))\n\nDecision: Reject H0\n\n\n\nNote: With \\(n = 70 &gt; 40\\), the t test does not require a normal population distribution. The data are positively skewed, but the large sample makes the test valid by the CLT."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#testing-a-population-proportion",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#testing-a-population-proportion",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Testing a Population Proportion",
+    "text": "Testing a Population Proportion\nSetting: We want to test a claim about the population proportion \\(p\\) of “successes.”\nData: \\(X\\) = number of successes in a random sample of size \\(n\\), where \\(X \\sim \\text{Binomial}(n, p)\\).\n\nEstimator: \\(\\hat{p} = X/n\\) (sample proportion)\n\n\nWhen \\(H_0: p = p_0\\) is true and \\(n\\) is large:\n\\[\\hat{P} \\approx N\\!\\left(p_0, \\frac{p_0(1-p_0)}{n}\\right)\\]\nStandardizing gives the test statistic:\n\\[Z = \\frac{\\hat{p} - p_0}{\\sqrt{p_0(1-p_0)/n}}\\]"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-proportion-z-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#the-one-proportion-z-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "The One-Proportion z Test",
+    "text": "The One-Proportion z Test\n\n\n\n\n\n\nOne-Proportion z Test (Devore 9.3)\n\n\nNull hypothesis: \\(H_0: p = p_0\\)\nTest statistic: \\(\\displaystyle z = \\frac{\\hat{p} - p_0}{\\sqrt{p_0(1-p_0)/n}}\\)\n\n\n\nAlternative\nRejection Region\n\n\n\n\n\\(H_a: p &gt; p_0\\)\n\\(z \\geq z_\\alpha\\)\n\n\n\\(H_a: p &lt; p_0\\)\n\\(z \\leq -z_\\alpha\\)\n\n\n\\(H_a: p \\neq p_0\\)\n\\(|z| \\geq z_{\\alpha/2}\\)\n\n\n\nValidity condition: \\(np_0 \\geq 10\\) and \\(n(1-p_0) \\geq 10\\)\n\n\n\n\nKey point: Under \\(H_0\\), we use \\(p_0\\) (not \\(\\hat{p}\\)) in the standard error! This differs from the CI formula where we used \\(\\hat{p}\\) (Wald) or the score approach."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#why-p_0-in-the-standard-error",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#why-p_0-in-the-standard-error",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Why \\(p_0\\) in the Standard Error?",
+    "text": "Why \\(p_0\\) in the Standard Error?\n\n\nCode\n# Compare SE under H0 vs using p-hat\np0 &lt;- 0.30\nn &lt;- 200\nphat_vals &lt;- seq(0.15, 0.45, by = 0.001)\n\nse_h0 &lt;- sqrt(p0 * (1 - p0) / n)\nse_wald &lt;- sqrt(phat_vals * (1 - phat_vals) / n)\n\np1 &lt;- tibble(phat = phat_vals, se = se_wald) |&gt;\n  ggplot(aes(x = phat, y = se)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_hline(yintercept = se_h0, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  geom_vline(xintercept = p0, linetype = \"dotted\", alpha = 0.5) +\n  annotate(\"text\", x = 0.42, y = se_h0 + 0.001, color = \"red\", size = 5,\n           label = bquote(\"SE under\" ~ H[0] ~ \"=\" ~ .(round(se_h0, 4)))) +\n  labs(x = expression(hat(p)), y = \"Standard Error\",\n       title = \"Standard Error: Under H0 vs Using Sample Proportion\",\n       subtitle = expression(p[0] == 0.30 ~ \", \" ~ n == 200))\n\np1\n\n\n\n\nReasoning: When testing, we assume \\(H_0\\) is true and ask “how unlikely is the data?” So we use \\(p_0\\). When estimating (CI), we don’t assume a specific value for \\(p\\), so we use \\(\\hat{p}\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-post-surgical-infection-rate",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-post-surgical-infection-rate",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Post-Surgical Infection Rate",
+    "text": "Example: Post-Surgical Infection Rate\nSetting: The national rate of post-surgical site infections is 2.5% for a certain procedure. A hospital implements a new sterilization protocol and observes 8 infections among 500 surgeries.\nQuestion: Has the new protocol reduced the infection rate?\n\n\n# Data\nx &lt;- 8          # infections observed\nn &lt;- 500        # total surgeries\np_hat &lt;- x / n\np0 &lt;- 0.025     # national rate\n\ncat(\"Sample proportion: p-hat =\", p_hat, \"\\n\")\n\nSample proportion: p-hat = 0.016 \n\ncat(\"Expected under H0:\", n * p0, \"infections\\n\")\n\nExpected under H0: 12.5 infections\n\n# Check validity: np0 and n(1-p0)\ncat(\"np0 =\", n * p0, \"&gt;= 10?\", n * p0 &gt;= 10, \"\\n\")\n\nnp0 = 12.5 &gt;= 10? TRUE \n\ncat(\"n(1-p0) =\", n * (1 - p0), \"&gt;= 10?\", n * (1 - p0) &gt;= 10)\n\nn(1-p0) = 487.5 &gt;= 10? TRUE"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#infection-rate-conduct-the-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#infection-rate-conduct-the-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Infection Rate: Conduct the Test",
+    "text": "Infection Rate: Conduct the Test\n\n# H0: p = 0.025 vs Ha: p &lt; 0.025 (lower-tailed)\nalpha &lt;- 0.05\n\n# Test statistic\nse_h0 &lt;- sqrt(p0 * (1 - p0) / n)\nz_stat &lt;- (p_hat - p0) / se_h0\nz_crit &lt;- qnorm(alpha)  # lower-tailed critical value\n\ncat(\"z =\", round(z_stat, 3), \"\\n\")\n\nz = -1.289 \n\ncat(\"Critical value: -z_{0.05} =\", round(z_crit, 3), \"\\n\\n\")\n\nCritical value: -z_{0.05} = -1.645 \n\nif (z_stat &lt;= z_crit) {\n  cat(\"Decision: Reject H0\\n\")\n  cat(\"Conclusion: Evidence that the new protocol reduces infection rate.\")\n} else {\n  cat(\"Decision: Fail to reject H0\\n\")\n  cat(\"Conclusion: Insufficient evidence that the new protocol\\n\")\n  cat(\"reduces infection rate below the national 2.5%.\")\n}\n\nDecision: Fail to reject H0\nConclusion: Insufficient evidence that the new protocol\nreduces infection rate below the national 2.5%."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-proportion-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-proportion-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Visualizing the Proportion Test",
+    "text": "Visualizing the Proportion Test\n\n\nCode\nz_seq &lt;- seq(-4, 4, length.out = 500)\ny &lt;- dnorm(z_seq)\n\ntibble(z = z_seq, y = y) |&gt;\n  ggplot(aes(x = z, y = y)) +\n  geom_line(linewidth = 1.2, color = \"steelblue\") +\n  geom_area(data = tibble(z = z_seq[z_seq &lt;= qnorm(alpha)],\n                          y = dnorm(z_seq[z_seq &lt;= qnorm(alpha)])),\n            aes(x = z, y = y), fill = \"coral\", alpha = 0.5) +\n  geom_vline(xintercept = z_crit, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  geom_vline(xintercept = z_stat, color = \"darkgreen\", linewidth = 1.5) +\n  annotate(\"text\", x = z_crit - 0.1, y = 0.33, hjust = 1, size = 5, color = \"red\",\n           label = bquote(-z[0.05] == .(round(z_crit, 3)))) +\n  annotate(\"text\", x = z_stat + 0.1, y = 0.25, hjust = 0, size = 5, color = \"darkgreen\",\n           label = paste0(\"z = \", round(z_stat, 3))) +\n  labs(x = \"z\", y = \"Density\",\n       title = \"Lower-Tailed z Test: Post-Surgical Infection Rate\",\n       subtitle = expression(\"Test statistic does NOT fall in rejection region\" ~\n                             symbol(\"\\256\") ~ \"Fail to reject\" ~ H[0]))"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-prop.test-in-r",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-prop.test-in-r",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Using prop.test() in R",
+    "text": "Using prop.test() in R\n\n# R's prop.test uses a slightly different (chi-squared) approach\n# For one-sample proportion test:\nprop_result &lt;- prop.test(x = 8, n = 500, p = 0.025, \n                          alternative = \"less\", correct = FALSE)\nprop_result\n\n\n    1-sample proportions test without continuity correction\n\ndata:  8 out of 500, null probability 0.025\nX-squared = 1.6615, df = 1, p-value = 0.0987\nalternative hypothesis: true p is less than 0.025\n95 percent confidence interval:\n 0.00000000 0.02817143\nsample estimates:\n    p \n0.016 \n\n\n\n\n# Note: prop.test uses chi-squared statistic (X^2 = z^2)\ncat(\"Chi-squared =\", round(prop_result$statistic, 3), \"\\n\")\n\nChi-squared = 1.662 \n\ncat(\"z = sqrt(chi-squared) =\", round(sqrt(prop_result$statistic), 3), \"\\n\")\n\nz = sqrt(chi-squared) = 1.289 \n\ncat(\"Compare to our z:\", round(abs(z_stat), 3))\n\nCompare to our z: 1.289"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-the-exact-binomial-test-small-samples",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-the-exact-binomial-test-small-samples",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Using the Exact Binomial Test (Small Samples)",
+    "text": "Using the Exact Binomial Test (Small Samples)\nWhen \\(np_0 &lt; 10\\) or \\(n(1-p_0) &lt; 10\\), use the exact binomial test:\n\n# Small sample example: 3 successes in 20 trials, testing p = 0.30\nbinom.test(x = 3, n = 20, p = 0.30, alternative = \"less\")\n\n\n    Exact binomial test\n\ndata:  3 and 20\nnumber of successes = 3, number of trials = 20, p-value = 0.1071\nalternative hypothesis: true probability of success is less than 0.3\n95 percent confidence interval:\n 0.0000000 0.3436638\nsample estimates:\nprobability of success \n                  0.15 \n\n\n\n\n\n\n\n\n\nExact vs Approximate\n\n\nThe exact binomial test computes \\(P(X \\leq x \\mid p = p_0)\\) directly from the binomial distribution. It’s always valid but may be conservative. The z test is an approximation that works well when the sample size conditions are met."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.15-obesity-prevalence",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.15-obesity-prevalence",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Devore Example 9.15: Obesity Prevalence",
+    "text": "Devore Example 9.15: Obesity Prevalence\nAn earlier survey found 20% of Americans considered themselves obese. A recent study observed 686 obese individuals among 2014 adult men. Is the true obesity rate more than 1.5 times the self-assessment rate (i.e., more than 30%)?\n\n# H0: p = 0.30 vs Ha: p &gt; 0.30, alpha = 0.10\nx_obs &lt;- 686\nn_obs &lt;- 2014\np0_obs &lt;- 0.30\nalpha_obs &lt;- 0.10\n\nphat_obs &lt;- x_obs / n_obs\nse_obs &lt;- sqrt(p0_obs * (1 - p0_obs) / n_obs)\nz_obs &lt;- (phat_obs - p0_obs) / se_obs\n\ncat(\"p-hat =\", round(phat_obs, 3), \"\\n\")\n\np-hat = 0.341 \n\ncat(\"z =\", round(z_obs, 2), \"\\n\")\n\nz = 3.98 \n\ncat(\"z_{0.10} =\", round(qnorm(1 - alpha_obs), 3), \"\\n\")\n\nz_{0.10} = 1.282 \n\ncat(\"Decision:\", ifelse(z_obs &gt;= qnorm(1 - alpha_obs), \n                         \"Reject H0\", \"Fail to reject H0\"), \"\\n\\n\")\n\nDecision: Reject H0 \n\ncat(\"Conclusion: At alpha = 0.10, more than 30% of American\\n\")\n\nConclusion: At alpha = 0.10, more than 30% of American\n\ncat(\"adult men are obese.\")\n\nadult men are obese."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-clinical-trial-30-day-readmission-ch-8.3-style",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#example-clinical-trial-30-day-readmission-ch-8.3-style",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Example: Clinical Trial 30-Day Readmission (C&H 8.3 Style)",
+    "text": "Example: Clinical Trial 30-Day Readmission (C&H 8.3 Style)\nSetting: A hospital targets a 30-day readmission rate at or below 15%. Among 180 discharged patients, 35 were readmitted within 30 days.\n\n# Data\nx_readmit &lt;- 35\nn_readmit &lt;- 180\np0_readmit &lt;- 0.15\nphat_readmit &lt;- x_readmit / n_readmit\n\ncat(\"p-hat =\", round(phat_readmit, 4), \"\\n\")\n\np-hat = 0.1944 \n\ncat(\"Check: np0 =\", n_readmit * p0_readmit, \n    \", n(1-p0) =\", n_readmit * (1 - p0_readmit), \"\\n\\n\")\n\nCheck: np0 = 27 , n(1-p0) = 153 \n\n# H0: p = 0.15 vs Ha: p &gt; 0.15\n# Manual z test (score test)\nse_readmit &lt;- sqrt(p0_readmit * (1 - p0_readmit) / n_readmit)\nz_readmit &lt;- (phat_readmit - p0_readmit) / se_readmit\ncat(\"Manual z =\", round(z_readmit, 3), \"\\n\")\n\nManual z = 1.67 \n\ncat(\"Manual p-value =\", round(1 - pnorm(z_readmit), 4), \"\\n\")\n\nManual p-value = 0.0475"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power-and-sample-size-for-proportion-tests",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power-and-sample-size-for-proportion-tests",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Power and Sample Size for Proportion Tests",
+    "text": "Power and Sample Size for Proportion Tests\nThe formulas for \\(\\beta(p')\\) and required \\(n\\) parallel the z test for means:\n\\[n = \\begin{cases} \\left[\\frac{z_\\alpha\\sqrt{p_0 q_0} + z_\\beta\\sqrt{p' q'}}{p' - p_0}\\right]^2 & \\text{one-tailed} \\\\[10pt] \\left[\\frac{z_{\\alpha/2}\\sqrt{p_0 q_0} + z_\\beta\\sqrt{p' q'}}{p' - p_0}\\right]^2 & \\text{two-tailed (approx)} \\end{cases}\\]\nwhere \\(q_0 = 1 - p_0\\) and \\(q' = 1 - p'\\).\n\n# How many patients to detect a readmission rate of 0.20 with 80% power?\np0 &lt;- 0.15; p_alt &lt;- 0.20; alpha &lt;- 0.05; beta_target &lt;- 0.20\n\nn_prop &lt;- ((qnorm(1 - alpha) * sqrt(p0 * (1 - p0)) + \n             qnorm(1 - beta_target) * sqrt(p_alt * (1 - p_alt))) / \n            (p_alt - p0))^2\n\ncat(\"Required sample size:\", ceiling(n_prop), \"patients\")\n\nRequired sample size: 342 patients"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power.prop.test-in-r",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#power.prop.test-in-r",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "power.prop.test() in R",
+    "text": "power.prop.test() in R\n\n# R has a built-in function for proportion test sample size\npower.prop.test(p1 = 0.15, p2 = 0.20, sig.level = 0.05, \n                power = 0.80, alternative = \"one.sided\")\n\n\n     Two-sample comparison of proportions power calculation \n\n              n = 713.0383\n             p1 = 0.15\n             p2 = 0.2\n      sig.level = 0.05\n          power = 0.8\n    alternative = one.sided\n\nNOTE: n is number in *each* group\n\n\n\n\n\n\n\n\n\nNote\n\n\npower.prop.test() is designed for two-sample tests by default. For one-sample tests, the sample size from our formula is a good approximation. For exact calculations, use the pwr package."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#decision-tree-which-test-to-use",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#decision-tree-which-test-to-use",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Decision Tree: Which Test to Use?",
+    "text": "Decision Tree: Which Test to Use?\n\n\nCode\n# Decision tree as a visualization\ntree_data &lt;- tibble(\n  x = c(5, 2.5, 7.5, 1.25, 3.75, 6.25, 8.75),\n  y = c(3, 2, 2, 1, 1, 1, 1),\n  label = c(\n    \"What parameter\\nare you testing?\",\n    \"Testing\\nthe mean (mu)\",\n    \"Testing a\\nproportion (p)\",\n    \"sigma known?\\nz test\",\n    \"sigma unknown?\\nt test\",\n    \"Large sample?\\nz test for p\",\n    \"Small sample?\\nExact binomial\"\n  ),\n  fill_color = c(\"gray90\", \"lightblue\", \"lightyellow\", \n                  \"steelblue\", \"coral\", \"steelblue\", \"coral\")\n)\n\nggplot(tree_data, aes(x = x, y = y)) +\n  geom_label(aes(label = label, fill = fill_color), \n             size = 5, label.padding = unit(0.6, \"lines\"),\n             label.size = 0.5) +\n  scale_fill_identity() +\n  geom_segment(aes(x = 5, y = 2.75, xend = 2.5, yend = 2.25), \n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  geom_segment(aes(x = 5, y = 2.75, xend = 7.5, yend = 2.25),\n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  geom_segment(aes(x = 2.5, y = 1.75, xend = 1.25, yend = 1.25),\n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  geom_segment(aes(x = 2.5, y = 1.75, xend = 3.75, yend = 1.25),\n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  geom_segment(aes(x = 7.5, y = 1.75, xend = 6.25, yend = 1.25),\n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  geom_segment(aes(x = 7.5, y = 1.75, xend = 8.75, yend = 1.25),\n               arrow = arrow(length = unit(0.2, \"cm\"))) +\n  coord_cartesian(xlim = c(0, 10), ylim = c(0.5, 3.5)) +\n  theme_void(base_size = 16) +\n  labs(title = \"Decision Tree: Choosing the Right Test\")"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#summary-of-test-procedures",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#summary-of-test-procedures",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Summary of Test Procedures",
+    "text": "Summary of Test Procedures\n\n\n\n\n\n\n\n\n\n\nTest\nStatistic\nNull Distribution\nR Function\nConditions\n\n\n\n\nz test for \\(\\mu\\)\n\\(\\frac{\\bar{x} - \\mu_0}{\\sigma/\\sqrt{n}}\\)\n\\(N(0,1)\\)\n(manual)\n\\(\\sigma\\) known; normal pop. or large \\(n\\)\n\n\nt test for \\(\\mu\\)\n\\(\\frac{\\bar{x} - \\mu_0}{s/\\sqrt{n}}\\)\n\\(t_{n-1}\\)\nt.test()\n\\(\\sigma\\) unknown; normal pop. or large \\(n\\)\n\n\nScore test for \\(p\\)\n\\(\\frac{\\hat{p} - p_0}{\\sqrt{p_0 q_0 / n}}\\)\n\\(N(0,1)\\) or \\(\\chi^2_1\\)\nprop.test()\n\\(np_0 \\geq 10\\), \\(n q_0 \\geq 10\\)\n\n\nExact binomial\n\\(X\\) (count)\n\\(\\text{Binom}(n, p_0)\\)\nbinom.test()\nAlways valid\n\n\n\n\n\n\n\n\n\n\nPractical Advice\n\n\n\nIn real medical research, \\(\\sigma\\) is almost never known — use the t test\nThe z test for means is primarily pedagogical (understanding the framework)\nFor proportions, verify the validity condition before using the z test\nAlways check assumptions (normality for small-sample t tests)"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#complete-medical-example-serum-creatinine-levels",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#complete-medical-example-serum-creatinine-levels",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Complete Medical Example: Serum Creatinine Levels",
+    "text": "Complete Medical Example: Serum Creatinine Levels\nA nephrology study examines whether a new drug changes serum creatinine levels. The normal reference is 1.0 mg/dL.\n\n# Patient data\ncreatinine &lt;- c(0.92, 1.15, 1.03, 0.88, 1.21, 0.97, 1.08, 1.14,\n                0.95, 1.06, 1.18, 0.99, 1.12, 0.91, 1.07, 1.01,\n                1.10, 0.94, 1.16, 1.03)\n\n# Comprehensive analysis\ncat(\"--- Summary Statistics ---\\n\")\n\n--- Summary Statistics ---\n\ncat(\"n =\", length(creatinine), \"\\n\")\n\nn = 20 \n\ncat(\"x-bar =\", round(mean(creatinine), 4), \"\\n\")\n\nx-bar = 1.045 \n\ncat(\"s =\", round(sd(creatinine), 4), \"\\n\")\n\ns = 0.0976 \n\ncat(\"se =\", round(sd(creatinine)/sqrt(length(creatinine)), 4), \"\\n\")\n\nse = 0.0218"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#serum-creatinine-full-analysis",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#serum-creatinine-full-analysis",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Serum Creatinine: Full Analysis",
+    "text": "Serum Creatinine: Full Analysis\n\n# Two-tailed t test: H0: mu = 1.0 vs Ha: mu != 1.0\ncreat_test &lt;- t.test(creatinine, mu = 1.0, alternative = \"two.sided\")\ncreat_test\n\n\n    One Sample t-test\n\ndata:  creatinine\nt = 2.0625, df = 19, p-value = 0.05311\nalternative hypothesis: true mean is not equal to 1\n95 percent confidence interval:\n 0.9993331 1.0906669\nsample estimates:\nmean of x \n    1.045 \n\n\n\n\nCode\np1 &lt;- tibble(x = creatinine) |&gt;\n  ggplot(aes(x = x)) +\n  geom_histogram(bins = 8, fill = \"steelblue\", color = \"white\", alpha = 0.7) +\n  geom_vline(xintercept = 1.0, linetype = \"dashed\", color = \"red\", linewidth = 1) +\n  geom_vline(xintercept = mean(creatinine), color = \"darkgreen\", linewidth = 1) +\n  labs(x = \"Serum Creatinine (mg/dL)\", y = \"Count\",\n       title = \"Distribution of Creatinine Values\") +\n  annotate(\"text\", x = 1.0, y = 5, label = expression(mu[0] == 1.0), \n           color = \"red\", hjust = 1.1, size = 5) +\n  annotate(\"text\", x = mean(creatinine), y = 4.5, hjust = -0.1, size = 5,\n           color = \"darkgreen\",\n           label = bquote(bar(x) == .(round(mean(creatinine), 3))))\n\np2 &lt;- tibble(x = creatinine) |&gt;\n  ggplot(aes(sample = x)) +\n  stat_qq(size = 3, color = \"steelblue\") +\n  stat_qq_line(color = \"red\", linewidth = 1) +\n  labs(title = \"Normal Q-Q Plot\", x = \"Theoretical Quantiles\", y = \"Sample Quantiles\")\n\np1 + p2"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#serum-creatinine-interpreting-results",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#serum-creatinine-interpreting-results",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Serum Creatinine: Interpreting Results",
+    "text": "Serum Creatinine: Interpreting Results\n\n# Summary of results\ncat(\"=== Test Results ===\\n\")\n\n=== Test Results ===\n\ncat(\"t =\", round(creat_test$statistic, 3), \"\\n\")\n\nt = 2.062 \n\ncat(\"df =\", creat_test$parameter, \"\\n\")\n\ndf = 19 \n\ncat(\"p-value =\", round(creat_test$p.value, 4), \"\\n\")\n\np-value = 0.0531 \n\ncat(\"95% CI: (\", round(creat_test$conf.int[1], 4), \",\", \n    round(creat_test$conf.int[2], 4), \")\\n\\n\")\n\n95% CI: ( 0.9993 , 1.0907 )\n\nif (creat_test$p.value &lt; 0.05) {\n  cat(\"Interpretation: At alpha = 0.05, there IS statistically\\n\")\n  cat(\"significant evidence that the mean serum creatinine level\\n\")\n  cat(\"differs from the reference value of 1.0 mg/dL.\\n\\n\")\n  cat(\"The 95% CI does NOT contain 1.0 -- consistent with rejection.\")\n} else {\n  cat(\"Interpretation: At alpha = 0.05, there is INSUFFICIENT\\n\")\n  cat(\"evidence that the mean serum creatinine level differs\\n\")\n  cat(\"from the reference value of 1.0 mg/dL.\\n\\n\")\n  cat(\"The 95% CI CONTAINS 1.0 -- consistent with failure to reject.\")\n}\n\nInterpretation: At alpha = 0.05, there is INSUFFICIENT\nevidence that the mean serum creatinine level differs\nfrom the reference value of 1.0 mg/dL.\n\nThe 95% CI CONTAINS 1.0 -- consistent with failure to reject."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#simulation-comparing-z-and-t-tests",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#simulation-comparing-z-and-t-tests",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Simulation: Comparing z and t Tests",
+    "text": "Simulation: Comparing z and t Tests\n\n\nCode\nset.seed(551)\nn_sims &lt;- 10000\nn &lt;- 12\nmu0 &lt;- 100\nsigma &lt;- 15\n\n# When sigma is truly known\nz_reject &lt;- replicate(n_sims, {\n  x &lt;- rnorm(n, mean = mu0, sd = sigma)\n  z &lt;- (mean(x) - mu0) / (sigma / sqrt(n))\n  abs(z) &gt;= qnorm(0.975)\n})\n\n# Using t test (sigma estimated)\nt_reject &lt;- replicate(n_sims, {\n  x &lt;- rnorm(n, mean = mu0, sd = sigma)\n  t &lt;- (mean(x) - mu0) / (sd(x) / sqrt(n))\n  abs(t) &gt;= qt(0.975, df = n - 1)\n})\n\ncat(\"Simulated Type I error rates (alpha = 0.05):\\n\")\n\n\nSimulated Type I error rates (alpha = 0.05):\n\n\nCode\ncat(\"z test (sigma known):   \", round(mean(z_reject), 4), \"\\n\")\n\n\nz test (sigma known):    0.0496 \n\n\nCode\ncat(\"t test (sigma estimated):\", round(mean(t_reject), 4), \"\\n\\n\")\n\n\nt test (sigma estimated): 0.051 \n\n\nCode\ncat(\"Both correctly control Type I error at approximately 0.05\")\n\n\nBoth correctly control Type I error at approximately 0.05"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#key-takeaways",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#key-takeaways",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Key Takeaways",
+    "text": "Key Takeaways\n\n\n\n\n\n\nToday’s Main Points\n\n\n\nz test for \\(\\mu\\): Used when \\(\\sigma\\) is known (rare in practice); test statistic \\(Z \\sim N(0,1)\\) under \\(H_0\\)\nt test for \\(\\mu\\): The workhorse test when \\(\\sigma\\) is unknown; test statistic \\(T \\sim t_{n-1}\\) under \\(H_0\\)\nScore test for \\(p\\): The z test for proportions is the score test; prop.test() computes \\(Z^2 \\sim \\chi^2_1\\) and returns the Wilson/Score CI from Lesson 8\nExact binomial: Uses \\(P(X \\leq x \\mid p_0)\\) directly from \\(\\text{Binom}(n, p_0)\\); always valid, especially when \\(np_0 &lt; 10\\)\nCI-test duality: A \\(100(1-\\alpha)\\%\\) CI contains all parameter values not rejected at level \\(\\alpha\\)\n\n\n\n\n\nCommon mistakes to avoid:\n\nUsing \\(\\hat{p}\\) instead of \\(p_0\\) in the SE for the proportion test (this would be Wald, not score!)\nUsing prop.test() when \\(np_0 &lt; 10\\) — use binom.test() instead\nApplying the t test to very small samples from non-normal populations\nSaying “accept \\(H_0\\)” instead of “fail to reject \\(H_0\\)”"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#looking-ahead",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#looking-ahead",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext class (Lesson 14): P-Values; Power and Sample Size Determination (Devore 9.2, 9.24)\n\nP-values as a continuous measure of evidence\nPower curves for z and t tests\nSample size determination for planning clinical trials\nThe noncentral t distribution"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#references",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#references",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Sections 9.2–9.3\nChihara and Hesterberg. Mathematical Statistics with Resampling and R (Wiley). Sections 8.1–8.3\nMackowiak, P. A., Wasserman, S. S., & Levine, M. M. (1992). A critical appraisal of 98.6°F, the upper limit of the normal body temperature, and other legacies of Carl Reinhold August Wunderlich. JAMA, 268(12), 1578-1580."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#questions",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#questions",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-1-plasma-glucose-screening",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-1-plasma-glucose-screening",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Homework Problem 1: Plasma Glucose Screening",
+    "text": "Homework Problem 1: Plasma Glucose Screening\nA health clinic measures fasting plasma glucose (FPG) to screen for prediabetes. The American Diabetes Association defines prediabetes as FPG \\(\\geq\\) 100 mg/dL. A sample of \\(n = 20\\) patients in a workplace wellness program yields the following FPG values:\n\\[\\{94, 102, 97, 108, 91, 105, 99, 112, 96, 103, 88, 107, 101, 95, 110, 98, 104, 93, 100, 106\\}\\]\n(a) State the null and alternative hypotheses to test whether the true mean FPG in this population exceeds the prediabetes threshold of 100 mg/dL. Identify the parameter of interest.\n(b) Check the normality assumption using a Q-Q plot. Is the t test appropriate here?\n(c) Conduct the one-sample t test at \\(\\alpha = 0.05\\). Report the test statistic, critical value, and your decision.\n(d) Compute a 95% confidence interval for \\(\\mu\\). Is your CI-based conclusion consistent with the test result? Explain.\n(e) Use t.test() in R to verify your calculations."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-2-devore-section-9.2",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-2-devore-section-9.2",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Homework Problem 2: Devore Section 9.2",
+    "text": "Homework Problem 2: Devore Section 9.2\nExercise 32. The recommended daily dietary allowance for zinc among males older than age 50 years is 15 mg/day. An article reports the following summary data on intake for a sample of males age 65–74 years: \\(n = 115\\), \\(\\bar{x} = 11.3\\), and \\(s = 6.43\\).\nDoes this data indicate that average daily zinc intake in the population of all males age 65–74 falls below the recommended allowance?\n(a) State the hypotheses and conduct the appropriate test at \\(\\alpha = 0.05\\).\n(b) Would the conclusion change if \\(\\alpha = 0.01\\)? Explain.\n(c) Why is it appropriate to use the t test here even though we cannot verify the normality assumption?"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-3-devore-section-9.2",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-3-devore-section-9.2",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Homework Problem 3: Devore Section 9.2",
+    "text": "Homework Problem 3: Devore Section 9.2\nExercise 33. In an experiment designed to measure the time necessary for an inspector’s eyes to become used to the reduced amount of light necessary for penetrant inspection, the sample average time for \\(n = 9\\) inspectors was 6.32 s and the sample standard deviation was 1.65 s. It has previously been assumed that the average adaptation time was at least 7 s.\nAssuming adaptation time to be normally distributed, does the data contradict prior belief? Use the t test with \\(\\alpha = 0.1\\)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-4-vaccine-efficacy-proportion-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-4-vaccine-efficacy-proportion-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Homework Problem 4: Vaccine Efficacy Proportion Test",
+    "text": "Homework Problem 4: Vaccine Efficacy Proportion Test\nA new vaccine claims to reduce the incidence of a disease below the current rate of 12%. In a clinical trial of \\(n = 400\\) vaccinated individuals, 38 develop the disease.\n(a) State the null and alternative hypotheses to test the vaccine’s claim.\n(b) Verify the validity conditions for the one-proportion z test.\n(c) Compute the test statistic and make a decision at \\(\\alpha = 0.05\\).\n(d) Compute the power of this test if the true disease rate is \\(p = 0.08\\).\n(e) How many subjects would be needed in the trial to have 90% power to detect \\(p = 0.08\\)?"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-5-devore-section-9.3",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#homework-problem-5-devore-section-9.3",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Homework Problem 5: Devore Section 9.3",
+    "text": "Homework Problem 5: Devore Section 9.3\nExercise 39. A manufacturer of nickel–hydrogen batteries randomly selects 100 nickel plates for test cells, cycles them a specified number of times, and determines that 14 of the plates have blistered.\n(a) Does this provide compelling evidence for concluding that more than 10% of all plates blister under such circumstances? State and test the appropriate hypotheses using a significance level of .05.\n(b) In answering part (a), did you use a one-tailed or two-tailed test? Why?\n(c) If it is really the case that 15% of all plates blister, how likely is it that the null hypothesis of part (a) will not be rejected (i.e., that a type II error will be committed)?"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#what-does-prop.test-actually-do",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#what-does-prop.test-actually-do",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "What Does prop.test() Actually Do?",
+    "text": "What Does prop.test() Actually Do?\nR’s prop.test() performs the score test for a population proportion — a test based on the score pivot used in the score interval in Lesson 8. Recall that the pivot: \\[Z_{score} = \\frac{U(\\theta)}{\\sqrt{I_n(\\theta)}} \\xrightarrow{d} N(0,1)\\]\n\nand for a Bernoulli sample: \\[Z_{score} = \\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}\\] This is exactly the z statistic we computed by hand above. The function prop.test() reports the squared version under \\(H_0\\):\n\\[X^2 = Z_{score}^2 = \\frac{(\\hat{p} - p_0)^2}{p_0(1-p_0)/n} \\sim \\chi^2_1\\]\n\n\n\n\n\n\n\n\nWhy \\(\\chi^2_1\\)?\n\n\nIf \\(Z \\sim N(0,1)\\), then \\(Z^2 \\sim \\chi^2_1\\) (chi-squared with 1 df). The score test for proportions can equivalently be expressed as a z test or a \\(\\chi^2\\) test — they give exactly the same p-value."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#prop.test-is-the-score-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#prop.test-is-the-score-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "prop.test() is the Score Test",
+    "text": "prop.test() is the Score Test\n\n# Our z test by hand\nz_stat_manual &lt;- (p_hat - p0) / sqrt(p0 * (1 - p0) / n)\ncat(\"Manual z statistic:\", round(z_stat_manual, 3), \"\\n\")\n\nManual z statistic: -1.289 \n\ncat(\"Manual z^2:        \", round(z_stat_manual^2, 3), \"\\n\\n\")\n\nManual z^2:         1.662 \n\n# prop.test computes the same thing as chi-squared\nprop_result &lt;- prop.test(x = 8, n = 500, p = 0.025, \n                          alternative = \"less\", correct = FALSE)\n\ncat(\"prop.test chi-squared:\", round(prop_result$statistic, 3), \"\\n\")\n\nprop.test chi-squared: 1.662 \n\ncat(\"sqrt(chi-squared):    \", round(sqrt(prop_result$statistic), 3), \"\\n\")\n\nsqrt(chi-squared):     1.289 \n\ncat(\"p-value (prop.test):  \", round(prop_result$p.value, 4))\n\np-value (prop.test):   0.0987\n\n\n\nThe \\(X^2\\) statistic from prop.test() equals \\(z^2\\) from our manual calculation!"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#connection-to-the-score-interval-lesson-8",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#connection-to-the-score-interval-lesson-8",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Connection to the Score Interval (Lesson 8)",
+    "text": "Connection to the Score Interval (Lesson 8)\nIn Lesson 8, we derived the Score (Wilson) confidence interval by inverting the score test. Recall:\nThe score interval collects all values \\(p\\) satisfying: \\[\\left|\\frac{\\hat{p} - p}{\\sqrt{p(1-p)/n}}\\right| \\leq z_{\\alpha/2}\\]\n\nThe key difference from the Wald interval: the score approach keeps the parameter \\(p\\) in the standard error, rather than plugging in \\(\\hat{p}\\), and when we are “inverting the test statistic” we no longer use the null \\(p_0\\) but a general \\(p\\) that we need to solve for."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#three-tests-one-framework",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#three-tests-one-framework",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Three Tests, One Framework",
+    "text": "Three Tests, One Framework\nThe relationship between the Wald test, Score test, and Likelihood Ratio test is a fundamental concept in statistical inference (we’ll see the LRT in Lesson 15):\n\n\n\n\n\n\n\n\n\nApproach\nSE evaluated at\nTest Statistic\nCI\n\n\n\n\nWald\nMLE \\(\\hat{p}\\)\n\\(\\frac{\\hat{p} - p_0}{\\sqrt{\\hat{p}(1-\\hat{p})/n}}\\)\nWald CI\n\n\nScore\nNull \\(p_0\\)\n\\(\\frac{\\hat{p} - p_0}{\\sqrt{p_0(1-p_0)/n}}\\)\nWilson/Score CI\n\n\n\n\n\n\n\n\n\n\nKey Insight\n\n\nWhen testing \\(H_0: p = p_0\\), we use \\(p_0\\) in the SE (score test). The z test for proportions from Devore 9.3 is the score test. The CI from inverting this test is the Score (Wilson) interval from Lesson 8 — not the Wald interval."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#prop.test-options",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#prop.test-options",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "prop.test() Options",
+    "text": "prop.test() Options\n\n# Full output from prop.test (using broom for tidy results)\nprop.test(x = 8, n = 500, p = 0.025, \n          alternative = \"less\", correct = FALSE) |&gt;\n  tidy() |&gt;\n  select(estimate, statistic, p.value, conf.low, conf.high, method)\n\n# A tibble: 1 × 6\n  estimate statistic p.value conf.low conf.high method                          \n     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                           \n1    0.016      1.66  0.0987        0    0.0282 1-sample proportions test witho…\n\n\n\nImportant arguments:\n\ncorrect = FALSE: Do not apply Yates’ continuity correction (matches our z test formula)\ncorrect = TRUE (default): Applies the correction \\(|\\hat{p} - p_0| - \\frac{1}{2n}\\); slightly conservative\nalternative: “two.sided” (default), “less”, or “greater”\nThe conf.int returned is always the Score (Wilson) CI, regardless of the alternative"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-the-normal-approximation-fails",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-the-normal-approximation-fails",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "When the Normal Approximation Fails",
+    "text": "When the Normal Approximation Fails\nThe large-sample z test relies on: \\[\\frac{\\hat{p} - p_0}{\\sqrt{p_0(1-p_0)/n}} \\;\\dot{\\sim}\\; N(0, 1)\\]\nThis approximation requires \\(np_0 \\geq 10\\) and \\(n(1-p_0) \\geq 10\\).\n\nWhat do we do when these conditions fail? For example:\n\nTesting if a rare adverse event rate differs from 1% with only 50 patients (\\(np_0 = 0.5\\))\nEvaluating a new surgical technique on 15 patients\n\n\n\nAnswer: Use the exact binomial test, which works directly with the binomial distribution — no approximation needed!"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#deriving-the-exact-test-from-first-principles",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#deriving-the-exact-test-from-first-principles",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Deriving the Exact Test from First Principles",
+    "text": "Deriving the Exact Test from First Principles\nSetup: Let \\(X\\) = number of successes in \\(n\\) independent Bernoulli trials.\nUnder \\(H_0: p = p_0\\), we know exactly: \\[X \\sim \\text{Binomial}(n, p_0)\\]\n\\[P(X = k \\mid p_0) = \\binom{n}{k} p_0^k (1 - p_0)^{n-k}, \\quad k = 0, 1, \\ldots, n\\]\n\nThe test statistic is simply \\(X\\) itself — the count of successes. No standardization needed!\n\n\n\n\n\n\n\n\nWhy “Exact”?\n\n\nThe z test is approximate because it relies on the CLT approximation \\(\\hat{p} \\dot{\\sim} N(p, p(1-p)/n)\\). The binomial test is exact because it uses the actual, known distribution of \\(X\\) under \\(H_0\\) — no asymptotics required."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#rejection-regions-for-the-exact-binomial-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#rejection-regions-for-the-exact-binomial-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Rejection Regions for the Exact Binomial Test",
+    "text": "Rejection Regions for the Exact Binomial Test\nFor the upper-tailed test \\(H_a: p &gt; p_0\\), we reject for large \\(X\\):\nThe rejection region is \\(\\{c, c+1, \\ldots, n\\}\\) where \\(c\\) is chosen so that: \\[P(X \\geq c \\mid p = p_0) = \\sum_{k=c}^{n} \\binom{n}{k} p_0^k(1-p_0)^{n-k} \\leq \\alpha\\]\n\nComplication with discrete distributions: Because \\(X\\) is discrete, we generally cannot find \\(c\\) such that \\(P(X \\geq c) = \\alpha\\) exactly.\n\n\nInstead, we choose \\(c\\) as the smallest value such that \\(P(X \\geq c \\mid p_0) \\leq \\alpha\\). This means the actual significance level is often less than \\(\\alpha\\) — the test is conservative (Devore 9.3)."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#computing-the-exact-p-value",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#computing-the-exact-p-value",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Computing the Exact P-Value",
+    "text": "Computing the Exact P-Value\nThe p-value for the exact binomial test is the probability, under \\(H_0\\), of observing a result as extreme or more extreme than the observed data:\n\n\n\n\n\n\n\nAlternative\nExact P-value\n\n\n\n\n\\(H_a: p &gt; p_0\\)\n\\(P(X \\geq x_{obs} \\mid p_0) = \\sum_{k=x_{obs}}^{n}\\binom{n}{k}p_0^k(1-p_0)^{n-k}\\)\n\n\n\\(H_a: p &lt; p_0\\)\n\\(P(X \\leq x_{obs} \\mid p_0) = \\sum_{k=0}^{x_{obs}}\\binom{n}{k}p_0^k(1-p_0)^{n-k}\\)\n\n\n\\(H_a: p \\neq p_0\\)\n\\(2 \\cdot \\min\\left\\{P(X \\leq x_{obs}),\\; P(X \\geq x_{obs})\\right\\}\\)\n\n\n\n\nIn R, these binomial probabilities are straightforward to compute using pbinom():\n\n# Example: x = 3 successes out of n = 20, testing p0 = 0.30\nx_ex &lt;- 3; n_ex &lt;- 20; p0_ex &lt;- 0.30\n\n# P(X &lt;= 3 | p = 0.30) for lower-tailed test\np_lower &lt;- pbinom(x_ex, size = n_ex, prob = p0_ex)\n\n# P(X &gt;= 3 | p = 0.30) for upper-tailed test\np_upper &lt;- 1 - pbinom(x_ex - 1, size = n_ex, prob = p0_ex)\n\ncat(\"P(X &lt;= 3 | p=0.30) =\", round(p_lower, 4), \"\\n\")\n\nP(X &lt;= 3 | p=0.30) = 0.1071 \n\ncat(\"P(X &gt;= 3 | p=0.30) =\", round(p_upper, 4))\n\nP(X &gt;= 3 | p=0.30) = 0.9645"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-exact-binomial-distribution",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#visualizing-the-exact-binomial-distribution",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Visualizing the Exact Binomial Distribution",
+    "text": "Visualizing the Exact Binomial Distribution\n\n\nCode\n# Show the binomial distribution under H0 and highlight the p-value region\nx_vals &lt;- 0:n_ex\nprobs &lt;- dbinom(x_vals, size = n_ex, prob = p0_ex)\n\ntibble(x = x_vals, prob = probs) |&gt;\n  mutate(region = case_when(\n    x &lt;= x_ex ~ \"P-value region (X &lt;= 3)\",\n    TRUE ~ \"Not in p-value region\"\n  )) |&gt;\n  ggplot(aes(x = x, y = prob, fill = region)) +\n  geom_col(width = 0.7, color = \"black\") +\n  scale_fill_manual(values = c(\"P-value region (X &lt;= 3)\" = \"coral\", \n                                \"Not in p-value region\" = \"steelblue\")) +\n  geom_vline(xintercept = n_ex * p0_ex, linetype = \"dashed\", linewidth = 1) +\n  annotate(\"text\", x = n_ex * p0_ex + 0.3, y = max(probs) * 0.9, hjust = 0, size = 5,\n           label = bquote(\"E[X] =\" ~ np[0] ~ \"=\" ~ .(n_ex * p0_ex))) +\n  labs(x = \"X (number of successes)\", y = \"P(X = x)\",\n       title = expression(\"Binomial(n = 20, \" * p[0] * \" = 0.30) under \" * H[0]),\n       subtitle = paste0(\"Exact p-value: P(X \\u2264 3 | p = 0.30) = \", round(p_lower, 4)),\n       fill = NULL) +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"bottom\")"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#step-by-step-exact-calculation",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#step-by-step-exact-calculation",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Step-by-Step Exact Calculation",
+    "text": "Step-by-Step Exact Calculation\nLet’s compute \\(P(X \\leq 3 \\mid p_0 = 0.30, n = 20)\\) term by term:\n\n# Each individual probability\nfor (k in 0:x_ex) {\n  prob_k &lt;- dbinom(k, size = n_ex, prob = p0_ex)\n  cat(sprintf(\"P(X = %d) = C(20,%d) × 0.30^%d × 0.70^%d = %.6f\\n\", \n              k, k, k, n_ex - k, prob_k))\n}\n\nP(X = 0) = C(20,0) × 0.30^0 × 0.70^20 = 0.000798\nP(X = 1) = C(20,1) × 0.30^1 × 0.70^19 = 0.006839\nP(X = 2) = C(20,2) × 0.30^2 × 0.70^18 = 0.027846\nP(X = 3) = C(20,3) × 0.30^3 × 0.70^17 = 0.071604\n\ncat(\"\\n--- Sum ---\\n\")\n\n\n--- Sum ---\n\ncat(\"P(X &lt;= 3) =\", round(sum(dbinom(0:x_ex, n_ex, p0_ex)), 6), \"\\n\\n\")\n\nP(X &lt;= 3) = 0.107087 \n\ncat(\"Since\", round(p_lower, 4), \"&gt; 0.05, we fail to reject H0\")\n\nSince 0.1071 &gt; 0.05, we fail to reject H0"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-binom.test-in-r",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#using-binom.test-in-r",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Using binom.test() in R",
+    "text": "Using binom.test() in R\n\n# The easy way: binom.test() does all this for us\nbinom.test(x = 3, n = 20, p = 0.30, alternative = \"less\")\n\n\n    Exact binomial test\n\ndata:  3 and 20\nnumber of successes = 3, number of trials = 20, p-value = 0.1071\nalternative hypothesis: true probability of success is less than 0.3\n95 percent confidence interval:\n 0.0000000 0.3436638\nsample estimates:\nprobability of success \n                  0.15"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#understanding-binom.test-output",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#understanding-binom.test-output",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Understanding binom.test() Output",
+    "text": "Understanding binom.test() Output\n\n# Tidy output\nbinom_result &lt;- binom.test(x = 3, n = 20, p = 0.30, alternative = \"less\")\n\ncat(\"Test statistic (X):      \", binom_result$statistic, \"\\n\")\n\nTest statistic (X):       3 \n\ncat(\"Exact p-value:           \", round(binom_result$p.value, 4), \"\\n\")\n\nExact p-value:            0.1071 \n\ncat(\"95% CI for p:            (\", round(binom_result$conf.int[1], 4), \",\", \n    round(binom_result$conf.int[2], 4), \")\\n\")\n\n95% CI for p:            ( 0 , 0.3437 )\n\ncat(\"Sample proportion (p-hat):\", binom_result$estimate, \"\\n\\n\")\n\nSample proportion (p-hat): 0.15 \n\n# Verify the p-value matches our manual calculation\ncat(\"Manual P(X &lt;= 3 | p=0.30):\", round(pbinom(3, 20, 0.30), 4))\n\nManual P(X &lt;= 3 | p=0.30): 0.1071\n\n\n\n\n\n\n\n\n\nCI from binom.test()\n\n\nThe confidence interval from binom.test() is the Clopper-Pearson exact interval, which inverts the exact binomial test. It guarantees at least \\(100(1-\\alpha)\\%\\) coverage but can be conservative (wider than necessary). This is different from the Score (Wilson) interval returned by prop.test()."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#medical-example-rare-adverse-drug-reaction",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#medical-example-rare-adverse-drug-reaction",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Medical Example: Rare Adverse Drug Reaction",
+    "text": "Medical Example: Rare Adverse Drug Reaction\nA pharmaceutical company is testing whether a new drug’s rate of a serious adverse reaction exceeds the known background rate of 2%. In a Phase II trial, 4 out of 80 patients experience the reaction.\n\n# Data\nx_adr &lt;- 4; n_adr &lt;- 80; p0_adr &lt;- 0.02\n\ncat(\"p-hat =\", x_adr / n_adr, \"\\n\")\n\np-hat = 0.05 \n\ncat(\"Check np0 =\", n_adr * p0_adr, \"&lt; 10: Normal approx NOT valid!\\n\\n\")\n\nCheck np0 = 1.6 &lt; 10: Normal approx NOT valid!\n\n# Exact binomial test: H0: p = 0.02 vs Ha: p &gt; 0.02\nexact_result &lt;- binom.test(x_adr, n_adr, p = p0_adr, alternative = \"greater\")\ncat(\"Exact p-value:\", round(exact_result$p.value, 4), \"\\n\\n\")\n\nExact p-value: 0.0769 \n\n# Compare with (invalid) z test for illustration\nz_invalid &lt;- (x_adr/n_adr - p0_adr) / sqrt(p0_adr * (1 - p0_adr) / n_adr)\np_z_invalid &lt;- 1 - pnorm(z_invalid)\ncat(\"Z test p-value (INVALID, for comparison):\", round(p_z_invalid, 4), \"\\n\")\n\nZ test p-value (INVALID, for comparison): 0.0276 \n\ncat(\"Note the difference: exact and approximate p-values diverge\\n\")\n\nNote the difference: exact and approximate p-values diverge\n\ncat(\"when the normal approximation conditions are not met.\")\n\nwhen the normal approximation conditions are not met."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#exact-vs-approximate-when-does-it-matter",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#exact-vs-approximate-when-does-it-matter",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Exact vs Approximate: When Does It Matter?",
+    "text": "Exact vs Approximate: When Does It Matter?\n\n\nCode\n# Compare exact and approximate p-values across different x values\nn_comp &lt;- 80\np0_comp &lt;- 0.02\n\ncomp_data &lt;- tibble(x = 0:10) |&gt;\n  mutate(\n    exact_pval = map_dbl(x, ~1 - pbinom(.x - 1, n_comp, p0_comp)),\n    approx_pval = map_dbl(x, ~1 - pnorm((.x/n_comp - p0_comp) / \n                                          sqrt(p0_comp * (1 - p0_comp) / n_comp)))\n  )\n\ncomp_data |&gt;\n  pivot_longer(c(exact_pval, approx_pval), \n               names_to = \"method\", values_to = \"pvalue\") |&gt;\n  mutate(method = ifelse(method == \"exact_pval\", \"Exact (Binomial)\", \n                         \"Approximate (z test)\")) |&gt;\n  ggplot(aes(x = x, y = pvalue, color = method, shape = method)) +\n  geom_point(size = 4) +\n  geom_line(linewidth = 1) +\n  geom_hline(yintercept = 0.05, linetype = \"dashed\", alpha = 0.5) +\n  annotate(\"text\", x = 8, y = 0.07, label = expression(alpha == 0.05), size = 5) +\n  scale_color_manual(values = c(\"Exact (Binomial)\" = \"steelblue\", \n                                 \"Approximate (z test)\" = \"coral\")) +\n  labs(x = \"X (number of adverse events)\", \n       y = \"Upper-tail P-value\",\n       title = bquote(\"Exact vs Approximate P-values: \" ~ n == 80 * \", \" ~ p[0] == 0.02),\n       subtitle = bquote(\"Normal approximation unreliable when\" ~ np[0] ~ \"=\" ~ \n                          .(n_comp * p0_comp) &lt; 10),\n       color = NULL, shape = NULL) +\n  theme_minimal(base_size = 18) +\n  theme(legend.position = \"bottom\")"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-to-use-each-test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#when-to-use-each-test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "When to Use Each Test",
+    "text": "When to Use Each Test\n\n\n\n\n\n\nPractical Guidelines for Proportion Tests\n\n\nUse prop.test() (score/chi-squared test) when:\n\n\\(np_0 \\geq 10\\) and \\(n(1-p_0) \\geq 10\\)\nYou want the Score (Wilson) confidence interval\nConsistency with Lesson 8’s interval estimation framework\n\nUse binom.test() (exact binomial) when:\n\n\\(np_0 &lt; 10\\) or \\(n(1-p_0) &lt; 10\\) (small sample or rare event)\nYou want guaranteed Type I error control\nThe proportion is very close to 0 or 1\nYou need the Clopper-Pearson exact CI"
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#readmission-comparing-all-three-approaches",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#readmission-comparing-all-three-approaches",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Readmission: Comparing All Three Approaches",
+    "text": "Readmission: Comparing All Three Approaches\n\n# Score test via prop.test()\nscore_result &lt;- prop.test(x_readmit, n_readmit, p = p0_readmit, \n                           alternative = \"greater\", correct = FALSE)\n\n# Exact binomial test\nexact_result &lt;- binom.test(x_readmit, n_readmit, p = p0_readmit, \n                            alternative = \"greater\")\n\ncat(\"=== Comparison of Methods ===\\n\\n\")\n\n=== Comparison of Methods ===\n\ncat(\"Manual z test:        p-value =\", round(1 - pnorm(z_readmit), 4), \"\\n\")\n\nManual z test:        p-value = 0.0475 \n\ncat(\"prop.test (score):    p-value =\", round(score_result$p.value, 4), \"\\n\")\n\nprop.test (score):    p-value = 0.0475 \n\ncat(\"binom.test (exact):   p-value =\", round(exact_result$p.value, 4), \"\\n\\n\")\n\nbinom.test (exact):   p-value = 0.0624 \n\ncat(\"Score (Wilson) CI:     (\", round(score_result$conf.int[1], 4), \",\", \n    round(score_result$conf.int[2], 4), \")\\n\")\n\nScore (Wilson) CI:     ( 0.1506 , 1 )\n\ncat(\"Clopper-Pearson CI:    (\", round(exact_result$conf.int[1], 4), \",\", \n    round(exact_result$conf.int[2], 4), \")\\n\\n\")\n\nClopper-Pearson CI:    ( 0.1472 , 1 )\n\ncat(\"With large n, all three p-values agree closely.\")\n\nWith large n, all three p-values agree closely."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-solution-1",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#devore-example-9.12-solution-1",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Devore Example 9.12: Solution",
+    "text": "Devore Example 9.12: Solution\n\n# t test\nt.test(d50, mu = 44, alternative = \"two.sided\", conf.level = 0.99)\n\n\n    One Sample t-test\n\ndata:  d50\nt = 3.5904, df = 8, p-value = 0.007081\nalternative hypothesis: true mean is not equal to 44\n99 percent confidence interval:\n 45.60481 91.43964\nsample estimates:\nmean of x \n 68.52222 \n\n\n\nSince \\(|t| = 3.59 &gt; t_{0.005, 8} = 3.355\\), we reject \\(H_0\\) at \\(\\alpha = 0.01\\). The data provides strong evidence that the true mean \\(d_{50}\\) at this site differs from 44 microns."
+  },
+  {
+    "objectID": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#connection-to-the-score-interval-lesson-8-prop.test",
+    "href": "lessons/13_Tests_Mean_Proportion/13_Tests_Mean_Proportion.html#connection-to-the-score-interval-lesson-8-prop.test",
+    "title": "Lesson 13: Tests About a Population Mean and Proportion",
+    "section": "Connection to the Score Interval (Lesson 8 prop.test)",
+    "text": "Connection to the Score Interval (Lesson 8 prop.test)\nThe CI returned by prop.test() is exactly the Score (Wilson) interval:\n\n# prop.test returns the Score (Wilson) CI\ncat(\"Score CI from prop.test():\\n\")\n\nScore CI from prop.test():\n\ncat(\"  (\", round(prop_result$conf.int[1], 5), \",\", \n         round(prop_result$conf.int[2], 5), \")\\n\\n\")\n\n  ( 0 , 0.02817 )\n\n# Verify: this is the Wilson interval from Lesson 8\nz_alpha2 &lt;- qnorm(0.975)\np_hat_val &lt;- 8/500\nn_val &lt;- 500\n\n# Wilson formula: (p_hat + z^2/(2n) +/- z*sqrt(p_hat*(1-p_hat)/n + z^2/(4n^2))) / (1 + z^2/n)\ncenter &lt;- (p_hat_val + z_alpha2^2 / (2 * n_val)) / (1 + z_alpha2^2 / n_val)\nmargin &lt;- z_alpha2 * sqrt(p_hat_val * (1 - p_hat_val) / n_val + z_alpha2^2 / (4 * n_val^2)) / \n          (1 + z_alpha2^2 / n_val)\n\ncat(\"Wilson formula by hand:\\n\")\n\nWilson formula by hand:\n\ncat(\"  (\", round(center - margin, 5), \",\", round(center + margin, 5), \")\")\n\n  ( 0.00813 , 0.03125 )"
   }
 ]

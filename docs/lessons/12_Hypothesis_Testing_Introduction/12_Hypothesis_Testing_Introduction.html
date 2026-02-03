@@ -327,7 +327,7 @@ Jessica Minnier
 <h2>The Courtroom Analogy</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p><strong>Criminal Trial (US)</strong></p>
+<p><strong>Criminal Trial</strong></p>
 <ul>
 <li><strong>Initial assumption:</strong> Defendant is innocent</li>
 <li><strong>Burden of proof:</strong> On prosecution</li>
@@ -927,16 +927,28 @@ Jessica Minnier
 <span id="cb17-6"><a></a>) <span class="sc">|&gt;</span></span>
 <span id="cb17-7"><a></a>  <span class="fu">pivot_longer</span>(<span class="at">cols =</span> <span class="fu">c</span>(alpha, beta), <span class="at">names_to =</span> <span class="st">"error_type"</span>, <span class="at">values_to =</span> <span class="st">"probability"</span>)</span>
 <span id="cb17-8"><a></a></span>
-<span id="cb17-9"><a></a><span class="fu">ggplot</span>(error_data, <span class="fu">aes</span>(<span class="at">x =</span> cutoff, <span class="at">y =</span> probability, <span class="at">color =</span> error_type)) <span class="sc">+</span></span>
-<span id="cb17-10"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb17-11"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"alpha"</span> <span class="ot">=</span> <span class="st">"coral"</span>, <span class="st">"beta"</span> <span class="ot">=</span> <span class="st">"purple"</span>),</span>
-<span id="cb17-12"><a></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="fu">expression</span>(alpha<span class="sc">~</span><span class="st">"(Type I)"</span>), <span class="fu">expression</span>(beta<span class="sc">~</span><span class="st">"(Type II)"</span>))) <span class="sc">+</span></span>
-<span id="cb17-13"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">26.56</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb17-14"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">26.56</span>, <span class="at">y =</span> <span class="fl">0.8</span>, <span class="at">label =</span> <span class="st">"Equal error rates"</span>, <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb17-15"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Cutoff Value"</span>, <span class="at">y =</span> <span class="st">"Error Probability"</span>,</span>
-<span id="cb17-16"><a></a>       <span class="at">title =</span> <span class="st">"The α-β Tradeoff (Fixed n = 10, True μ = 27)"</span>,</span>
-<span id="cb17-17"><a></a>       <span class="at">color =</span> <span class="st">"Error Type"</span>) <span class="sc">+</span></span>
-<span id="cb17-18"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-9"><a></a><span class="co"># Find the actual crossing point where alpha = beta</span></span>
+<span id="cb17-10"><a></a>crossing <span class="ot">&lt;-</span> <span class="fu">uniroot</span>(</span>
+<span id="cb17-11"><a></a>  <span class="cf">function</span>(c) (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(c, mu0, se)) <span class="sc">-</span> <span class="fu">pnorm</span>(c, <span class="at">mean =</span> <span class="dv">27</span>, <span class="at">sd =</span> se),</span>
+<span id="cb17-12"><a></a>  <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">24</span>, <span class="dv">29</span>)</span>
+<span id="cb17-13"><a></a>)</span>
+<span id="cb17-14"><a></a>equal_error_cutoff <span class="ot">&lt;-</span> crossing<span class="sc">$</span>root</span>
+<span id="cb17-15"><a></a>equal_error_prob <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> <span class="fu">pnorm</span>(equal_error_cutoff, mu0, se)</span>
+<span id="cb17-16"><a></a></span>
+<span id="cb17-17"><a></a><span class="fu">ggplot</span>(error_data, <span class="fu">aes</span>(<span class="at">x =</span> cutoff, <span class="at">y =</span> probability, <span class="at">color =</span> error_type)) <span class="sc">+</span></span>
+<span id="cb17-18"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb17-19"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"alpha"</span> <span class="ot">=</span> <span class="st">"coral"</span>, <span class="st">"beta"</span> <span class="ot">=</span> <span class="st">"purple"</span>),</span>
+<span id="cb17-20"><a></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="fu">expression</span>(alpha<span class="sc">~</span><span class="st">"(Type I)"</span>), <span class="fu">expression</span>(beta<span class="sc">~</span><span class="st">"(Type II)"</span>))) <span class="sc">+</span></span>
+<span id="cb17-21"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> equal_error_cutoff, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb17-22"><a></a>  <span class="fu">annotate</span>(<span class="st">"point"</span>, <span class="at">x =</span> equal_error_cutoff, <span class="at">y =</span> equal_error_prob, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb17-23"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> equal_error_cutoff, <span class="at">y =</span> equal_error_prob <span class="sc">+</span> <span class="fl">0.06</span>, </span>
+<span id="cb17-24"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Equal error rates</span><span class="sc">\n</span><span class="st">(cutoff = "</span>, <span class="fu">round</span>(equal_error_cutoff, <span class="dv">2</span>), </span>
+<span id="cb17-25"><a></a>                          <span class="st">", prob = "</span>, <span class="fu">round</span>(equal_error_prob, <span class="dv">3</span>), <span class="st">")"</span>),</span>
+<span id="cb17-26"><a></a>           <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb17-27"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Cutoff Value"</span>, <span class="at">y =</span> <span class="st">"Error Probability"</span>,</span>
+<span id="cb17-28"><a></a>       <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">"The"</span><span class="sc">~</span>alpha<span class="sc">*</span><span class="st">"-"</span><span class="sc">*</span>beta<span class="sc">~</span><span class="st">"Tradeoff (Fixed n = 10, True"</span><span class="sc">~</span>mu<span class="sc">~</span><span class="st">"= 27)"</span>),</span>
+<span id="cb17-29"><a></a>       <span class="at">color =</span> <span class="st">"Error Type"</span>) <span class="sc">+</span></span>
+<span id="cb17-30"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
@@ -1118,25 +1130,26 @@ Jessica Minnier
 <span id="cb33-16"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&gt;=</span> crit_upper), <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb33-17"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_upper, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb33-18"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_upper, <span class="at">y =</span> <span class="fl">0.35</span>, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"c = "</span>, <span class="fu">round</span>(crit_upper, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="sc">-</span><span class="fl">0.1</span>) <span class="sc">+</span></span>
-<span id="cb33-19"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Upper-tailed: "</span>, H[a], <span class="st">": μ &gt; 25"</span>)),</span>
-<span id="cb33-20"><a></a>       <span class="at">subtitle =</span> <span class="st">"Reject if X̄ ≥ c"</span>, <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb33-19"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Upper-tailed:"</span><span class="sc">~</span>H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">&gt;</span> <span class="dv">25</span>),</span>
+<span id="cb33-20"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Reject if"</span><span class="sc">~</span><span class="fu">bar</span>(X) <span class="sc">&gt;=</span> c), <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
 <span id="cb33-21"><a></a></span>
 <span id="cb33-22"><a></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span></span>
 <span id="cb33-23"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
 <span id="cb33-24"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&lt;=</span> crit_lower), <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb33-25"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_lower, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
 <span id="cb33-26"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_lower, <span class="at">y =</span> <span class="fl">0.35</span>, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"c = "</span>, <span class="fu">round</span>(crit_lower, <span class="dv">2</span>)), <span class="at">hjust =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
-<span id="cb33-27"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Lower-tailed: "</span>, H[a], <span class="st">": μ &lt; 25"</span>)),</span>
-<span id="cb33-28"><a></a>       <span class="at">subtitle =</span> <span class="st">"Reject if X̄ ≤ c"</span>, <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb33-27"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Lower-tailed:"</span><span class="sc">~</span>H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">&lt;</span> <span class="dv">25</span>),</span>
+<span id="cb33-28"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Reject if"</span><span class="sc">~</span><span class="fu">bar</span>(X) <span class="sc">&lt;=</span> c), <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
 <span id="cb33-29"><a></a></span>
 <span id="cb33-30"><a></a>p3 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(x, y)) <span class="sc">+</span></span>
 <span id="cb33-31"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
-<span id="cb33-32"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&gt;=</span> crit_two_upper <span class="sc">|</span> x <span class="sc">&lt;=</span> crit_two_lower), <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb33-33"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(crit_two_lower, crit_two_upper), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
-<span id="cb33-34"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Two-tailed: "</span>, H[a], <span class="st">": μ ≠ 25"</span>)),</span>
-<span id="cb33-35"><a></a>       <span class="at">subtitle =</span> <span class="st">"Reject if |X̄ - 25| ≥ c"</span>, <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
-<span id="cb33-36"><a></a></span>
-<span id="cb33-37"><a></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb33-32"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&gt;=</span> crit_two_upper), <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb33-33"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&lt;=</span> crit_two_lower), <span class="at">fill =</span> <span class="st">"coral"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb33-34"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(crit_two_lower, crit_two_upper), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb33-35"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Two-tailed:"</span><span class="sc">~</span>H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">!=</span> <span class="dv">25</span>),</span>
+<span id="cb33-36"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Reject if"</span><span class="sc">~</span><span class="fu">group</span>(<span class="st">"|"</span>, <span class="fu">bar</span>(X) <span class="sc">-</span> <span class="dv">25</span>, <span class="st">"|"</span>) <span class="sc">&gt;=</span> c), <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb33-37"><a></a></span>
+<span id="cb33-38"><a></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span> p3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
@@ -1156,8 +1169,21 @@ Jessica Minnier
 <p><strong>Step 2: Choose significance level</strong> <span class="math display">\[\alpha = 0.05\]</span></p>
 </div>
 </section>
-<section id="step-3-identify-test-statistic-and-rejection-region" class="slide level2">
-<h2>Step 3: Identify Test Statistic and Rejection Region</h2>
+<section id="step-3-choose-test-statistic" class="slide level2">
+<h2>Step 3: Choose Test Statistic</h2>
+<p>Since <span class="math inline">\(\sigma\)</span> is known, our natural estimator for <span class="math inline">\(\mu\)</span> is the sample mean <span class="math inline">\(\bar{X}\)</span>. Under <span class="math inline">\(H_0\)</span>:</p>
+<p><span class="math display">\[\bar{X} \sim N\left(\mu_0, \frac{\sigma^2}{n}\right) = N\left(10, \frac{8^2}{25}\right) = N(10, 2.56)\]</span></p>
+<div class="fragment">
+<p>We <strong>standardize</strong> to obtain the <strong>z test statistic</strong>:</p>
+<p><span class="math display">\[Z = \frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}} = \frac{\bar{X} - 10}{8/\sqrt{25}} = \frac{\bar{X} - 10}{1.6}\]</span></p>
+</div>
+<div class="fragment">
+<p><strong>Why Z?</strong> Under <span class="math inline">\(H_0\)</span>, <span class="math inline">\(Z \sim N(0,1)\)</span> regardless of the specific <span class="math inline">\(\mu_0\)</span>, <span class="math inline">\(\sigma\)</span>, and <span class="math inline">\(n\)</span>. This lets us use standard normal critical values to determine the rejection region.</p>
+<p><strong>Rejection region:</strong> Since <span class="math inline">\(H_a: \mu &gt; 10\)</span> (upper-tailed), we reject <span class="math inline">\(H_0\)</span> when <span class="math inline">\(Z \geq z_\alpha = z_{0.05} = 1.645\)</span>.</p>
+</div>
+</section>
+<section id="step-3-continued-compute-in-r" class="slide level2">
+<h2>Step 3 (continued): Compute in R</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="co"># Given data</span></span>
 <span id="cb34-2"><a></a>xbar <span class="ot">&lt;-</span> <span class="fl">12.5</span></span>
@@ -1375,8 +1401,8 @@ at α = 0.05</code></pre>
 <span id="cb56-8"><a></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> lower, <span class="at">xmax =</span> upper), <span class="at">height =</span> <span class="fl">0.1</span>, <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
 <span id="cb56-9"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> x), <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
 <span id="cb56-10"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">10</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb56-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="fl">1.15</span>, <span class="at">label =</span> <span class="fu">expression</span>(H[<span class="dv">0</span>]<span class="sc">:</span> mu <span class="sc">==</span> <span class="dv">10</span>), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
-<span id="cb56-12"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> xbar, <span class="at">y =</span> <span class="fl">0.85</span>, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"x̄ = "</span>, xbar), <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb56-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="fl">1.15</span>, <span class="at">label =</span> <span class="fu">expression</span>(H[<span class="dv">0</span>]<span class="sc">:</span><span class="er">~</span>mu <span class="sc">==</span> <span class="dv">10</span>), <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb56-12"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> xbar, <span class="at">y =</span> <span class="fl">0.85</span>, <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">bar</span>(x) <span class="sc">==</span> .(xbar)), <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
 <span id="cb56-13"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> (ci_lower <span class="sc">+</span> ci_upper)<span class="sc">/</span><span class="dv">2</span>, <span class="at">y =</span> <span class="fl">1.1</span>, </span>
 <span id="cb56-14"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"95% CI: ("</span>, <span class="fu">round</span>(ci_lower, <span class="dv">1</span>), <span class="st">", "</span>, <span class="fu">round</span>(ci_upper, <span class="dv">1</span>), <span class="st">")"</span>), </span>
 <span id="cb56-15"><a></a>           <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>

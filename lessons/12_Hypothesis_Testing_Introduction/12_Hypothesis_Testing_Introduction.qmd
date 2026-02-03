@@ -123,7 +123,7 @@ The null hypothesis will be rejected in favor of the alternative **only if** sam
 
 ::: columns
 ::: {.column width="50%"}
-**Criminal Trial (US)**
+**Criminal Trial**
 
 - **Initial assumption:** Defendant is innocent
 - **Burden of proof:** On prosecution
@@ -614,14 +614,26 @@ error_data <- tibble(
 ) |>
   pivot_longer(cols = c(alpha, beta), names_to = "error_type", values_to = "probability")
 
+# Find the actual crossing point where alpha = beta
+crossing <- uniroot(
+  function(c) (1 - pnorm(c, mu0, se)) - pnorm(c, mean = 27, sd = se),
+  interval = c(24, 29)
+)
+equal_error_cutoff <- crossing$root
+equal_error_prob <- 1 - pnorm(equal_error_cutoff, mu0, se)
+
 ggplot(error_data, aes(x = cutoff, y = probability, color = error_type)) +
   geom_line(linewidth = 1.5) +
   scale_color_manual(values = c("alpha" = "coral", "beta" = "purple"),
                      labels = c(expression(alpha~"(Type I)"), expression(beta~"(Type II)"))) +
-  geom_vline(xintercept = 26.56, linetype = "dashed", alpha = 0.5) +
-  annotate("text", x = 26.56, y = 0.8, label = "Equal error rates", hjust = -0.1) +
+  geom_vline(xintercept = equal_error_cutoff, linetype = "dashed", alpha = 0.5) +
+  annotate("point", x = equal_error_cutoff, y = equal_error_prob, size = 3) +
+  annotate("text", x = equal_error_cutoff, y = equal_error_prob + 0.06, 
+           label = paste0("Equal error rates\n(cutoff = ", round(equal_error_cutoff, 2), 
+                          ", prob = ", round(equal_error_prob, 3), ")"),
+           hjust = 0.5, size = 4.5) +
   labs(x = "Cutoff Value", y = "Error Probability",
-       title = "The α-β Tradeoff (Fixed n = 10, True μ = 27)",
+       title = bquote("The"~alpha*"-"*beta~"Tradeoff (Fixed n = 10, True"~mu~"= 27)"),
        color = "Error Type") +
   theme(legend.position = "right")
 ```
@@ -770,23 +782,24 @@ p1 <- ggplot(df, aes(x, y)) +
   geom_area(data = df |> filter(x >= crit_upper), fill = "coral", alpha = 0.5) +
   geom_vline(xintercept = crit_upper, linetype = "dashed", color = "red") +
   annotate("text", x = crit_upper, y = 0.35, label = paste0("c = ", round(crit_upper, 2)), hjust = -0.1) +
-  labs(title = expression(paste("Upper-tailed: ", H[a], ": μ > 25")),
-       subtitle = "Reject if X̄ ≥ c", x = expression(bar(X)), y = "Density")
+  labs(title = expression("Upper-tailed:"~H[a]*":"~mu > 25),
+       subtitle = expression("Reject if"~bar(X) >= c), x = expression(bar(X)), y = "Density")
 
 p2 <- ggplot(df, aes(x, y)) +
   geom_line(linewidth = 1.2, color = "steelblue") +
   geom_area(data = df |> filter(x <= crit_lower), fill = "coral", alpha = 0.5) +
   geom_vline(xintercept = crit_lower, linetype = "dashed", color = "red") +
   annotate("text", x = crit_lower, y = 0.35, label = paste0("c = ", round(crit_lower, 2)), hjust = 1.1) +
-  labs(title = expression(paste("Lower-tailed: ", H[a], ": μ < 25")),
-       subtitle = "Reject if X̄ ≤ c", x = expression(bar(X)), y = "Density")
+  labs(title = expression("Lower-tailed:"~H[a]*":"~mu < 25),
+       subtitle = expression("Reject if"~bar(X) <= c), x = expression(bar(X)), y = "Density")
 
 p3 <- ggplot(df, aes(x, y)) +
   geom_line(linewidth = 1.2, color = "steelblue") +
-  geom_area(data = df |> filter(x >= crit_two_upper | x <= crit_two_lower), fill = "coral", alpha = 0.5) +
+  geom_area(data = df |> filter(x >= crit_two_upper), fill = "coral", alpha = 0.5) +
+  geom_area(data = df |> filter(x <= crit_two_lower), fill = "coral", alpha = 0.5) +
   geom_vline(xintercept = c(crit_two_lower, crit_two_upper), linetype = "dashed", color = "red") +
-  labs(title = expression(paste("Two-tailed: ", H[a], ": μ ≠ 25")),
-       subtitle = "Reject if |X̄ - 25| ≥ c", x = expression(bar(X)), y = "Density")
+  labs(title = expression("Two-tailed:"~H[a]*":"~mu != 25),
+       subtitle = expression("Reject if"~group("|", bar(X) - 25, "|") >= c), x = expression(bar(X)), y = "Density")
 
 p1 + p2 + p3
 ```
@@ -809,7 +822,25 @@ $$H_0: \mu = 10 \quad \text{vs} \quad H_a: \mu > 10$$
 **Step 2: Choose significance level**
 $$\alpha = 0.05$$
 
-## Step 3: Identify Test Statistic and Rejection Region
+## Step 3: Choose Test Statistic
+
+Since $\sigma$ is known, our natural estimator for $\mu$ is the sample mean $\bar{X}$. Under $H_0$:
+
+$$\bar{X} \sim N\left(\mu_0, \frac{\sigma^2}{n}\right) = N\left(10, \frac{8^2}{25}\right) = N(10, 2.56)$$
+
+. . .
+
+We **standardize** to obtain the **z test statistic**:
+
+$$Z = \frac{\bar{X} - \mu_0}{\sigma / \sqrt{n}} = \frac{\bar{X} - 10}{8/\sqrt{25}} = \frac{\bar{X} - 10}{1.6}$$
+
+. . .
+
+**Why Z?** Under $H_0$, $Z \sim N(0,1)$ regardless of the specific $\mu_0$, $\sigma$, and $n$. This lets us use standard normal critical values to determine the rejection region.
+
+**Rejection region:** Since $H_a: \mu > 10$ (upper-tailed), we reject $H_0$ when $Z \geq z_\alpha = z_{0.05} = 1.645$.
+
+## Step 3 (continued): Compute in R
 
 ```{r}
 #| echo: true
@@ -971,8 +1002,8 @@ tibble(
   geom_errorbarh(aes(xmin = lower, xmax = upper), height = 0.1, linewidth = 2, color = "steelblue") +
   geom_point(aes(x = x), size = 5, color = "steelblue") +
   geom_vline(xintercept = 10, linetype = "dashed", color = "red", linewidth = 1.5) +
-  annotate("text", x = 10, y = 1.15, label = expression(H[0]: mu == 10), color = "red", size = 6) +
-  annotate("text", x = xbar, y = 0.85, label = paste0("x̄ = ", xbar), size = 5) +
+  annotate("text", x = 10, y = 1.15, label = expression(H[0]:~mu == 10), color = "red", size = 6) +
+  annotate("text", x = xbar, y = 0.85, label = bquote(bar(x) == .(xbar)), size = 5) +
   annotate("text", x = (ci_lower + ci_upper)/2, y = 1.1, 
            label = paste0("95% CI: (", round(ci_lower, 1), ", ", round(ci_upper, 1), ")"), 
            size = 5, color = "steelblue") +
