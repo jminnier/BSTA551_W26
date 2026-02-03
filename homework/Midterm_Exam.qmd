@@ -1,7 +1,7 @@
 ---
 title: "Midterm Exam"
 subtitle: "BSTA 551: Theory of Statistical Inference"
-date-modified: "today"
+date-modified: "2026-02-02"
 description: "Take-home exam covering Lessons 1-11; Due: `r library(here); source(here('class_dates.R')); mid_close %>% format('%m/%d')` at 11pm"
 format: 
   html:
