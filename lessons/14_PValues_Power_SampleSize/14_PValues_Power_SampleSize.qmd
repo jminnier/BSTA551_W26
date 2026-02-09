@@ -519,7 +519,7 @@ $$\text{P-value} = P(X \geq x_{obs} \mid r_1, c_1) = \sum_{x = x_{obs}}^{\min(r_
 # Placebo           8            12       (20)
 #                 (10)          (30)      (40)
 
-adverse_table <- matrix(c(2, 8, 18, 12), nrow = 2, byrow = TRUE,
+adverse_table <- matrix(c(2, 8, 18, 12), nrow = 2, byrow = FALSE,
                         dimnames = list(Group = c("Treatment", "Placebo"),
                                        Outcome = c("Adverse", "None")))
 adverse_table
@@ -631,7 +631,7 @@ Fisher's exact test can also be viewed as a **randomization test**:
 
 ```{r}
 #| echo: true
-# Verify: Fisher's P-value via permutation simulation
+# Verify: Fisher's P-value via permutation simulation (one-sided version)
 set.seed(551)
 n_perm <- 10000
 
