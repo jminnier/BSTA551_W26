@@ -1,0 +1,2162 @@
+---
+title: "Lesson 14: P-Values; Power and Sample Size Determination"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w7d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 14 - P-Values; Power and Sample Size Determination
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 14: P-Values; Power and Sample Size Determination {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lesson 13: Tests About a Population Mean and Proportion**
+
+-   One-sample z test ($\sigma$ known) and t test ($\sigma$ unknown)
+-   Score test and exact binomial test for proportions
+-   Seven-step hypothesis testing procedure
+-   CI-test duality: a $100(1-\alpha)\%$ CI contains values not rejected at level $\alpha$
+
+. . .
+
+**Today's Goals:**
+
+1. Understand P-values as a continuous measure of evidence against $H_0$
+2. Compute P-values for z and t tests
+3. Understand the distribution of P-values under $H_0$ and $H_a$
+4. Use the noncentral t distribution for exact power calculations
+5. Determine sample sizes for planning clinical trials using R
+
+## Roadmap for Today
+
+| Topic | Key Idea | Textbook |
+|-------|----------|----------|
+| P-values | Probability of data as extreme or more extreme than observed | Devore 9.4 |
+| P-value distribution | Uniform under $H_0$; concentrated near 0 under $H_a$ | Devore 9.4 |
+| Power for the t test | Noncentral t distribution | Devore 9.2 |
+| Sample size determination | `power.t.test()` in R | Devore 9.2 |
+
+. . .
+
+::: callout-note
+## Why This Matters
+In medical research, P-values appear in virtually every published paper. Understanding what they mean --- and what they do **not** mean --- is essential for interpreting clinical evidence.
+:::
+
+# P-Values (Devore 9.4) {background-color="#3498db"}
+
+## From Rejection Regions to P-Values
+
+**Recall the rejection region approach:**
+
+1. Fix $\alpha$ (e.g., 0.05)
+2. Find critical value(s)
+3. Reject $H_0$ if the test statistic falls in the rejection region
+
+. . .
+
+**Limitation:** The rejection region approach gives a binary decision (reject / fail to reject), but tells us nothing about **how strongly** the data contradict $H_0$.
+
+. . .
+
+**Two scenarios with the same decision:**
+
+- $\alpha = 0.05$, P-value = 0.049 $\Rightarrow$ barely reject $H_0$
+- $\alpha = 0.05$, P-value = 0.00001 $\Rightarrow$ overwhelming evidence against $H_0$
+
+The rejection region approach treats these identically!
+
+## Definition of the P-Value
+
+::: callout-important
+## Definition (Devore 9.4)
+The **P-value** is the probability, calculated assuming that the null hypothesis is true, of obtaining a value of the test statistic at least as contradictory to $H_0$ as the value calculated from the available sample.
+:::
+
+. . .
+
+**Key points:**
+
+- The P-value **is** a probability
+- It is calculated **assuming $H_0$ is true**
+- It is a function of the **sample data** (and therefore a random variable!)
+- We need to determine which values are "at least as contradictory" to $H_0$
+
+## Formal Definition of the P-Value
+
+Let $T = T(X_1, \ldots, X_n)$ be a test statistic and let $t_{obs}$ be its observed value. For a test of $H_0: \theta = \theta_0$ vs $H_a$:
+
+::: callout-important
+## Definition (Formal)
+The **P-value** is defined as:
+
+$$\text{P-value} = \begin{cases} P_{\theta_0}(T \geq t_{obs}) & \text{upper-tailed test } (H_a: \theta > \theta_0) \\[6pt] P_{\theta_0}(T \leq t_{obs}) & \text{lower-tailed test } (H_a: \theta < \theta_0) \\[6pt] P_{\theta_0}(|T| \geq |t_{obs}|) & \text{two-tailed test } (H_a: \theta \neq \theta_0) \end{cases}$$
+
+where $P_{\theta_0}(\cdot)$ denotes probability calculated under $H_0$.
+:::
+
+. . .
+
+**Interpretation:** The P-value measures how "extreme" or "surprising" the observed data would be if $H_0$ were true. Smaller P-values indicate data that is less compatible with $H_0$.
+
+## The P-Value as a Tail Probability
+
+Consider an upper-tailed test with test statistic $T$ having CDF $F_T(t)$ under $H_0$.
+
+. . .
+
+**The P-value is the "survival function" evaluated at $t_{obs}$:**
+
+$$\text{P-value} = P_{H_0}(T \geq t_{obs}) = 1 - F_T(t_{obs})$$
+
+. . .
+
+**Key insight:** The P-value is the probability of observing a test statistic *at least as extreme* as what we actually observed, computed under the assumption that $H_0$ is true.
+
+. . .
+
+**Why "at least as extreme"?** 
+
+If $t_{obs}$ is unlikely under $H_0$, then values *even more extreme* than $t_{obs}$ must also be unlikely. The P-value captures the total probability of all outcomes at least as unfavorable to $H_0$.
+
+## The Probability Integral Transformation
+
+A fundamental result from probability theory underlies the distribution of P-values.
+
+::: callout-important
+## Theorem (Probability Integral Transformation)
+Let $X$ be a continuous random variable with CDF $F_X$. Then the random variable 
+
+$$U = F_X(X)$$
+
+has a $\text{Uniform}(0, 1)$ distribution.
+:::
+
+. . .
+
+**Proof:** For $u \in (0, 1)$:
+
+$$P(U \leq u) = P(F_X(X) \leq u) = P(X \leq F_X^{-1}(u)) = F_X(F_X^{-1}(u)) = u$$
+
+The second equality uses the fact that $F_X$ is monotone increasing (for continuous $X$). Since $P(U \leq u) = u$ for all $u \in (0,1)$, we have $U \sim \text{Uniform}(0,1)$. $\blacksquare$
+
+## Corollary: The Survival Function is Also Uniform
+
+::: callout-note
+## Corollary
+If $X$ is a continuous random variable with CDF $F_X$, then 
+
+$$V = 1 - F_X(X)$$
+
+also has a $\text{Uniform}(0, 1)$ distribution.
+:::
+
+. . .
+
+**Proof:** If $U \sim \text{Uniform}(0,1)$, then $1 - U \sim \text{Uniform}(0,1)$ as well. 
+
+This is easily verified: $P(1 - U \leq v) = P(U \geq 1 - v) = 1 - (1 - v) = v$. $\blacksquare$
+
+. . .
+
+**Why this matters:** For an upper-tailed test, the P-value is $1 - F_T(T)$, which is exactly the survival function evaluated at the test statistic!
+
+## P-Values Are Uniform Under $H_0$
+
+We can now state and prove the central result:
+
+::: callout-important
+## Theorem (Distribution of the P-Value Under $H_0$)
+Let $T$ be a test statistic with continuous CDF $F_T$ under $H_0$. For an upper-tailed test, define the P-value as 
+
+$$P = 1 - F_T(T)$$
+
+Then under $H_0$, the P-value satisfies $P \sim \text{Uniform}(0, 1)$.
+:::
+
+. . .
+
+**Proof:** Under $H_0$, the test statistic $T$ has CDF $F_T$. By the probability integral transformation, $F_T(T) \sim \text{Uniform}(0,1)$. By the corollary, $P = 1 - F_T(T) \sim \text{Uniform}(0,1)$. $\blacksquare$
+
+## Consequence: P-Value Tests Maintain the Correct Size
+
+This uniformity result has a crucial consequence for hypothesis testing.
+
+::: callout-note
+## Definition: Size of a Test
+The **size** of a hypothesis test is the probability of rejecting $H_0$ when $H_0$ is true---i.e., the Type I error rate:
+
+$$\text{Size} = P_{H_0}(\text{Reject } H_0) = P(\text{Type I Error})$$
+
+A test has **exact size** $\alpha$ if this probability equals $\alpha$ exactly. A test has size **at most** $\alpha$ if this probability is $\leq \alpha$.
+:::
+
+. . .
+
+::: callout-important
+## Theorem (Size of P-Value Tests)
+If the P-value $P$ has a $\text{Uniform}(0,1)$ distribution under $H_0$, then the test that rejects $H_0$ when $P \leq \alpha$ has **exact size** $\alpha$.
+:::
+
+. . .
+
+**Proof:** The Type I error rate is
+
+$$P_{H_0}(\text{Reject } H_0) = P_{H_0}(P \leq \alpha) = \alpha$$
+
+where the last equality follows because $P \sim \text{Uniform}(0,1)$ under $H_0$. $\blacksquare$
+
+. . .
+
+**Key insight:** The P-value approach **automatically** guarantees that rejecting when P-value $\leq \alpha$ produces a test with Type I error rate exactly equal to $\alpha$. This is not a coincidence---it's a direct consequence of the probability integral transformation!
+
+## Why This Matters: Equivalence of Approaches
+
+**Rejection region approach:**
+
+- Choose $\alpha$, find critical value $c$ such that $P_{H_0}(T \geq c) = \alpha$
+- Reject $H_0$ if $T \geq c$
+
+. . .
+
+**P-value approach:**
+
+- Compute P-value $= P_{H_0}(T \geq t_{obs})$
+- Reject $H_0$ if P-value $\leq \alpha$
+
+. . .
+
+**These are equivalent!**
+
+$$T \geq c \iff 1 - F_T(T) \leq 1 - F_T(c) = \alpha \iff \text{P-value} \leq \alpha$$
+
+. . .
+
+The P-value encodes *all possible rejection decisions* for any choice of $\alpha$:
+
+- If P-value $= 0.03$: reject at $\alpha = 0.05$ but not at $\alpha = 0.01$
+- If P-value $= 0.008$: reject at both $\alpha = 0.05$ and $\alpha = 0.01$
+
+## P-Values for Discrete Test Statistics
+
+::: callout-warning
+## Technical Note
+The probability integral transformation requires $T$ to be **continuous**. For discrete test statistics (e.g., the binomial), the P-value may not be exactly Uniform$(0,1)$.
+:::
+
+. . .
+
+**Example:** For the exact binomial test with $H_0: p = 0.5$ and $n = 10$, the P-value can only take finitely many values. The CDF of the P-value is a step function, not the identity.
+
+. . .
+
+**Consequence:** For discrete tests, $P(P \leq \alpha) \leq \alpha$, with equality only when $\alpha$ happens to coincide with one of the achievable P-values. The test is **conservative** (actual Type I error $<$ nominal $\alpha$).
+
+. . .
+
+**Resolution:** Randomized tests can achieve exact size $\alpha$, but are rarely used in practice. Instead, we accept the slight conservatism.
+
+# Conditional P-Values and Fisher's Exact Test {background-color="#8e44ad"}
+
+## The Problem of Nuisance Parameters
+
+In many testing problems, the null hypothesis specifies a relationship but leaves some parameters unspecified.
+
+. . .
+
+**Example: Testing independence in a 2×2 table**
+
+|              | Disease+ | Disease− | Total |
+|:-------------|:--------:|:--------:|:-----:|
+| Exposed      |    a     |    b     | a + b |
+| Not Exposed  |    c     |    d     | c + d |
+| **Total**    |  a + c   |  b + d   |   n   |
+
+. . .
+
+**Hypotheses:**
+
+- $H_0$: Exposure and disease are independent (no association)
+- $H_a$: Exposure and disease are associated
+
+. . .
+
+**The problem:** Under $H_0$, the marginal probabilities $p_1 = P(\text{Exposed})$ and $p_2 = P(\text{Disease+})$ are **nuisance parameters**---unknown quantities not of direct interest.
+
+## Why Nuisance Parameters Complicate P-Values
+
+To compute a P-value, we need to calculate $P_{H_0}(T \geq t_{obs})$.
+
+. . .
+
+But under $H_0: p_{11} = p_1 \cdot p_2$ (independence), the distribution of any test statistic depends on the unknown values of $p_1$ and $p_2$!
+
+. . .
+
+**Options:**
+
+1. **Estimate** the nuisance parameters and use asymptotic approximations (chi-squared test)
+2. **Eliminate** the nuisance parameters by conditioning on sufficient statistics
+
+. . .
+
+Fisher's exact test takes approach (2), which yields an **exact** P-value that is valid for any sample size.
+
+## The Conditionality Principle
+
+::: callout-important
+## Conditionality Principle (Informal)
+If a statistic $S$ is **ancillary** (its distribution doesn't depend on the parameter of interest), then inference should be conducted **conditional** on the observed value of $S$.
+:::
+
+. . .
+
+**Intuition:** Ancillary statistics carry no information about the parameter of interest, but they do affect the "precision" of the experiment. Conditioning on them focuses inference on the relevant variation.
+
+. . .
+
+**For nuisance parameters:** If $S$ is a sufficient statistic for the nuisance parameter $\eta$, then conditioning on $S$ eliminates the dependence on $\eta$.
+
+## Fisher's Exact Test: Setup
+
+Consider a $2 \times 2$ table with fixed total $n$. Let:
+
+- $X$ = number in cell (1,1) (Exposed and Disease+)
+- Row totals $r_1 = a + b$ and $r_2 = c + d$ (fixed by design or conditioning)
+- Column totals $c_1 = a + c$ and $c_2 = b + d$
+
+. . .
+
+Under $H_0$ (independence) with both margins fixed, the cell count $X$ follows a **hypergeometric distribution**:
+
+$$P(X = x \mid r_1, r_2, c_1, c_2) = \frac{\binom{c_1}{x}\binom{c_2}{r_1 - x}}{\binom{n}{r_1}}$$
+
+. . .
+
+**Key observation:** This distribution has **no unknown parameters**! The nuisance parameters have been eliminated.
+
+## Why Condition on the Margins?
+
+::: callout-note
+## Theorem (Sufficiency of Margins)
+Under $H_0$ (independence), the row and column marginal totals $(r_1, c_1)$ are **jointly sufficient** for the nuisance parameters $(p_1, p_2)$.
+:::
+
+. . .
+
+**Proof sketch:** Under independence, the joint probability of a $2 \times 2$ table is:
+
+$$P(a, b, c, d) = \frac{n!}{a!b!c!d!} p_1^{r_1}(1-p_1)^{r_2} p_2^{c_1}(1-p_2)^{c_2}$$
+
+. . .
+
+By the factorization theorem, since the likelihood factors into a term depending on $(p_1, p_2)$ only through $(r_1, c_1)$, the margins are sufficient for the nuisance parameters.
+
+## The Conditional Distribution Eliminates Nuisance Parameters
+
+Conditioning on the sufficient statistic $(r_1, c_1)$:
+
+$$P(X = x \mid r_1, c_1) = \frac{P(X = x, r_1, c_1)}{P(r_1, c_1)}$$
+
+. . .
+
+After simplification (the nuisance parameters cancel!):
+
+$$P(X = x \mid r_1, c_1) = \frac{\binom{c_1}{x}\binom{n - c_1}{r_1 - x}}{\binom{n}{r_1}}$$
+
+. . .
+
+This is the hypergeometric distribution with parameters $n$, $r_1$, and $c_1$---all **known** from the observed data!
+
+. . .
+
+::: callout-tip
+## Key Insight
+By conditioning on the margins, we transform a problem with nuisance parameters into one where the null distribution is completely specified.
+:::
+
+## Fisher's Exact Test: The Conditional P-Value
+
+The **conditional P-value** is computed using the hypergeometric distribution:
+
+$$\text{P-value} = P(X \geq x_{obs} \mid r_1, c_1) = \sum_{x = x_{obs}}^{\min(r_1, c_1)} \frac{\binom{c_1}{x}\binom{n - c_1}{r_1 - x}}{\binom{n}{r_1}}$$
+
+. . .
+
+(For a two-sided test, we sum probabilities for outcomes as extreme or more extreme in either direction.)
+
+. . .
+
+**Properties:**
+
+- **Exact:** Valid for any sample size, including small samples
+- **Free of nuisance parameters:** No need to estimate marginal probabilities  
+- **Discrete:** P-value can only take finitely many values (test is slightly conservative)
+
+## Example: Fisher's Exact Test in R
+
+**Setting:** A clinical trial investigates whether a new treatment reduces adverse events.
+
+```{r}
+#| echo: true
+# Observed 2x2 table
+#              Adverse Event   No Event
+# Treatment         2            18       (20)
+# Placebo           8            12       (20)
+#                 (10)          (30)      (40)
+
+adverse_table <- matrix(c(2, 8, 18, 12), nrow = 2, byrow = TRUE,
+                        dimnames = list(Group = c("Treatment", "Placebo"),
+                                       Outcome = c("Adverse", "None")))
+adverse_table
+```
+
+## Example: Fisher's Exact Test Output
+
+```{r}
+#| echo: true
+# Fisher's exact test
+fisher_result <- fisher.test(adverse_table)
+fisher_result
+```
+
+. . .
+
+```{r}
+#| echo: true
+cat("P-value:", round(fisher_result$p.value, 4), "\n")
+cat("Odds ratio estimate:", round(fisher_result$estimate, 3), "\n")
+cat("95% CI for odds ratio:", round(fisher_result$conf.int[1], 3), "to", 
+    round(fisher_result$conf.int[2], 3), "\n")
+```
+
+## Visualizing the Hypergeometric Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+# Parameters from our example
+n <- 40; r1 <- 20; c1 <- 10
+x_obs <- 2  # Observed count in treatment/adverse cell
+
+# Possible values of X
+x_vals <- 0:min(r1, c1)
+probs <- dhyper(x_vals, m = c1, n = n - c1, k = r1)
+
+# Create data frame
+hyper_data <- tibble(
+  x = x_vals,
+  prob = probs,
+  extreme = x <= x_obs | x >= (r1 - (c1 - x_obs))  
+  # Two-sided: as or more extreme than observed
+)
+
+# P-value components
+pval_lower <- sum(probs[x_vals <= x_obs])
+pval_upper <- sum(probs[probs <= probs[x_obs + 1]])  # Fisher's method
+
+ggplot(hyper_data, aes(x = x, y = prob, fill = extreme)) +
+  geom_col(width = 0.7, color = "black") +
+  geom_vline(xintercept = x_obs, linetype = "dashed", color = "red", linewidth = 1) +
+  scale_fill_manual(values = c("gray70", "coral"), 
+                    labels = c("Not extreme", "Extreme (contributes to P-value)")) +
+  annotate("text", x = x_obs + 0.3, y = max(probs) * 0.9, hjust = 0,
+           label = paste0("Observed: X = ", x_obs), color = "red", size = 5) +
+  labs(x = "X (count in Treatment/Adverse cell)",
+       y = "Probability",
+       title = "Hypergeometric Distribution Under H0 (Conditional on Margins)",
+       subtitle = paste0("n = ", n, ", r1 = ", r1, ", c1 = ", c1, 
+                        "; P-value = ", round(fisher_result$p.value, 4)),
+       fill = "") +
+  theme(legend.position = "top")
+```
+
+## Why Conditioning? A Deeper Look
+
+**The philosophical justification:**
+
+1. **Sufficiency Principle:** Inference should depend on the data only through sufficient statistics
+2. **Conditionality Principle:** Inference should condition on ancillary statistics
+
+. . .
+
+When combined, these principles suggest conditioning on sufficient statistics for nuisance parameters.
+
+. . .
+
+**The practical justification:**
+
+- Conditioning produces a test with **exact** size $\alpha$
+- No large-sample approximations needed
+- Valid even for sparse tables or small samples
+
+. . .
+
+::: callout-warning
+## Caveat
+Conditioning can reduce power compared to unconditional tests. This is the price of exactness. For large samples, the chi-squared test (which estimates nuisance parameters) may be more powerful.
+:::
+
+## Connection to Randomization Tests
+
+Fisher's exact test can also be viewed as a **randomization test**:
+
+. . .
+
+**Setup:** Fix the margins (total exposed, total diseased). Under $H_0$, each possible table consistent with these margins is equally likely given the hypergeometric distribution.
+
+. . .
+
+**The P-value** is the proportion of possible tables that show an association at least as extreme as observed.
+
+. . .
+
+**This connects to permutation testing:** Under $H_0$, "Disease" labels are exchangeable among subjects. The conditional P-value equals the proportion of permutations yielding a test statistic as extreme as observed.
+
+```{r}
+#| echo: true
+# Verify: Fisher's P-value via simulation
+set.seed(551)
+n_perm <- 10000
+disease_labels <- c(rep(1, 10), rep(0, 30))  # 10 diseased, 30 not
+treatment <- c(rep(1, 20), rep(0, 20))       # 20 in each group
+
+# Observed statistic
+obs_stat <- sum(treatment[disease_labels == 1])  # = 2
+
+# Permutation distribution
+perm_stats <- replicate(n_perm, {
+  sum(sample(treatment)[disease_labels == 1])
+})
+
+cat("Simulated P-value:", mean(perm_stats <= obs_stat), "\n")
+cat("Fisher's exact P-value (one-sided):", 
+    fisher.test(adverse_table, alternative = "less")$p.value, "\n")
+```
+
+## Fisher's Exact Test: Complete R Workflow
+
+**Clinical scenario:** A pilot study investigates whether a genetic variant is associated with response to a targeted cancer therapy.
+
+```{r}
+#| echo: true
+# Create the contingency table from raw data
+patients <- tibble(
+  patient_id = 1:45,
+  variant = c(rep("Present", 18), rep("Absent", 27)),
+  response = c(
+    # Variant present: 12 responders, 6 non-responders
+    rep("Responder", 12), rep("Non-responder", 6),
+    # Variant absent: 8 responders, 19 non-responders
+    rep("Responder", 8), rep("Non-responder", 19)
+  )
+)
+
+# Cross-tabulation
+response_table <- table(patients$variant, patients$response)
+response_table
+```
+
+## Fisher's Exact Test: Analysis
+
+```{r}
+#| echo: true
+# Fisher's exact test (two-sided by default)
+fisher_result <- fisher.test(response_table)
+
+# Display full output
+fisher_result
+```
+
+## Fisher's Exact Test: Extracting Results
+
+```{r}
+#| echo: true
+# Extract components for reporting
+cat("=== Fisher's Exact Test Results ===\n\n")
+cat("P-value:", format(fisher_result$p.value, digits = 4), "\n")
+cat("Odds Ratio:", round(fisher_result$estimate, 2), "\n")
+cat("95% CI for OR: [", round(fisher_result$conf.int[1], 2), ", ", 
+    round(fisher_result$conf.int[2], 2), "]\n\n")
+
+# Decision at alpha = 0.05
+alpha <- 0.05
+if (fisher_result$p.value <= alpha) {
+  cat("Decision: Reject H0 at alpha =", alpha, "\n")
+  cat("Conclusion: There is a statistically significant association\n")
+  cat("between the genetic variant and treatment response.\n")
+} else {
+  cat("Decision: Fail to reject H0 at alpha =", alpha, "\n")
+  cat("Conclusion: Insufficient evidence of association.\n")
+}
+```
+
+## Fisher's Exact Test: One-Sided Alternatives
+
+```{r}
+#| echo: true
+# If we have a directional hypothesis (variant improves response)
+fisher_greater <- fisher.test(response_table, alternative = "greater")
+fisher_less <- fisher.test(response_table, alternative = "less")
+
+cat("Two-sided P-value:", round(fisher_result$p.value, 4), "\n")
+cat("One-sided (OR > 1):", round(fisher_greater$p.value, 4), "\n")
+cat("One-sided (OR < 1):", round(fisher_less$p.value, 4), "\n")
+```
+
+. . .
+
+::: callout-tip
+## Choosing One-Sided vs Two-Sided
+Use a **one-sided** test only when you have a strong *a priori* hypothesis about the direction of association, specified **before** seeing the data. In most exploratory studies, two-sided tests are more appropriate.
+:::
+
+## Comparing Fisher's Exact Test to Chi-Squared Test
+
+```{r}
+#| echo: true
+# Chi-squared test (asymptotic approximation)
+chisq_result <- chisq.test(response_table)
+chisq_result
+```
+
+. . .
+
+```{r}
+#| echo: true
+# Compare P-values
+cat("\nComparison of P-values:\n")
+cat("Fisher's exact test:", round(fisher_result$p.value, 4), "\n")
+cat("Chi-squared test:   ", round(chisq_result$p.value, 4), "\n")
+cat("\nExpected counts (chi-squared assumes these are >= 5):\n")
+round(chisq_result$expected, 1)
+```
+
+. . .
+
+::: callout-warning
+## When to Use Fisher's Exact Test
+Use Fisher's exact test when any expected cell count is < 5, or when exact P-values are required (e.g., regulatory submissions). For large samples with adequate expected counts, chi-squared is computationally faster and gives similar results.
+:::
+
+## Decision Rule Based on the P-Value
+
+::: callout-important
+## P-Value Decision Rule (Devore 9.4)
+
+Select a significance level $\alpha$. Then:
+
+$$\text{Reject } H_0 \text{ if P-value} \leq \alpha; \qquad \text{Do not reject } H_0 \text{ if P-value} > \alpha$$
+:::
+
+. . .
+
+**Equivalence to the rejection region method:**
+
+- If the test statistic falls in the rejection region, then P-value $\leq \alpha$
+- If the test statistic falls outside the rejection region, then P-value $> \alpha$
+
+. . .
+
+**Advantage:** The P-value encodes more information than a binary reject/fail-to-reject decision. It conveys the **strength** of evidence against $H_0$.
+
+## P-Values for z Tests
+
+For a z test (test statistic $Z$ with $Z \sim N(0,1)$ under $H_0$):
+
+$$\text{P-value} = \begin{cases} 1 - \Phi(z) & \text{for an upper-tailed test } (H_a: \mu > \mu_0) \\[6pt] \Phi(z) & \text{for a lower-tailed test } (H_a: \mu < \mu_0) \\[6pt] 2[1 - \Phi(|z|)] & \text{for a two-tailed test } (H_a: \mu \neq \mu_0) \end{cases}$$
+
+where $\Phi(z)$ is the standard normal CDF and $z$ is the observed test statistic.
+
+. . .
+
+```{r}
+#| echo: true
+# Quick R reminders for P-value computation
+z_obs <- 2.15
+cat("Upper-tailed P-value:", 1 - pnorm(z_obs), "\n")
+cat("Lower-tailed P-value:", pnorm(z_obs), "\n")
+cat("Two-tailed P-value:  ", 2 * (1 - pnorm(abs(z_obs))), "\n")
+```
+
+## Visualizing P-Values for z Tests
+
+```{r}
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 18
+z_obs <- 2.15
+z_seq <- seq(-4, 4, length.out = 500)
+y <- dnorm(z_seq)
+
+p1 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq >= z_obs], 
+                          y = dnorm(z_seq[z_seq >= z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = z_obs, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = z_obs + 0.15, y = 0.06, hjust = 0, size = 5, color = "red",
+           label = paste0("z = ", z_obs)) +
+  annotate("text", x = 3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P = ", round(1 - pnorm(z_obs), 4))) +
+  labs(title = expression("Upper-tailed: " * H[a]*": " * mu > mu[0]),
+       x = "z", y = "Density")
+
+p2 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq <= -z_obs], 
+                          y = dnorm(z_seq[z_seq <= -z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = -z_obs, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = -z_obs - 0.15, y = 0.06, hjust = 1, size = 5, color = "red",
+           label = paste0("z = ", -z_obs)) +
+  annotate("text", x = -3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P = ", round(pnorm(-z_obs), 4))) +
+  labs(title = expression("Lower-tailed: " * H[a]*": " * mu < mu[0]),
+       x = "z", y = "Density")
+
+p3 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq >= z_obs], 
+                          y = dnorm(z_seq[z_seq >= z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_area(data = tibble(z = z_seq[z_seq <= -z_obs], 
+                          y = dnorm(z_seq[z_seq <= -z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = c(-z_obs, z_obs), linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = 3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P/2 = ", round(1 - pnorm(z_obs), 4))) +
+  annotate("text", x = -3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P/2 = ", round(pnorm(-z_obs), 4))) +
+  annotate("text", x = 0, y = 0.3, size = 5, color = "coral",
+           label = paste0("Total P = ", round(2*(1 - pnorm(z_obs)), 4))) +
+  labs(title = expression(paste("Two-tailed: ", H[a], ": ", mu != mu[0])),
+       x = "z", y = "Density")
+
+p1 + p2 + p3
+```
+
+## P-Values for t Tests
+
+For the one-sample t test with $n - 1$ degrees of freedom, the P-value formulas are analogous:
+
+$$\text{P-value} = \begin{cases} P(T_{n-1} \geq t) & \text{upper-tailed} \\[6pt] P(T_{n-1} \leq t) & \text{lower-tailed} \\[6pt] 2 \cdot P(T_{n-1} \geq |t|) & \text{two-tailed} \end{cases}$$
+
+. . .
+
+```{r}
+#| echo: true
+# P-values for t tests in R
+t_obs <- 2.15
+df <- 14
+
+cat("Upper-tailed P-value:", pt(t_obs, df = df, lower.tail = FALSE), "\n")
+cat("Lower-tailed P-value:", pt(t_obs, df = df, lower.tail = TRUE), "\n")
+cat("Two-tailed P-value:  ", 2 * pt(abs(t_obs), df = df, lower.tail = FALSE), "\n")
+```
+
+. . .
+
+::: callout-tip
+## R Functions
+`t.test()` and `prop.test()` automatically compute P-values. Manual computation is needed only for understanding and for non-standard situations.
+:::
+
+# Medical Examples: Computing P-Values {background-color="#9b59b6"}
+
+## Example: Hemoglobin A1c Levels in Diabetic Patients
+
+**Setting:** A diabetes clinic is evaluating whether a new management protocol changes mean hemoglobin A1c (HbA1c) levels. The standard target is 7.0%. A sample of $n = 20$ patients on the new protocol gives $\bar{x} = 7.42\%$ and $s = 0.95\%$.
+
+**Question:** Is there evidence that the new protocol produces different mean HbA1c than the target?
+
+. . .
+
+```{r}
+#| echo: true
+# Data summary
+n <- 20
+xbar <- 7.42
+s <- 0.95
+mu0 <- 7.0
+
+# Test statistic
+t_stat <- (xbar - mu0) / (s / sqrt(n))
+cat("Test statistic: t =", round(t_stat, 3), "\n")
+cat("Degrees of freedom:", n - 1, "\n")
+
+# P-value (two-tailed)
+p_value <- 2 * pt(abs(t_stat), df = n - 1, lower.tail = FALSE)
+cat("P-value (two-tailed):", round(p_value, 4), "\n")
+```
+
+## HbA1c Example: Visualizing the P-Value
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+df <- 19
+t_seq <- seq(-5, 5, length.out = 500)
+y_t <- dt(t_seq, df = df)
+
+tibble(t = t_seq, y = y_t) |>
+  ggplot(aes(x = t, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(t = t_seq[t_seq >= abs(t_stat)], 
+                          y = dt(t_seq[t_seq >= abs(t_stat)], df)),
+            aes(x = t, y = y), fill = "coral", alpha = 0.6) +
+  geom_area(data = tibble(t = t_seq[t_seq <= -abs(t_stat)], 
+                          y = dt(t_seq[t_seq <= -abs(t_stat)], df)),
+            aes(x = t, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = c(-abs(t_stat), abs(t_stat)), 
+             linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = t_stat + 0.2, y = 0.15, hjust = 0, size = 5, color = "red",
+           label = paste0("t = ", round(t_stat, 2))) +
+  annotate("text", x = 0, y = 0.25, size = 6, color = "coral",
+           label = paste0("P-value = ", round(p_value, 4))) +
+  labs(x = "t", y = "Density",
+       title = expression("Two-Tailed t Test: HbA1c Levels (" * t[19] * " distribution)"),
+       subtitle = expression(paste(H[0], ": ", mu == 7.0, "% vs ", H[a], ": ", mu != 7.0, "%")))
+```
+
+## HbA1c Example: Complete Analysis with `t.test()`
+
+```{r}
+#| echo: true
+# Simulate individual patient data consistent with our summary statistics
+set.seed(2026)
+hba1c <- rnorm(20, mean = 7.42, sd = 0.95)
+# Adjust to match desired summary statistics closely
+hba1c <- (hba1c - mean(hba1c)) / sd(hba1c) * 0.95 + 7.42
+
+# Full t.test output
+hba1c_test <- t.test(hba1c, mu = 7.0, alternative = "two.sided")
+hba1c_test
+```
+
+. . .
+
+**Interpretation:** At $\alpha = 0.05$, the P-value of `r round(hba1c_test$p.value, 4)` is less than 0.05, so we reject $H_0$. There is statistically significant evidence that the mean HbA1c under the new protocol differs from 7.0%.
+
+## Example: Serum Transferrin Receptor in Pregnancy (Devore 9.4, Exercise 55)
+
+**Setting:** The average serum transferrin receptor concentration for all women is known to be 5.63 mg/L. A study reported P-value > 0.10 for testing $H_0: \mu = 5.63$ vs $H_a: \mu \neq 5.63$ based on $n = 176$ pregnant women.
+
+. . .
+
+**Question:** Using $\alpha = 0.01$, what would you conclude?
+
+. . .
+
+```{r}
+#| echo: true
+alpha <- 0.01
+p_value_reported <- 0.10  # P-value > 0.10
+
+cat("Decision rule: Reject H0 if P-value <=", alpha, "\n")
+cat("Observed: P-value > 0.10\n")
+cat("Since 0.10 >", alpha, ", we fail to reject H0.\n\n")
+cat("Conclusion: There is insufficient evidence at the 0.01\n")
+cat("significance level to conclude that the mean serum\n")
+cat("transferrin receptor concentration for pregnant women\n")
+cat("differs from the value of 5.63 mg/L for all women.")
+```
+
+## Example: Post-Surgical Recovery Time
+
+**Setting:** The standard mean recovery time after a particular surgery is 14 days. A surgeon has adopted a new minimally invasive technique and records recovery times for 15 patients.
+
+```{r}
+#| echo: true
+recovery <- c(11.2, 13.5, 10.8, 12.1, 14.3, 9.7, 11.9, 12.8,
+              10.5, 13.1, 11.4, 12.6, 10.2, 13.8, 11.1)
+
+# One-sided test: H0: mu = 14 vs Ha: mu < 14
+recovery_test <- t.test(recovery, mu = 14, alternative = "less")
+recovery_test
+```
+
+. . .
+
+```{r}
+#| echo: true
+cat("P-value =", format(recovery_test$p.value, scientific = TRUE), "\n\n")
+```
+
+This extremely small P-value provides overwhelming evidence that the new surgical technique reduces mean recovery time below the standard 14 days.
+
+# The Distribution of P-Values (Devore Example 9.22) {background-color="#e67e22"}
+
+## P-Values Are Random Variables
+
+The P-value is computed from the test statistic, which is computed from sample data. Different samples yield different test statistics and therefore **different P-values**.
+
+. . .
+
+**Key theoretical results:**
+
+- When $H_0$ is **true**: the P-value has a **Uniform(0, 1)** distribution
+- When $H_0$ is **false**: the P-value distribution is **concentrated near 0**
+
+. . .
+
+::: callout-important
+## Why Uniform Under $H_0$?
+If $H_0$ is true, then $P(\text{P-value} \leq \alpha) = \alpha$ for any $\alpha \in [0, 1]$. This is precisely the definition of a Uniform(0, 1) distribution!
+:::
+
+## Recap: P-Value Uniformity via the Probability Integral Transform
+
+Recall our earlier result: if $T$ has continuous CDF $F_T$ under $H_0$, then $P = 1 - F_T(T) \sim \text{Uniform}(0,1)$.
+
+. . .
+
+**For the z test specifically:**
+
+Let $Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0,1)$ under $H_0$. The P-value for an upper-tailed test is:
+
+$$P = 1 - \Phi(Z)$$
+
+. . .
+
+Since $\Phi$ is the CDF of $Z$, this is exactly the survival function form, and the probability integral transformation gives us $P \sim \text{Uniform}(0,1)$.
+
+## What Happens Under the Alternative?
+
+Under $H_a: \mu > \mu_0$, the test statistic $Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}$ is **not** standard normal.
+
+. . .
+
+Instead, $Z$ has mean $\frac{\mu - \mu_0}{\sigma/\sqrt{n}} > 0$, so $Z$ tends to be positive and large.
+
+. . .
+
+**Consequence for the P-value:**
+
+$$P = 1 - \Phi(Z) = P_{H_0}(Z' \geq Z)$$
+
+When $Z$ tends to be large and positive, $\Phi(Z) \to 1$, so $P \to 0$.
+
+. . .
+
+**The farther $\mu$ is from $\mu_0$:**
+
+- The more $Z$ is shifted to the right
+- The larger $\Phi(Z)$ becomes
+- The smaller the P-value $P = 1 - \Phi(Z)$
+- The more P-values concentrate near 0
+
+## The Distribution of P-Values: A Unified View
+
+Let $\delta = \frac{\mu - \mu_0}{\sigma/\sqrt{n}}$ be the **noncentrality parameter** (standardized effect size).
+
+. . .
+
+Under the true parameter value:
+
+- $\delta = 0$ (i.e., $H_0$ true): $P \sim \text{Uniform}(0, 1)$
+- $\delta > 0$ (upper-tailed $H_a$ true): $P$ has CDF $F_P(p) = 1 - \Phi(\Phi^{-1}(1-p) - \delta)$
+
+. . .
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+# Theoretical CDF of P-value for different delta values
+p_seq <- seq(0.001, 0.999, length.out = 500)
+deltas <- c(0, 1, 2, 3)
+
+pval_cdf <- expand_grid(p = p_seq, delta = deltas) |>
+  mutate(
+    F_p = 1 - pnorm(qnorm(1 - p) - delta),
+    delta_label = paste0("delta == ", delta)
+  )
+
+ggplot(pval_cdf, aes(x = p, y = F_p, color = factor(delta))) +
+  geom_line(linewidth = 1.2) +
+  geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray50") +
+  scale_color_viridis_d(
+    labels = c(expression(delta == 0 ~ "(Uniform)"), 
+               expression(delta == 1), 
+               expression(delta == 2), 
+               expression(delta == 3))
+  ) +
+  labs(x = "p", y = expression(F[P](p)),
+       title = "CDF of P-Value Under Different Alternatives (Upper-Tailed z Test)",
+       subtitle = "Larger delta concentrates the P-value distribution near 0",
+       color = "Effect Size") +
+  annotate("text", x = 0.5, y = 0.45, label = "Uniform(0,1) reference", 
+           color = "gray50", size = 5) +
+  theme(legend.position = c(0.85, 0.35),
+        legend.text.align = 0)
+```
+
+## Power in Terms of P-Value Distribution
+
+The **power** at a given alternative $\mu$ is the probability of rejecting $H_0$:
+
+$$\text{Power}(\mu) = P_\mu(\text{Reject } H_0) = P_\mu(P \leq \alpha) = F_P(\alpha)$$
+
+. . .
+
+Using our formula for the P-value CDF under the alternative:
+
+$$\text{Power}(\mu) = 1 - \Phi\left(\Phi^{-1}(1-\alpha) - \delta\right) = \Phi\left(\delta - z_{1-\alpha}\right)$$
+
+where $\delta = \frac{\mu - \mu_0}{\sigma/\sqrt{n}}$ and $z_{1-\alpha} = \Phi^{-1}(1-\alpha)$.
+
+. . .
+
+**This connects P-value theory to power calculations!**
+
+## Simulation: P-Value Distribution (Devore Example 9.22)
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 16
+set.seed(551)
+n_sims <- 10000
+n <- 4
+sigma <- 2
+
+# Function to compute P-value from one-sample t test (upper-tailed)
+sim_pvalue <- function(n, mu_true, mu0 = 30, sigma = 2) {
+  x <- rnorm(n, mean = mu_true, sd = sigma)
+  t_stat <- (mean(x) - mu0) / (sd(x) / sqrt(n))
+  pt(t_stat, df = n - 1, lower.tail = FALSE)
+}
+
+# Simulate under three scenarios
+pvals_H0_true   <- replicate(n_sims, sim_pvalue(n, mu_true = 30))  # H0 true
+pvals_mu31      <- replicate(n_sims, sim_pvalue(n, mu_true = 31))  # H0 false, mu=31
+pvals_mu32      <- replicate(n_sims, sim_pvalue(n, mu_true = 32))  # H0 false, mu=32
+
+sim_data <- bind_rows(
+  tibble(pvalue = pvals_H0_true, scenario = "H0 true (mu = 30)"),
+  tibble(pvalue = pvals_mu31,    scenario = "H0 false (mu = 31)"),
+  tibble(pvalue = pvals_mu32,    scenario = "H0 false (mu = 32)")
+) |>
+  mutate(scenario = fct_inorder(scenario))
+
+ggplot(sim_data, aes(x = pvalue)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, 
+                 fill = "steelblue", color = "white", alpha = 0.7) +
+  geom_vline(xintercept = 0.05, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = 0.08, y = Inf, vjust = 2, hjust = 0,
+           label = expression(alpha == 0.05), color = "red", size = 5) +
+  facet_wrap(~scenario, ncol = 3) +
+  labs(x = "P-value", y = "Density",
+       title = "Distribution of P-Values: 10,000 Simulated t Tests (n = 4)",
+       subtitle = expression(paste("Testing ", H[0], ": ", mu == 30, " vs ", 
+                             H[a], ": ", mu > 30, " with ", sigma == 2))) +
+  theme(strip.text = element_text(size = 14, face = "bold"))
+```
+
+## What the Simulation Shows
+
+```{r}
+#| echo: true
+# Proportion of P-values <= 0.05 in each scenario
+cat("Proportion rejecting H0 at alpha = 0.05:\n")
+cat("  H0 true (mu = 30): ", round(mean(pvals_H0_true <= 0.05), 3), 
+    " (should be ~0.05)\n")
+cat("  H0 false (mu = 31):", round(mean(pvals_mu31 <= 0.05), 3), 
+    " (power at mu = 31)\n")
+cat("  H0 false (mu = 32):", round(mean(pvals_mu32 <= 0.05), 3), 
+    " (power at mu = 32)\n")
+```
+
+. . .
+
+**Key insights (Devore Example 9.22):**
+
+- When $H_0$ is true, the P-value histogram is approximately **flat** (Uniform)
+- Only ~5% of P-values fall below 0.05, confirming $\alpha$ controls the Type I error rate
+- As $\mu$ moves farther from $\mu_0 = 30$, P-values concentrate closer to 0
+- Even at $\mu = 32$, power is less than 50% because $n = 4$ is very small!
+
+## Common Misinterpretations of P-Values
+
+::: callout-warning
+## What the P-Value is NOT
+
+1. **Not** the probability that $H_0$ is true: P-value $\neq P(H_0 \text{ is true} \mid \text{data})$
+2. **Not** the probability of making an error: it is $P(\text{data this extreme} \mid H_0 \text{ true})$
+3. **Not** a measure of effect size: a small P-value can arise from a tiny effect with large $n$
+4. A P-value of 0.05 does **not** mean there is a 5% chance $H_0$ is true
+5. Failing to reject $H_0$ does **not** mean $H_0$ is true (absence of evidence $\neq$ evidence of absence)
+:::
+
+. . .
+
+::: callout-note
+## ASA Statement on P-Values (2016)
+The American Statistical Association emphasized: "a P-value does not provide a good measure of evidence regarding a model or hypothesis." P-values should be supplemented with effect sizes, confidence intervals, and clinical judgment.
+:::
+
+## Statistical vs Clinical Significance
+
+```{r}
+#| echo: true
+#| fig-height: 5
+#| code-fold: true
+# Large sample can detect trivially small effects
+set.seed(551)
+n_large <- 5000
+bp_data <- rnorm(n_large, mean = 120.3, sd = 15)  # Mean barely above 120
+
+bp_test <- t.test(bp_data, mu = 120)
+cat("n =", n_large, "\n")
+cat("Sample mean:", round(mean(bp_data), 2), "mmHg\n")
+cat("P-value:", format(bp_test$p.value, digits = 4), "\n")
+cat("95% CI: (", round(bp_test$conf.int[1], 2), ",", 
+    round(bp_test$conf.int[2], 2), ")\n\n")
+cat("Statistically significant (P < 0.05)? ", bp_test$p.value < 0.05, "\n")
+cat("Clinically meaningful difference? A 0.3 mmHg difference\n")
+cat("in systolic BP has NO clinical relevance!")
+```
+
+. . .
+
+::: callout-tip
+## Practical Advice for Medical Research
+Always report **both** the P-value **and** a confidence interval. The CI gives a range of plausible values for the effect size, which is what clinicians actually need for decision-making.
+:::
+
+# Power for the t Test: The Noncentral t Distribution {background-color="#16a085"}
+
+## Review: Power for the z Test (Lesson 13)
+
+For the one-sample z test ($\sigma$ known), we derived closed-form expressions:
+
+| Alternative | $\beta(\mu')$ |
+|:---:|:---:|
+| $H_a: \mu > \mu_0$ | $\Phi\!\left(z_\alpha + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+| $H_a: \mu < \mu_0$ | $1 - \Phi\!\left(-z_\alpha + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+| $H_a: \mu \neq \mu_0$ | $\Phi\!\left(z_{\alpha/2} + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right) - \Phi\!\left(-z_{\alpha/2} + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+
+. . .
+
+**Limitation:** These formulas require $\sigma$ to be known. In practice, we use the t test, and the analysis of power becomes more complex.
+
+## The Noncentral t Distribution (Devore 9.2)
+
+When $H_0$ is **false** (i.e., $\mu = \mu' \neq \mu_0$), the t test statistic
+
+$$T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}$$
+
+does **not** follow a $t_{n-1}$ distribution. Instead, it follows a **noncentral t distribution**.
+
+. . .
+
+::: callout-important
+## Definition (Devore 9.2)
+Let $Z \sim N(0,1)$ and $Y \sim \chi^2_m$ be independent. For any real number $\delta$, the random variable
+
+$$\frac{Z + \delta}{\sqrt{Y/m}}$$
+
+has a **noncentral t distribution** with $m$ degrees of freedom and **noncentrality parameter** $\delta$.
+
+When $\delta = 0$, this reduces to the ordinary (central) $t_m$ distribution.
+:::
+
+## Noncentrality Parameter for the One-Sample t Test
+
+When $\mu = \mu'$ (the true mean under $H_a$), the one-sample t statistic has a noncentral $t$ distribution with:
+
+- **Degrees of freedom:** $n - 1$
+- **Noncentrality parameter:** $\delta = \frac{\mu' - \mu_0}{\sigma/\sqrt{n}}$
+
+. . .
+
+The noncentrality parameter $\delta$ measures how far the true mean is from the null value, in units of the standard error.
+
+. . .
+
+```{r}
+#| echo: true
+# Example: mu_0 = 120, mu' = 125, sigma = 15, n = 25
+mu0 <- 120; mu_prime <- 125; sigma <- 15; n <- 25
+delta <- (mu_prime - mu0) / (sigma / sqrt(n))
+cat("Noncentrality parameter: delta =", round(delta, 3))
+```
+
+## Visualizing the Noncentral t Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 7
+t_seq <- seq(-4, 8, length.out = 500)
+df <- 9
+deltas <- c(0, 1, 2, 3)
+
+nct_data <- map_dfr(deltas, \(d) {
+  tibble(
+    t = t_seq,
+    density = dt(t_seq, df = df, ncp = d),
+    delta = paste0("delta == ", d)
+  )
+})
+
+ggplot(nct_data, aes(x = t, y = density, color = delta)) +
+  geom_line(linewidth = 1.3) +
+  scale_color_manual(
+    values = c("steelblue", "darkgreen", "darkorange", "red"),
+    labels = c(
+      expression(delta == 0 ~ "(central t)"),
+      expression(delta == 1),
+      expression(delta == 2),
+      expression(delta == 3)
+    )
+  ) +
+  labs(x = "t", y = "Density", color = "Noncentrality",
+       title = expression("Noncentral t Distribution (df = 9)"),
+       subtitle = expression("Larger " * delta * " shifts the distribution right" *
+                             " " * symbol("\256") * " more power for upper-tailed tests")) +
+  theme(legend.text.align = 0, legend.position = "right")
+```
+
+## Computing Power with the Noncentral t
+
+**Power for an upper-tailed test** $H_a: \mu > \mu_0$:
+
+$$\text{Power} = P\!\left(T \geq t_{\alpha, n-1}\right) = 1 - F\!\left(t_{\alpha, n-1};\, n-1,\, \delta\right)$$
+
+where $F(x; m, \delta)$ is the CDF of the noncentral $t$ distribution.
+
+. . .
+
+**In R:** `pt(t_crit, df, ncp = delta, lower.tail = FALSE)`
+
+. . .
+
+```{r}
+#| echo: true
+# Example (Devore Example 9.14 adapted to medical context):
+# Testing whether mean systolic BP exceeds 120 mmHg
+# H0: mu = 120, Ha: mu > 120, alpha = 0.05, n = 10, sigma = 10
+# What is the power when mu' = 125?
+n <- 10; mu0 <- 120; mu_prime <- 125; sigma <- 10; alpha <- 0.05
+
+delta <- (mu_prime - mu0) / (sigma / sqrt(n))
+t_crit <- qt(1 - alpha, df = n - 1)
+
+power <- pt(t_crit, df = n - 1, ncp = delta, lower.tail = FALSE)
+cat("Noncentrality parameter: delta =", round(delta, 3), "\n")
+cat("Critical value: t_{0.05, 9} =", round(t_crit, 3), "\n")
+cat("Power =", round(power, 4), "\n")
+cat("Beta (Type II error) =", round(1 - power, 4))
+```
+
+## Power Curves for the t Test: Medical Example
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+alpha <- 0.05
+mu0 <- 120  # null value for systolic BP
+sigma <- 10
+
+# Power curves for different sample sizes
+sample_sizes <- c(10, 25, 50, 100)
+mu_range <- seq(120, 130, by = 0.25)
+
+power_data <- expand_grid(n = sample_sizes, mu_prime = mu_range) |>
+  mutate(
+    delta = (mu_prime - mu0) / (sigma / sqrt(n)),
+    t_crit = qt(1 - alpha, df = n - 1),
+    power = pt(t_crit, df = n - 1, ncp = delta, lower.tail = FALSE),
+    n_label = paste0("n = ", n)
+  )
+
+ggplot(power_data, aes(x = mu_prime, y = power, color = n_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "gray40") +
+  geom_hline(yintercept = alpha, linetype = "dotted", color = "gray60") +
+  annotate("text", x = 129.5, y = 0.82, label = "80% power", 
+           color = "gray40", size = 5) +
+  annotate("text", x = 129.5, y = 0.07, 
+           label = expression(alpha == 0.05), color = "gray60", size = 4) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = expression("True " * mu * " (mmHg)"),
+       y = "Power",
+       color = "Sample Size",
+       title = "Power Curves: One-Sided t Test for Systolic Blood Pressure",
+       subtitle = expression(paste(H[0], ": ", mu == 120, " vs ", H[a], ": ", 
+                             mu > 120, ",  ", sigma == 10, ",  ", alpha == 0.05)))
+```
+
+## Key Features of Power Curves
+
+**Two intuitive features:**
+
+1. For any **fixed** departure from $H_0$, power **increases** with sample size
+2. For any **fixed** sample size, power **increases** as $\mu'$ moves farther from $\mu_0$
+
+. . .
+
+**Factors that increase power:**
+
+- **Larger $n$:** more data $\Rightarrow$ smaller SE $\Rightarrow$ easier to detect departures
+- **Larger effect size** $|\mu' - \mu_0|$: bigger departures are easier to detect
+- **Smaller $\sigma$:** less noise $\Rightarrow$ easier to detect signal
+- **Larger $\alpha$:** easier to reject (but at the cost of more Type I errors)
+
+. . .
+
+::: callout-tip
+## Clinical Trial Implication
+The power analysis must be conducted **before** collecting data. It ensures the study has sufficient sample size to detect a **clinically meaningful** effect.
+:::
+
+# Sample Size Determination {background-color="#e74c3c"}
+
+## Why Determine Sample Size?
+
+**Clinical scenario:** You are designing a randomized trial to test whether a new antihypertensive drug lowers systolic blood pressure more than a placebo.
+
+. . .
+
+**Key questions:**
+
+- How many patients do we need to **detect** a meaningful effect?
+- What effect size is **clinically important**?
+- What balance of Type I and Type II errors is acceptable?
+
+. . .
+
+::: callout-important
+## The Three Ingredients for Sample Size
+1. **Significance level** $\alpha$ (usually 0.05)
+2. **Desired power** $1 - \beta$ (usually 0.80 or 0.90)
+3. **Clinically meaningful effect size** $\Delta = |\mu' - \mu_0|$ (determined by clinical judgment)
+4. **(Estimated) standard deviation** $\sigma$
+:::
+
+## Sample Size Formula for the z Test (Review)
+
+For the one-sample z test, the required sample size for power $1 - \beta$ at alternative $\mu'$:
+
+$$n = \begin{cases} \left[\dfrac{\sigma(z_\alpha + z_\beta)}{\mu_0 - \mu'}\right]^2 & \text{one-tailed test} \\[12pt] \left[\dfrac{\sigma(z_{\alpha/2} + z_\beta)}{\mu_0 - \mu'}\right]^2 & \text{two-tailed test (approximate)} \end{cases}$$
+
+. . .
+
+```{r}
+#| echo: true
+# How many patients to detect a 5 mmHg reduction with 80% power?
+delta <- 5  # clinically meaningful difference (mmHg)
+sigma <- 15  # estimated SD
+alpha <- 0.05
+beta <- 0.20  # power = 0.80
+
+# Two-tailed z test
+n_z <- (sigma * (qnorm(1 - alpha/2) + qnorm(1 - beta)) / delta)^2
+cat("z test sample size (two-tailed):", ceiling(n_z), "patients")
+```
+
+## R's `power.t.test()` Function
+
+R provides `power.t.test()` for sample size and power calculations for the one-sample and two-sample t tests. It accounts for the noncentral t distribution automatically.
+
+. . .
+
+```{r}
+#| echo: true
+# Same example using power.t.test()
+result <- power.t.test(
+  delta = 5,           # difference to detect
+  sd = 15,             # estimated standard deviation
+  sig.level = 0.05,    # alpha
+  power = 0.80,        # desired power
+  type = "one.sample", # one-sample test
+  alternative = "two.sided"
+)
+result
+```
+
+. . .
+
+```{r}
+#| echo: true
+cat("Required sample size:", ceiling(result$n), "patients")
+```
+
+## Example: Planning a Clinical Trial for Blood Pressure
+
+**Setting:** Researchers are planning a trial to test whether a new drug reduces systolic blood pressure. Historical data suggests $\sigma \approx 12$ mmHg. A reduction of 5 mmHg is considered clinically meaningful.
+
+```{r}
+#| echo: true
+# One-sided test: H0: mu >= 0 vs Ha: mu < 0 (reduction in BP)
+power_result <- power.t.test(
+  delta = 5,
+  sd = 12,
+  sig.level = 0.05,
+  power = 0.80,
+  type = "one.sample",
+  alternative = "one.sided"
+)
+cat("For 80% power:", ceiling(power_result$n), "patients needed\n")
+
+# What about 90% power?
+power_90 <- power.t.test(
+  delta = 5, sd = 12, sig.level = 0.05,
+  power = 0.90, type = "one.sample", alternative = "one.sided"
+)
+cat("For 90% power:", ceiling(power_90$n), "patients needed\n")
+
+# What about a smaller effect (3 mmHg)?
+power_small <- power.t.test(
+  delta = 3, sd = 12, sig.level = 0.05,
+  power = 0.80, type = "one.sample", alternative = "one.sided"
+)
+cat("For 3 mmHg effect:", ceiling(power_small$n), "patients needed")
+```
+
+## Sample Size as a Function of Effect Size and Power
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+sigma <- 12
+alpha <- 0.05
+
+# Vary effect size
+delta_range <- seq(2, 10, by = 0.5)
+power_levels <- c(0.80, 0.90, 0.95)
+
+ss_data <- expand_grid(delta = delta_range, power = power_levels) |>
+  rowwise() |>
+  mutate(
+    n = ceiling(power.t.test(
+      delta = delta, sd = sigma, sig.level = alpha,
+      power = power, type = "one.sample", alternative = "two.sided"
+    )$n),
+    power_label = paste0("Power = ", power * 100, "%")
+  ) |>
+  ungroup()
+
+p_ss <- ggplot(ss_data, aes(x = delta, y = n, color = power_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 2) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = expression("Clinically Meaningful Difference " * Delta * " (mmHg)"),
+       y = "Required Sample Size (n)",
+       color = "",
+       title = "Sample Size vs Effect Size for One-Sample t Test",
+       subtitle = expression(paste(sigma == 12, " mmHg, ", alpha == 0.05, 
+                             ", two-tailed"))) +
+  theme(legend.position = "top")
+
+# Power as a function of n for fixed delta
+n_range <- seq(5, 200, by = 5)
+delta_levels <- c(3, 5, 8)
+
+pow_data <- expand_grid(n = n_range, delta = delta_levels) |>
+  rowwise() |>
+  mutate(
+    power = power.t.test(
+      n = n, delta = delta, sd = sigma, sig.level = alpha,
+      type = "one.sample", alternative = "two.sided"
+    )$power,
+    delta_label = paste0("Delta = ", delta, " mmHg")
+  ) |>
+  ungroup()
+
+p_pow <- ggplot(pow_data, aes(x = n, y = power, color = delta_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "gray50") +
+  scale_color_brewer(palette = "Dark2") +
+  labs(x = "Sample Size (n)", y = "Power",
+       color = "",
+       title = "Power vs Sample Size",
+       subtitle = expression(paste(sigma == 12, " mmHg, ", alpha == 0.05, 
+                             ", two-tailed"))) +
+  theme(legend.position = "top")
+
+p_ss + p_pow
+```
+
+## Example: Neonatal ICU Glucose Monitoring
+
+**Setting:** A neonatal ICU has historically maintained mean blood glucose at 80 mg/dL (sd = 20 mg/dL) in premature infants. A new feeding protocol is introduced. The clinical team wants to detect any shift in mean glucose of at least 8 mg/dL with 90% power.
+
+```{r}
+#| echo: true
+# How many infants are needed?
+nicu_power <- power.t.test(
+  delta = 8,
+  sd = 20,
+  sig.level = 0.05,
+  power = 0.90,
+  type = "one.sample",
+  alternative = "two.sided"
+)
+
+cat("=== NICU Study Design ===\n")
+cat("Effect to detect: 8 mg/dL\n")
+cat("Assumed SD: 20 mg/dL\n")
+cat("Significance level: 0.05\n")
+cat("Desired power: 0.90\n")
+cat("Required sample size:", ceiling(nicu_power$n), "infants\n\n")
+
+# Verify: what is the actual power at this sample size?
+actual_power <- power.t.test(
+  n = ceiling(nicu_power$n),
+  delta = 8,
+  sd = 20,
+  sig.level = 0.05,
+  type = "one.sample",
+  alternative = "two.sided"
+)
+cat("Actual power at n =", ceiling(nicu_power$n), ":", 
+    round(actual_power$power, 4))
+```
+
+## Manual Power Calculation with the Noncentral t
+
+Let's verify `power.t.test()` using the noncentral t distribution directly:
+
+```{r}
+#| echo: true
+# NICU example: n = 70, delta = 8, sigma = 20, alpha = 0.05, two-tailed
+n <- ceiling(nicu_power$n)
+mu0 <- 80; mu_prime <- 88; sigma <- 20
+alpha <- 0.05
+
+# Noncentrality parameter
+delta_ncp <- (mu_prime - mu0) / (sigma / sqrt(n))
+cat("Noncentrality parameter: delta =", round(delta_ncp, 3), "\n")
+
+# Critical values for two-tailed test
+t_crit <- qt(1 - alpha/2, df = n - 1)
+cat("Critical value: t_{0.025,", n-1, "} =", round(t_crit, 3), "\n")
+
+# Power = P(|T| >= t_crit) under noncentral t
+power_upper <- pt(t_crit, df = n - 1, ncp = delta_ncp, lower.tail = FALSE)
+power_lower <- pt(-t_crit, df = n - 1, ncp = delta_ncp, lower.tail = TRUE)
+power_total <- power_upper + power_lower
+
+cat("Power (upper tail):", round(power_upper, 4), "\n")
+cat("Power (lower tail):", round(power_lower, 6), " (negligible)\n")
+cat("Total power:", round(power_total, 4))
+```
+
+# Connecting P-Values, Power, and Sample Size {background-color="#8e44ad"}
+
+## The Complete Picture
+
+```{r}
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 16
+# Comprehensive example: How P-values, power, and n interact
+set.seed(551)
+mu0 <- 120; mu_true <- 125; sigma <- 15
+
+# Simulate P-values for different sample sizes
+sim_comprehensive <- function(n, mu_true, mu0 = 120, sigma = 15, n_sims = 5000) {
+  replicate(n_sims, {
+    x <- rnorm(n, mean = mu_true, sd = sigma)
+    t_stat <- (mean(x) - mu0) / (sd(x) / sqrt(n))
+    2 * pt(abs(t_stat), df = n - 1, lower.tail = FALSE)  # two-tailed
+  })
+}
+
+pvals_n10  <- sim_comprehensive(10,  mu_true)
+pvals_n30  <- sim_comprehensive(30,  mu_true)
+pvals_n100 <- sim_comprehensive(100, mu_true)
+
+comp_data <- bind_rows(
+  tibble(pvalue = pvals_n10,  n_label = "n = 10"),
+  tibble(pvalue = pvals_n30,  n_label = "n = 30"),
+  tibble(pvalue = pvals_n100, n_label = "n = 100")
+) |>
+  mutate(n_label = fct_inorder(n_label))
+
+p_hist <- ggplot(comp_data, aes(x = pvalue)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white", alpha = 0.7) +
+  geom_vline(xintercept = 0.05, linetype = "dashed", color = "red", linewidth = 1) +
+  facet_wrap(~n_label, ncol = 3, scales = "free_y") +
+  labs(x = "P-value", y = "Count",
+       title = expression("P-value Distributions When " * H[0] * 
+                          " Is False (" * mu == 125 * ")"),
+       subtitle = expression(paste(H[0], ": ", mu == 120, ", two-tailed, ",
+                             sigma == 15))) +
+  theme(strip.text = element_text(size = 13, face = "bold"))
+
+# Power summary
+power_summary <- comp_data |>
+  group_by(n_label) |>
+  summarise(
+    prop_reject = mean(pvalue <= 0.05),
+    median_pval = median(pvalue),
+    .groups = "drop"
+  )
+
+p_table <- ggplot(power_summary, aes(x = n_label, y = prop_reject)) +
+  geom_col(fill = "steelblue", alpha = 0.7, width = 0.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "red") +
+  geom_text(aes(label = paste0(round(prop_reject * 100, 1), "%")), 
+            vjust = -0.5, size = 6) +
+  annotate("text", x = 3.4, y = 0.82, label = "80% power", color = "red", size = 5) +
+  scale_y_continuous(limits = c(0, 1.05), labels = scales::percent) +
+  labs(x = "", y = "Proportion Rejecting H0\n(Simulated Power)",
+       title = "Power Increases with Sample Size")
+
+p_hist / p_table + plot_layout(heights = c(2, 1.2))
+```
+
+## Summary: P-Values and Their Relationship to Testing
+
+| Concept | What It Tells You |
+|---------|-------------------|
+| **P-value** | Strength of evidence against $H_0$ (smaller = stronger) |
+| **$\alpha$** | Threshold for "significant" evidence (set in advance) |
+| **$\beta(\mu')$** | Probability of missing a true effect of size $\mu'$ |
+| **Power** $= 1 - \beta$ | Probability of detecting a true effect |
+| **Sample size** $n$ | Number of observations needed for desired power |
+
+. . .
+
+**The chain of reasoning:**
+
+$$\text{Larger } n \implies \text{Smaller SE} \implies \text{Larger } |T| \implies \text{Smaller P-values} \implies \text{More Power}$$
+
+## Practical Guidelines for Medical Research
+
+::: callout-tip
+## Best Practices
+
+1. **Always report P-values AND confidence intervals** --- the CI tells you about effect size
+2. **Conduct power analysis BEFORE the study** --- not after!
+3. **Use clinically meaningful effect sizes** --- not just "any" difference
+4. **Don't p-hack:** pre-register hypotheses and analysis plans
+5. **Interpret in context:** a P-value of 0.048 vs 0.052 should not lead to radically different conclusions
+6. **Consider multiple comparisons:** if testing many hypotheses, adjust $\alpha$ (Bonferroni, FDR, etc.)
+:::
+
+. . .
+
+::: callout-important
+## FDA Guidance
+Clinical trials typically require $\alpha = 0.05$ (two-sided) and power $\geq 0.80$. Phase III trials often require power $\geq 0.90$ to ensure adequate evidence for drug approval.
+:::
+
+# Multiple Testing and P-Value Adjustment {background-color="#c0392b"}
+
+## The Multiple Testing Problem
+
+**Scenario:** A genomics study tests 20,000 genes for differential expression between tumor and normal tissue. Using $\alpha = 0.05$ for each test...
+
+. . .
+
+**Expected false positives under $H_0$ (no true effects):**
+
+$$\text{Expected false discoveries} = m \times \alpha = 20{,}000 \times 0.05 = 1{,}000$$
+
+. . .
+
+Even if **no genes are truly differentially expressed**, we expect ~1,000 "significant" results by chance alone!
+
+. . .
+
+::: callout-warning
+## The Core Problem
+When conducting $m$ hypothesis tests, the probability of making **at least one** Type I error grows rapidly with $m$, even if each individual test has size $\alpha$.
+:::
+
+## Family-Wise Error Rate (FWER)
+
+::: callout-note
+## Definition
+The **family-wise error rate (FWER)** is the probability of making one or more Type I errors among all $m$ tests:
+
+$$\text{FWER} = P(\text{at least one false rejection})$$
+:::
+
+. . .
+
+If the $m$ tests are **independent** and all null hypotheses are true:
+
+$$\text{FWER} = 1 - P(\text{no false rejections}) = 1 - (1 - \alpha)^m$$
+
+. . .
+
+```{r}
+#| echo: true
+# FWER as a function of m for alpha = 0.05
+m_tests <- c(1, 2, 5, 10, 20, 50, 100)
+fwer <- 1 - (1 - 0.05)^m_tests
+tibble(m = m_tests, FWER = round(fwer, 3)) |> 
+  pivot_wider(names_from = m, values_from = FWER) |>
+  knitr::kable(col.names = paste0("m = ", m_tests))
+```
+
+## Visualizing the FWER Inflation
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+m_seq <- 1:100
+fwer_data <- tibble(
+  m = m_seq,
+  FWER = 1 - (1 - 0.05)^m_seq
+)
+
+ggplot(fwer_data, aes(x = m, y = FWER)) +
+  geom_line(linewidth = 1.5, color = "firebrick") +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "steelblue", linewidth = 1) +
+  geom_hline(yintercept = 0.5, linetype = "dotted", color = "gray50") +
+  annotate("text", x = 80, y = 0.08, label = "Nominal alpha = 0.05", 
+           color = "steelblue", size = 5) +
+  annotate("text", x = 80, y = 0.53, label = "FWER = 50%", color = "gray50", size = 5) +
+  annotate("point", x = 14, y = 1 - (1 - 0.05)^14, color = "firebrick", size = 3) +
+  annotate("text", x = 18, y = 0.55, label = "At m = 14, FWER > 50%", 
+           color = "firebrick", size = 5, hjust = 0) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(x = "Number of Tests (m)",
+       y = "Family-Wise Error Rate",
+       title = "FWER Inflation with Multiple Testing",
+       subtitle = "Using individual alpha = 0.05 for each test (assuming independence)")
+```
+
+## The Bonferroni Correction
+
+::: callout-important
+## Bonferroni Correction
+To control the FWER at level $\alpha$ when conducting $m$ tests, reject each individual hypothesis only if its P-value satisfies:
+
+$$p_i \leq \frac{\alpha}{m}$$
+
+Equivalently, compute **adjusted P-values**: $\tilde{p}_i = \min(m \cdot p_i, 1)$
+:::
+
+. . .
+
+**Theoretical justification (Boole's inequality):**
+
+$$\text{FWER} = P\left(\bigcup_{i \in \mathcal{H}_0} \{\text{Reject } H_{0i}\}\right) \leq \sum_{i \in \mathcal{H}_0} P(\text{Reject } H_{0i}) \leq m_0 \cdot \frac{\alpha}{m} \leq \alpha$$
+
+where $m_0$ is the number of true null hypotheses.
+
+## Bonferroni: Example
+
+**Clinical trial:** Testing a drug's effect on 5 different biomarkers.
+
+```{r}
+#| echo: true
+# Raw P-values from 5 tests
+biomarkers <- c("CRP", "IL-6", "TNF-alpha", "Cortisol", "Fibrinogen")
+raw_pvalues <- c(0.008, 0.023, 0.041, 0.067, 0.12)
+
+# Bonferroni adjustment
+m <- length(raw_pvalues)
+bonf_adjusted <- pmin(raw_pvalues * m, 1)  # p.adjust does this
+
+# Using R's built-in function
+bonf_adjusted_r <- p.adjust(raw_pvalues, method = "bonferroni")
+
+tibble(
+  Biomarker = biomarkers,
+  `Raw P-value` = raw_pvalues,
+  `Bonferroni Adjusted` = round(bonf_adjusted_r, 3),
+  `Significant (alpha=0.05)` = ifelse(bonf_adjusted_r <= 0.05, "Yes", "No")
+) |> knitr::kable()
+```
+
+. . .
+
+Only CRP remains significant after Bonferroni correction!
+
+## Limitations of Bonferroni
+
+::: callout-warning
+## Bonferroni is Conservative
+The Bonferroni correction controls FWER at level **at most** $\alpha$, but often the actual FWER is much smaller, leading to reduced **power**.
+:::
+
+. . .
+
+**When Bonferroni is too conservative:**
+
+- Tests are positively correlated (common in genomics)
+- Large number of tests ($m > 100$)
+- Many true alternative hypotheses
+
+. . .
+
+**The problem:** With $m = 20{,}000$ tests, Bonferroni requires $p < 0.05/20{,}000 = 2.5 \times 10^{-6}$. This may miss many true effects.
+
+## Alternative: False Discovery Rate (FDR)
+
+Instead of controlling the probability of **any** false positives (FWER), we can control the **proportion** of false positives among all discoveries.
+
+::: callout-note
+## Definition: False Discovery Rate
+Let $V$ = number of false discoveries (Type I errors) and $R$ = total number of rejections. The **false discovery rate** is:
+
+$$\text{FDR} = E\left[\frac{V}{R} \mid R > 0\right] \cdot P(R > 0)$$
+
+Often approximated as $E[V/R]$ with the convention that $V/R = 0$ when $R = 0$.
+:::
+
+. . .
+
+**Interpretation:** FDR = 0.05 means that, on average, 5% of our "discoveries" are false positives. This is often acceptable in exploratory research.
+
+## Benjamini-Hochberg (BH) Procedure
+
+::: callout-important
+## Benjamini-Hochberg Procedure (1995)
+To control FDR at level $q$:
+
+1. Order the $m$ P-values: $p_{(1)} \leq p_{(2)} \leq \cdots \leq p_{(m)}$
+2. Find the largest $k$ such that $p_{(k)} \leq \frac{k}{m} q$
+3. Reject all hypotheses with $p_{(i)} \leq p_{(k)}$ (i.e., reject $H_{(1)}, \ldots, H_{(k)}$)
+:::
+
+. . .
+
+**Adjusted P-values:** The BH-adjusted P-value for the $i$-th ordered hypothesis is:
+
+$$\tilde{p}_{(i)} = \min_{j \geq i} \left\{ \frac{m}{j} p_{(j)} \right\}$$
+
+(enforcing monotonicity: larger raw P-values cannot have smaller adjusted P-values)
+
+## Visualizing the BH Procedure
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+set.seed(551)
+# Simulate 50 P-values: 40 from null (Uniform), 10 from alternative (concentrated near 0)
+m <- 50
+p_null <- runif(40)
+p_alt <- rbeta(10, 1, 20)  # Concentrated near 0
+pvalues <- c(p_null, p_alt)
+
+# Sort and create BH threshold
+pvalues_sorted <- sort(pvalues)
+k <- 1:m
+q <- 0.10
+bh_threshold <- (k / m) * q
+
+bh_data <- tibble(
+  rank = k,
+  pvalue = pvalues_sorted,
+  bh_line = bh_threshold,
+  reject = pvalue <= bh_line[max(which(pvalues_sorted <= bh_threshold))]
+)
+
+# Find the BH cutoff
+k_star <- max(which(pvalues_sorted <= bh_threshold))
+
+ggplot(bh_data, aes(x = rank, y = pvalue)) +
+  geom_point(aes(color = reject), size = 3) +
+  geom_line(aes(y = bh_line), color = "steelblue", linewidth = 1, linetype = "dashed") +
+  geom_vline(xintercept = k_star, color = "red", linetype = "dotted", linewidth = 1) +
+  scale_color_manual(values = c("gray50", "firebrick"), 
+                     labels = c("Not rejected", "Rejected")) +
+  annotate("text", x = k_star + 2, y = 0.5, hjust = 0, color = "red", size = 5,
+           label = paste0("k* = ", k_star, " rejections")) +
+  annotate("text", x = 40, y = 0.07, color = "steelblue", size = 5,
+           label = "BH threshold line: (k/m) * q") +
+  labs(x = "Rank (ordered P-values)",
+       y = "P-value",
+       title = "Benjamini-Hochberg Procedure (FDR = 0.10)",
+       subtitle = "Reject all hypotheses below the largest P-value that falls under the threshold line",
+       color = "")
+```
+
+## BH Procedure: Example
+
+```{r}
+#| echo: true
+# Same biomarker example
+biomarkers <- c("CRP", "IL-6", "TNF-alpha", "Cortisol", "Fibrinogen")
+raw_pvalues <- c(0.008, 0.023, 0.041, 0.067, 0.12)
+
+# Multiple adjustment methods
+adjustments <- tibble(
+  Biomarker = biomarkers,
+  `Raw P` = raw_pvalues,
+  Bonferroni = p.adjust(raw_pvalues, method = "bonferroni"),
+  Holm = p.adjust(raw_pvalues, method = "holm"),
+  BH = p.adjust(raw_pvalues, method = "BH"),
+  BY = p.adjust(raw_pvalues, method = "BY")
+)
+
+adjustments |> 
+  mutate(across(where(is.numeric), ~round(., 3))) |>
+  knitr::kable()
+```
+
+. . .
+
+**BH allows more discoveries** than Bonferroni while still controlling false discoveries.
+
+## Comparison of Adjustment Methods
+
+| Method | Controls | Formula | Conservative? |
+|--------|----------|---------|---------------|
+| **Bonferroni** | FWER | $\tilde{p}_i = m \cdot p_i$ | Very |
+| **Holm** | FWER | Step-down Bonferroni | Less than Bonferroni |
+| **Hochberg** | FWER | Step-up Bonferroni | Less than Holm |
+| **BH** | FDR | $\tilde{p}_{(i)} = \min_{j \geq i}\frac{m}{j}p_{(j)}$ | Not very |
+| **BY** | FDR (any dependence) | BH with correction factor | More than BH |
+
+. . .
+
+::: callout-tip
+## Practical Guidance
+- Use **Bonferroni** or **Holm** when controlling FWER is essential (confirmatory studies, regulatory submissions)
+- Use **BH** for exploratory research where some false discoveries are acceptable (genomics, screening)
+- Use **BY** when tests may have arbitrary dependence structure
+:::
+
+## Multiple Testing in R: `p.adjust()`
+
+```{r}
+#| echo: true
+# Simulate a genomics-style analysis
+set.seed(551)
+m <- 1000  # 1000 genes
+n_true_effects <- 50  # 50 genes truly differentially expressed
+
+# Generate P-values
+pvals <- c(
+  rbeta(n_true_effects, 0.5, 10),  # True effects: small P-values
+  runif(m - n_true_effects)         # Null: uniform P-values
+)
+
+# Apply different correction methods
+results <- tibble(
+  raw = pvals,
+  bonferroni = p.adjust(pvals, method = "bonferroni"),
+  holm = p.adjust(pvals, method = "holm"),
+  BH = p.adjust(pvals, method = "BH")
+)
+
+# Count discoveries at alpha/q = 0.05
+cat("Number of 'significant' results (adjusted P <= 0.05):\n")
+cat("  Raw (no adjustment):", sum(pvals <= 0.05), "\n")
+cat("  Bonferroni:         ", sum(results$bonferroni <= 0.05), "\n")
+cat("  Holm:               ", sum(results$holm <= 0.05), "\n")
+cat("  BH (FDR):           ", sum(results$BH <= 0.05), "\n")
+cat("\nTrue positives (out of", n_true_effects, "true effects):\n")
+cat("  BH discoveries that are true effects:", 
+    sum(results$BH[1:n_true_effects] <= 0.05), "\n")
+```
+
+## Simulation: Comparing FWER and FDR Control
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+set.seed(551)
+n_sims <- 1000
+m <- 100  # tests per simulation
+pi0 <- 0.9  # proportion of true nulls
+
+sim_results <- map_dfr(1:n_sims, function(sim) {
+  # Generate P-values
+  n_null <- round(m * pi0)
+  n_alt <- m - n_null
+  pvals <- c(runif(n_null), rbeta(n_alt, 0.3, 5))
+  true_null <- c(rep(TRUE, n_null), rep(FALSE, n_alt))
+  
+  # Apply corrections
+  bonf_reject <- p.adjust(pvals, "bonferroni") <= 0.05
+  bh_reject <- p.adjust(pvals, "BH") <= 0.05
+  
+  tibble(
+    sim = sim,
+    # FWER: any false rejection among true nulls?
+    bonf_any_fp = any(bonf_reject & true_null),
+    bh_any_fp = any(bh_reject & true_null),
+    # FDR: proportion of rejections that are false
+    bonf_fdr = sum(bonf_reject & true_null) / max(sum(bonf_reject), 1),
+    bh_fdr = sum(bh_reject & true_null) / max(sum(bh_reject), 1),
+    # Power: proportion of true alternatives detected
+    bonf_power = sum(bonf_reject & !true_null) / n_alt,
+    bh_power = sum(bh_reject & !true_null) / n_alt
+  )
+})
+
+# Summarize
+summary_stats <- sim_results |>
+  summarise(
+    `Bonferroni FWER` = mean(bonf_any_fp),
+    `BH FWER` = mean(bh_any_fp),
+    `Bonferroni FDR` = mean(bonf_fdr),
+    `BH FDR` = mean(bh_fdr),
+    `Bonferroni Power` = mean(bonf_power),
+    `BH Power` = mean(bh_power)
+  )
+
+summary_long <- summary_stats |>
+  pivot_longer(everything(), names_to = "metric", values_to = "value") |>
+  separate(metric, into = c("Method", "Measure"), sep = " ", extra = "merge")
+
+ggplot(summary_long, aes(x = Measure, y = value, fill = Method)) +
+  geom_col(position = "dodge", width = 0.7) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "red") +
+  annotate("text", x = 1.5, y = 0.07, label = "Nominal level = 0.05", color = "red", size = 4) +
+  scale_fill_manual(values = c("BH" = "steelblue", "Bonferroni" = "coral")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, NA)) +
+  labs(x = "", y = "Rate",
+       title = "Comparison of Bonferroni (FWER control) vs BH (FDR control)",
+       subtitle = paste0("Simulation: m = ", m, " tests, ", (1-pi0)*100, 
+                        "% true alternatives, ", n_sims, " replications")) +
+  theme(legend.position = "top")
+```
+
+## When to Use Which Correction?
+
+::: callout-important
+## Decision Framework
+
+**Use FWER control (Bonferroni/Holm) when:**
+
+- False positives have serious consequences (e.g., drug approval)
+- Small number of pre-specified hypotheses
+- Confirmatory analysis with regulatory implications
+
+**Use FDR control (BH) when:**
+
+- Exploratory analysis where findings will be validated
+- Large number of tests (genomics, neuroimaging)
+- Some false discoveries are acceptable in exchange for more power
+- Generating hypotheses for future studies
+:::
+
+. . .
+
+**Medical research examples:**
+
+- **Phase III clinical trial** (primary endpoint): Bonferroni or no adjustment (single test)
+- **Genome-wide association study**: BH or even less stringent (will be replicated)
+- **Multiple secondary endpoints**: Holm or Hochberg
+- **Biomarker discovery panel**: BH
+
+## Multiple Testing: Summary
+
+1. **The problem:** Multiple tests inflate the chance of false discoveries
+
+2. **FWER** = P(at least one false positive); controlled by **Bonferroni**, **Holm**
+
+3. **FDR** = E(proportion of false discoveries); controlled by **BH**, **BY**
+
+4. **Trade-off:** Stricter error control $\Rightarrow$ lower power
+
+5. **In R:** `p.adjust(pvalues, method = "bonferroni")` or `method = "BH"`
+
+. . .
+
+::: callout-tip
+## Key Insight
+Multiple testing adjustment is not optional---it's a fundamental requirement for honest science. Always report whether and how P-values were adjusted.
+:::
+
+# Key Takeaways and Looking Ahead {background-color="#2c3e50"}
+
+## Key Takeaways
+
+::: callout-important
+## Today's Main Points
+
+1. **P-value definition:** probability of observing data as extreme or more extreme, assuming $H_0$ is true
+2. **P-value uniformity:** Under $H_0$, P-values are Uniform(0,1) by the probability integral transformation
+3. **Size of a test:** P-value tests have exact size $\alpha$ because $P(P \leq \alpha) = \alpha$ when $P \sim \text{Uniform}(0,1)$
+4. **Conditional P-values:** Fisher's exact test conditions on sufficient statistics to eliminate nuisance parameters
+5. **Noncentral t:** when $H_0$ is false, $T$ follows a noncentral $t$ with $\delta = (\mu' - \mu_0)/(\sigma/\sqrt{n})$
+6. **Power in R:** `pt(t_crit, df, ncp = delta)` for manual; `power.t.test()` for convenience
+7. **Multiple testing:** FWER controlled by Bonferroni/Holm; FDR controlled by BH procedure
+:::
+
+. . .
+
+**Common mistakes to avoid:**
+
+- Interpreting P-value as $P(H_0 \text{ true})$
+- Confusing statistical and clinical significance
+- Computing power **after** seeing the data (post hoc power)
+- Failing to adjust for multiple comparisons in exploratory analyses
+- Using Bonferroni when FDR control would be more appropriate (and vice versa)
+
+## Looking Ahead
+
+**Next class (Lesson 15):** Neyman-Pearson Lemma; Likelihood Ratio Tests (Devore 9.5)
+
+- Most powerful tests for simple hypotheses
+- The Neyman-Pearson framework
+- Likelihood ratio test statistic
+- Connection to tests we've already learned
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Sections 9.2, 9.4
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Sections 8.1--8.2
+-   Wasserstein, R. L., & Lazar, N. A. (2016). The ASA Statement on p-Values: Context, Process, and Purpose. *The American Statistician*, 70(2), 129--133.
+-   Fisher, R. A. (1922). On the interpretation of $\chi^2$ from contingency tables, and the calculation of P. *Journal of the Royal Statistical Society*, 85(1), 87--94.
+-   Benjamini, Y., & Hochberg, Y. (1995). Controlling the false discovery rate: A practical and powerful approach to multiple testing. *Journal of the Royal Statistical Society: Series B*, 57(1), 289--300.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/14_PValues_Power_SampleSize/14_PValues_Power_SampleSize.html lessons/14_PValues_Power_SampleSize/14_PValues_Power_SampleSize.pdf
+```

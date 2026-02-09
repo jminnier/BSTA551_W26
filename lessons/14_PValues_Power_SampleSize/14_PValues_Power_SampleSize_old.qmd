@@ -1,0 +1,1095 @@
+---
+title: "Lesson 14: P-Values; Power and Sample Size Determination"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w7d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 14 - P-Values; Power and Sample Size Determination
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 14: P-Values; Power and Sample Size Determination {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lesson 13: Tests About a Population Mean and Proportion**
+
+-   One-sample z test ($\sigma$ known) and t test ($\sigma$ unknown)
+-   Score test and exact binomial test for proportions
+-   Seven-step hypothesis testing procedure
+-   CI-test duality: a $100(1-\alpha)\%$ CI contains values not rejected at level $\alpha$
+
+. . .
+
+**Today's Goals:**
+
+1. Understand P-values as a continuous measure of evidence against $H_0$
+2. Compute P-values for z and t tests
+3. Understand the distribution of P-values under $H_0$ and $H_a$
+4. Use the noncentral t distribution for exact power calculations
+5. Determine sample sizes for planning clinical trials using R
+
+## Roadmap for Today
+
+| Topic | Key Idea | Textbook |
+|-------|----------|----------|
+| P-values | Probability of data as extreme or more extreme than observed | Devore 9.4 |
+| P-value distribution | Uniform under $H_0$; concentrated near 0 under $H_a$ | Devore 9.4 |
+| Power for the t test | Noncentral t distribution | Devore 9.2 |
+| Sample size determination | `power.t.test()` in R | Devore 9.2 |
+
+. . .
+
+::: callout-note
+## Why This Matters
+In medical research, P-values appear in virtually every published paper. Understanding what they mean --- and what they do **not** mean --- is essential for interpreting clinical evidence.
+:::
+
+# P-Values (Devore 9.4) {background-color="#3498db"}
+
+## From Rejection Regions to P-Values
+
+**Recall the rejection region approach:**
+
+1. Fix $\alpha$ (e.g., 0.05)
+2. Find critical value(s)
+3. Reject $H_0$ if the test statistic falls in the rejection region
+
+. . .
+
+**Limitation:** The rejection region approach gives a binary decision (reject / fail to reject), but tells us nothing about **how strongly** the data contradict $H_0$.
+
+. . .
+
+**Two scenarios with the same decision:**
+
+- $\alpha = 0.05$, P-value = 0.049 $\Rightarrow$ barely reject $H_0$
+- $\alpha = 0.05$, P-value = 0.00001 $\Rightarrow$ overwhelming evidence against $H_0$
+
+The rejection region approach treats these identically!
+
+## Definition of the P-Value
+
+::: callout-important
+## Definition (Devore 9.4)
+The **P-value** is the probability, calculated assuming that the null hypothesis is true, of obtaining a value of the test statistic at least as contradictory to $H_0$ as the value calculated from the available sample.
+:::
+
+. . .
+
+**Key points:**
+
+- The P-value **is** a probability
+- It is calculated **assuming $H_0$ is true**
+- It is a function of the **sample data** (and therefore a random variable!)
+- We need to determine which values are "at least as contradictory" to $H_0$
+
+## Decision Rule Based on the P-Value
+
+::: callout-important
+## P-Value Decision Rule (Devore 9.4)
+
+Select a significance level $\alpha$. Then:
+
+$$\text{Reject } H_0 \text{ if P-value} \leq \alpha; \qquad \text{Do not reject } H_0 \text{ if P-value} > \alpha$$
+:::
+
+. . .
+
+**Equivalence to the rejection region method:**
+
+- If the test statistic falls in the rejection region, then P-value $\leq \alpha$
+- If the test statistic falls outside the rejection region, then P-value $> \alpha$
+
+. . .
+
+**Advantage:** The P-value encodes more information than a binary reject/fail-to-reject decision. It conveys the **strength** of evidence against $H_0$.
+
+## P-Values for z Tests
+
+For a z test (test statistic $Z$ with $Z \sim N(0,1)$ under $H_0$):
+
+$$\text{P-value} = \begin{cases} 1 - \Phi(z) & \text{for an upper-tailed test } (H_a: \mu > \mu_0) \\[6pt] \Phi(z) & \text{for a lower-tailed test } (H_a: \mu < \mu_0) \\[6pt] 2[1 - \Phi(|z|)] & \text{for a two-tailed test } (H_a: \mu \neq \mu_0) \end{cases}$$
+
+where $\Phi(z)$ is the standard normal CDF and $z$ is the observed test statistic.
+
+. . .
+
+```{r}
+#| echo: true
+# Quick R reminders for P-value computation
+z_obs <- 2.15
+cat("Upper-tailed P-value:", 1 - pnorm(z_obs), "\n")
+cat("Lower-tailed P-value:", pnorm(z_obs), "\n")
+cat("Two-tailed P-value:  ", 2 * (1 - pnorm(abs(z_obs))), "\n")
+```
+
+## Visualizing P-Values for z Tests
+
+```{r}
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 18
+z_obs <- 2.15
+z_seq <- seq(-4, 4, length.out = 500)
+y <- dnorm(z_seq)
+
+p1 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq >= z_obs], 
+                          y = dnorm(z_seq[z_seq >= z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = z_obs, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = z_obs + 0.15, y = 0.06, hjust = 0, size = 5, color = "red",
+           label = paste0("z = ", z_obs)) +
+  annotate("text", x = 3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P = ", round(1 - pnorm(z_obs), 4))) +
+  labs(title = expression("Upper-tailed: " * H[a]*": " * mu > mu[0]),
+       x = "z", y = "Density")
+
+p2 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq <= -z_obs], 
+                          y = dnorm(z_seq[z_seq <= -z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = -z_obs, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = -z_obs - 0.15, y = 0.06, hjust = 1, size = 5, color = "red",
+           label = paste0("z = ", -z_obs)) +
+  annotate("text", x = -3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P = ", round(pnorm(-z_obs), 4))) +
+  labs(title = expression("Lower-tailed: " * H[a]*": " * mu < mu[0]),
+       x = "z", y = "Density")
+
+p3 <- tibble(z = z_seq, y = y) |>
+  ggplot(aes(x = z, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(z = z_seq[z_seq >= z_obs], 
+                          y = dnorm(z_seq[z_seq >= z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_area(data = tibble(z = z_seq[z_seq <= -z_obs], 
+                          y = dnorm(z_seq[z_seq <= -z_obs])),
+            aes(x = z, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = c(-z_obs, z_obs), linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = 3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P/2 = ", round(1 - pnorm(z_obs), 4))) +
+  annotate("text", x = -3.2, y = 0.12, size = 5, color = "coral",
+           label = paste0("P/2 = ", round(pnorm(-z_obs), 4))) +
+  annotate("text", x = 0, y = 0.3, size = 5, color = "coral",
+           label = paste0("Total P = ", round(2*(1 - pnorm(z_obs)), 4))) +
+  labs(title = expression(paste("Two-tailed: ", H[a], ": ", mu != mu[0])),
+       x = "z", y = "Density")
+
+p1 + p2 + p3
+```
+
+## P-Values for t Tests
+
+For the one-sample t test with $n - 1$ degrees of freedom, the P-value formulas are analogous:
+
+$$\text{P-value} = \begin{cases} P(T_{n-1} \geq t) & \text{upper-tailed} \\[6pt] P(T_{n-1} \leq t) & \text{lower-tailed} \\[6pt] 2 \cdot P(T_{n-1} \geq |t|) & \text{two-tailed} \end{cases}$$
+
+. . .
+
+```{r}
+#| echo: true
+# P-values for t tests in R
+t_obs <- 2.15
+df <- 14
+
+cat("Upper-tailed P-value:", pt(t_obs, df = df, lower.tail = FALSE), "\n")
+cat("Lower-tailed P-value:", pt(t_obs, df = df, lower.tail = TRUE), "\n")
+cat("Two-tailed P-value:  ", 2 * pt(abs(t_obs), df = df, lower.tail = FALSE), "\n")
+```
+
+. . .
+
+::: callout-tip
+## R Functions
+`t.test()` and `prop.test()` automatically compute P-values. Manual computation is needed only for understanding and for non-standard situations.
+:::
+
+# Medical Examples: Computing P-Values {background-color="#9b59b6"}
+
+## Example: Hemoglobin A1c Levels in Diabetic Patients
+
+**Setting:** A diabetes clinic is evaluating whether a new management protocol changes mean hemoglobin A1c (HbA1c) levels. The standard target is 7.0%. A sample of $n = 20$ patients on the new protocol gives $\bar{x} = 7.42\%$ and $s = 0.95\%$.
+
+**Question:** Is there evidence that the new protocol produces different mean HbA1c than the target?
+
+. . .
+
+```{r}
+#| echo: true
+# Data summary
+n <- 20
+xbar <- 7.42
+s <- 0.95
+mu0 <- 7.0
+
+# Test statistic
+t_stat <- (xbar - mu0) / (s / sqrt(n))
+cat("Test statistic: t =", round(t_stat, 3), "\n")
+cat("Degrees of freedom:", n - 1, "\n")
+
+# P-value (two-tailed)
+p_value <- 2 * pt(abs(t_stat), df = n - 1, lower.tail = FALSE)
+cat("P-value (two-tailed):", round(p_value, 4), "\n")
+```
+
+## HbA1c Example: Visualizing the P-Value
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+df <- 19
+t_seq <- seq(-5, 5, length.out = 500)
+y_t <- dt(t_seq, df = df)
+
+tibble(t = t_seq, y = y_t) |>
+  ggplot(aes(x = t, y = y)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_area(data = tibble(t = t_seq[t_seq >= abs(t_stat)], 
+                          y = dt(t_seq[t_seq >= abs(t_stat)], df)),
+            aes(x = t, y = y), fill = "coral", alpha = 0.6) +
+  geom_area(data = tibble(t = t_seq[t_seq <= -abs(t_stat)], 
+                          y = dt(t_seq[t_seq <= -abs(t_stat)], df)),
+            aes(x = t, y = y), fill = "coral", alpha = 0.6) +
+  geom_vline(xintercept = c(-abs(t_stat), abs(t_stat)), 
+             linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = t_stat + 0.2, y = 0.15, hjust = 0, size = 5, color = "red",
+           label = paste0("t = ", round(t_stat, 2))) +
+  annotate("text", x = 0, y = 0.25, size = 6, color = "coral",
+           label = paste0("P-value = ", round(p_value, 4))) +
+  labs(x = "t", y = "Density",
+       title = expression("Two-Tailed t Test: HbA1c Levels (" * t[19] * " distribution)"),
+       subtitle = expression(paste(H[0], ": ", mu == 7.0, "% vs ", H[a], ": ", mu != 7.0, "%")))
+```
+
+## HbA1c Example: Complete Analysis with `t.test()`
+
+```{r}
+#| echo: true
+# Simulate individual patient data consistent with our summary statistics
+set.seed(2026)
+hba1c <- rnorm(20, mean = 7.42, sd = 0.95)
+# Adjust to match desired summary statistics closely
+hba1c <- (hba1c - mean(hba1c)) / sd(hba1c) * 0.95 + 7.42
+
+# Full t.test output
+hba1c_test <- t.test(hba1c, mu = 7.0, alternative = "two.sided")
+hba1c_test
+```
+
+. . .
+
+**Interpretation:** At $\alpha = 0.05$, the P-value of `r round(hba1c_test$p.value, 4)` is less than 0.05, so we reject $H_0$. There is statistically significant evidence that the mean HbA1c under the new protocol differs from 7.0%.
+
+## Example: Serum Transferrin Receptor in Pregnancy (Devore 9.4, Exercise 55)
+
+**Setting:** The average serum transferrin receptor concentration for all women is known to be 5.63 mg/L. A study reported P-value > 0.10 for testing $H_0: \mu = 5.63$ vs $H_a: \mu \neq 5.63$ based on $n = 176$ pregnant women.
+
+. . .
+
+**Question:** Using $\alpha = 0.01$, what would you conclude?
+
+. . .
+
+```{r}
+#| echo: true
+alpha <- 0.01
+p_value_reported <- 0.10  # P-value > 0.10
+
+cat("Decision rule: Reject H0 if P-value <=", alpha, "\n")
+cat("Observed: P-value > 0.10\n")
+cat("Since 0.10 >", alpha, ", we fail to reject H0.\n\n")
+cat("Conclusion: There is insufficient evidence at the 0.01\n")
+cat("significance level to conclude that the mean serum\n")
+cat("transferrin receptor concentration for pregnant women\n")
+cat("differs from the value of 5.63 mg/L for all women.")
+```
+
+## Example: Post-Surgical Recovery Time
+
+**Setting:** The standard mean recovery time after a particular surgery is 14 days. A surgeon has adopted a new minimally invasive technique and records recovery times for 15 patients.
+
+```{r}
+#| echo: true
+recovery <- c(11.2, 13.5, 10.8, 12.1, 14.3, 9.7, 11.9, 12.8,
+              10.5, 13.1, 11.4, 12.6, 10.2, 13.8, 11.1)
+
+# One-sided test: H0: mu = 14 vs Ha: mu < 14
+recovery_test <- t.test(recovery, mu = 14, alternative = "less")
+recovery_test
+```
+
+. . .
+
+```{r}
+#| echo: true
+cat("P-value =", format(recovery_test$p.value, scientific = TRUE), "\n\n")
+cat("This extremely small P-value provides overwhelming evidence\n")
+cat("that the new surgical technique reduces mean recovery time\n")
+cat("below the standard 14 days.")
+```
+
+# The Distribution of P-Values (Devore Example 9.22) {background-color="#e67e22"}
+
+## P-Values Are Random Variables
+
+The P-value is computed from the test statistic, which is computed from sample data. Different samples yield different test statistics and therefore **different P-values**.
+
+. . .
+
+**Key theoretical results:**
+
+- When $H_0$ is **true**: the P-value has a **Uniform(0, 1)** distribution
+- When $H_0$ is **false**: the P-value distribution is **concentrated near 0**
+
+. . .
+
+::: callout-important
+## Why Uniform Under $H_0$?
+If $H_0$ is true, then $P(\text{P-value} \leq \alpha) = \alpha$ for any $\alpha \in [0, 1]$. This is precisely the definition of a Uniform(0, 1) distribution!
+:::
+
+## Proof Sketch: P-Value is Uniform Under $H_0$
+
+For an upper-tailed z test, the P-value is $p = 1 - \Phi(Z)$ where $Z \sim N(0,1)$ under $H_0$.
+
+. . .
+
+Let $U = 1 - \Phi(Z)$. For any $u \in (0, 1)$:
+
+$$P(U \leq u) = P(1 - \Phi(Z) \leq u) = P(\Phi(Z) \geq 1 - u) = P(Z \geq \Phi^{-1}(1-u))$$
+
+. . .
+
+$$= 1 - \Phi(\Phi^{-1}(1-u)) = 1 - (1-u) = u$$
+
+. . .
+
+Since $P(U \leq u) = u$ for all $u \in (0,1)$, we have $U \sim \text{Uniform}(0,1)$.
+
+. . .
+
+**Consequence:** Under $H_0$, any P-value threshold $\alpha$ rejects exactly proportion $\alpha$ of the time --- this is why the significance level controls the Type I error rate.
+
+## Simulation: P-Value Distribution (Devore Example 9.22)
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 16
+set.seed(551)
+n_sims <- 10000
+n <- 4
+sigma <- 2
+
+# Function to compute P-value from one-sample t test (upper-tailed)
+sim_pvalue <- function(n, mu_true, mu0 = 30, sigma = 2) {
+  x <- rnorm(n, mean = mu_true, sd = sigma)
+  t_stat <- (mean(x) - mu0) / (sd(x) / sqrt(n))
+  pt(t_stat, df = n - 1, lower.tail = FALSE)
+}
+
+# Simulate under three scenarios
+pvals_H0_true   <- replicate(n_sims, sim_pvalue(n, mu_true = 30))  # H0 true
+pvals_mu31      <- replicate(n_sims, sim_pvalue(n, mu_true = 31))  # H0 false, mu=31
+pvals_mu32      <- replicate(n_sims, sim_pvalue(n, mu_true = 32))  # H0 false, mu=32
+
+sim_data <- bind_rows(
+  tibble(pvalue = pvals_H0_true, scenario = "H0 true (mu = 30)"),
+  tibble(pvalue = pvals_mu31,    scenario = "H0 false (mu = 31)"),
+  tibble(pvalue = pvals_mu32,    scenario = "H0 false (mu = 32)")
+) |>
+  mutate(scenario = fct_inorder(scenario))
+
+ggplot(sim_data, aes(x = pvalue)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 30, 
+                 fill = "steelblue", color = "white", alpha = 0.7) +
+  geom_vline(xintercept = 0.05, linetype = "dashed", color = "red", linewidth = 1) +
+  annotate("text", x = 0.08, y = Inf, vjust = 2, hjust = 0,
+           label = expression(alpha == 0.05), color = "red", size = 5) +
+  facet_wrap(~scenario, ncol = 3) +
+  labs(x = "P-value", y = "Density",
+       title = "Distribution of P-Values: 10,000 Simulated t Tests (n = 4)",
+       subtitle = expression(paste("Testing ", H[0], ": ", mu == 30, " vs ", 
+                             H[a], ": ", mu > 30, " with ", sigma == 2))) +
+  theme(strip.text = element_text(size = 14, face = "bold"))
+```
+
+## What the Simulation Shows
+
+```{r}
+#| echo: true
+# Proportion of P-values <= 0.05 in each scenario
+cat("Proportion rejecting H0 at alpha = 0.05:\n")
+cat("  H0 true (mu = 30): ", round(mean(pvals_H0_true <= 0.05), 3), 
+    " (should be ~0.05)\n")
+cat("  H0 false (mu = 31):", round(mean(pvals_mu31 <= 0.05), 3), 
+    " (power at mu = 31)\n")
+cat("  H0 false (mu = 32):", round(mean(pvals_mu32 <= 0.05), 3), 
+    " (power at mu = 32)\n")
+```
+
+. . .
+
+**Key insights (Devore Example 9.22):**
+
+- When $H_0$ is true, the P-value histogram is approximately **flat** (Uniform)
+- Only ~5% of P-values fall below 0.05, confirming $\alpha$ controls the Type I error rate
+- As $\mu$ moves farther from $\mu_0 = 30$, P-values concentrate closer to 0
+- Even at $\mu = 32$, power is less than 50% because $n = 4$ is very small!
+
+## Common Misinterpretations of P-Values
+
+::: callout-warning
+## What the P-Value is NOT
+
+1. **Not** the probability that $H_0$ is true: P-value $\neq P(H_0 \text{ is true} \mid \text{data})$
+2. **Not** the probability of making an error: it is $P(\text{data this extreme} \mid H_0 \text{ true})$
+3. **Not** a measure of effect size: a small P-value can arise from a tiny effect with large $n$
+4. A P-value of 0.05 does **not** mean there is a 5% chance $H_0$ is true
+5. Failing to reject $H_0$ does **not** mean $H_0$ is true (absence of evidence $\neq$ evidence of absence)
+:::
+
+. . .
+
+::: callout-note
+## ASA Statement on P-Values (2016)
+The American Statistical Association emphasized: "a P-value does not provide a good measure of evidence regarding a model or hypothesis." P-values should be supplemented with effect sizes, confidence intervals, and clinical judgment.
+:::
+
+## Statistical vs Clinical Significance
+
+```{r}
+#| echo: true
+#| fig-height: 5
+#| code-fold: true
+# Large sample can detect trivially small effects
+set.seed(551)
+n_large <- 5000
+bp_data <- rnorm(n_large, mean = 120.3, sd = 15)  # Mean barely above 120
+
+bp_test <- t.test(bp_data, mu = 120)
+cat("n =", n_large, "\n")
+cat("Sample mean:", round(mean(bp_data), 2), "mmHg\n")
+cat("P-value:", format(bp_test$p.value, digits = 4), "\n")
+cat("95% CI: (", round(bp_test$conf.int[1], 2), ",", 
+    round(bp_test$conf.int[2], 2), ")\n\n")
+cat("Statistically significant (P < 0.05)? ", bp_test$p.value < 0.05, "\n")
+cat("Clinically meaningful difference? A 0.3 mmHg difference\n")
+cat("in systolic BP has NO clinical relevance!")
+```
+
+. . .
+
+::: callout-tip
+## Practical Advice for Medical Research
+Always report **both** the P-value **and** a confidence interval. The CI gives a range of plausible values for the effect size, which is what clinicians actually need for decision-making.
+:::
+
+# Power for the t Test: The Noncentral t Distribution {background-color="#16a085"}
+
+## Review: Power for the z Test (Lesson 13)
+
+For the one-sample z test ($\sigma$ known), we derived closed-form expressions:
+
+| Alternative | $\beta(\mu')$ |
+|:---:|:---:|
+| $H_a: \mu > \mu_0$ | $\Phi\!\left(z_\alpha + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+| $H_a: \mu < \mu_0$ | $1 - \Phi\!\left(-z_\alpha + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+| $H_a: \mu \neq \mu_0$ | $\Phi\!\left(z_{\alpha/2} + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right) - \Phi\!\left(-z_{\alpha/2} + \frac{\mu_0 - \mu'}{\sigma/\sqrt{n}}\right)$ |
+
+. . .
+
+**Limitation:** These formulas require $\sigma$ to be known. In practice, we use the t test, and the analysis of power becomes more complex.
+
+## The Noncentral t Distribution (Devore 9.2)
+
+When $H_0$ is **false** (i.e., $\mu = \mu' \neq \mu_0$), the t test statistic
+
+$$T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}$$
+
+does **not** follow a $t_{n-1}$ distribution. Instead, it follows a **noncentral t distribution**.
+
+. . .
+
+::: callout-important
+## Definition (Devore 9.2)
+Let $Z \sim N(0,1)$ and $Y \sim \chi^2_m$ be independent. For any real number $\delta$, the random variable
+
+$$\frac{Z + \delta}{\sqrt{Y/m}}$$
+
+has a **noncentral t distribution** with $m$ degrees of freedom and **noncentrality parameter** $\delta$.
+
+When $\delta = 0$, this reduces to the ordinary (central) $t_m$ distribution.
+:::
+
+## Noncentrality Parameter for the One-Sample t Test
+
+When $\mu = \mu'$ (the true mean under $H_a$), the one-sample t statistic has a noncentral $t$ distribution with:
+
+- **Degrees of freedom:** $n - 1$
+- **Noncentrality parameter:** $\delta = \frac{\mu' - \mu_0}{\sigma/\sqrt{n}}$
+
+. . .
+
+The noncentrality parameter $\delta$ measures how far the true mean is from the null value, in units of the standard error.
+
+. . .
+
+```{r}
+#| echo: true
+# Example: mu_0 = 120, mu' = 125, sigma = 15, n = 25
+mu0 <- 120; mu_prime <- 125; sigma <- 15; n <- 25
+delta <- (mu_prime - mu0) / (sigma / sqrt(n))
+cat("Noncentrality parameter: delta =", round(delta, 3))
+```
+
+## Visualizing the Noncentral t Distribution
+
+```{r}
+#| code-fold: true
+#| fig-height: 7
+t_seq <- seq(-4, 8, length.out = 500)
+df <- 9
+deltas <- c(0, 1, 2, 3)
+
+nct_data <- map_dfr(deltas, \(d) {
+  tibble(
+    t = t_seq,
+    density = dt(t_seq, df = df, ncp = d),
+    delta = paste0("delta == ", d)
+  )
+})
+
+ggplot(nct_data, aes(x = t, y = density, color = delta)) +
+  geom_line(linewidth = 1.3) +
+  scale_color_manual(
+    values = c("steelblue", "darkgreen", "darkorange", "red"),
+    labels = c(
+      expression(delta == 0 ~ "(central t)"),
+      expression(delta == 1),
+      expression(delta == 2),
+      expression(delta == 3)
+    )
+  ) +
+  labs(x = "t", y = "Density", color = "Noncentrality",
+       title = expression("Noncentral t Distribution (df = 9)"),
+       subtitle = expression("Larger " * delta * " shifts the distribution right" *
+                             " " * symbol("\256") * " more power for upper-tailed tests")) +
+  theme(legend.text.align = 0, legend.position = "right")
+```
+
+## Computing Power with the Noncentral t
+
+**Power for an upper-tailed test** $H_a: \mu > \mu_0$:
+
+$$\text{Power} = P\!\left(T \geq t_{\alpha, n-1}\right) = 1 - F\!\left(t_{\alpha, n-1};\, n-1,\, \delta\right)$$
+
+where $F(x; m, \delta)$ is the CDF of the noncentral $t$ distribution.
+
+. . .
+
+**In R:** `pt(t_crit, df, ncp = delta, lower.tail = FALSE)`
+
+. . .
+
+```{r}
+#| echo: true
+# Example (Devore Example 9.14 adapted to medical context):
+# Testing whether mean systolic BP exceeds 120 mmHg
+# H0: mu = 120, Ha: mu > 120, alpha = 0.05, n = 10, sigma = 10
+# What is the power when mu' = 125?
+n <- 10; mu0 <- 120; mu_prime <- 125; sigma <- 10; alpha <- 0.05
+
+delta <- (mu_prime - mu0) / (sigma / sqrt(n))
+t_crit <- qt(1 - alpha, df = n - 1)
+
+power <- pt(t_crit, df = n - 1, ncp = delta, lower.tail = FALSE)
+cat("Noncentrality parameter: delta =", round(delta, 3), "\n")
+cat("Critical value: t_{0.05, 9} =", round(t_crit, 3), "\n")
+cat("Power =", round(power, 4), "\n")
+cat("Beta (Type II error) =", round(1 - power, 4))
+```
+
+## Power Curves for the t Test: Medical Example
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+alpha <- 0.05
+mu0 <- 120  # null value for systolic BP
+sigma <- 10
+
+# Power curves for different sample sizes
+sample_sizes <- c(10, 25, 50, 100)
+mu_range <- seq(120, 130, by = 0.25)
+
+power_data <- expand_grid(n = sample_sizes, mu_prime = mu_range) |>
+  mutate(
+    delta = (mu_prime - mu0) / (sigma / sqrt(n)),
+    t_crit = qt(1 - alpha, df = n - 1),
+    power = pt(t_crit, df = n - 1, ncp = delta, lower.tail = FALSE),
+    n_label = paste0("n = ", n)
+  )
+
+ggplot(power_data, aes(x = mu_prime, y = power, color = n_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "gray40") +
+  geom_hline(yintercept = alpha, linetype = "dotted", color = "gray60") +
+  annotate("text", x = 129.5, y = 0.82, label = "80% power", 
+           color = "gray40", size = 5) +
+  annotate("text", x = 129.5, y = 0.07, 
+           label = expression(alpha == 0.05), color = "gray60", size = 4) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = expression("True " * mu * " (mmHg)"),
+       y = "Power",
+       color = "Sample Size",
+       title = "Power Curves: One-Sided t Test for Systolic Blood Pressure",
+       subtitle = expression(paste(H[0], ": ", mu == 120, " vs ", H[a], ": ", 
+                             mu > 120, ",  ", sigma == 10, ",  ", alpha == 0.05)))
+```
+
+## Key Features of Power Curves
+
+**Two intuitive features:**
+
+1. For any **fixed** departure from $H_0$, power **increases** with sample size
+2. For any **fixed** sample size, power **increases** as $\mu'$ moves farther from $\mu_0$
+
+. . .
+
+**Factors that increase power:**
+
+- **Larger $n$:** more data $\Rightarrow$ smaller SE $\Rightarrow$ easier to detect departures
+- **Larger effect size** $|\mu' - \mu_0|$: bigger departures are easier to detect
+- **Smaller $\sigma$:** less noise $\Rightarrow$ easier to detect signal
+- **Larger $\alpha$:** easier to reject (but at the cost of more Type I errors)
+
+. . .
+
+::: callout-tip
+## Clinical Trial Implication
+The power analysis must be conducted **before** collecting data. It ensures the study has sufficient sample size to detect a **clinically meaningful** effect.
+:::
+
+# Sample Size Determination {background-color="#e74c3c"}
+
+## Why Determine Sample Size?
+
+**Clinical scenario:** You are designing a randomized trial to test whether a new antihypertensive drug lowers systolic blood pressure more than a placebo.
+
+. . .
+
+**Key questions:**
+
+- How many patients do we need to **detect** a meaningful effect?
+- What effect size is **clinically important**?
+- What balance of Type I and Type II errors is acceptable?
+
+. . .
+
+::: callout-important
+## The Three Ingredients for Sample Size
+1. **Significance level** $\alpha$ (usually 0.05)
+2. **Desired power** $1 - \beta$ (usually 0.80 or 0.90)
+3. **Clinically meaningful effect size** $\Delta = |\mu' - \mu_0|$ (determined by clinical judgment)
+4. **(Estimated) standard deviation** $\sigma$
+:::
+
+## Sample Size Formula for the z Test (Review)
+
+For the one-sample z test, the required sample size for power $1 - \beta$ at alternative $\mu'$:
+
+$$n = \begin{cases} \left[\dfrac{\sigma(z_\alpha + z_\beta)}{\mu_0 - \mu'}\right]^2 & \text{one-tailed test} \\[12pt] \left[\dfrac{\sigma(z_{\alpha/2} + z_\beta)}{\mu_0 - \mu'}\right]^2 & \text{two-tailed test (approximate)} \end{cases}$$
+
+. . .
+
+```{r}
+#| echo: true
+# How many patients to detect a 5 mmHg reduction with 80% power?
+delta <- 5  # clinically meaningful difference (mmHg)
+sigma <- 15  # estimated SD
+alpha <- 0.05
+beta <- 0.20  # power = 0.80
+
+# Two-tailed z test
+n_z <- (sigma * (qnorm(1 - alpha/2) + qnorm(1 - beta)) / delta)^2
+cat("z test sample size (two-tailed):", ceiling(n_z), "patients")
+```
+
+## R's `power.t.test()` Function
+
+R provides `power.t.test()` for sample size and power calculations for the one-sample and two-sample t tests. It accounts for the noncentral t distribution automatically.
+
+. . .
+
+```{r}
+#| echo: true
+# Same example using power.t.test()
+result <- power.t.test(
+  delta = 5,           # difference to detect
+  sd = 15,             # estimated standard deviation
+  sig.level = 0.05,    # alpha
+  power = 0.80,        # desired power
+  type = "one.sample", # one-sample test
+  alternative = "two.sided"
+)
+result
+```
+
+. . .
+
+```{r}
+#| echo: true
+cat("Required sample size:", ceiling(result$n), "patients")
+```
+
+## Example: Planning a Clinical Trial for Blood Pressure
+
+**Setting:** Researchers are planning a trial to test whether a new drug reduces systolic blood pressure. Historical data suggests $\sigma \approx 12$ mmHg. A reduction of 5 mmHg is considered clinically meaningful.
+
+```{r}
+#| echo: true
+# One-sided test: H0: mu >= 0 vs Ha: mu < 0 (reduction in BP)
+power_result <- power.t.test(
+  delta = 5,
+  sd = 12,
+  sig.level = 0.05,
+  power = 0.80,
+  type = "one.sample",
+  alternative = "one.sided"
+)
+cat("For 80% power:", ceiling(power_result$n), "patients needed\n")
+
+# What about 90% power?
+power_90 <- power.t.test(
+  delta = 5, sd = 12, sig.level = 0.05,
+  power = 0.90, type = "one.sample", alternative = "one.sided"
+)
+cat("For 90% power:", ceiling(power_90$n), "patients needed\n")
+
+# What about a smaller effect (3 mmHg)?
+power_small <- power.t.test(
+  delta = 3, sd = 12, sig.level = 0.05,
+  power = 0.80, type = "one.sample", alternative = "one.sided"
+)
+cat("For 3 mmHg effect:", ceiling(power_small$n), "patients needed")
+```
+
+## Sample Size as a Function of Effect Size and Power
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+sigma <- 12
+alpha <- 0.05
+
+# Vary effect size
+delta_range <- seq(2, 10, by = 0.5)
+power_levels <- c(0.80, 0.90, 0.95)
+
+ss_data <- expand_grid(delta = delta_range, power = power_levels) |>
+  rowwise() |>
+  mutate(
+    n = ceiling(power.t.test(
+      delta = delta, sd = sigma, sig.level = alpha,
+      power = power, type = "one.sample", alternative = "two.sided"
+    )$n),
+    power_label = paste0("Power = ", power * 100, "%")
+  ) |>
+  ungroup()
+
+p_ss <- ggplot(ss_data, aes(x = delta, y = n, color = power_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_point(size = 2) +
+  scale_color_brewer(palette = "Set1") +
+  labs(x = expression("Clinically Meaningful Difference " * Delta * " (mmHg)"),
+       y = "Required Sample Size (n)",
+       color = "",
+       title = "Sample Size vs Effect Size for One-Sample t Test",
+       subtitle = expression(paste(sigma == 12, " mmHg, ", alpha == 0.05, 
+                             ", two-tailed"))) +
+  theme(legend.position = "top")
+
+# Power as a function of n for fixed delta
+n_range <- seq(5, 200, by = 5)
+delta_levels <- c(3, 5, 8)
+
+pow_data <- expand_grid(n = n_range, delta = delta_levels) |>
+  rowwise() |>
+  mutate(
+    power = power.t.test(
+      n = n, delta = delta, sd = sigma, sig.level = alpha,
+      type = "one.sample", alternative = "two.sided"
+    )$power,
+    delta_label = paste0("Delta = ", delta, " mmHg")
+  ) |>
+  ungroup()
+
+p_pow <- ggplot(pow_data, aes(x = n, y = power, color = delta_label)) +
+  geom_line(linewidth = 1.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "gray50") +
+  scale_color_brewer(palette = "Dark2") +
+  labs(x = "Sample Size (n)", y = "Power",
+       color = "",
+       title = "Power vs Sample Size",
+       subtitle = expression(paste(sigma == 12, " mmHg, ", alpha == 0.05, 
+                             ", two-tailed"))) +
+  theme(legend.position = "top")
+
+p_ss + p_pow
+```
+
+## Example: Neonatal ICU Glucose Monitoring
+
+**Setting:** A neonatal ICU has historically maintained mean blood glucose at 80 mg/dL (sd = 20 mg/dL) in premature infants. A new feeding protocol is introduced. The clinical team wants to detect any shift in mean glucose of at least 8 mg/dL with 90% power.
+
+```{r}
+#| echo: true
+# How many infants are needed?
+nicu_power <- power.t.test(
+  delta = 8,
+  sd = 20,
+  sig.level = 0.05,
+  power = 0.90,
+  type = "one.sample",
+  alternative = "two.sided"
+)
+
+cat("=== NICU Study Design ===\n")
+cat("Effect to detect: 8 mg/dL\n")
+cat("Assumed SD: 20 mg/dL\n")
+cat("Significance level: 0.05\n")
+cat("Desired power: 0.90\n")
+cat("Required sample size:", ceiling(nicu_power$n), "infants\n\n")
+
+# Verify: what is the actual power at this sample size?
+actual_power <- power.t.test(
+  n = ceiling(nicu_power$n),
+  delta = 8,
+  sd = 20,
+  sig.level = 0.05,
+  type = "one.sample",
+  alternative = "two.sided"
+)
+cat("Actual power at n =", ceiling(nicu_power$n), ":", 
+    round(actual_power$power, 4))
+```
+
+## Manual Power Calculation with the Noncentral t
+
+Let's verify `power.t.test()` using the noncentral t distribution directly:
+
+```{r}
+#| echo: true
+# NICU example: n = 70, delta = 8, sigma = 20, alpha = 0.05, two-tailed
+n <- ceiling(nicu_power$n)
+mu0 <- 80; mu_prime <- 88; sigma <- 20
+alpha <- 0.05
+
+# Noncentrality parameter
+delta_ncp <- (mu_prime - mu0) / (sigma / sqrt(n))
+cat("Noncentrality parameter: delta =", round(delta_ncp, 3), "\n")
+
+# Critical values for two-tailed test
+t_crit <- qt(1 - alpha/2, df = n - 1)
+cat("Critical value: t_{0.025,", n-1, "} =", round(t_crit, 3), "\n")
+
+# Power = P(|T| >= t_crit) under noncentral t
+power_upper <- pt(t_crit, df = n - 1, ncp = delta_ncp, lower.tail = FALSE)
+power_lower <- pt(-t_crit, df = n - 1, ncp = delta_ncp, lower.tail = TRUE)
+power_total <- power_upper + power_lower
+
+cat("Power (upper tail):", round(power_upper, 4), "\n")
+cat("Power (lower tail):", round(power_lower, 6), " (negligible)\n")
+cat("Total power:", round(power_total, 4))
+```
+
+# Connecting P-Values, Power, and Sample Size {background-color="#8e44ad"}
+
+## The Complete Picture
+
+```{r}
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 16
+# Comprehensive example: How P-values, power, and n interact
+set.seed(551)
+mu0 <- 120; mu_true <- 125; sigma <- 15
+
+# Simulate P-values for different sample sizes
+sim_comprehensive <- function(n, mu_true, mu0 = 120, sigma = 15, n_sims = 5000) {
+  replicate(n_sims, {
+    x <- rnorm(n, mean = mu_true, sd = sigma)
+    t_stat <- (mean(x) - mu0) / (sd(x) / sqrt(n))
+    2 * pt(abs(t_stat), df = n - 1, lower.tail = FALSE)  # two-tailed
+  })
+}
+
+pvals_n10  <- sim_comprehensive(10,  mu_true)
+pvals_n30  <- sim_comprehensive(30,  mu_true)
+pvals_n100 <- sim_comprehensive(100, mu_true)
+
+comp_data <- bind_rows(
+  tibble(pvalue = pvals_n10,  n_label = "n = 10"),
+  tibble(pvalue = pvals_n30,  n_label = "n = 30"),
+  tibble(pvalue = pvals_n100, n_label = "n = 100")
+) |>
+  mutate(n_label = fct_inorder(n_label))
+
+p_hist <- ggplot(comp_data, aes(x = pvalue)) +
+  geom_histogram(bins = 30, fill = "steelblue", color = "white", alpha = 0.7) +
+  geom_vline(xintercept = 0.05, linetype = "dashed", color = "red", linewidth = 1) +
+  facet_wrap(~n_label, ncol = 3, scales = "free_y") +
+  labs(x = "P-value", y = "Count",
+       title = expression("P-value Distributions When " * H[0] * 
+                          " Is False (" * mu == 125 * ")"),
+       subtitle = expression(paste(H[0], ": ", mu == 120, ", two-tailed, ",
+                             sigma == 15))) +
+  theme(strip.text = element_text(size = 13, face = "bold"))
+
+# Power summary
+power_summary <- comp_data |>
+  group_by(n_label) |>
+  summarise(
+    prop_reject = mean(pvalue <= 0.05),
+    median_pval = median(pvalue),
+    .groups = "drop"
+  )
+
+p_table <- ggplot(power_summary, aes(x = n_label, y = prop_reject)) +
+  geom_col(fill = "steelblue", alpha = 0.7, width = 0.5) +
+  geom_hline(yintercept = 0.80, linetype = "dashed", color = "red") +
+  geom_text(aes(label = paste0(round(prop_reject * 100, 1), "%")), 
+            vjust = -0.5, size = 6) +
+  annotate("text", x = 3.4, y = 0.82, label = "80% power", color = "red", size = 5) +
+  scale_y_continuous(limits = c(0, 1.05), labels = scales::percent) +
+  labs(x = "", y = "Proportion Rejecting H0\n(Simulated Power)",
+       title = "Power Increases with Sample Size")
+
+p_hist / p_table + plot_layout(heights = c(2, 1.2))
+```
+
+## Summary: P-Values and Their Relationship to Testing
+
+| Concept | What It Tells You |
+|---------|-------------------|
+| **P-value** | Strength of evidence against $H_0$ (smaller = stronger) |
+| **$\alpha$** | Threshold for "significant" evidence (set in advance) |
+| **$\beta(\mu')$** | Probability of missing a true effect of size $\mu'$ |
+| **Power** $= 1 - \beta$ | Probability of detecting a true effect |
+| **Sample size** $n$ | Number of observations needed for desired power |
+
+. . .
+
+**The chain of reasoning:**
+
+$$\text{Larger } n \implies \text{Smaller SE} \implies \text{Larger } |T| \implies \text{Smaller P-values} \implies \text{More Power}$$
+
+## Practical Guidelines for Medical Research
+
+::: callout-tip
+## Best Practices
+
+1. **Always report P-values AND confidence intervals** --- the CI tells you about effect size
+2. **Conduct power analysis BEFORE the study** --- not after!
+3. **Use clinically meaningful effect sizes** --- not just "any" difference
+4. **Don't p-hack:** pre-register hypotheses and analysis plans
+5. **Interpret in context:** a P-value of 0.048 vs 0.052 should not lead to radically different conclusions
+6. **Consider multiple comparisons:** if testing many hypotheses, adjust $\alpha$ (Bonferroni, FDR, etc.)
+:::
+
+. . .
+
+::: callout-important
+## FDA Guidance
+Clinical trials typically require $\alpha = 0.05$ (two-sided) and power $\geq 0.80$. Phase III trials often require power $\geq 0.90$ to ensure adequate evidence for drug approval.
+:::
+
+# Key Takeaways and Looking Ahead {background-color="#2c3e50"}
+
+## Key Takeaways
+
+::: callout-important
+## Today's Main Points
+
+1. **P-value definition:** probability of observing data as extreme or more extreme, assuming $H_0$ is true
+2. **P-value decision rule:** reject $H_0$ when P-value $\leq \alpha$ (equivalent to rejection region method)
+3. **P-value formulas:** depend on whether the test is upper-tailed, lower-tailed, or two-tailed
+4. **P-value distribution:** Uniform(0, 1) under $H_0$; concentrated near 0 under $H_a$
+5. **Noncentral t:** when $H_0$ is false, $T$ follows a noncentral $t$ with $\delta = (\mu' - \mu_0)/(\sigma/\sqrt{n})$
+6. **Power in R:** `pt(t_crit, df, ncp = delta)` for manual; `power.t.test()` for convenience
+7. **Sample size:** determined by $\alpha$, power, $\sigma$, and the clinically meaningful effect size
+:::
+
+. . .
+
+**Common mistakes to avoid:**
+
+- Interpreting P-value as $P(H_0 \text{ true})$
+- Confusing statistical and clinical significance
+- Computing power **after** seeing the data (post hoc power)
+- Using $S$ (from data) in place of $\sigma$ in the z test power formula
+
+## Looking Ahead
+
+**Next class (Lesson 15):** Neyman-Pearson Lemma; Likelihood Ratio Tests (Devore 9.5)
+
+- Most powerful tests for simple hypotheses
+- The Neyman-Pearson framework
+- Likelihood ratio test statistic
+- Connection to tests we've already learned
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Sections 9.2, 9.4
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Sections 8.1--8.2
+-   Wasserstein, R. L., & Lazar, N. A. (2016). The ASA Statement on p-Values: Context, Process, and Purpose. *The American Statistician*, 70(2), 129--133.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/14_PValues_Power_SampleSize/14_PValues_Power_SampleSize.html lessons/14_PValues_Power_SampleSize/14_PValues_Power_SampleSize.pdf
+```

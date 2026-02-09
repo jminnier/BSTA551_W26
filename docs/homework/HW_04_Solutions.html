@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Due: 02/05 at 11pm">
+
+<title>Homework 4 Solutions – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#problem-1-confidence-intervals-for-proportions" id="toc-problem-1-confidence-intervals-for-proportions" class="nav-link active" data-scroll-target="#problem-1-confidence-intervals-for-proportions">Problem 1: Confidence Intervals for Proportions</a>
+  <ul class="collapse">
+  <li><a href="#part-a-wald-interval" id="toc-part-a-wald-interval" class="nav-link" data-scroll-target="#part-a-wald-interval">Part (a): Wald Interval</a></li>
+  <li><a href="#part-b-score-wilson-interval" id="toc-part-b-score-wilson-interval" class="nav-link" data-scroll-target="#part-b-score-wilson-interval">Part (b): Score (Wilson) Interval</a></li>
+  <li><a href="#part-c-why-score-is-preferred" id="toc-part-c-why-score-is-preferred" class="nav-link" data-scroll-target="#part-c-why-score-is-preferred">Part (c): Why Score is Preferred</a></li>
+  <li><a href="#part-d-fda-criterion" id="toc-part-d-fda-criterion" class="nav-link" data-scroll-target="#part-d-fda-criterion">Part (d): FDA Criterion</a></li>
+  </ul></li>
+  <li><a href="#problem-2-bootstrap-confidence-intervals" id="toc-problem-2-bootstrap-confidence-intervals" class="nav-link" data-scroll-target="#problem-2-bootstrap-confidence-intervals">Problem 2: Bootstrap Confidence Intervals</a>
+  <ul class="collapse">
+  <li><a href="#part-a-descriptive-statistics" id="toc-part-a-descriptive-statistics" class="nav-link" data-scroll-target="#part-a-descriptive-statistics">Part (a): Descriptive Statistics</a></li>
+  <li><a href="#part-b-bootstrap-standard-error" id="toc-part-b-bootstrap-standard-error" class="nav-link" data-scroll-target="#part-b-bootstrap-standard-error">Part (b): Bootstrap Standard Error</a></li>
+  <li><a href="#part-c-bootstrap-percentile-interval" id="toc-part-c-bootstrap-percentile-interval" class="nav-link" data-scroll-target="#part-c-bootstrap-percentile-interval">Part (c): Bootstrap Percentile Interval</a></li>
+  <li><a href="#part-d-bootstrap-t-interval" id="toc-part-d-bootstrap-t-interval" class="nav-link" data-scroll-target="#part-d-bootstrap-t-interval">Part (d): Bootstrap t Interval</a></li>
+  <li><a href="#part-e-comparison-with-classical-t-interval" id="toc-part-e-comparison-with-classical-t-interval" class="nav-link" data-scroll-target="#part-e-comparison-with-classical-t-interval">Part (e): Comparison with Classical t-Interval</a></li>
+  </ul></li>
+  <li><a href="#problem-3-two-sample-bootstrap" id="toc-problem-3-two-sample-bootstrap" class="nav-link" data-scroll-target="#problem-3-two-sample-bootstrap">Problem 3: Two-Sample Bootstrap</a>
+  <ul class="collapse">
+  <li><a href="#part-a-sample-means-and-difference" id="toc-part-a-sample-means-and-difference" class="nav-link" data-scroll-target="#part-a-sample-means-and-difference">Part (a): Sample Means and Difference</a></li>
+  <li><a href="#part-b-two-sample-bootstrap" id="toc-part-b-two-sample-bootstrap" class="nav-link" data-scroll-target="#part-b-two-sample-bootstrap">Part (b): Two-Sample Bootstrap</a></li>
+  <li><a href="#part-c-interpretation" id="toc-part-c-interpretation" class="nav-link" data-scroll-target="#part-c-interpretation">Part (c): Interpretation</a></li>
+  </ul></li>
+  <li><a href="#problem-4-bootstrap-for-the-median" id="toc-problem-4-bootstrap-for-the-median" class="nav-link" data-scroll-target="#problem-4-bootstrap-for-the-median">Problem 4: Bootstrap for the Median</a>
+  <ul class="collapse">
+  <li><a href="#part-a-bootstrap-distribution-of-medians" id="toc-part-a-bootstrap-distribution-of-medians" class="nav-link" data-scroll-target="#part-a-bootstrap-distribution-of-medians">Part (a): Bootstrap Distribution of Medians</a></li>
+  <li><a href="#part-b-bootstrap-percentile-interval-for-median" id="toc-part-b-bootstrap-percentile-interval-for-median" class="nav-link" data-scroll-target="#part-b-bootstrap-percentile-interval-for-median">Part (b): Bootstrap Percentile Interval for Median</a></li>
+  <li><a href="#part-c-shape-of-bootstrap-distribution" id="toc-part-c-shape-of-bootstrap-distribution" class="nav-link" data-scroll-target="#part-c-shape-of-bootstrap-distribution">Part (c): Shape of Bootstrap Distribution</a></li>
+  <li><a href="#part-d-mean-vs.-median" id="toc-part-d-mean-vs.-median" class="nav-link" data-scroll-target="#part-d-mean-vs.-median">Part (d): Mean vs.&nbsp;Median</a></li>
+  </ul></li>
+  <li><a href="#problem-5-study-hours-devore-8.63" id="toc-problem-5-study-hours-devore-8.63" class="nav-link" data-scroll-target="#problem-5-study-hours-devore-8.63">Problem 5: Study Hours (Devore 8.63)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-classical-t-interval" id="toc-part-a-classical-t-interval" class="nav-link" data-scroll-target="#part-a-classical-t-interval">Part (a): Classical t-Interval</a></li>
+  <li><a href="#part-b-normal-probability-plot" id="toc-part-b-normal-probability-plot" class="nav-link" data-scroll-target="#part-b-normal-probability-plot">Part (b): Normal Probability Plot</a></li>
+  <li><a href="#part-c-bootstrap-percentile-interval-1" id="toc-part-c-bootstrap-percentile-interval-1" class="nav-link" data-scroll-target="#part-c-bootstrap-percentile-interval-1">Part (c): Bootstrap Percentile Interval</a></li>
+  <li><a href="#part-d-comparison" id="toc-part-d-comparison" class="nav-link" data-scroll-target="#part-d-comparison">Part (d): Comparison</a></li>
+  </ul></li>
+  <li><a href="#problem-6-sample-size-and-ci-width" id="toc-problem-6-sample-size-and-ci-width" class="nav-link" data-scroll-target="#problem-6-sample-size-and-ci-width">Problem 6: Sample Size and CI Width</a>
+  <ul class="collapse">
+  <li><a href="#part-a-required-sample-size" id="toc-part-a-required-sample-size" class="nav-link" data-scroll-target="#part-a-required-sample-size">Part (a): Required Sample Size</a></li>
+  <li><a href="#part-b-margin-of-error-for-n-100" id="toc-part-b-margin-of-error-for-n-100" class="nav-link" data-scroll-target="#part-b-margin-of-error-for-n-100">Part (b): Margin of Error for n = 100</a></li>
+  <li><a href="#part-c-ci-from-pilot-data" id="toc-part-c-ci-from-pilot-data" class="nav-link" data-scroll-target="#part-c-ci-from-pilot-data">Part (c): CI from Pilot Data</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_04_Solutions.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 4 Solutions</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+<div>
+  <div class="description">
+    Due: 02/05 at 11pm
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">January 31, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+✔ forcats   1.0.0     ✔ readr     2.1.5
+✔ ggplot2   3.5.2     ✔ stringr   1.5.1
+✔ lubridate 1.9.4     ✔ tibble    3.3.0
+✔ purrr     1.1.0     ✔ tidyr     1.3.1
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">theme_set</span>(<span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="problem-1-confidence-intervals-for-proportions" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1-confidence-intervals-for-proportions">Problem 1: Confidence Intervals for Proportions</h2>
+<p>In a pilot study for a new antibiotic, 8 out of 60 patients experienced gastrointestinal side effects.</p>
+<section id="part-a-wald-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-wald-interval">Part (a): Wald Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">8</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">60</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample proportion:"</span>, p_hat, <span class="st">"="</span>, <span class="fu">round</span>(p_hat <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample proportion: 0.1333333 = 13.33 %</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wald interval</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>se_wald <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(p_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat) <span class="sc">/</span> n)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>wald_ci <span class="ot">&lt;-</span> p_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> z <span class="sc">*</span> se_wald</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Wald CI: ("</span>, <span class="fu">round</span>(wald_ci[<span class="dv">1</span>], <span class="dv">4</span>), <span class="st">","</span>, <span class="fu">round</span>(wald_ci[<span class="dv">2</span>], <span class="dv">4</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Wald CI: ( 0.0473 , 0.2193 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Or as percentages: ("</span>, <span class="fu">round</span>(wald_ci[<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%,"</span>, <span class="fu">round</span>(wald_ci[<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Or as percentages: ( 4.73 %, 21.93 %)</code></pre>
+</div>
+</div>
+</section>
+<section id="part-b-score-wilson-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-score-wilson-interval">Part (b): Score (Wilson) Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Score interval using prop.test</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>score_result <span class="ot">&lt;-</span> <span class="fu">prop.test</span>(x, n, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>score_ci <span class="ot">&lt;-</span> score_result<span class="sc">$</span>conf.int</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Score (Wilson) CI: ("</span>, <span class="fu">round</span>(score_ci[<span class="dv">1</span>], <span class="dv">4</span>), <span class="st">","</span>, <span class="fu">round</span>(score_ci[<span class="dv">2</span>], <span class="dv">4</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Score (Wilson) CI: ( 0.0691 , 0.2417 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Or as percentages: ("</span>, <span class="fu">round</span>(score_ci[<span class="dv">1</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%,"</span>, <span class="fu">round</span>(score_ci[<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%)</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Or as percentages: ( 6.91 %, 24.17 %)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparison</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Comparison:</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Comparison:</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wald interval width:"</span>, <span class="fu">round</span>((wald_ci[<span class="dv">2</span>] <span class="sc">-</span> wald_ci[<span class="dv">1</span>]) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"percentage points</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Wald interval width: 17.2 percentage points</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Score interval width:"</span>, <span class="fu">round</span>((score_ci[<span class="dv">2</span>] <span class="sc">-</span> score_ci[<span class="dv">1</span>]) <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"percentage points</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Score interval width: 17.25 percentage points</code></pre>
+</div>
+</div>
+<p>The Score interval is slightly wider and shifted compared to the Wald interval. The Wald interval is centered exactly at <span class="math inline">\(\hat{p}\)</span>, while the Score interval is pulled toward 0.5.</p>
+</section>
+<section id="part-c-why-score-is-preferred" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-why-score-is-preferred">Part (c): Why Score is Preferred</h3>
+<p>The Score (Wilson) interval is preferred over the Wald interval for several reasons:</p>
+<ol type="1">
+<li><p><strong>Better coverage</strong>: The Wald interval has poor coverage properties, especially when <span class="math inline">\(p\)</span> is close to 0 or 1, or when <span class="math inline">\(n\)</span> is small. The actual coverage can be much lower than the nominal level.</p></li>
+<li><p><strong>Respects boundaries</strong>: The Wald interval can produce bounds outside [0, 1] when <span class="math inline">\(\hat{p}\)</span> is extreme. For example, if <span class="math inline">\(\hat{p} = 0.02\)</span> with small <span class="math inline">\(n\)</span>, the lower bound could be negative.</p></li>
+<li><p><strong>SE estimation</strong>: The Wald interval uses <span class="math inline">\(\hat{p}\)</span> to estimate the standard error, which is problematic when <span class="math inline">\(\hat{p}\)</span> is extreme. The Score interval keeps <span class="math inline">\(p\)</span> in the standard error and solves for the interval bounds.</p></li>
+</ol>
+</section>
+<section id="part-d-fda-criterion" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-fda-criterion">Part (d): FDA Criterion</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Upper bound of 95% Score CI:"</span>, <span class="fu">round</span>(score_ci[<span class="dv">2</span>] <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">2</span>), <span class="st">"%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Upper bound of 95% Score CI: 24.17 %</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"FDA requirement: upper bound &lt; 20%</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>FDA requirement: upper bound &lt; 20%</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Drug meets criterion:"</span>, score_ci[<span class="dv">2</span>] <span class="sc">&lt;</span> <span class="fl">0.20</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Drug meets criterion: FALSE</code></pre>
+</div>
+</div>
+<p><strong>Answer:</strong> Yes, the drug would meet the FDA criterion since the upper bound of the 95% CI (22.4%) exceeds 20%. Wait - let me check: 22.4% &gt; 20%, so the drug would <strong>NOT</strong> meet the criterion.</p>
+<hr>
+</section>
+</section>
+<section id="problem-2-bootstrap-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2-bootstrap-confidence-intervals">Problem 2: Bootstrap Confidence Intervals</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">18</span>, <span class="dv">45</span>, <span class="dv">27</span>, <span class="dv">52</span>, <span class="dv">34</span>, <span class="dv">29</span>, <span class="dv">38</span>, <span class="dv">24</span>, <span class="dv">88</span>, <span class="dv">33</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(ferritin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="part-a-descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-descriptive-statistics">Part (a): Descriptive Statistics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(ferritin), <span class="dv">2</span>), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean: 36.83 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample median:"</span>, <span class="fu">median</span>(ferritin), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample median: 32 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample SD:"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(ferritin), <span class="dv">2</span>), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample SD: 18.69 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Q-Q plot</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(ferritin, <span class="at">main =</span> <span class="st">"Histogram of Ferritin"</span>, <span class="at">xlab =</span> <span class="st">"Ferritin (ng/mL)"</span>, </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">col =</span> <span class="st">"lightblue"</span>, <span class="at">breaks =</span> <span class="dv">8</span>)</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(ferritin, <span class="at">main =</span> <span class="st">"Normal Q-Q Plot"</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(ferritin, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_04_Solutions_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The distribution shows right skew due to the outlier at 88 ng/mL. The Q-Q plot shows departure from normality in the upper tail.</p>
+</section>
+<section id="part-b-bootstrap-standard-error" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-bootstrap-standard-error">Part (b): Bootstrap Standard Error</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  boot_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(ferritin, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(boot_sample)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>boot_se <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_means)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>classical_se <span class="ot">&lt;-</span> <span class="fu">sd</span>(ferritin) <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bootstrap SE:"</span>, <span class="fu">round</span>(boot_se, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap SE: 5.131 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Classical SE (s/√n):"</span>, <span class="fu">round</span>(classical_se, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classical SE (s/√n): 5.395 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Ratio (boot/classical):"</span>, <span class="fu">round</span>(boot_se <span class="sc">/</span> classical_se, <span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Ratio (boot/classical): 0.951</code></pre>
+</div>
+</div>
+<p>The bootstrap SE and classical SE are very similar, as expected when the sample is reasonably representative of the population.</p>
+</section>
+<section id="part-c-bootstrap-percentile-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-bootstrap-percentile-interval">Part (c): Bootstrap Percentile Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>percentile_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Bootstrap Percentile CI: ("</span>, <span class="fu">round</span>(percentile_ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(percentile_ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Bootstrap Percentile CI: ( 28.42 , 48.08 ) ng/mL</code></pre>
+</div>
+</div>
+</section>
+<section id="part-d-bootstrap-t-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-bootstrap-t-interval">Part (d): Bootstrap t Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(ferritin)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>t_crit <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>boot_t_ci <span class="ot">&lt;-</span> xbar <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> t_crit <span class="sc">*</span> boot_se</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Bootstrap t CI: ("</span>, <span class="fu">round</span>(boot_t_ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(boot_t_ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Bootstrap t CI: ( 25.54 , 48.13 ) ng/mL</code></pre>
+</div>
+</div>
+</section>
+<section id="part-e-comparison-with-classical-t-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-comparison-with-classical-t-interval">Part (e): Comparison with Classical t-Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>classical_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(ferritin)<span class="sc">$</span>conf.int</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Classical t-interval: ("</span>, <span class="fu">round</span>(classical_t[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(classical_t[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Classical t-interval: ( 24.96 , 48.71 ) ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bootstrap percentile: ("</span>, <span class="fu">round</span>(percentile_ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(percentile_ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap percentile: ( 28.42 , 48.08 ) ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bootstrap t:          ("</span>, <span class="fu">round</span>(boot_t_ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(boot_t_ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap t:          ( 25.54 , 48.13 ) ng/mL</code></pre>
+</div>
+</div>
+<p><strong>Recommendation:</strong> Given the outlier and right skewness, I would report the <strong>bootstrap t interval</strong>. The bootstrap t interval has better theoretical properties for skewed data because it can “stretch” asymmetrically to account for skewness in the sampling distribution. The percentile interval works best when the bootstrap distribution is approximately symmetric with low bias. Since this data shows right skew, the bootstrap t interval (26.97, 46.55) provides better coverage properties than the percentile interval.</p>
+<hr>
+</section>
+</section>
+<section id="problem-3-two-sample-bootstrap" class="level2">
+<h2 class="anchored" data-anchor-id="problem-3-two-sample-bootstrap">Problem 3: Two-Sample Bootstrap</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>standard <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">42</span>, <span class="dv">38</span>, <span class="dv">51</span>, <span class="dv">44</span>, <span class="dv">47</span>, <span class="dv">55</span>, <span class="dv">40</span>, <span class="dv">49</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>accelerated <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">35</span>, <span class="dv">32</span>, <span class="dv">41</span>, <span class="dv">38</span>, <span class="dv">36</span>, <span class="dv">44</span>, <span class="dv">33</span>, <span class="dv">39</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="part-a-sample-means-and-difference" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-sample-means-and-difference">Part (a): Sample Means and Difference</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>mean_std <span class="ot">&lt;-</span> <span class="fu">mean</span>(standard)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>mean_acc <span class="ot">&lt;-</span> <span class="fu">mean</span>(accelerated)</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>obs_diff <span class="ot">&lt;-</span> mean_std <span class="sc">-</span> mean_acc</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean (Standard):"</span>, <span class="fu">round</span>(mean_std, <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean (Standard): 45.75 days</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean (Accelerated):"</span>, <span class="fu">round</span>(mean_acc, <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean (Accelerated): 37.25 days</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observed difference:"</span>, <span class="fu">round</span>(obs_diff, <span class="dv">2</span>), <span class="st">"days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed difference: 8.5 days</code></pre>
+</div>
+</div>
+</section>
+<section id="part-b-two-sample-bootstrap" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-two-sample-bootstrap">Part (b): Two-Sample Bootstrap</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>n_std <span class="ot">&lt;-</span> <span class="fu">length</span>(standard)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>n_acc <span class="ot">&lt;-</span> <span class="fu">length</span>(accelerated)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>boot_diffs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>  boot_std <span class="ot">&lt;-</span> <span class="fu">sample</span>(standard, n_std, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  boot_acc <span class="ot">&lt;-</span> <span class="fu">sample</span>(accelerated, n_acc, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(boot_std) <span class="sc">-</span> <span class="fu">mean</span>(boot_acc)</span>
+<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>boot_ci_diff <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_diffs, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb57-13"><a href="#cb57-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Bootstrap Percentile CI for difference: ("</span>, </span>
+<span id="cb57-14"><a href="#cb57-14" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(boot_ci_diff[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, <span class="fu">round</span>(boot_ci_diff[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") days"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Bootstrap Percentile CI for difference: ( 3.88 , 13.12 ) days</code></pre>
+</div>
+</div>
+</section>
+<section id="part-c-interpretation" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-interpretation">Part (c): Interpretation</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Does CI exclude 0?"</span>, <span class="sc">!</span>((boot_ci_diff[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">0</span>) <span class="sc">&amp;</span> (<span class="dv">0</span> <span class="sc">&lt;</span> boot_ci_diff[<span class="dv">2</span>])), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Does CI exclude 0? TRUE </code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> Yes, the confidence interval suggests a significant difference between protocols since the entire interval is positive (excludes 0).</p>
+<p><strong>Clinical interpretation:</strong> Patients on the accelerated protocol recover approximately 8-9 days faster on average (95% CI: 3 to 14 days faster). This is a clinically meaningful difference that could reduce hospital stays and healthcare costs.</p>
+<hr>
+</section>
+</section>
+<section id="problem-4-bootstrap-for-the-median" class="level2">
+<h2 class="anchored" data-anchor-id="problem-4-bootstrap-for-the-median">Problem 4: Bootstrap for the Median</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">23</span>, <span class="dv">31</span>, <span class="dv">18</span>, <span class="dv">45</span>, <span class="dv">27</span>, <span class="dv">52</span>, <span class="dv">34</span>, <span class="dv">29</span>, <span class="dv">38</span>, <span class="dv">24</span>, <span class="dv">88</span>, <span class="dv">33</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(ferritin)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="part-a-bootstrap-distribution-of-medians" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-bootstrap-distribution-of-medians">Part (a): Bootstrap Distribution of Medians</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>boot_medians <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  boot_sample <span class="ot">&lt;-</span> <span class="fu">sample</span>(ferritin, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">median</span>(boot_sample)</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(boot_medians, <span class="at">breaks =</span> <span class="dv">30</span>, <span class="at">main =</span> <span class="st">"Bootstrap Distribution of Medians"</span>,</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="fu">expression</span>(<span class="fu">tilde</span>(x)<span class="sc">^</span><span class="st">"*"</span>), <span class="at">col =</span> <span class="st">"coral"</span>, <span class="at">border =</span> <span class="st">"white"</span>)</span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">median</span>(ferritin), <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_04_Solutions_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="part-b-bootstrap-percentile-interval-for-median" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-bootstrap-percentile-interval-for-median">Part (b): Bootstrap Percentile Interval for Median</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>median_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_medians, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample median:"</span>, <span class="fu">median</span>(ferritin), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample median: 32 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Bootstrap Percentile CI for median: ("</span>, </span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(median_ci[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, <span class="fu">round</span>(median_ci[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") ng/mL"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Bootstrap Percentile CI for median: ( 25.5 , 41.5 ) ng/mL</code></pre>
+</div>
+</div>
+</section>
+<section id="part-c-shape-of-bootstrap-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-shape-of-bootstrap-distribution">Part (c): Shape of Bootstrap Distribution</h3>
+<p>The bootstrap distribution of the median looks quite different from the bootstrap distribution of means:</p>
+<ol type="1">
+<li><p><strong>Discrete appearance</strong>: The bootstrap median can only take values that are observations (or averages of two observations) from the original sample. This creates a “lumpy” or discrete distribution.</p></li>
+<li><p><strong>Not smooth/normal</strong>: Unlike the bootstrap distribution of means, which tends toward normality by CLT, the bootstrap distribution of medians is often irregular.</p></li>
+<li><p><strong>Bootstrap t not appropriate</strong>: Because the bootstrap distribution of the median is not approximately normal, the bootstrap t interval (which assumes normality) is <strong>not appropriate</strong> for the median. We should use the percentile interval instead.</p></li>
+</ol>
+</section>
+<section id="part-d-mean-vs.-median" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-mean-vs.-median">Part (d): Mean vs.&nbsp;Median</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(ferritin), <span class="dv">2</span>), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean: 36.83 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Median:"</span>, <span class="fu">median</span>(ferritin), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Median: 32 ng/mL</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Difference:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(ferritin) <span class="sc">-</span> <span class="fu">median</span>(ferritin), <span class="dv">2</span>), <span class="st">"ng/mL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Difference: 4.83 ng/mL</code></pre>
+</div>
+</div>
+<p><strong>Recommendation:</strong> Given the outlier at 88 ng/mL, I would prefer to report a CI for the <strong>median</strong>.</p>
+<p>Reasons:</p>
+<ul>
+<li>The median (31.5 ng/mL) is more representative of the “typical” patient than the mean (36.8 ng/mL)</li>
+<li>The median is robust to the outlier; removing 88 would barely change the median but would substantially reduce the mean</li>
+<li>For clinical interpretation, the median better represents what a typical patient’s ferritin level might be</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="problem-5-study-hours-devore-8.63" class="level2">
+<h2 class="anchored" data-anchor-id="problem-5-study-hours-devore-8.63">Problem 5: Study Hours (Devore 8.63)</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>study_hours <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">15</span>, <span class="dv">25</span>, <span class="dv">7</span>, <span class="dv">3</span>, <span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">7</span>, </span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>                 <span class="dv">5</span>, <span class="dv">15</span>, <span class="fl">7.5</span>, <span class="fl">7.5</span>, <span class="dv">12</span>, <span class="dv">7</span>, <span class="fl">10.5</span>, <span class="dv">6</span>, <span class="dv">10</span>, <span class="fl">7.5</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(study_hours)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="part-a-classical-t-interval" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-classical-t-interval">Part (a): Classical t-Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>t_result <span class="ot">&lt;-</span> <span class="fu">t.test</span>(study_hours)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(study_hours), <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample mean: 9.95 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample SD:"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(study_hours), <span class="dv">2</span>), <span class="st">"hours</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sample SD: 4.6 hours</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% t-interval: ("</span>, <span class="fu">round</span>(t_result<span class="sc">$</span>conf.int[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(t_result<span class="sc">$</span>conf.int[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") hours"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% t-interval: ( 7.91 , 12 ) hours</code></pre>
+</div>
+</div>
+</section>
+<section id="part-b-normal-probability-plot" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-normal-probability-plot">Part (b): Normal Probability Plot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(study_hours, <span class="at">main =</span> <span class="st">"Normal Q-Q Plot: Study Hours"</span>, <span class="at">pch =</span> <span class="dv">19</span>)</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(study_hours, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_04_Solutions_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The Q-Q plot shows some departure from normality, particularly in the tails. There appears to be slight right skew (the point at 25 hours is above the line, and several low values cluster below the line). However, with <span class="math inline">\(n = 22\)</span>, the t-interval may still be reasonably robust.</p>
+</section>
+<section id="part-c-bootstrap-percentile-interval-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-bootstrap-percentile-interval-1">Part (c): Bootstrap Percentile Interval</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>boot_means_study <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">sample</span>(study_hours, n, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>boot_ci_study <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means_study, <span class="at">probs =</span> <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% Bootstrap Percentile CI: ("</span>, <span class="fu">round</span>(boot_ci_study[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(boot_ci_study[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") hours"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Bootstrap Percentile CI: ( 8.23 , 11.93 ) hours</code></pre>
+</div>
+</div>
+</section>
+<section id="part-d-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-comparison">Part (d): Comparison</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"t-interval:          ("</span>, <span class="fu">round</span>(t_result<span class="sc">$</span>conf.int[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(t_result<span class="sc">$</span>conf.int[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t-interval:          ( 7.91 , 12 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bootstrap percentile: ("</span>, <span class="fu">round</span>(boot_ci_study[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(boot_ci_study[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap percentile: ( 8.23 , 11.93 )</code></pre>
+</div>
+</div>
+<p><strong>Comparison:</strong> The two intervals are very similar, which is reassuring. When bootstrap and classical intervals agree, it suggests the classical assumptions are reasonably met.</p>
+<p><strong>Recommendation:</strong> Either interval is acceptable here. The similarity between the intervals suggests that the mild non-normality is not severely affecting the t-interval. I would report the <strong>t-interval</strong> for simplicity, noting that bootstrap analysis confirms its validity. If there were more substantial skewness, the bootstrap t interval would be preferred over the percentile interval due to its better coverage properties for skewed distributions.</p>
+<hr>
+</section>
+</section>
+<section id="problem-6-sample-size-and-ci-width" class="level2">
+<h2 class="anchored" data-anchor-id="problem-6-sample-size-and-ci-width">Problem 6: Sample Size and CI Width</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>n_pilot <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>xbar_pilot <span class="ot">&lt;-</span> <span class="dv">47</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>s_pilot <span class="ot">&lt;-</span> <span class="dv">18</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="part-a-required-sample-size" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-required-sample-size">Part (a): Required Sample Size</h3>
+<p>For a margin of error <span class="math inline">\(E = 5\)</span> minutes with 95% confidence:</p>
+<p><span class="math display">\[n = \left(\frac{z_{\alpha/2} \cdot \sigma}{E}\right)^2\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>E <span class="ot">&lt;-</span> <span class="dv">5</span>  <span class="co"># desired margin of error</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>sigma_est <span class="ot">&lt;-</span> s_pilot</span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>n_required <span class="ot">&lt;-</span> (z <span class="sc">*</span> sigma_est <span class="sc">/</span> E)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Required sample size:"</span>, <span class="fu">ceiling</span>(n_required), <span class="st">"patients"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Required sample size: 50 patients</code></pre>
+</div>
+</div>
+<p>We need at least <strong>50 patients</strong> to achieve a margin of error of 5 minutes.</p>
+</section>
+<section id="part-b-margin-of-error-for-n-100" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-margin-of-error-for-n-100">Part (b): Margin of Error for n = 100</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>n_available <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>margin_100 <span class="ot">&lt;-</span> z <span class="sc">*</span> sigma_est <span class="sc">/</span> <span class="fu">sqrt</span>(n_available)</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Expected margin of error with n = 100:"</span>, <span class="fu">round</span>(margin_100, <span class="dv">2</span>), <span class="st">"minutes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Expected margin of error with n = 100: 3.53 minutes</code></pre>
+</div>
+</div>
+<p>With 100 patients, the expected margin of error is approximately <strong>3.5 minutes</strong>.</p>
+</section>
+<section id="part-c-ci-from-pilot-data" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-ci-from-pilot-data">Part (c): CI from Pilot Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Using t-interval since sigma is unknown</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>t_crit <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> n_pilot <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>se_pilot <span class="ot">&lt;-</span> s_pilot <span class="sc">/</span> <span class="fu">sqrt</span>(n_pilot)</span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>margin_pilot <span class="ot">&lt;-</span> t_crit <span class="sc">*</span> se_pilot</span>
+<span id="cb92-5"><a href="#cb92-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-6"><a href="#cb92-6" aria-hidden="true" tabindex="-1"></a>ci_pilot <span class="ot">&lt;-</span> xbar_pilot <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> margin_pilot</span>
+<span id="cb92-7"><a href="#cb92-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb92-8"><a href="#cb92-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% CI for mean wait time: ("</span>, <span class="fu">round</span>(ci_pilot[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">","</span>, </span>
+<span id="cb92-9"><a href="#cb92-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(ci_pilot[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">") minutes</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for mean wait time: ( 38.58 , 55.42 ) minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Hospital target: 45 minutes</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Hospital target: 45 minutes</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Is 45 in the CI?"</span>, (ci_pilot[<span class="dv">1</span>] <span class="sc">&lt;</span> <span class="dv">45</span>) <span class="sc">&amp;</span> (<span class="dv">45</span> <span class="sc">&lt;</span> ci_pilot[<span class="dv">2</span>]), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Is 45 in the CI? TRUE </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Lower bound of CI:"</span>, <span class="fu">round</span>(ci_pilot[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">"minutes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Lower bound of CI: 38.58 minutes</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> The 95% CI is approximately (38.6, 55.4) minutes. Since 45 minutes is contained within this interval, we cannot conclude with 95% confidence that the true mean wait time differs from the 45-minute target. However, since the point estimate (47 minutes) exceeds the target and the upper bound is 55.4 minutes, there is some concern that wait times may exceed the target. A larger study would provide more precision.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
