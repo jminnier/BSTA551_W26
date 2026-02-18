@@ -354,14 +354,15 @@ tibble(y = 0:30) |>
   ) |>
   pivot_longer(-y, names_to = "distribution", values_to = "prob") |>
   separate(distribution, into = c("sample_size", "dist"), sep = ", ") |>
+  mutate(sample_size = fct_rev(as.factor(sample_size))) |>
   ggplot(aes(x = y, y = prob, fill = dist)) +
   geom_col(position = "identity", alpha = 0.5, width = 0.8) +
-  geom_vline(data = tibble(sample_size = c("n = 5", "n = 10"), 
+  geom_vline(data = tibble(sample_size = as.factor(c("n = 5", "n = 10")), 
                             cutoff = c(10, 16)),
              aes(xintercept = cutoff - 0.5), linetype = "dashed", 
              color = "red", linewidth = 1) +
   facet_wrap(~sample_size, scales = "free") +
-  scale_fill_manual(values = c("steelblue", "coral", "steelblue", "coral")) +
+  scale_fill_manual(values = c("steelblue", "coral", "pink")) +
   labs(x = expression(y == sum(x[i])), y = "Probability",
        title = "Neyman-Pearson Test: Poisson Adverse Event Monitoring",
        subtitle = "Red dashed line = rejection boundary; larger n gives better separation") +

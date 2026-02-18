@@ -1,0 +1,683 @@
+---
+title: "Midterm Exam Solutions"
+subtitle: "BSTA 551: Theory of Statistical Inference"
+date-modified: "today"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: "setup"
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+set.seed(551)
+```
+
+## Part I: Conceptual Questions (45 points)
+
+### Problem 1: Estimator Properties (15 points)
+
+Let $X_1, X_2, \ldots, X_n$ be independent measurements with mean $\mu$ and variance $\sigma^2$.
+
+#### Part (a): Bias (3 points)
+
+**$\hat{\mu}_1 = \bar{X}$:**
+$$E(\hat{\mu}_1) = E(\bar{X}) = \frac{1}{n}\sum_{i=1}^n E(X_i) = \frac{1}{n} \cdot n\mu = \mu$$
+$\hat{\mu}_1$ is **unbiased**. Bias = 0.
+
+**$\hat{\mu}_2 = \frac{X_1 + X_n}{2}$:**
+$$E(\hat{\mu}_2) = \frac{E(X_1) + E(X_n)}{2} = \frac{\mu + \mu}{2} = \mu$$
+$\hat{\mu}_2$ is **unbiased**. Bias = 0.
+
+**$\hat{\mu}_3 = \frac{1}{n+1}\sum_{i=1}^{n} X_i$:**
+$$E(\hat{\mu}_3) = \frac{1}{n+1}\sum_{i=1}^n E(X_i) = \frac{n\mu}{n+1}$$
+$\hat{\mu}_3$ is **biased**. 
+$$\boxed{\text{Bias}(\hat{\mu}_3) = \frac{n\mu}{n+1} - \mu = -\frac{\mu}{n+1}}$$
+
+#### Part (b): Variance (4 points)
+
+**$\hat{\mu}_1 = \bar{X}$:**
+$$\text{Var}(\hat{\mu}_1) = \text{Var}\left(\frac{1}{n}\sum_{i=1}^n X_i\right) = \frac{1}{n^2} \cdot n\sigma^2 = \boxed{\frac{\sigma^2}{n}}$$
+
+**$\hat{\mu}_2 = \frac{X_1 + X_n}{2}$:**
+$$\text{Var}(\hat{\mu}_2) = \frac{1}{4}\left[\text{Var}(X_1) + \text{Var}(X_n)\right] = \frac{1}{4}(2\sigma^2) = \boxed{\frac{\sigma^2}{2}}$$
+
+**$\hat{\mu}_3 = \frac{1}{n+1}\sum_{i=1}^{n} X_i$:**
+$$\text{Var}(\hat{\mu}_3) = \frac{1}{(n+1)^2} \cdot n\sigma^2 = \boxed{\frac{n\sigma^2}{(n+1)^2}}$$
+
+#### Part (c): MSE (4 points)
+
+Recall: $\text{MSE}(\hat{\theta}) = \text{Var}(\hat{\theta}) + [\text{Bias}(\hat{\theta})]^2$
+
+**$\hat{\mu}_1$:** 
+$$\text{MSE}(\hat{\mu}_1) = \frac{\sigma^2}{n} + 0 = \frac{\sigma^2}{n}$$
+
+**$\hat{\mu}_2$:** 
+$$\text{MSE}(\hat{\mu}_2) = \frac{\sigma^2}{2} + 0 = \frac{\sigma^2}{2}$$
+
+**$\hat{\mu}_3$:** 
+$$\text{MSE}(\hat{\mu}_3) = \frac{n\sigma^2}{(n+1)^2} + \frac{\mu^2}{(n+1)^2} = \frac{n\sigma^2 + \mu^2}{(n+1)^2}$$
+
+**For $n = 10$:**
+
+- $\text{MSE}(\hat{\mu}_1) = \sigma^2/10 = 0.1\sigma^2$
+- $\text{MSE}(\hat{\mu}_2) = \sigma^2/2 = 0.5\sigma^2$
+- $\text{MSE}(\hat{\mu}_3) = \frac{10\sigma^2 + \mu^2}{121}$
+
+For most practical values of $\mu$ (relative to $\sigma$), **$\hat{\mu}_1$ has the smallest MSE**.
+
+```{r}
+#| label: prob1-mse
+# Compare MSE for n = 10
+n <- 10
+# Assuming sigma^2 = 1 and varying mu/sigma ratios
+mse_1 <- 1/n
+mse_2 <- 1/2
+# MSE of mu_3 depends on mu^2/sigma^2
+mu_sigma_ratio <- seq(0, 3, by = 0.1)
+mse_3 <- (n + mu_sigma_ratio^2) / (n + 1)^2
+
+tibble(ratio = mu_sigma_ratio, MSE = mse_3) |>
+  ggplot(aes(x = ratio, y = MSE)) +
+  geom_line(linewidth = 1.2, color = "steelblue") +
+  geom_hline(yintercept = mse_1, linetype = "dashed", color = "red") +
+  geom_hline(yintercept = mse_2, linetype = "dashed", color = "green") +
+  annotate("text", x = 2.5, y = mse_1 + 0.02, 
+           label = expression(hat(mu)[1]), color = "red") +
+  annotate("text", x = 2.5, y = mse_2 + 0.02, 
+           label = expression(hat(mu)[2]), color = "green") +
+  labs(x = expression(mu/sigma), y = expression(MSE/sigma^2),
+       title = "MSE Comparison (n = 10)")
+```
+
+#### Part (d): Consistency (4 points)
+
+An estimator $\hat{\theta}_n$ is **consistent** for $\theta$ if $\hat{\theta}_n \xrightarrow{P} \theta$ as $n \to \infty$.
+
+A sufficient condition is: $\text{MSE}(\hat{\theta}_n) \to 0$ as $n \to \infty$.
+
+**$\hat{\mu}_1$:** $\text{MSE} = \sigma^2/n \to 0$ ✓ **Consistent**
+
+**$\hat{\mu}_2$:** $\text{MSE} = \sigma^2/2 \not\to 0$ ✗ **NOT consistent** (uses only 2 observations regardless of $n$)
+
+**$\hat{\mu}_3$:** 
+$$\text{MSE} = \frac{n\sigma^2 + \mu^2}{(n+1)^2} \approx \frac{n\sigma^2}{n^2} = \frac{\sigma^2}{n} \to 0$$ ✓ **Consistent**
+
+---
+
+### Problem 2: Fisher Information and CRLB (15 points)
+
+For $X \sim \text{Gamma}(2, \beta)$, the pdf is $f(x; \beta) = \beta^2 x \, e^{-\beta x}$ for $x > 0$.
+
+#### Part (a): Fisher Information (4 points)
+
+**Log-likelihood for a single observation:**
+$$\ell(\beta) = \ln(\beta^2 x \, e^{-\beta x}) = 2\ln\beta + \ln x - \beta x$$
+
+**First derivative (score function):**
+$$\ell'(\beta) = \frac{2}{\beta} - x$$
+
+**Second derivative:**
+$$\ell''(\beta) = -\frac{2}{\beta^2}$$
+
+**Fisher Information:**
+$$I(\beta) = E\left[-\ell''(\beta)\right] = E\left[\frac{2}{\beta^2}\right] = \boxed{\frac{2}{\beta^2}}$$
+
+(Note: The second derivative does not depend on $X$, so the expectation is trivial.)
+
+#### Part (b): CRLB (3 points)
+
+For $n$ independent observations, the total Fisher Information is:
+$$I_n(\beta) = n \cdot I(\beta) = \frac{2n}{\beta^2}$$
+
+The **Cramér-Rao Lower Bound** for unbiased estimators of $\beta$ is:
+$$\boxed{\text{CRLB} = \frac{1}{I_n(\beta)} = \frac{\beta^2}{2n}}$$
+
+#### Part (c): Bias and unbiased estimator (4 points)
+
+**Is $\hat{\beta}_{MLE} = 2/\bar{X}$ biased?**
+
+We can write $\hat{\beta}_{MLE} = 2/\bar{X} = 2n / \sum_{i=1}^n X_i$. Since $\sum X_i \sim \text{Gamma}(2n, \beta)$, we use the given result $E(1/Y) = b/(a-1)$ with $Y = \sum X_i$, $a = 2n$, $b = \beta$:
+
+$$E\left(\frac{1}{\sum X_i}\right) = \frac{\beta}{2n - 1}$$
+
+Therefore:
+$$E(\hat{\beta}_{MLE}) = 2n \cdot \frac{\beta}{2n - 1} = \frac{2n\beta}{2n - 1}$$
+
+Since $\frac{2n}{2n-1} > 1$, the MLE **overestimates** $\beta$.
+
+$$\boxed{\text{Bias}(\hat{\beta}_{MLE}) = \frac{2n\beta}{2n - 1} - \beta = \frac{\beta}{2n - 1}}$$
+
+**Unbiased estimator:**
+
+We want $E(\tilde{\beta}) = \beta$. Multiplying the MLE by the correction factor $(2n-1)/(2n)$:
+
+$$\boxed{\tilde{\beta} = \frac{2n - 1}{2n} \cdot \hat{\beta}_{MLE} = \frac{2n-1}{\sum_{i=1}^n X_i}}$$
+
+Verification: $E(\tilde{\beta}) = (2n-1) \cdot \frac{\beta}{2n-1} = \beta$ ✓
+
+#### Part (d): Variance and CRLB comparison (4 points)
+
+Using the given result $\text{Var}(1/Y) = \frac{b^2}{(a-1)^2(a-2)}$ with $Y = \sum X_i \sim \text{Gamma}(2n, \beta)$:
+
+$$\text{Var}\left(\frac{1}{\sum X_i}\right) = \frac{\beta^2}{(2n-1)^2(2n-2)}$$
+
+Therefore:
+$$\text{Var}(\tilde{\beta}) = (2n-1)^2 \cdot \text{Var}\left(\frac{1}{\sum X_i}\right) = (2n-1)^2 \cdot \frac{\beta^2}{(2n-1)^2(2n-2)} = \boxed{\frac{\beta^2}{2n - 2} = \frac{\beta^2}{2(n-1)}}$$
+
+**Comparison with CRLB:**
+$$\text{Var}(\tilde{\beta}) = \frac{\beta^2}{2(n-1)} > \frac{\beta^2}{2n} = \text{CRLB}$$
+
+The unbiased estimator does **NOT** achieve the CRLB.
+
+**Interpretation:** Although the Gamma(2, $\beta$) belongs to the exponential family, the CRLB is not achieved for the rate parameter $\beta$ because $\beta$ is not the "natural" parameter of the family. The sufficient statistic $\sum X_i$ is a linear function of $\bar{X}$, but $\beta = 2/E(X)$ is a nonlinear function of the natural parameter. The CRLB would be achieved for $\theta = 1/\beta = E(X)/2$ (the mean of each phase), but not for the rate $\beta$ itself. As $n$ grows, $\text{Var}(\tilde{\beta}) \to \text{CRLB}$, so the bound is asymptotically achieved.
+
+---
+
+### Problem 3: Confidence Interval Interpretation (15 points)
+
+Given: $n = 64$, $\bar{x} = 28$ mg/dL, $s = 16$ mg/dL.
+
+#### Part (a): Construct 95% CI (4 points)
+
+Since $\sigma$ is unknown, we use a **t-interval**. With $n = 64$, we have $df = 63$.
+
+$$\bar{x} \pm t_{0.025, 63} \cdot \frac{s}{\sqrt{n}} = 28 \pm t_{0.025, 63} \cdot \frac{16}{\sqrt{64}}$$
+
+```{r}
+#| label: prob3a
+n <- 64
+xbar <- 28
+s <- 16
+t_crit <- qt(0.975, df = n - 1)
+se <- s / sqrt(n)
+ci <- xbar + c(-1, 1) * t_crit * se
+
+cat("t critical value:", round(t_crit, 4), "\n")
+cat("Standard error:", se, "\n")
+cat("95% CI: (", round(ci[1], 2), ",", round(ci[2], 2), ")\n")
+```
+
+**Assumptions:** The sample is random, and either the population is normally distributed OR $n$ is large enough for CLT to apply (with $n = 64$, CLT is reasonable).
+
+**Note:** With $n = 64$, the t-interval is very close to a z-interval since $t_{0.025, 63} \approx z_{0.025} = 1.96$.
+
+#### Part (b): Interpretation (4 points)
+
+i. **"There is a 95% probability that $\mu$ lies in this interval."** 
+   
+   **INCORRECT.** The parameter $\mu$ is fixed (not random). Once the interval is computed, $\mu$ either is or is not in the interval. The probability statement applies to the procedure, not to a specific interval.
+
+ii. **"If we repeated this study many times, 95% of the resulting confidence intervals would contain $\mu$."**
+   
+   **CORRECT.** This is the frequentist interpretation of confidence intervals.
+
+iii. **"95% of patients in this study had LDL reductions within this interval."**
+   
+   **INCORRECT.** The CI is for the population mean, not for individual observations. The individual data values have much more variability than the mean.
+
+iv. **"We are 95% confident that the true mean LDL reduction is in this interval."**
+   
+   **CORRECT.** This is an acceptable shorthand interpretation, understanding that "confidence" refers to the long-run reliability of the procedure.
+
+#### Part (c): Can they claim mean reduction ≥ 25? (4 points)
+
+The 95% CI is approximately (24.01, 31.99).
+
+Since the **lower bound (24.01) is less than 25**, the CI does NOT exclude 25 mg/dL. However, 25 is barely inside the interval.
+
+**Answer:** At the 95% confidence level, they cannot definitively claim the mean reduction is at least 25 mg/dL because 25 is within the confidence interval (just barely). They could make a slightly weaker claim or compute a one-sided 95% lower confidence bound.
+
+```{r}
+#| label: prob3c
+# One-sided 95% lower bound
+lower_bound <- xbar - qt(0.95, df = n - 1) * se
+cat("95% one-sided lower bound:", round(lower_bound, 2), "mg/dL\n")
+```
+
+The one-sided 95% lower bound is about 24.66 mg/dL, which is still less than 25.
+
+#### Part (d): Sample size for margin ≤ 3 (3 points)
+
+For margin of error $E = 3$:
+$$n = \left(\frac{z_{\alpha/2} \cdot \sigma}{E}\right)^2 = \left(\frac{1.96 \cdot 16}{3}\right)^2$$
+
+```{r}
+#| label: prob3d
+E <- 3
+sigma_est <- 16
+z <- qnorm(0.975)
+n_required <- (z * sigma_est / E)^2
+cat("Required sample size:", ceiling(n_required), "\n")
+```
+
+**Answer:** A sample size of at least **110** patients would be required.
+
+---
+
+## Part II: Computational Problems (55 points)
+
+### Problem 4: Maximum Likelihood Estimation (18 points)
+
+ER visit data: $X = \{47, 53, 61, 42, 58, 55, 49, 64, 52, 45, 59, 51\}$
+
+#### Part (a): Likelihood and log-likelihood (4 points)
+
+For $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\mu)$:
+
+**Likelihood:**
+$$L(\mu) = \prod_{i=1}^{n} \frac{e^{-\mu}\mu^{x_i}}{x_i!} = \frac{e^{-n\mu}\mu^{\sum x_i}}{\prod_{i=1}^n x_i!}$$
+
+**Log-likelihood:**
+$$\ell(\mu) = -n\mu + \left(\sum_{i=1}^n x_i\right)\ln\mu - \sum_{i=1}^n \ln(x_i!)$$
+
+Or equivalently:
+$$\boxed{\ell(\mu) = -n\mu + \left(\sum_{i=1}^n x_i\right)\ln\mu + \text{constant}}$$
+
+#### Part (b): Derive MLE (4 points)
+
+Taking the derivative and setting to zero:
+$$\frac{d\ell}{d\mu} = -n + \frac{\sum x_i}{\mu} = 0$$
+
+Solving:
+$$\mu = \frac{\sum_{i=1}^n x_i}{n} = \bar{X}$$
+
+**MLE:** $\boxed{\hat{\mu} = \bar{X}}$
+
+```{r}
+#| label: prob4b
+er_visits <- c(47, 53, 61, 42, 58, 55, 49, 64, 52, 45, 59, 51)
+n <- length(er_visits)
+mu_mle <- mean(er_visits)
+cat("MLE:", mu_mle, "visits per month\n")
+```
+
+#### Part (c): Sufficient statistic via Neyman Factorization (4 points)
+
+The joint pmf is:
+$$f(x_1, \ldots, x_n; \mu) = \frac{e^{-n\mu}\mu^{\sum x_i}}{\prod_{i=1}^n x_i!}$$
+
+We can factor this as:
+$$f(\mathbf{x}; \mu) = \underbrace{e^{-n\mu}\mu^T}_{g(T; \mu)} \cdot \underbrace{\frac{1}{\prod_{i=1}^n x_i!}}_{h(\mathbf{x})}$$
+
+where $T = \sum_{i=1}^n X_i$.
+
+- $g(T; \mu)$ depends on the data only through $T$ and involves $\mu$
+- $h(\mathbf{x})$ depends only on the data, not on $\mu$
+
+By the **Neyman Factorization Theorem**, $T = \sum_{i=1}^n X_i$ is **sufficient for $\mu$**. $\square$
+
+#### Part (d): R computations (6 points)
+
+```{r}
+#| label: prob4d
+#| echo: true
+er_visits <- c(47, 53, 61, 42, 58, 55, 49, 64, 52, 45, 59, 51)
+n <- length(er_visits)
+
+# MLE
+mu_mle <- mean(er_visits)
+cat("MLE of μ:", mu_mle, "\n\n")
+
+# Fisher Information for Poisson: I(μ) = n/μ
+# Observed Fisher Information at MLE
+obs_fisher <- n / mu_mle
+
+# Standard error using observed Fisher Information
+se_mle <- 1 / sqrt(obs_fisher)
+cat("Observed Fisher Information:", round(obs_fisher, 4), "\n")
+cat("Standard Error of MLE:", round(se_mle, 4), "\n\n")
+
+# 95% Wald confidence interval
+z <- qnorm(0.975)
+wald_ci <- mu_mle + c(-1, 1) * z * se_mle
+cat("95% Wald CI: (", round(wald_ci[1], 2), ",", round(wald_ci[2], 2), ")\n")
+```
+
+**Interpretation:** We estimate approximately 53 ER visits per month, with 95% confidence that the true mean lies between about 49 and 57 visits.
+
+---
+
+### Problem 5: Method of Moments vs. MLE (15 points)
+
+Weibull with $k = 2$: $f(x; \lambda) = \frac{2x}{\lambda^2}\exp(-x^2/\lambda^2)$
+
+Given: $E(X) = \lambda\sqrt{\pi}/2$, $E(X^2) = \lambda^2$
+
+Data: $X = \{3.2, 4.8, 2.1, 5.5, 3.9, 4.2, 6.1, 3.5, 4.6, 2.8\}$
+
+#### Part (a): Method of Moments (5 points)
+
+Using the first moment:
+$$E(X) = \frac{\lambda\sqrt{\pi}}{2} = \bar{X}$$
+
+Solving for $\lambda$:
+$$\boxed{\tilde{\lambda} = \frac{2\bar{X}}{\sqrt{\pi}}}$$
+
+```{r}
+#| label: prob5a
+survival_times <- c(3.2, 4.8, 2.1, 5.5, 3.9, 4.2, 6.1, 3.5, 4.6, 2.8)
+n <- length(survival_times)
+xbar <- mean(survival_times)
+
+lambda_mme <- 2 * xbar / sqrt(pi)
+cat("Sample mean:", round(xbar, 4), "\n")
+cat("MME of λ:", round(lambda_mme, 4), "\n")
+```
+
+#### Part (b): Maximum Likelihood Estimator (5 points)
+
+**Log-likelihood:**
+$$\ell(\lambda) = \sum_{i=1}^n \ln\left(\frac{2x_i}{\lambda^2}e^{-x_i^2/\lambda^2}\right) = \sum_{i=1}^n \left[\ln(2x_i) - 2\ln\lambda - \frac{x_i^2}{\lambda^2}\right]$$
+
+$$\ell(\lambda) = \sum_{i=1}^n \ln(2x_i) - 2n\ln\lambda - \frac{1}{\lambda^2}\sum_{i=1}^n x_i^2$$
+
+**Taking derivative:**
+$$\frac{d\ell}{d\lambda} = -\frac{2n}{\lambda} + \frac{2}{\lambda^3}\sum_{i=1}^n x_i^2 = 0$$
+
+**Solving:**
+$$\frac{2n}{\lambda} = \frac{2\sum x_i^2}{\lambda^3}$$
+$$n\lambda^2 = \sum x_i^2$$
+$$\boxed{\hat{\lambda} = \sqrt{\frac{\sum_{i=1}^n X_i^2}{n}} = \sqrt{\overline{X^2}}}$$
+
+```{r}
+#| label: prob5b
+lambda_mle <- sqrt(mean(survival_times^2))
+cat("Sum of X_i^2:", sum(survival_times^2), "\n")
+cat("MLE of λ:", round(lambda_mle, 4), "\n")
+```
+
+#### Part (c): Simulation comparison (5 points)
+
+```{r}
+#| label: prob5c
+#| echo: true
+#| code-fold: true
+set.seed(551)
+
+n <- 10
+lambda_true <- 4
+n_sims <- 5000
+
+# Function to generate Weibull(k=2, lambda) data
+# For Weibull with shape k and scale lambda, we can use:
+# X = lambda * (-log(U))^(1/k) where U ~ Uniform(0,1)
+# For k = 2: X = lambda * sqrt(-log(U))
+rweibull_k2 <- function(n, lambda) {
+  lambda * sqrt(-log(runif(n)))
+}
+
+# Simulation
+sim_results <- tibble(sim = 1:n_sims) |>
+  mutate(
+    data = map(sim, \(s) rweibull_k2(n, lambda_true)),
+    xbar = map_dbl(data, mean),
+    x2bar = map_dbl(data, \(x) mean(x^2)),
+    lambda_mme = 2 * xbar / sqrt(pi),
+    lambda_mle = sqrt(x2bar)
+  )
+
+# Summary statistics
+summary_table <- sim_results |>
+  summarize(
+    Estimator = c("MME", "MLE"),
+    Mean = c(mean(lambda_mme), mean(lambda_mle)),
+    Bias = c(mean(lambda_mme) - lambda_true, mean(lambda_mle) - lambda_true),
+    Variance = c(var(lambda_mme), var(lambda_mle)),
+    MSE = c(mean((lambda_mme - lambda_true)^2), mean((lambda_mle - lambda_true)^2))
+  )
+
+print(summary_table)
+
+# Visualization
+sim_results |>
+  pivot_longer(cols = c(lambda_mme, lambda_mle), 
+               names_to = "Estimator", values_to = "Estimate") |>
+  mutate(Estimator = factor(Estimator, 
+                            levels = c("lambda_mme", "lambda_mle"),
+                            labels = c("MME", "MLE"))) |>
+  ggplot(aes(x = Estimate, fill = Estimator)) +
+  geom_histogram(alpha = 0.6, bins = 50, position = "identity") +
+  geom_vline(xintercept = lambda_true, linetype = "dashed", linewidth = 1.2) +
+  labs(title = bquote("Sampling Distributions of MME and MLE for" ~ lambda),
+       subtitle = bquote("True" ~ lambda == 4 ~ "|" ~ n == 10 ~ "| 5000 simulations"),
+       x = expression(hat(lambda)), y = "Frequency") +
+  scale_fill_brewer(palette = "Set1") +
+  theme_minimal(base_size = 14)
+```
+
+**Conclusion:** The MLE has slightly smaller bias, variance, and MSE compared to the MME. The MLE performs better for this distribution.
+
+---
+
+### Problem 6: Confidence Intervals for Proportions (12 points)
+
+Data: $x = 312$ successes out of $n = 400$.
+
+#### Part (a): Sample proportion and SE (3 points)
+
+```{r}
+#| label: prob6a
+x <- 312
+n <- 400
+p_hat <- x / n
+se_wald <- sqrt(p_hat * (1 - p_hat) / n)
+
+cat("Sample proportion:", p_hat, "\n")
+cat("Wald standard error:", round(se_wald, 4), "\n")
+```
+
+#### Part (b): Three confidence intervals (4 points)
+
+```{r}
+#| label: prob6b
+z <- qnorm(0.975)
+
+# Wald interval
+wald_ci <- p_hat + c(-1, 1) * z * se_wald
+
+# Score (Wilson) interval using prop.test
+score_result <- prop.test(x, n, conf.level = 0.95, correct = FALSE)
+score_ci <- score_result$conf.int
+
+# Agresti-Coull interval
+n_tilde <- n + 4
+p_tilde <- (x + 2) / n_tilde
+se_ac <- sqrt(p_tilde * (1 - p_tilde) / n_tilde)
+ac_ci <- p_tilde + c(-1, 1) * z * se_ac
+
+cat("Wald 95% CI:          (", round(wald_ci[1], 4), ",", round(wald_ci[2], 4), ")\n")
+cat("Score 95% CI:         (", round(score_ci[1], 4), ",", round(score_ci[2], 4), ")\n")
+cat("Agresti-Coull 95% CI: (", round(ac_ci[1], 4), ",", round(ac_ci[2], 4), ")\n")
+```
+
+#### Part (c): Recommendation (3 points)
+
+**Recommended: Score (Wilson) interval**
+
+**Reasons:**
+
+1. The Score interval has better coverage probability across all values of $p$, especially near the boundaries (0 and 1).
+2. It is based on inverting a score test, which uses the correct standard error under the null hypothesis.
+3. With $\hat{p} = 0.78$ (not near 0 or 1), all three intervals are similar, but the Score interval is generally preferred in the statistical literature (Agresti & Coull, 1998).
+
+The Agresti-Coull is also acceptable and easier to compute by hand.
+
+#### Part (d): FDA threshold (2 points)
+
+```{r}
+#| label: prob6d
+cat("Lower bound of Score CI:", round(score_ci[1] * 100, 2), "%\n")
+cat("FDA threshold: 70%\n")
+cat("Meets threshold:", score_ci[1] > 0.70, "\n")
+```
+
+**Answer:** Yes, the vaccine meets the FDA threshold. The lower bound of the 95% Score CI (73.4%) exceeds 70%.
+
+---
+
+### Problem 7: Bootstrap Confidence Intervals (10 points)
+
+Recovery data: $X = \{18, 22, 25, 19, 31, 24, 20, 28, 23, 45, 21, 26, 24, 22, 27\}$
+
+#### Part (a): Summary statistics and normality check (2 points)
+
+```{r}
+#| label: prob7a
+#| echo: true
+recovery <- c(18, 22, 25, 19, 31, 24, 20, 28, 23, 45, 21, 26, 24, 22, 27)
+n <- length(recovery)
+
+cat("n =", n, "\n")
+cat("Mean:", round(mean(recovery), 2), "days\n")
+cat("Median:", median(recovery), "days\n")
+cat("SD:", round(sd(recovery), 2), "days\n")
+
+# Visualization
+par(mfrow = c(1, 2))
+hist(recovery, main = "Histogram of Recovery Times", 
+     xlab = "Days", col = "lightblue", breaks = 8)
+abline(v = mean(recovery), col = "red", lwd = 2, lty = 2)
+abline(v = median(recovery), col = "blue", lwd = 2, lty = 2)
+legend("topright", legend = c("Mean", "Median"), 
+       col = c("red", "blue"), lty = 2, lwd = 2)
+
+qqnorm(recovery, pch = 19, col = "steelblue")
+qqline(recovery, col = "red", lwd = 2)
+par(mfrow = c(1, 1))
+```
+
+The histogram shows right skew due to the outlier at 45 days. The Q-Q plot shows departure from normality in the upper tail.
+
+#### Part (b): Bootstrap analysis (4 points)
+
+```{r}
+#| label: prob7b
+#| echo: true
+set.seed(551)
+B <- 10000
+
+# Bootstrap for mean
+boot_means <- replicate(B, mean(sample(recovery, replace = TRUE)))
+boot_se_mean <- sd(boot_means)
+boot_ci_mean <- quantile(boot_means, c(0.025, 0.975))
+
+# Bootstrap for median
+boot_medians <- replicate(B, median(sample(recovery, replace = TRUE)))
+boot_ci_median <- quantile(boot_medians, c(0.025, 0.975))
+
+cat("Bootstrap SE of mean:", round(boot_se_mean, 3), "\n")
+cat("95% Bootstrap percentile CI for mean: (", 
+    round(boot_ci_mean[1], 2), ",", round(boot_ci_mean[2], 2), ")\n\n")
+cat("95% Bootstrap percentile CI for median: (", 
+    round(boot_ci_median[1], 2), ",", round(boot_ci_median[2], 2), ")\n")
+```
+
+```{r}
+#| label: prob7b-plot
+#| echo: true
+#| code-fold: true
+# Visualize bootstrap distributions
+par(mfrow = c(1, 2))
+hist(boot_means, main = "Bootstrap Distribution of Mean", 
+     xlab = "Mean", col = "lightblue", breaks = 40)
+abline(v = mean(recovery), col = "red", lwd = 2)
+abline(v = boot_ci_mean, col = "darkblue", lwd = 2, lty = 2)
+
+hist(boot_medians, main = "Bootstrap Distribution of Median", 
+     xlab = "Median", col = "lightgreen", breaks = 40)
+abline(v = median(recovery), col = "red", lwd = 2)
+abline(v = boot_ci_median, col = "darkgreen", lwd = 2, lty = 2)
+par(mfrow = c(1, 1))
+```
+
+#### Part (c): Classical t-interval (2 points)
+
+```{r}
+#| label: prob7c
+t_result <- t.test(recovery, conf.level = 0.95)
+t_ci <- t_result$conf.int
+
+cat("Classical t-interval: (", round(t_ci[1], 2), ",", round(t_ci[2], 2), ")\n")
+cat("Bootstrap percentile CI: (", round(boot_ci_mean[1], 2), ",", 
+    round(boot_ci_mean[2], 2), ")\n")
+```
+
+The classical t-interval and bootstrap percentile interval are fairly similar. The bootstrap interval is slightly asymmetric, reflecting the skewness in the data.
+
+#### Part (d): Recommendations (2 points)
+
+**Recommended measure of center: Median**
+
+- The data shows right skew with an outlier at 45 days
+- The median (24 days) is more robust to the outlier than the mean (25 days)
+- The median better represents the "typical" recovery time
+
+**Recommended confidence interval: Bootstrap percentile interval for the median**
+
+- The normality assumption for the t-interval is questionable with $n = 15$ and visible skew
+- The bootstrap naturally handles non-normal data
+- The median is a more appropriate summary for skewed data
+- The bootstrap CI for the median (22, 26 days) gives a clinically interpretable range
+
+---
+
+## Bonus Question (5 points)
+
+Rare mutation: $x = 3$ successes, $n = 500$
+
+#### Part (a): Three intervals (2 points)
+
+```{r}
+#| label: bonus-a
+x <- 3
+n <- 500
+p_hat <- x / n
+z <- qnorm(0.975)
+
+# Wald interval
+se_wald <- sqrt(p_hat * (1 - p_hat) / n)
+wald_ci <- p_hat + c(-1, 1) * z * se_wald
+
+# Score interval
+score_ci <- prop.test(x, n, conf.level = 0.95, correct = FALSE)$conf.int
+
+# Agresti-Coull
+p_tilde <- (x + 2) / (n + 4)
+se_ac <- sqrt(p_tilde * (1 - p_tilde) / (n + 4))
+ac_ci <- p_tilde + c(-1, 1) * z * se_ac
+
+cat("Sample proportion:", p_hat, "=", round(p_hat * 100, 2), "%\n\n")
+cat("Wald 95% CI:          (", round(wald_ci[1] * 100, 4), "%,", 
+    round(wald_ci[2] * 100, 4), "%)\n")
+cat("Score 95% CI:         (", round(score_ci[1] * 100, 4), "%,", 
+    round(score_ci[2] * 100, 4), "%)\n")
+cat("Agresti-Coull 95% CI: (", round(ac_ci[1] * 100, 4), "%,", 
+    round(ac_ci[2] * 100, 4), "%)\n")
+```
+
+**Problem with Wald interval:** The lower bound is **negative** (-0.07%), which is impossible for a proportion. This is a clear indicator that the Wald interval is inappropriate for rare events.
+
+#### Part (b): Why Score and Agresti-Coull are better (3 points)
+
+**Key properties that make Score and Agresti-Coull better:**
+
+1. **They stay within [0, 1]:** The Score interval is derived by solving a quadratic equation that naturally constrains the bounds to valid probability values. The Agresti-Coull "shrinks" extreme estimates toward 0.5 by adding pseudocounts.
+
+2. **Better coverage probability:** Research has shown that Wald intervals have poor coverage for $p$ near 0 or 1. The Score interval maintains nominal coverage across all values of $p$.
+
+3. **Asymmetry:** When $p$ is near a boundary, the true sampling distribution is highly skewed. Score and Agresti-Coull produce asymmetric intervals that better reflect this skewness, while Wald forces symmetry.
+
+4. **The "shrinkage" effect:** Agresti-Coull adds 2 successes and 2 failures, effectively pulling the estimate away from extreme values (0 or 1) toward 0.5. This improves coverage because it accounts for the fact that extreme observed proportions likely underestimate the true variability.
+
+**Conclusion:** For rare events, always use Score (Wilson) or Agresti-Coull intervals, never Wald.
+
+---
+
+**End of Solutions**
