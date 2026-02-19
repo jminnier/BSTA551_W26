@@ -23,7 +23,6 @@ source(here("class_dates.R"))
 | 5 | [[{{< iconify material-symbols assignment size=29px >}}](/homework/HW_05.qmd)]{style="color:#f8f5f0;"} | `r hw5 %>% format("%m/%d")` | [{{< iconify ph key-fill size=29px >}}]{style="color:#f8f5f0;"} |
 | 6 | [[{{< iconify material-symbols assignment size=29px >}}](/homework/HW_06.qmd)]{style="color:#f8f5f0;"} | `r hw6 %>% format("%m/%d")` | [{{< iconify ph key-fill size=29px >}}]{style="color:#f8f5f0;"} |
 | 7 | [[{{< iconify material-symbols assignment size=29px >}}](/homework/HW_07.qmd)]{style="color:#f8f5f0;"} | `r hw7 %>% format("%m/%d")` | [{{< iconify ph key-fill size=29px >}}]{style="color:#f8f5f0;"} |
-| 8 | [[{{< iconify material-symbols assignment size=29px >}}](/homework/HW_08.qmd)]{style="color:#f8f5f0;"} | `r hw8 %>% format("%m/%d")` | [{{< iconify ph key-fill size=29px >}}]{style="color:#f8f5f0;"} |
 
 ## File Naming
 

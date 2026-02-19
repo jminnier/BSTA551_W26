@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Due: 02/12 at 11pm">
+<meta name="description" content="Due: 02/26 at 11pm">
 
 <title>Homework 5 – Theory of Statistical Inference</title>
 <style>
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -69,6 +104,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -125,7 +189,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-hypothesis-testing-framework-lesson-12-devore-9.1" id="toc-problem-1-hypothesis-testing-framework-lesson-12-devore-9.1" class="nav-link" data-scroll-target="#problem-1-hypothesis-testing-framework-lesson-12-devore-9.1">Problem 1: Hypothesis Testing Framework (Lesson 12, Devore 9.1)</a></li>
+  <li><a href="#problem-2-one-sample-t-test-lesson-13-devore-9.2" id="toc-problem-2-one-sample-t-test-lesson-13-devore-9.2" class="nav-link" data-scroll-target="#problem-2-one-sample-t-test-lesson-13-devore-9.2">Problem 2: One-Sample t Test (Lesson 13, Devore 9.2)</a></li>
+  <li><a href="#problem-3-test-for-a-proportion-lesson-13-devore-9.3" id="toc-problem-3-test-for-a-proportion-lesson-13-devore-9.3" class="nav-link" data-scroll-target="#problem-3-test-for-a-proportion-lesson-13-devore-9.3">Problem 3: Test for a Proportion (Lesson 13, Devore 9.3)</a></li>
+  <li><a href="#problem-4-p-values-power-and-sample-size-lesson-14-devore-9.2-9.4" id="toc-problem-4-p-values-power-and-sample-size-lesson-14-devore-9.2-9.4" class="nav-link" data-scroll-target="#problem-4-p-values-power-and-sample-size-lesson-14-devore-9.2-9.4">Problem 4: P-Values, Power, and Sample Size (Lesson 14, Devore 9.2, 9.4)</a></li>
+  <li><a href="#problem-5-multiple-testing-lesson-14" id="toc-problem-5-multiple-testing-lesson-14" class="nav-link" data-scroll-target="#problem-5-multiple-testing-lesson-14">Problem 5: Multiple Testing (Lesson 14)</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_05.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -140,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    Due: 02/12 at 11pm
+    Due: 02/26 at 11pm
   </div>
 </div>
 
@@ -152,7 +223,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 27, 2026</p>
+      <p class="date-modified">February 18, 2026</p>
     </div>
   </div>
     
@@ -165,14 +236,115 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="directions" class="level2">
 <h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf or html format.</p>
-<p>You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.</p>
+<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
 <p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from <strong>Lessons 12–14</strong>: Introduction to Hypothesis Testing, Tests About a Population Mean and Proportion, and P-values, Power, and Sample Size Determination.</p>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-hypothesis-testing-framework-lesson-12-devore-9.1" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-hypothesis-testing-framework-lesson-12-devore-9.1">Problem 1: Hypothesis Testing Framework (Lesson 12, Devore 9.1)</h3>
+<p>A hospital is evaluating a new blood pressure monitoring device. Based on a large historical dataset, resting systolic blood pressure in healthy adults follows a Normal distribution. The current standard monitoring protocol has a known mean of <span class="math inline">\(\mu_0 = 120\)</span> mmHg with known standard deviation <span class="math inline">\(\sigma = 15\)</span> mmHg. Clinicians suspect the new device reads systematically <strong>higher</strong> than the true value.</p>
+<p>A validation study measures <span class="math inline">\(n = 36\)</span> healthy adults with the new device and obtains a sample mean of <span class="math inline">\(\bar{x} = 124.5\)</span> mmHg.</p>
+<p><strong>(a)</strong> State the null and alternative hypotheses formally. Is this a one-sided or two-sided test? Justify your choice based on the clinical context.</p>
+<p><strong>(b)</strong> The test statistic is <span class="math inline">\(Z = \dfrac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span>. State the distribution of <span class="math inline">\(Z\)</span> under <span class="math inline">\(H_0\)</span> and compute its observed value <span class="math inline">\(z_{\text{obs}}\)</span>.</p>
+<p><strong>(c)</strong> Using a significance level of <span class="math inline">\(\alpha = 0.05\)</span>, find the rejection region. Does the test reject <span class="math inline">\(H_0\)</span>?</p>
+<p><strong>(d)</strong> Define <strong>Type I error</strong> and <strong>Type II error</strong> in the context of this specific problem (not just in abstract terms). What is the Type I error rate for this test?</p>
+<p><strong>(e)</strong> The hospital board argues that falsely concluding the device is biased when it is actually accurate would be very costly (they would discard the device). With this in mind, would you recommend using <span class="math inline">\(\alpha = 0.01\)</span> or <span class="math inline">\(\alpha = 0.10\)</span>? Explain briefly.</p>
+</section>
+<section id="problem-2-one-sample-t-test-lesson-13-devore-9.2" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-one-sample-t-test-lesson-13-devore-9.2">Problem 2: One-Sample t Test (Lesson 13, Devore 9.2)</h3>
+<p>Researchers are investigating whether a dietary intervention reduces fasting glucose levels in pre-diabetic patients. Before the intervention, fasting glucose follows a Normal distribution with mean <span class="math inline">\(\mu_0 = 105\)</span> mg/dL in this population. A random sample of <span class="math inline">\(n = 15\)</span> patients who completed the 12-week program has the following fasting glucose levels (mg/dL) measured at the end of the study:</p>
+<p><span class="math display">\[X = \{98, 103, 91, 107, 96, 88, 101, 95, 99, 102, 94, 97, 89, 100, 93\}\]</span></p>
+<p>The population standard deviation is <strong>unknown</strong>.</p>
+<p><strong>(a)</strong> Conduct a hypothesis test at the <span class="math inline">\(\alpha = 0.05\)</span> significance level to determine whether there is evidence that the intervention <strong>reduces</strong> mean fasting glucose below 105 mg/dL. State hypotheses, compute the test statistic, find the critical value or rejection region, and state your conclusion.</p>
+<p><strong>(b)</strong> Compute the observed p-value. Interpret it in plain language (i.e., what does this number mean in the context of the study?).</p>
+<p><strong>(c)</strong> Compute a 95% one-sided confidence interval (lower bound, <span class="math inline">\(\infty\)</span>) for the mean fasting glucose <span class="math inline">\(\mu\)</span> and verify that it is consistent with your conclusion from part (a). <em>(Hint: For a one-sided upper confidence bound/lower confidence bound, the critical value is <span class="math inline">\(t_{\alpha, n-1}\)</span>, not <span class="math inline">\(t_{\alpha/2, n-1}\)</span>.)</em></p>
+<p><strong>(d)</strong> In R, use <code>t.test()</code> to verify your calculations. Show your code.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>glucose <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">98</span>, <span class="dv">103</span>, <span class="dv">91</span>, <span class="dv">107</span>, <span class="dv">96</span>, <span class="dv">88</span>, <span class="dv">101</span>, <span class="dv">95</span>, <span class="dv">99</span>, <span class="dv">102</span>, <span class="dv">94</span>, <span class="dv">97</span>, <span class="dv">89</span>, <span class="dv">100</span>, <span class="dv">93</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="problem-3-test-for-a-proportion-lesson-13-devore-9.3" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-test-for-a-proportion-lesson-13-devore-9.3">Problem 3: Test for a Proportion (Lesson 13, Devore 9.3)</h3>
+<p>A large multicenter clinical trial reports that the 30-day readmission rate for patients with heart failure treated under the standard care protocol is <span class="math inline">\(p_0 = 0.22\)</span> (22%). A new care management program is piloted at a regional hospital. Of the first <span class="math inline">\(n = 180\)</span> heart failure patients discharged under the new program, 31 were readmitted within 30 days.</p>
+<p><strong>(a)</strong> The hospital wants to know if the new program has a <strong>different</strong> readmission rate from the standard. State the null and alternative hypotheses.</p>
+<p><strong>(b)</strong> Compute the large-sample z test statistic: <span class="math display">\[Z = \frac{\hat{p} - p_0}{\sqrt{p_0(1-p_0)/n}}\]</span></p>
+<p><strong>(c)</strong> Compute the two-sided p-value and state your conclusion at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(d)</strong> Compute a 95% confidence interval for <span class="math inline">\(p\)</span> using the Wilson score interval (or the Wald interval). Is <span class="math inline">\(p_0 = 0.22\)</span> inside the interval? How does this relate to your conclusion in part (c)?</p>
+<p><strong>(e)</strong> A skeptic notes that <span class="math inline">\(n = 180\)</span> is not that large and questions whether the Normal approximation is valid. State the common rule-of-thumb for when the large-sample z test for proportions is appropriate, and check it for this problem.</p>
+</section>
+<section id="problem-4-p-values-power-and-sample-size-lesson-14-devore-9.2-9.4" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-p-values-power-and-sample-size-lesson-14-devore-9.2-9.4">Problem 4: P-Values, Power, and Sample Size (Lesson 14, Devore 9.2, 9.4)</h3>
+<p>Hospitals implementing <strong>Enhanced Recovery After Surgery (ERAS)</strong> protocols aim to reduce post-operative length of stay (LOS). Based on retrospective data at a large academic medical center, LOS for patients undergoing elective colorectal surgery under the standard protocol follows a Normal distribution with mean <span class="math inline">\(\mu_0 = 7\)</span> days and standard deviation <span class="math inline">\(\sigma = 2.5\)</span> days (treat as known for planning purposes). A research team wants to test whether ERAS reduces mean LOS, and would like to detect a clinically meaningful reduction of 1.5 days (i.e., <span class="math inline">\(\mu_a = 5.5\)</span> days).</p>
+<p><strong>(a)</strong> State the null and alternative hypotheses. Is this a one-sided or two-sided test? Justify your choice.</p>
+<p><strong>(b)</strong> For a <strong>one-sided lower-tailed</strong> z test with <span class="math inline">\(\alpha = 0.05\)</span> and a planned sample size of <span class="math inline">\(n = 40\)</span> patients, compute the power of the test against the alternative <span class="math inline">\(\mu_a = 5.5\)</span> days. Use the formula: <span class="math display">\[\text{Power} = \Phi\!\left(\frac{\mu_0 - \mu_a}{\sigma/\sqrt{n}} - z_\alpha\right)\]</span> where <span class="math inline">\(z_\alpha = z_{0.05}\)</span> is the upper <span class="math inline">\(\alpha\)</span> critical value. Show your work.</p>
+<p><strong>(c)</strong> The team sets a target of 85% power. Use <code>power.t.test()</code> in R to find the required sample size, treating this as a one-sample t test (the normal approximation is close for planning purposes). Use <code>sd = 2.5</code>, <code>delta = 1.5</code>, <code>sig.level = 0.05</code>, <code>power = 0.85</code>, <code>alternative = "one.sided"</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> ___,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> ___,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> ___,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">power =</span> ___,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"one.sample"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alternative =</span> <span class="st">"one.sided"</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>(d)</strong> Create a <strong>power curve</strong> in R: for the one-sided lower-tailed z test, plot power as a function of <span class="math inline">\(n\)</span> (from 5 to 120) fixing <span class="math inline">\(\mu_a = 5.5\)</span>, <span class="math inline">\(\sigma = 2.5\)</span>, <span class="math inline">\(\alpha = 0.05\)</span>. Add a horizontal reference line at 85% power and a vertical reference line at the sample size found in part (c).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_vals <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">120</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">7</span>; mu_a <span class="ot">&lt;-</span> <span class="fl">5.5</span>; sigma <span class="ot">&lt;-</span> <span class="fl">2.5</span>; alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>power_vals <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(___ <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n =</span> n_vals, <span class="at">power =</span> power_vals) <span class="sc">|&gt;</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> power)) <span class="sc">+</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.85</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ___, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkgreen"</span>) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample size (n)"</span>,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Power"</span>,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">"Power curve: ERAS post-surgical LOS study"</span>),</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">==</span> .(mu_a)<span class="sc">~</span><span class="st">"days,"</span><span class="sc">~</span>sigma <span class="sc">==</span> .(sigma)<span class="sc">~</span><span class="st">","</span><span class="sc">~</span>alpha <span class="sc">==</span> .(alpha))</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>(e)</strong> The ERAS study is ultimately run with <span class="math inline">\(n = 55\)</span> patients and produces a sample mean LOS of <span class="math inline">\(\bar{x} = 6.1\)</span> days.</p>
+<ul>
+<li>Compute the p-value for the one-sided lower-tailed z test.</li>
+<li>Write a one-sentence interpretation of the p-value suitable for a clinical audience.</li>
+<li>Is the result statistically significant at <span class="math inline">\(\alpha = 0.05\)</span>? Is a reduction from 7 to 6.1 days clinically meaningful given the original target of 1.5 days? Discuss briefly — are statistical and clinical significance the same thing here?</li>
+</ul>
+</section>
+<section id="problem-5-multiple-testing-lesson-14" class="level3">
+<h3 class="anchored" data-anchor-id="problem-5-multiple-testing-lesson-14">Problem 5: Multiple Testing (Lesson 14)</h3>
+<p>A genomics study screens <span class="math inline">\(m = 500\)</span> genes for differential expression between cancer tissue and healthy tissue. After performing 500 independent hypothesis tests (one per gene) at level <span class="math inline">\(\alpha = 0.05\)</span>, 37 genes are declared significant.</p>
+<p><strong>(a)</strong> Assuming all 500 null hypotheses are true, how many false positives (Type I errors) would you expect? What is this called, and why is it a problem?</p>
+<p><strong>(b)</strong> Apply the <strong>Bonferroni correction</strong>: what adjusted significance threshold <span class="math inline">\(\alpha^*\)</span> should be used for each individual test to control the family-wise error rate (FWER) at 0.05?</p>
+<p><strong>(c)</strong> Of the 500 tests, the 37 significant raw p-values are given below. Apply the Bonferroni correction and report how many genes remain significant.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 37 "significant" raw p-values</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sig_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">37</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.05</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sig_pvals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 0.039991622 0.009029548 0.029696850 0.010112608 0.036451590 0.004385602
+ [7] 0.003395444 0.029779669 0.016211141 0.013747465 0.039203407 0.004591254
+[13] 0.006939440 0.010781811 0.004885578 0.018662517 0.021031488 0.032292032
+[19] 0.045465993 0.037860008 0.037340248 0.036234907 0.026430696 0.010631198
+[25] 0.047648861 0.024383201 0.004109782 0.015042967 0.048505777 0.005563640
+[31] 0.044336905 0.048007904 0.014847766 0.039496309 0.043135550 0.020120665
+[37] 0.040028855</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction -- your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>(d)</strong> Explain briefly why the Benjamini-Hochberg (BH) procedure for controlling the False Discovery Rate (FDR) is often preferred over Bonferroni in “omics” studies.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
