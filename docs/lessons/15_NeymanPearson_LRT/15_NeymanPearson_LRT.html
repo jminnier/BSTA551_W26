@@ -623,19 +623,18 @@ Jessica Minnier
 <span id="cb7-8"><a></a>  ) <span class="sc">|&gt;</span></span>
 <span id="cb7-9"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>y, <span class="at">names_to =</span> <span class="st">"distribution"</span>, <span class="at">values_to =</span> <span class="st">"prob"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb7-10"><a></a>  <span class="fu">separate</span>(distribution, <span class="at">into =</span> <span class="fu">c</span>(<span class="st">"sample_size"</span>, <span class="st">"dist"</span>), <span class="at">sep =</span> <span class="st">", "</span>) <span class="sc">|&gt;</span></span>
-<span id="cb7-11"><a></a>  <span class="fu">mutate</span>(<span class="at">sample_size =</span> <span class="fu">fct_rev</span>(<span class="fu">as.factor</span>(sample_size))) <span class="sc">|&gt;</span></span>
-<span id="cb7-12"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> y, <span class="at">y =</span> prob, <span class="at">fill =</span> dist)) <span class="sc">+</span></span>
-<span id="cb7-13"><a></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb7-14"><a></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">sample_size =</span> <span class="fu">as.factor</span>(<span class="fu">c</span>(<span class="st">"n = 5"</span>, <span class="st">"n = 10"</span>)), </span>
-<span id="cb7-15"><a></a>                            <span class="at">cutoff =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">16</span>)),</span>
-<span id="cb7-16"><a></a>             <span class="fu">aes</span>(<span class="at">xintercept =</span> cutoff <span class="sc">-</span> <span class="fl">0.5</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, </span>
-<span id="cb7-17"><a></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb7-18"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>sample_size, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
-<span id="cb7-19"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"coral"</span>, <span class="st">"pink"</span>)) <span class="sc">+</span></span>
-<span id="cb7-20"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(y <span class="sc">==</span> <span class="fu">sum</span>(x[i])), <span class="at">y =</span> <span class="st">"Probability"</span>,</span>
-<span id="cb7-21"><a></a>       <span class="at">title =</span> <span class="st">"Neyman-Pearson Test: Poisson Adverse Event Monitoring"</span>,</span>
-<span id="cb7-22"><a></a>       <span class="at">subtitle =</span> <span class="st">"Red dashed line = rejection boundary; larger n gives better separation"</span>) <span class="sc">+</span></span>
-<span id="cb7-23"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-11"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> y, <span class="at">y =</span> prob, <span class="at">fill =</span> dist)) <span class="sc">+</span></span>
+<span id="cb7-12"><a></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>, <span class="at">width =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb7-13"><a></a>  <span class="fu">geom_vline</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">sample_size =</span> <span class="fu">c</span>(<span class="st">"n = 5"</span>, <span class="st">"n = 10"</span>), </span>
+<span id="cb7-14"><a></a>                            <span class="at">cutoff =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">16</span>)),</span>
+<span id="cb7-15"><a></a>             <span class="fu">aes</span>(<span class="at">xintercept =</span> cutoff <span class="sc">-</span> <span class="fl">0.5</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, </span>
+<span id="cb7-16"><a></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-17"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>sample_size, <span class="at">scales =</span> <span class="st">"free"</span>) <span class="sc">+</span></span>
+<span id="cb7-18"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"coral"</span>, <span class="st">"steelblue"</span>, <span class="st">"coral"</span>)) <span class="sc">+</span></span>
+<span id="cb7-19"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(y <span class="sc">==</span> <span class="fu">sum</span>(x[i])), <span class="at">y =</span> <span class="st">"Probability"</span>,</span>
+<span id="cb7-20"><a></a>       <span class="at">title =</span> <span class="st">"Neyman-Pearson Test: Poisson Adverse Event Monitoring"</span>,</span>
+<span id="cb7-21"><a></a>       <span class="at">subtitle =</span> <span class="st">"Red dashed line = rejection boundary; larger n gives better separation"</span>) <span class="sc">+</span></span>
+<span id="cb7-22"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1387,7 +1386,7 @@ Jessica Minnier
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="co"># Check chi-squared approximation quality for different n</span></span>
 <span id="cb31-2"><a></a><span class="co"># Normal mean, unknown variance -&gt; -2ln(Lambda) = n*ln(1 + t^2/(n-1))</span></span>
 <span id="cb31-3"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb31-4"><a></a>n_rep <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb31-4"><a></a>n_rep <span class="ot">&lt;-</span> <span class="dv">50000</span></span>
 <span id="cb31-5"><a></a>sample_sizes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">100</span>)</span>
 <span id="cb31-6"><a></a></span>
 <span id="cb31-7"><a></a>sim_results <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(sample_sizes, <span class="cf">function</span>(n_val) {</span>
@@ -1396,29 +1395,65 @@ Jessica Minnier
 <span id="cb31-10"><a></a>    t_stat <span class="ot">&lt;-</span> <span class="fu">mean</span>(x) <span class="sc">/</span> (<span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(n_val))</span>
 <span id="cb31-11"><a></a>    n_val <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">1</span> <span class="sc">+</span> t_stat<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (n_val <span class="sc">-</span> <span class="dv">1</span>))</span>
 <span id="cb31-12"><a></a>  })</span>
-<span id="cb31-13"><a></a>  <span class="fu">tibble</span>(<span class="at">n =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_val), <span class="at">stat =</span> stats)</span>
+<span id="cb31-13"><a></a>  <span class="fu">tibble</span>(<span class="at">n =</span> n_val, <span class="at">n_label =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_val), <span class="at">stat =</span> stats)</span>
 <span id="cb31-14"><a></a>})</span>
 <span id="cb31-15"><a></a></span>
-<span id="cb31-16"><a></a>sim_results <span class="sc">|&gt;</span></span>
-<span id="cb31-17"><a></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">factor</span>(n, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes))) <span class="sc">|&gt;</span></span>
-<span id="cb31-18"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat)) <span class="sc">+</span></span>
-<span id="cb31-19"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>, </span>
-<span id="cb31-20"><a></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb31-21"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> <span class="fu">rep</span>(chi2_theoretical, <span class="dv">4</span>),</span>
-<span id="cb31-22"><a></a>                          <span class="at">y =</span> <span class="fu">rep</span>(<span class="fu">dchisq</span>(chi2_theoretical, <span class="dv">1</span>), <span class="dv">4</span>),</span>
-<span id="cb31-23"><a></a>                          <span class="at">n =</span> <span class="fu">rep</span>(<span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes), </span>
-<span id="cb31-24"><a></a>                                  <span class="at">each =</span> <span class="fu">length</span>(chi2_theoretical))) <span class="sc">|&gt;</span></span>
-<span id="cb31-25"><a></a>              <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">factor</span>(n, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes))),</span>
-<span id="cb31-26"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">color =</span> <span class="st">"coral"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb31-27"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>n, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb31-28"><a></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">10</span>)) <span class="sc">+</span></span>
-<span id="cb31-29"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">ln</span>(Lambda)), <span class="at">y =</span> <span class="st">"Density"</span>,</span>
-<span id="cb31-30"><a></a>       <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Quality of "</span> <span class="sc">*</span> chi<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">" Approximation for the t Test LRT"</span>),</span>
-<span id="cb31-31"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Red: "</span> <span class="sc">*</span> chi[<span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">" density. Approximation improves with n"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-16"><a></a><span class="co"># Overlay: simulated density vs chi-squared(1) reference</span></span>
+<span id="cb31-17"><a></a>chi2_ref <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb31-18"><a></a>  <span class="at">x =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="dv">10</span>, <span class="at">length.out =</span> <span class="dv">500</span>),</span>
+<span id="cb31-19"><a></a>  <span class="at">y =</span> <span class="fu">dchisq</span>(x, <span class="at">df =</span> <span class="dv">1</span>)</span>
+<span id="cb31-20"><a></a>)</span>
+<span id="cb31-21"><a></a></span>
+<span id="cb31-22"><a></a>p_facet <span class="ot">&lt;-</span> sim_results <span class="sc">|&gt;</span></span>
+<span id="cb31-23"><a></a>  <span class="fu">mutate</span>(<span class="at">n_label =</span> <span class="fu">factor</span>(n_label, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes))) <span class="sc">|&gt;</span></span>
+<span id="cb31-24"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat)) <span class="sc">+</span></span>
+<span id="cb31-25"><a></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="st">"Simulated"</span>), <span class="at">linewidth =</span> <span class="fl">1.1</span>, <span class="at">key_glyph =</span> <span class="st">"path"</span>) <span class="sc">+</span></span>
+<span id="cb31-26"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> chi2_ref <span class="sc">|&gt;</span> <span class="fu">crossing</span>(<span class="at">n_label =</span> <span class="fu">factor</span>(<span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes), </span>
+<span id="cb31-27"><a></a>            <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes))),</span>
+<span id="cb31-28"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">color =</span> <span class="st">"Chi-squared(1)"</span>), <span class="at">linewidth =</span> <span class="fl">1.1</span>,</span>
+<span id="cb31-29"><a></a>            <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">key_glyph =</span> <span class="st">"path"</span>) <span class="sc">+</span></span>
+<span id="cb31-30"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>n_label) <span class="sc">+</span></span>
+<span id="cb31-31"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Simulated"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Chi-squared(1)"</span> <span class="ot">=</span> <span class="st">"coral"</span>)) <span class="sc">+</span></span>
+<span id="cb31-32"><a></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">1.5</span>)) <span class="sc">+</span></span>
+<span id="cb31-33"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="sc">-</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">ln</span>(Lambda)), <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb31-34"><a></a>       <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Quality of "</span> <span class="sc">*</span> chi<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">"(1) Approximation for the t Test LRT"</span>),</span>
+<span id="cb31-35"><a></a>       <span class="at">subtitle =</span> <span class="st">"Solid blue = simulated; dashed red = reference. Heavy tails for small n."</span>,</span>
+<span id="cb31-36"><a></a>       <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb31-37"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb31-38"><a></a></span>
+<span id="cb31-39"><a></a>p_facet</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
-<img data-src="15_NeymanPearson_LRT_files/figure-revealjs/unnamed-chunk-12-1.png" width="1344" class="r-stretch"></section></section>
+<img data-src="15_NeymanPearson_LRT_files/figure-revealjs/unnamed-chunk-12-1.png" width="1344" class="r-stretch"></section>
+<section id="how-good-is-the-approximation-for-small-n-1" class="slide level2">
+<h2>How Good is the Approximation for Small <span class="math inline">\(n\)</span>?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="co"># Also show Q-Q plots against chi-squared(1) for each n</span></span>
+<span id="cb32-2"><a></a>p_qq <span class="ot">&lt;-</span> sim_results <span class="sc">|&gt;</span></span>
+<span id="cb32-3"><a></a>  <span class="fu">mutate</span>(<span class="at">n_label =</span> <span class="fu">factor</span>(n_label, <span class="at">levels =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, sample_sizes))) <span class="sc">|&gt;</span></span>
+<span id="cb32-4"><a></a>  <span class="fu">group_by</span>(n_label) <span class="sc">|&gt;</span></span>
+<span id="cb32-5"><a></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">2000</span>) <span class="sc">|&gt;</span></span>
+<span id="cb32-6"><a></a>  <span class="fu">ungroup</span>() <span class="sc">|&gt;</span></span>
+<span id="cb32-7"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> stat)) <span class="sc">+</span></span>
+<span id="cb32-8"><a></a>  <span class="fu">stat_qq</span>(<span class="at">distribution =</span> qchisq, <span class="at">dparams =</span> <span class="fu">list</span>(<span class="at">df =</span> <span class="dv">1</span>),</span>
+<span id="cb32-9"><a></a>          <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>, <span class="at">size =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb32-10"><a></a>  <span class="fu">geom_abline</span>(<span class="at">slope =</span> <span class="dv">1</span>, <span class="at">intercept =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"coral"</span>, </span>
+<span id="cb32-11"><a></a>              <span class="at">linewidth =</span> <span class="dv">1</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb32-12"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>n_label) <span class="sc">+</span></span>
+<span id="cb32-13"><a></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">8</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">12</span>)) <span class="sc">+</span></span>
+<span id="cb32-14"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="st">"Theoretical "</span> <span class="sc">*</span> chi[<span class="dv">1</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="st">" quantiles"</span>),</span>
+<span id="cb32-15"><a></a>       <span class="at">y =</span> <span class="st">"Sample quantiles"</span>,</span>
+<span id="cb32-16"><a></a>       <span class="at">title =</span> <span class="st">"Q-Q Plots Against Chi-squared(1)"</span>,</span>
+<span id="cb32-17"><a></a>       <span class="at">subtitle =</span> <span class="st">"Departure from diagonal shows approximation error for small n"</span>)</span>
+<span id="cb32-18"><a></a></span>
+<span id="cb32-19"><a></a>p_qq</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="15_NeymanPearson_LRT_files/figure-revealjs/unnamed-chunk-13-1.png" width="1344" class="r-stretch"></section></section>
 <section>
 <section id="connecting-the-pieces" class="title-slide slide level1 center" data-background-color="#2c3e50">
 <h1>Connecting the Pieces</h1>
@@ -1429,60 +1464,60 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
-<span id="cb32-2"><a></a></span>
-<span id="cb32-3"><a></a><span class="fu">grViz</span>(<span class="st">"</span></span>
-<span id="cb32-4"><a></a><span class="st">digraph testing_framework {</span></span>
-<span id="cb32-5"><a></a><span class="st">  graph [rankdir=TB, bgcolor=transparent, fontsize=20]</span></span>
-<span id="cb32-6"><a></a><span class="st">  node [shape=box, style=filled, fontsize=16, fontname='Helvetica']</span></span>
-<span id="cb32-7"><a></a><span class="st">  </span></span>
-<span id="cb32-8"><a></a><span class="st">  # Top level</span></span>
-<span id="cb32-9"><a></a><span class="st">  A [label='Hypothesis Testing Problem</span><span class="sc">\\</span><span class="st">nH₀: θ ∈ Ω₀ vs Hₐ: θ ∈ Ωₐ', </span></span>
-<span id="cb32-10"><a></a><span class="st">     fillcolor='#3498db', fontcolor=white, width=4]</span></span>
-<span id="cb32-11"><a></a><span class="st">  </span></span>
-<span id="cb32-12"><a></a><span class="st">  # Decision node</span></span>
-<span id="cb32-13"><a></a><span class="st">  B [label='Are both hypotheses simple?', </span></span>
-<span id="cb32-14"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
-<span id="cb32-15"><a></a><span class="st">  </span></span>
-<span id="cb32-16"><a></a><span class="st">  # Simple path</span></span>
-<span id="cb32-17"><a></a><span class="st">  C [label='Neyman-Pearson Lemma</span><span class="sc">\\</span><span class="st">nLikelihood ratio: L(θₐ)/L(θ₀) ≥ k</span><span class="sc">\\</span><span class="st">nMost Powerful Test', </span></span>
-<span id="cb32-18"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3.5]</span></span>
-<span id="cb32-19"><a></a><span class="st">  </span></span>
-<span id="cb32-20"><a></a><span class="st">  # Composite path</span></span>
-<span id="cb32-21"><a></a><span class="st">  D [label='Likelihood Ratio Test (LRT)</span><span class="sc">\\</span><span class="st">nΛ = L(θ̂₀) / L(θ̂ₘₗₑ) ≤ k', </span></span>
-<span id="cb32-22"><a></a><span class="st">     fillcolor='#8e44ad', fontcolor=white, width=3.5]</span></span>
-<span id="cb32-23"><a></a><span class="st">  </span></span>
-<span id="cb32-24"><a></a><span class="st">  # UMP</span></span>
-<span id="cb32-25"><a></a><span class="st">  E [label='Same rejection region</span><span class="sc">\\</span><span class="st">nfor all θₐ ∈ Ωₐ?', </span></span>
-<span id="cb32-26"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
-<span id="cb32-27"><a></a><span class="st">  F [label='UMP Test</span><span class="sc">\\</span><span class="st">n(one-sided alternatives)', </span></span>
-<span id="cb32-28"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3]</span></span>
-<span id="cb32-29"><a></a><span class="st">  G [label='No UMP exists</span><span class="sc">\\</span><span class="st">n(two-sided alternatives)</span><span class="sc">\\</span><span class="st">nUse UMP Unbiased or LRT', </span></span>
-<span id="cb32-30"><a></a><span class="st">     fillcolor='#e74c3c', fontcolor=white, width=3.5]</span></span>
-<span id="cb32-31"><a></a><span class="st">  </span></span>
-<span id="cb32-32"><a></a><span class="st">  # LRT outcomes</span></span>
-<span id="cb32-33"><a></a><span class="st">  H [label='Exact distribution</span><span class="sc">\\</span><span class="st">nknown?', </span></span>
-<span id="cb32-34"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
-<span id="cb32-35"><a></a><span class="st">  I [label='Use exact test</span><span class="sc">\\</span><span class="st">n(z test, t test, F test)', </span></span>
-<span id="cb32-36"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3]</span></span>
-<span id="cb32-37"><a></a><span class="st">  J [label='Large-sample approx.</span><span class="sc">\\</span><span class="st">n-2ln(Λ) ~ χ²ₘ', </span></span>
-<span id="cb32-38"><a></a><span class="st">     fillcolor='#16a085', fontcolor=white, width=3]</span></span>
-<span id="cb32-39"><a></a><span class="st">  </span></span>
-<span id="cb32-40"><a></a><span class="st">  A -&gt; B</span></span>
-<span id="cb32-41"><a></a><span class="st">  B -&gt; C [label='  Yes', fontsize=14]</span></span>
-<span id="cb32-42"><a></a><span class="st">  B -&gt; D [label='  No', fontsize=14]</span></span>
-<span id="cb32-43"><a></a><span class="st">  C -&gt; E</span></span>
-<span id="cb32-44"><a></a><span class="st">  E -&gt; F [label='  Yes', fontsize=14]</span></span>
-<span id="cb32-45"><a></a><span class="st">  E -&gt; G [label='  No', fontsize=14]</span></span>
-<span id="cb32-46"><a></a><span class="st">  D -&gt; H</span></span>
-<span id="cb32-47"><a></a><span class="st">  H -&gt; I [label='  Yes', fontsize=14]</span></span>
-<span id="cb32-48"><a></a><span class="st">  H -&gt; J [label='  No', fontsize=14]</span></span>
-<span id="cb32-49"><a></a><span class="st">}</span></span>
-<span id="cb32-50"><a></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
+<span id="cb33-2"><a></a></span>
+<span id="cb33-3"><a></a><span class="fu">grViz</span>(<span class="st">"</span></span>
+<span id="cb33-4"><a></a><span class="st">digraph testing_framework {</span></span>
+<span id="cb33-5"><a></a><span class="st">  graph [rankdir=TB, bgcolor=transparent, fontsize=20]</span></span>
+<span id="cb33-6"><a></a><span class="st">  node [shape=box, style=filled, fontsize=16, fontname='Helvetica']</span></span>
+<span id="cb33-7"><a></a><span class="st">  </span></span>
+<span id="cb33-8"><a></a><span class="st">  # Top level</span></span>
+<span id="cb33-9"><a></a><span class="st">  A [label='Hypothesis Testing Problem</span><span class="sc">\\</span><span class="st">nH₀: θ ∈ Ω₀ vs Hₐ: θ ∈ Ωₐ', </span></span>
+<span id="cb33-10"><a></a><span class="st">     fillcolor='#3498db', fontcolor=white, width=4]</span></span>
+<span id="cb33-11"><a></a><span class="st">  </span></span>
+<span id="cb33-12"><a></a><span class="st">  # Decision node</span></span>
+<span id="cb33-13"><a></a><span class="st">  B [label='Are both hypotheses simple?', </span></span>
+<span id="cb33-14"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
+<span id="cb33-15"><a></a><span class="st">  </span></span>
+<span id="cb33-16"><a></a><span class="st">  # Simple path</span></span>
+<span id="cb33-17"><a></a><span class="st">  C [label='Neyman-Pearson Lemma</span><span class="sc">\\</span><span class="st">nLikelihood ratio: L(θₐ)/L(θ₀) ≥ k</span><span class="sc">\\</span><span class="st">nMost Powerful Test', </span></span>
+<span id="cb33-18"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3.5]</span></span>
+<span id="cb33-19"><a></a><span class="st">  </span></span>
+<span id="cb33-20"><a></a><span class="st">  # Composite path</span></span>
+<span id="cb33-21"><a></a><span class="st">  D [label='Likelihood Ratio Test (LRT)</span><span class="sc">\\</span><span class="st">nΛ = L(θ̂₀) / L(θ̂ₘₗₑ) ≤ k', </span></span>
+<span id="cb33-22"><a></a><span class="st">     fillcolor='#8e44ad', fontcolor=white, width=3.5]</span></span>
+<span id="cb33-23"><a></a><span class="st">  </span></span>
+<span id="cb33-24"><a></a><span class="st">  # UMP</span></span>
+<span id="cb33-25"><a></a><span class="st">  E [label='Same rejection region</span><span class="sc">\\</span><span class="st">nfor all θₐ ∈ Ωₐ?', </span></span>
+<span id="cb33-26"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
+<span id="cb33-27"><a></a><span class="st">  F [label='UMP Test</span><span class="sc">\\</span><span class="st">n(one-sided alternatives;</span><span class="sc">\\</span><span class="st">nKarlin-Rubin Theorem)', </span></span>
+<span id="cb33-28"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3]</span></span>
+<span id="cb33-29"><a></a><span class="st">  G [label='No UMP exists</span><span class="sc">\\</span><span class="st">n(two-sided alternatives)</span><span class="sc">\\</span><span class="st">nUse UMP Unbiased or LRT', </span></span>
+<span id="cb33-30"><a></a><span class="st">     fillcolor='#e74c3c', fontcolor=white, width=3.5]</span></span>
+<span id="cb33-31"><a></a><span class="st">  </span></span>
+<span id="cb33-32"><a></a><span class="st">  # LRT outcomes</span></span>
+<span id="cb33-33"><a></a><span class="st">  H [label='Exact distribution</span><span class="sc">\\</span><span class="st">nknown?', </span></span>
+<span id="cb33-34"><a></a><span class="st">     fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
+<span id="cb33-35"><a></a><span class="st">  I [label='Use exact test</span><span class="sc">\\</span><span class="st">n(z test, t test, F test)', </span></span>
+<span id="cb33-36"><a></a><span class="st">     fillcolor='#27ae60', fontcolor=white, width=3]</span></span>
+<span id="cb33-37"><a></a><span class="st">  J [label='Large-sample approx.</span><span class="sc">\\</span><span class="st">n-2ln(Λ) ~ χ²ₘ', </span></span>
+<span id="cb33-38"><a></a><span class="st">     fillcolor='#16a085', fontcolor=white, width=3]</span></span>
+<span id="cb33-39"><a></a><span class="st">  </span></span>
+<span id="cb33-40"><a></a><span class="st">  A -&gt; B</span></span>
+<span id="cb33-41"><a></a><span class="st">  B -&gt; C [label='  Yes', fontsize=14]</span></span>
+<span id="cb33-42"><a></a><span class="st">  B -&gt; D [label='  No', fontsize=14]</span></span>
+<span id="cb33-43"><a></a><span class="st">  C -&gt; E</span></span>
+<span id="cb33-44"><a></a><span class="st">  E -&gt; F [label='  Yes', fontsize=14]</span></span>
+<span id="cb33-45"><a></a><span class="st">  E -&gt; G [label='  No', fontsize=14]</span></span>
+<span id="cb33-46"><a></a><span class="st">  D -&gt; H</span></span>
+<span id="cb33-47"><a></a><span class="st">  H -&gt; I [label='  Yes', fontsize=14]</span></span>
+<span id="cb33-48"><a></a><span class="st">  H -&gt; J [label='  No', fontsize=14]</span></span>
+<span id="cb33-49"><a></a><span class="st">}</span></span>
+<span id="cb33-50"><a></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-e838a0905b5b8b420e16" style="width:1536px;height:768px;"></div>
-<script type="application/json" data-for="htmlwidget-e838a0905b5b8b420e16">{"x":{"diagram":"\ndigraph testing_framework {\n  graph [rankdir=TB, bgcolor=transparent, fontsize=20]\n  node [shape=box, style=filled, fontsize=16, fontname=\"Helvetica\"]\n  \n  # Top level\n  A [label=\"Hypothesis Testing Problem\\nH₀: θ ∈ Ω₀ vs Hₐ: θ ∈ Ωₐ\", \n     fillcolor=\"#3498db\", fontcolor=white, width=4]\n  \n  # Decision node\n  B [label=\"Are both hypotheses simple?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  \n  # Simple path\n  C [label=\"Neyman-Pearson Lemma\\nLikelihood ratio: L(θₐ)/L(θ₀) ≥ k\\nMost Powerful Test\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3.5]\n  \n  # Composite path\n  D [label=\"Likelihood Ratio Test (LRT)\\nΛ = L(θ̂₀) / L(θ̂ₘₗₑ) ≤ k\", \n     fillcolor=\"#8e44ad\", fontcolor=white, width=3.5]\n  \n  # UMP\n  E [label=\"Same rejection region\\nfor all θₐ ∈ Ωₐ?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  F [label=\"UMP Test\\n(one-sided alternatives)\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3]\n  G [label=\"No UMP exists\\n(two-sided alternatives)\\nUse UMP Unbiased or LRT\", \n     fillcolor=\"#e74c3c\", fontcolor=white, width=3.5]\n  \n  # LRT outcomes\n  H [label=\"Exact distribution\\nknown?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  I [label=\"Use exact test\\n(z test, t test, F test)\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3]\n  J [label=\"Large-sample approx.\\n-2ln(Λ) ~ χ²ₘ\", \n     fillcolor=\"#16a085\", fontcolor=white, width=3]\n  \n  A -> B\n  B -> C [label=\"  Yes\", fontsize=14]\n  B -> D [label=\"  No\", fontsize=14]\n  C -> E\n  E -> F [label=\"  Yes\", fontsize=14]\n  E -> G [label=\"  No\", fontsize=14]\n  D -> H\n  H -> I [label=\"  Yes\", fontsize=14]\n  H -> J [label=\"  No\", fontsize=14]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-0dd68904c5b7b7947ef7" style="width:1536px;height:768px;"></div>
+<script type="application/json" data-for="htmlwidget-0dd68904c5b7b7947ef7">{"x":{"diagram":"\ndigraph testing_framework {\n  graph [rankdir=TB, bgcolor=transparent, fontsize=20]\n  node [shape=box, style=filled, fontsize=16, fontname=\"Helvetica\"]\n  \n  # Top level\n  A [label=\"Hypothesis Testing Problem\\nH₀: θ ∈ Ω₀ vs Hₐ: θ ∈ Ωₐ\", \n     fillcolor=\"#3498db\", fontcolor=white, width=4]\n  \n  # Decision node\n  B [label=\"Are both hypotheses simple?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  \n  # Simple path\n  C [label=\"Neyman-Pearson Lemma\\nLikelihood ratio: L(θₐ)/L(θ₀) ≥ k\\nMost Powerful Test\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3.5]\n  \n  # Composite path\n  D [label=\"Likelihood Ratio Test (LRT)\\nΛ = L(θ̂₀) / L(θ̂ₘₗₑ) ≤ k\", \n     fillcolor=\"#8e44ad\", fontcolor=white, width=3.5]\n  \n  # UMP\n  E [label=\"Same rejection region\\nfor all θₐ ∈ Ωₐ?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  F [label=\"UMP Test\\n(one-sided alternatives;\\nKarlin-Rubin Theorem)\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3]\n  G [label=\"No UMP exists\\n(two-sided alternatives)\\nUse UMP Unbiased or LRT\", \n     fillcolor=\"#e74c3c\", fontcolor=white, width=3.5]\n  \n  # LRT outcomes\n  H [label=\"Exact distribution\\nknown?\", \n     fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n  I [label=\"Use exact test\\n(z test, t test, F test)\", \n     fillcolor=\"#27ae60\", fontcolor=white, width=3]\n  J [label=\"Large-sample approx.\\n-2ln(Λ) ~ χ²ₘ\", \n     fillcolor=\"#16a085\", fontcolor=white, width=3]\n  \n  A -> B\n  B -> C [label=\"  Yes\", fontsize=14]\n  B -> D [label=\"  No\", fontsize=14]\n  C -> E\n  E -> F [label=\"  Yes\", fontsize=14]\n  E -> G [label=\"  No\", fontsize=14]\n  D -> H\n  H -> I [label=\"  Yes\", fontsize=14]\n  H -> J [label=\"  No\", fontsize=14]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>

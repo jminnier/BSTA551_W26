@@ -354,15 +354,14 @@ tibble(y = 0:30) |>
   ) |>
   pivot_longer(-y, names_to = "distribution", values_to = "prob") |>
   separate(distribution, into = c("sample_size", "dist"), sep = ", ") |>
-  mutate(sample_size = fct_rev(as.factor(sample_size))) |>
   ggplot(aes(x = y, y = prob, fill = dist)) +
   geom_col(position = "identity", alpha = 0.5, width = 0.8) +
-  geom_vline(data = tibble(sample_size = as.factor(c("n = 5", "n = 10")), 
+  geom_vline(data = tibble(sample_size = c("n = 5", "n = 10"), 
                             cutoff = c(10, 16)),
              aes(xintercept = cutoff - 0.5), linetype = "dashed", 
              color = "red", linewidth = 1) +
   facet_wrap(~sample_size, scales = "free") +
-  scale_fill_manual(values = c("steelblue", "coral", "pink")) +
+  scale_fill_manual(values = c("steelblue", "coral", "steelblue", "coral")) +
   labs(x = expression(y == sum(x[i])), y = "Probability",
        title = "Neyman-Pearson Test: Poisson Adverse Event Monitoring",
        subtitle = "Red dashed line = rejection boundary; larger n gives better separation") +
@@ -997,12 +996,12 @@ p1 + p2
 ```{r}
 #| echo: true
 #| code-fold: true
-#| fig-height: 6
+#| fig-height: 12
 #| fig-width: 14
 # Check chi-squared approximation quality for different n
 # Normal mean, unknown variance -> -2ln(Lambda) = n*ln(1 + t^2/(n-1))
 set.seed(551)
-n_rep <- 10000
+n_rep <- 50000
 sample_sizes <- c(5, 10, 30, 100)
 
 sim_results <- map_dfr(sample_sizes, function(n_val) {
@@ -1011,25 +1010,61 @@ sim_results <- map_dfr(sample_sizes, function(n_val) {
     t_stat <- mean(x) / (sd(x) / sqrt(n_val))
     n_val * log(1 + t_stat^2 / (n_val - 1))
   })
-  tibble(n = paste0("n = ", n_val), stat = stats)
+  tibble(n = n_val, n_label = paste0("n = ", n_val), stat = stats)
 })
 
-sim_results |>
-  mutate(n = factor(n, levels = paste0("n = ", sample_sizes))) |>
+# Overlay: simulated density vs chi-squared(1) reference
+chi2_ref <- tibble(
+  x = seq(0.01, 10, length.out = 500),
+  y = dchisq(x, df = 1)
+)
+
+p_facet <- sim_results |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", sample_sizes))) |>
   ggplot(aes(x = stat)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 50, 
-                 fill = "steelblue", alpha = 0.5) +
-  geom_line(data = tibble(x = rep(chi2_theoretical, 4),
-                          y = rep(dchisq(chi2_theoretical, 1), 4),
-                          n = rep(paste0("n = ", sample_sizes), 
-                                  each = length(chi2_theoretical))) |>
-              mutate(n = factor(n, levels = paste0("n = ", sample_sizes))),
-            aes(x = x, y = y), color = "coral", linewidth = 1) +
-  facet_wrap(~n, scales = "free_y") +
-  coord_cartesian(xlim = c(0, 10)) +
+  geom_density(aes(color = "Simulated"), linewidth = 1.1, key_glyph = "path") +
+  geom_line(data = chi2_ref |> crossing(n_label = factor(paste0("n = ", sample_sizes), 
+            levels = paste0("n = ", sample_sizes))),
+            aes(x = x, y = y, color = "Chi-squared(1)"), linewidth = 1.1,
+            linetype = "dashed", key_glyph = "path") +
+  facet_wrap(~n_label) +
+  scale_color_manual(values = c("Simulated" = "steelblue", "Chi-squared(1)" = "coral")) +
+  coord_cartesian(xlim = c(0, 8), ylim = c(0, 1.5)) +
   labs(x = expression(-2 * ln(Lambda)), y = "Density",
-       title = expression("Quality of " * chi^2 * " Approximation for the t Test LRT"),
-       subtitle = expression("Red: " * chi[1]^2 * " density. Approximation improves with n"))
+       title = expression("Quality of " * chi^2 * "(1) Approximation for the t Test LRT"),
+       subtitle = "Solid blue = simulated; dashed red = reference. Heavy tails for small n.",
+       color = NULL) +
+  theme(legend.position = "bottom")
+
+p_facet
+```
+
+## How Good is the Approximation for Small $n$?
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 12
+#| fig-width: 14
+# Also show Q-Q plots against chi-squared(1) for each n
+p_qq <- sim_results |>
+  mutate(n_label = factor(n_label, levels = paste0("n = ", sample_sizes))) |>
+  group_by(n_label) |>
+  slice_sample(n = 2000) |>
+  ungroup() |>
+  ggplot(aes(sample = stat)) +
+  stat_qq(distribution = qchisq, dparams = list(df = 1),
+          color = "steelblue", alpha = 0.15, size = 0.7) +
+  geom_abline(slope = 1, intercept = 0, color = "coral", 
+              linewidth = 1, linetype = "dashed") +
+  facet_wrap(~n_label) +
+  coord_cartesian(xlim = c(0, 8), ylim = c(0, 12)) +
+  labs(x = expression("Theoretical " * chi[1]^2 * " quantiles"),
+       y = "Sample quantiles",
+       title = "Q-Q Plots Against Chi-squared(1)",
+       subtitle = "Departure from diagonal shows approximation error for small n")
+
+p_qq
 ```
 
 # Connecting the Pieces {background-color="#2c3e50"}
@@ -1067,7 +1102,7 @@ digraph testing_framework {
   # UMP
   E [label='Same rejection region\\nfor all θₐ ∈ Ωₐ?', 
      fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]
-  F [label='UMP Test\\n(one-sided alternatives)', 
+  F [label='UMP Test\\n(one-sided alternatives;\\nKarlin-Rubin Theorem)', 
      fillcolor='#27ae60', fontcolor=white, width=3]
   G [label='No UMP exists\\n(two-sided alternatives)\\nUse UMP Unbiased or LRT', 
      fillcolor='#e74c3c', fontcolor=white, width=3.5]
