@@ -1,0 +1,886 @@
+---
+title: "Lesson 17: Bootstrap Hypothesis Testing; Permutation Tests"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w9d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 17 - Bootstrap Hypothesis Testing; Permutation Tests
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 17: Bootstrap Hypothesis Testing {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lesson 16: Further Aspects of Hypothesis Testing; CI-Test Duality**
+
+- Statistical vs. clinical significance: always report effect sizes + CIs
+- **Duality Theorem:** $\theta_0 \in$ CI $\iff$ fail to reject $H_0: \theta = \theta_0$
+- Inverting a test gives a general CI construction method
+- Equivalence and non-inferiority testing via TOST / one-sided bounds
+
+. . .
+
+**Today's Goals:**
+
+1. Understand the conceptual framework for **bootstrap hypothesis testing** (C&H Ch. 8)
+2. Implement the **one-sample bootstrap test** by resampling under $H_0$
+3. Implement the **two-sample bootstrap test**
+4. Understand **permutation tests** as an exact alternative to parametric tests
+5. Compare parametric, bootstrap, and permutation tests: when does each apply?
+6. Apply these methods to real medical data scenarios
+
+## Roadmap
+
+| Topic | Key Idea | Reference |
+|-------|----------|-----------|
+| Why bootstrap testing? | When parametric assumptions fail | C&H Ch. 8 |
+| One-sample bootstrap test | Resample after shifting to $H_0$ | C&H 8.1 |
+| Two-sample bootstrap test | Pool, then resample under $H_0$ | C&H 8.2 |
+| Permutation tests | Permute group labels; exact under exchangeability | C&H 8.3 |
+| Bootstrap p-value | Fraction of bootstrap statistics exceeding observed | C&H 8.1 |
+| Comparison of methods | Validity and power across situations | C&H 8.5 |
+
+. . .
+
+::: callout-note
+## Why This Matters
+Parametric tests (z, t, F) require distributional assumptions that may not hold in practice. Bootstrap and permutation tests provide **distribution-free** alternatives that are valid under much weaker conditions — essential for small samples, skewed outcomes, and novel statistics in biomedical research.
+:::
+
+# The Bootstrap Hypothesis Test Framework (C&H Ch. 8) {background-color="#3498db"}
+
+## Bootstrap CI vs. Bootstrap Test: Different Goals
+
+We have used the bootstrap to **construct confidence intervals** (Lessons 9–10). Now we use it for **hypothesis testing**. The ideas are related but not identical.
+
+. . .
+
+| Bootstrap CI | Bootstrap Hypothesis Test |
+|-------------|--------------------------|
+| Resample from estimated distribution | Resample from distribution **under $H_0$** |
+| Goal: capture sampling variability of $\hat{\theta}$ | Goal: approximate null distribution of test statistic |
+| CI covers $\theta$ with $\approx 1-\alpha$ probability | Null distribution used to compute p-value |
+
+. . .
+
+::: callout-important
+## Core Principle (C&H 8.1)
+A bootstrap hypothesis test approximates the **null distribution** of the test statistic by resampling from a population that **satisfies $H_0$**. The p-value is the fraction of bootstrap statistics at least as extreme as the observed value.
+:::
+
+## The Bootstrap Test: General Algorithm
+
+**Setup:** Observe $x_1, \ldots, x_n$. Test $H_0: \theta = \theta_0$ vs. $H_a: \theta \neq \theta_0$. Let $T = T(x_1,\ldots,x_n)$ be a test statistic.
+
+. . .
+
+**Algorithm:**
+
+1. Compute the observed test statistic $T_{\text{obs}} = T(x_1, \ldots, x_n)$
+
+2. **Shift the data** to satisfy $H_0$: define $x_i^* = x_i - \bar{x} + \theta_0$ (so the shifted sample has mean exactly $\theta_0$)
+
+3. For $b = 1, \ldots, B$:
+   - Draw a bootstrap sample $x_1^{*b}, \ldots, x_n^{*b}$ **with replacement** from $(x_1^*, \ldots, x_n^*)$
+   - Compute $T^{*b} = T(x_1^{*b}, \ldots, x_n^{*b})$
+
+4. Compute p-value:
+$$\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)$$
+
+## Why Shift the Data?
+
+The fundamental challenge: we observe data from the **true distribution** (with $\theta \neq \theta_0$ possibly), but we need to approximate the distribution of $T$ **under $H_0$**.
+
+. . .
+
+**Shifting:** By replacing $x_i$ with $x_i^* = x_i - \bar{x} + \theta_0$, we create a dataset that:
+
+- Has the **same shape and variability** as the original
+- Has **mean exactly equal to $\theta_0$** (satisfying $H_0: \mu = \theta_0$)
+
+. . .
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+
+set.seed(42)
+n_shift <- 20
+x_obs_shift <- rexp(n_shift, rate = 0.2)  # right-skewed; true mean = 5
+theta_0 <- 4  # null hypothesis value
+
+x_shifted <- x_obs_shift - mean(x_obs_shift) + theta_0
+
+p_orig <- ggplot(tibble(x = x_obs_shift), aes(x = x)) +
+  geom_histogram(bins = 10, fill = "#3498db", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = mean(x_obs_shift), color = "#e74c3c", linewidth = 1.5) +
+  annotate("text", x = mean(x_obs_shift) + 0.4, y = 4.5,
+           label = sprintf("bar(x) == %.1f", round(mean(x_obs_shift), 1)),
+           parse = TRUE, color = "#e74c3c", size = 5) +
+  labs(title = "Original Data", x = "x", y = "count")
+
+p_shift <- ggplot(tibble(x = x_shifted), aes(x = x)) +
+  geom_histogram(bins = 10, fill = "#27ae60", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = theta_0, color = "#e74c3c", linewidth = 1.5) +
+  annotate("text", x = theta_0 + 0.4, y = 4.5,
+           label = sprintf("theta[0] == %.0f", theta_0),
+           parse = TRUE, color = "#e74c3c", size = 5) +
+  labs(title = expression("Shifted Data (mean = " * theta[0] * ")"),
+       x = expression(x^"*"), y = "count")
+
+p_orig + p_shift
+```
+
+# One-Sample Bootstrap Test (C&H 8.1) {background-color="#e74c3c"}
+
+## Full Implementation: One-Sample Bootstrap Test
+
+**Medical Context:** A hospital monitors C-reactive protein (CRP, mg/L) as an inflammation marker. The healthy adult population norm is mean CRP = 1.5 mg/L. We observe a small sample of post-surgical patients and test whether their mean CRP differs from this norm.
+
+$$H_0: \mu = 1.5 \quad \text{vs} \quad H_a: \mu \neq 1.5$$
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+set.seed(551)
+n_crp <- 22
+# Gamma(shape=2, rate=1): mean = 2, SD ≈ 1.41 — right-skewed, moderate elevation
+crp_data <- rgamma(n_crp, shape = 2, rate = 1)
+
+mu_0 <- 1.5
+B    <- 5000
+
+# Observed test statistic (t-statistic)
+T_obs <- (mean(crp_data) - mu_0) / (sd(crp_data) / sqrt(n_crp))
+
+# Shift data to satisfy H0
+crp_shifted <- crp_data - mean(crp_data) + mu_0
+
+# Bootstrap
+T_boot <- replicate(B, {
+  boot_samp <- sample(crp_shifted, size = n_crp, replace = TRUE)
+  (mean(boot_samp) - mu_0) / (sd(boot_samp) / sqrt(n_crp))
+})
+
+# Bootstrap p-value (two-sided)
+p_boot <- mean(abs(T_boot) >= abs(T_obs))
+
+# Parametric t-test p-value
+p_param <- t.test(crp_data, mu = mu_0)$p.value
+
+cat("Sample mean CRP:", round(mean(crp_data), 3), "mg/L\n")
+cat("Sample SD:      ", round(sd(crp_data), 3),  "mg/L\n")
+cat("Observed t-statistic:", round(T_obs, 4), "\n")
+cat("Bootstrap p-value:   ", round(p_boot, 4), "\n")
+cat("Parametric t-test p: ", round(p_param, 4), "\n")
+```
+
+## Visualizing the Bootstrap Null Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+t_df <- n_crp - 1
+t_grid <- seq(-6, 6, by = 0.05)
+
+p_boot_null <- ggplot(tibble(T = T_boot), aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#3498db", color = "white", alpha = 0.7) +
+  geom_line(data = tibble(x = t_grid, y = dt(t_grid, df = t_df)),
+            aes(x = x, y = y), color = "coral", linewidth = 1.3, linetype = "dashed") +
+  geom_vline(xintercept = c(-abs(T_obs), abs(T_obs)),
+             color = "#e74c3c", linewidth = 1.5) +
+  annotate("rect", xmin = abs(T_obs), xmax = Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("rect", xmin = -Inf, xmax = -abs(T_obs), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("text", x = 4.5, y = 0.32,
+           label = sprintf("p[boot] == %.4f", p_boot), parse = TRUE,
+           color = "#e74c3c", size = 5) +
+  scale_color_manual(values = c("Bootstrap" = "#3498db", "t(n-1)" = "coral")) +
+  labs(
+    title = "Bootstrap Null Distribution vs. t Distribution",
+    subtitle = "Blue histogram = bootstrap; dashed red = t(n-1). Red shading = p-value region.",
+    x = "t-statistic", y = "Density"
+  )
+
+# Also show original data vs shifted
+p_data_compare <- bind_rows(
+  tibble(x = crp_data, type = "Original data"),
+  tibble(x = crp_shifted, type = "Shifted data (H\u2080)")
+) |>
+  ggplot(aes(x = x, fill = type)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(xintercept = mu_0, linetype = "dashed", linewidth = 1) +
+  scale_fill_manual(values = c("Original data" = "#3498db",
+                               "Shifted data (H\u2080)" = "#27ae60")) +
+  labs(title = "Original vs. Shifted Data",
+       subtitle = expression("Vertical line at " * mu[0] * " = 1.5 mg/L"),
+       x = "CRP (mg/L)", y = "Density", fill = NULL) +
+  theme(legend.position = "bottom")
+
+p_data_compare + p_boot_null
+```
+
+## When Does the Bootstrap Test Outperform the t-Test?
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+
+# Compare rejection rates under H0 (alpha control) for normal vs skewed distributions
+sim_compare <- function(n, dist = "normal", B_inner = 999, reps = 500) {
+  replicate(reps, {
+    if (dist == "normal") {
+      x <- rnorm(n, mean = 0)
+    } else {
+      x <- rexp(n, rate = 1) - 1  # centered exponential (mean=0, skewed)
+    }
+    
+    # t-test p-value
+    p_t <- t.test(x, mu = 0)$p.value
+    
+    # Bootstrap p-value
+    x_sh <- x - mean(x)  # shift to H0: mu = 0
+    T_ob <- (mean(x)) / (sd(x) / sqrt(n))
+    T_bs <- replicate(B_inner, {
+      bs <- sample(x_sh, n, replace = TRUE)
+      (mean(bs)) / (sd(bs) / sqrt(n))
+    })
+    p_bs <- mean(abs(T_bs) >= abs(T_ob))
+    
+    c(p_t = p_t, p_bs = p_bs)
+  }) |>
+    t() |>
+    as_tibble() |>
+    summarise(
+      alpha_t  = mean(p_t < 0.05),
+      alpha_bs = mean(p_bs < 0.05),
+      .groups = "drop"
+    ) |>
+    mutate(n = n, dist = dist)
+}
+
+set.seed(42)
+grid <- expand_grid(n = c(10, 25, 50), dist = c("normal", "skewed"))
+res <- map2_dfr(grid$n, grid$dist, sim_compare)
+
+res |>
+  pivot_longer(starts_with("alpha"), names_to = "method", values_to = "type1") |>
+  mutate(
+    method = recode(method, alpha_t = "t-test", alpha_bs = "Bootstrap test"),
+    dist   = recode(dist, normal = "Normal population", skewed = "Skewed population (Exp-1)")
+  ) |>
+  ggplot(aes(x = factor(n), y = type1, fill = method)) +
+  geom_col(position = "dodge", alpha = 0.85) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", color = "black", linewidth = 1) +
+  facet_wrap(~dist) +
+  scale_fill_manual(values = c("t-test" = "steelblue", "Bootstrap test" = "#27ae60")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.12)) +
+  labs(
+    title = expression("Type I Error Rate Under " * H[0] * " at " * alpha * " = 0.05"),
+    subtitle = "Both methods well-calibrated for normal; bootstrap slightly better for small skewed samples",
+    x = "Sample size (n)", y = "Empirical Type I error rate",
+    fill = NULL
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Two-Sample Bootstrap Test (C&H 8.2) {background-color="#8e44ad"}
+
+## Two-Sample Setting
+
+**Goal:** Test $H_0: \mu_1 = \mu_2$ (or equivalently $H_0: \mu_1 - \mu_2 = 0$) from two independent samples.
+
+. . .
+
+**Parametric approach:** Two-sample t-test (requires approximate normality, or large $n$).
+
+. . .
+
+**Bootstrap approach:** Must resample in a way that respects $H_0: \mu_1 = \mu_2$.
+
+. . .
+
+::: callout-important
+## Key Idea: Pool Under $H_0$ (C&H 8.2)
+Under $H_0: \mu_1 = \mu_2$, both groups come from distributions with the **same mean**. We can **center each group** by subtracting its own sample mean, then **pool** the centered data. Resampling from this pooled centered data generates bootstrap samples that satisfy $H_0$.
+:::
+
+## Two-Sample Bootstrap Algorithm
+
+**Given:** $x_{1,1}, \ldots, x_{1,n_1}$ from Group 1 and $x_{2,1}, \ldots, x_{2,n_2}$ from Group 2.
+
+**Observed statistic:** $T_{\text{obs}} = \bar{x}_1 - \bar{x}_2$ (or t-statistic).
+
+. . .
+
+**Algorithm (C&H 8.2):**
+
+1. Center each group: $\tilde{x}_{1i} = x_{1i} - \bar{x}_1 + \bar{x}$; $\tilde{x}_{2i} = x_{2i} - \bar{x}_2 + \bar{x}$, where $\bar{x}$ is the grand mean of the pooled data
+
+2. Pool centered data: $\tilde{\mathbf{x}} = (\tilde{x}_{1,1}, \ldots, \tilde{x}_{1,n_1}, \tilde{x}_{2,1},\ldots,\tilde{x}_{2,n_2})$
+
+3. For $b = 1, \ldots, B$:
+   - Draw $n_1$ with replacement from $\tilde{\mathbf{x}}$ $\to$ bootstrap Group 1
+   - Draw $n_2$ with replacement from $\tilde{\mathbf{x}}$ $\to$ bootstrap Group 2
+   - Compute $T^{*b} = \bar{x}_1^{*b} - \bar{x}_2^{*b}$
+
+4. p-value: $\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)$
+
+## Medical Example: LDL Cholesterol Reduction by Treatment
+
+A clinical trial compares two statins on LDL reduction (mg/dL). LDL change is right-skewed.
+
+```{r}
+#| echo: true
+set.seed(551)
+n1 <- 30; n2 <- 35
+
+# Simulate LDL reduction (mg/dL): non-normal, different shapes
+ldl_a <- rgamma(n1, shape = 3, rate = 0.12) - 10  # Drug A
+ldl_b <- rgamma(n2, shape = 2, rate = 0.10) - 5   # Drug B
+
+obs_diff <- mean(ldl_a) - mean(ldl_b)
+cat("Drug A mean LDL reduction:", round(mean(ldl_a), 2), "mg/dL\n")
+cat("Drug B mean LDL reduction:", round(mean(ldl_b), 2), "mg/dL\n")
+cat("Observed difference (A - B):", round(obs_diff, 2), "mg/dL\n")
+```
+
+```{r}
+#| echo: true
+# Two-sample bootstrap test
+grand_mean <- mean(c(ldl_a, ldl_b))
+ldl_a_c <- ldl_a - mean(ldl_a) + grand_mean
+ldl_b_c <- ldl_b - mean(ldl_b) + grand_mean
+pooled  <- c(ldl_a_c, ldl_b_c)
+
+B <- 5000
+T_boot_2 <- replicate(B, {
+  boot_a <- sample(pooled, n1, replace = TRUE)
+  boot_b <- sample(pooled, n2, replace = TRUE)
+  mean(boot_a) - mean(boot_b)
+})
+
+p_boot_2 <- mean(abs(T_boot_2) >= abs(obs_diff))
+p_ttest   <- t.test(ldl_a, ldl_b)$p.value
+
+cat("\nBootstrap p-value:", round(p_boot_2, 4), "\n")
+cat("Welch t-test p-value:", round(p_ttest, 4), "\n")
+```
+
+## Two-Sample Bootstrap: Visualizing the Results
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 9
+#| fig-width: 14
+
+p_hist_boot <- ggplot(tibble(T = T_boot_2), aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#8e44ad", color = "white", alpha = 0.75) +
+  geom_vline(xintercept = c(-abs(obs_diff), abs(obs_diff)),
+             color = "#e74c3c", linewidth = 1.5) +
+  annotate("rect", xmin = abs(obs_diff), xmax = Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("rect", xmin = -Inf, xmax = -abs(obs_diff), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("text", x = max(T_boot_2) * 0.6, y = 0.06,
+           label = sprintf("p-value == %.4f", p_boot_2), parse = TRUE,
+           color = "#e74c3c", size = 5) +
+  labs(
+    title = "Bootstrap Null Distribution: Difference in Means (A - B)",
+    subtitle = "Null: both groups same mean. Red lines = observed difference.",
+    x = "Bootstrap difference (mg/dL)", y = "Density"
+  )
+
+p_raw <- bind_rows(
+  tibble(ldl = ldl_a, Group = "Drug A"),
+  tibble(ldl = ldl_b, Group = "Drug B")
+) |>
+  ggplot(aes(x = ldl, fill = Group)) +
+  geom_histogram(bins = 15, alpha = 0.7, position = "identity", color = "white") +
+  scale_fill_manual(values = c("Drug A" = "#8e44ad", "Drug B" = "#f39c12")) +
+  geom_vline(xintercept = mean(ldl_a), color = "#8e44ad", linewidth = 1.5, linetype = "dashed") +
+  geom_vline(xintercept = mean(ldl_b), color = "#f39c12", linewidth = 1.5, linetype = "dashed") +
+  labs(title = "LDL Reduction by Treatment Group",
+       subtitle = "Dashed lines = group means", x = "LDL Reduction (mg/dL)",
+       y = "Count", fill = NULL) +
+  theme(legend.position = "bottom")
+
+p_raw + p_hist_boot
+```
+
+# Permutation Tests (C&H 8.3) {background-color="#27ae60"}
+
+## The Permutation Test Idea
+
+::: callout-important
+## Key Principle (C&H 8.3)
+Under $H_0: \mu_1 = \mu_2$ (or more generally, $H_0$: the two groups are **exchangeable**), the group labels are **arbitrary** — any assignment of observations to groups is equally likely.
+
+A **permutation test** generates the exact null distribution of the test statistic by considering **all possible** (or a large random sample of) permutations of the group labels.
+:::
+
+. . .
+
+**Algorithm:**
+
+1. Compute observed statistic $T_{\text{obs}} = \bar{x}_1 - \bar{x}_2$
+2. For $b = 1, \ldots, B$:
+   - Randomly permute the combined vector of $n_1 + n_2$ observations
+   - Assign first $n_1$ to Group 1, remaining $n_2$ to Group 2
+   - Compute $T^{*b} = \bar{x}_1^{*b} - \bar{x}_2^{*b}$
+3. p-value: $\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)$
+
+. . .
+
+::: callout-note
+## Exact vs. Approximate
+With total $n_1+n_2$ observations, there are $\binom{n_1+n_2}{n_1}$ permutations. If this is small, we can enumerate all of them for an **exact** test. Otherwise, random permutations give a **Monte Carlo approximation** of the exact test.
+:::
+
+## Permutation Test vs. Bootstrap Test: The Key Distinction
+
+| Feature | Bootstrap Test | Permutation Test |
+|---------|---------------|-----------------|
+| How $H_0$ is imposed | Shift/center data to satisfy $H_0$ | Permute group labels |
+| What is resampled | From modified data | From original data |
+| Validity assumption | $H_0$ + iid resampling | Exchangeability under $H_0$ |
+| When exact? | Never (always approximate) | Yes, if all permutations enumerated |
+| Handles one-sample? | Yes (shift to $\theta_0$) | Not naturally |
+| Computes standard errors? | Yes | No |
+
+. . .
+
+::: callout-tip
+## When to Prefer Permutation Tests
+Permutation tests are preferred when:
+- You want an **exact** p-value under $H_0$
+- Exchangeability is a natural assumption (randomized trials!)
+- You want a valid test without distributional assumptions
+:::
+
+## Medical Example: Permutation Test for Survival Times
+
+A randomized trial compares time-to-discharge (days) between two ICU protocols. Small sample, non-normal.
+
+```{r}
+#| echo: true
+# ICU time to discharge (days)
+protocol_A <- c(3, 5, 7, 9, 4, 6, 8, 12, 5, 7)
+protocol_B <- c(6, 9, 11, 14, 8, 10, 7, 15, 9, 13, 11)
+
+n_A <- length(protocol_A)
+n_B <- length(protocol_B)
+combined <- c(protocol_A, protocol_B)
+T_obs_perm <- mean(protocol_A) - mean(protocol_B)
+
+cat("Protocol A mean:", round(mean(protocol_A), 2), "days\n")
+cat("Protocol B mean:", round(mean(protocol_B), 2), "days\n")
+cat("Observed difference:", round(T_obs_perm, 2), "days\n")
+```
+
+```{r}
+#| echo: true
+# Permutation test
+set.seed(551)
+B_perm <- 9999
+T_perm <- replicate(B_perm, {
+  perm <- sample(combined)
+  mean(perm[1:n_A]) - mean(perm[(n_A + 1):(n_A + n_B)])
+})
+
+p_perm <- (sum(abs(T_perm) >= abs(T_obs_perm)) + 1) / (B_perm + 1)  # +1 for observed
+p_ttest_icu <- t.test(protocol_A, protocol_B)$p.value
+cat("\nPermutation p-value:", round(p_perm, 4), "\n")
+cat("Welch t-test p-value:", round(p_ttest_icu, 4), "\n")
+```
+
+## Visualizing the Permutation Null Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+tibble(T = T_perm) |>
+  ggplot(aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#27ae60", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = c(-abs(T_obs_perm), abs(T_obs_perm)),
+             color = "#e74c3c", linewidth = 1.5) +
+  annotate("rect", xmin = abs(T_obs_perm), xmax = Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("rect", xmin = -Inf, xmax = -abs(T_obs_perm), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("text", x = 3.5, y = 0.22,
+           label = sprintf("p[perm] == %.4f", p_perm), parse = TRUE,
+           color = "#e74c3c", size = 5.5) +
+  labs(
+    title = "Permutation Null Distribution: Difference in Mean ICU Days",
+    subtitle = "Under H\u2080: exchangeability. Red lines = observed difference \u00b13.64 days.",
+    x = "Permuted difference in means (days)",
+    y = "Density"
+  )
+```
+
+## Exact Permutation: Small Sample
+
+With small samples, we can enumerate **all** permutations exactly.
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Small example: 5 observations total, n1 = 2, n2 = 3
+# All C(5,2) = 10 permutations
+
+small_A <- c(10, 15)
+small_B <- c(12, 18, 20)
+combined_small <- c(small_A, small_B)
+T_obs_small <- mean(small_A) - mean(small_B)
+
+# Enumerate all C(5,2) = 10 permutations
+library(combinat)
+all_combs <- combn(length(combined_small), length(small_A), simplify = FALSE)
+
+all_diffs <- map_dbl(all_combs, function(idx) {
+  g1 <- combined_small[idx]
+  g2 <- combined_small[-idx]
+  mean(g1) - mean(g2)
+})
+
+exact_p <- mean(abs(all_diffs) >= abs(T_obs_small))
+
+tibble(
+  Permutation = seq_along(all_diffs),
+  Difference  = all_diffs,
+  As_extreme  = abs(all_diffs) >= abs(T_obs_small)
+) |>
+  mutate(Difference = round(Difference, 2)) |>
+  knitr::kable(caption = sprintf("All C(5,2)=10 permutations. Observed diff = %.1f. Exact p = %.2f",
+                                 T_obs_small, exact_p))
+```
+
+# Choosing Between Parametric, Bootstrap, and Permutation Tests {background-color="#f39c12"}
+
+## Decision Framework
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 15
+library(DiagrammeR)
+
+grViz("
+digraph test_choice {
+  graph [rankdir=TB, bgcolor=transparent, fontsize=18]
+  node [shape=box, style=filled, fontsize=14, fontname='Helvetica']
+
+  A [label='Two-Sample Hypothesis Test\\nH0: mu1 = mu2', fillcolor='#3498db', fontcolor=white, width=4]
+
+  B [label='Normal populations\\nor large n (CLT)?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]
+
+  C [label='Welch t-test or z-test\\n(Most powerful when assumptions hold)', fillcolor='#27ae60', fontcolor=white, width=3.5]
+
+  D [label='Randomized experiment?\\n(Exchangeable labels)', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]
+
+  E [label='Permutation Test\\n(Exact; no distributional assumptions)', fillcolor='#8e44ad', fontcolor=white, width=3.5]
+
+  F [label='iid assumption reasonable?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]
+
+  G [label='Bootstrap Test\\n(Resample under H0; distribution-free)', fillcolor='#e74c3c', fontcolor=white, width=3.5]
+
+  H [label='Consult a statistician!\\n(Complex dependence structures)', fillcolor='#95a5a6', fontcolor=white, width=3.5]
+
+  A -> B
+  B -> C [label='  Yes', fontsize=13]
+  B -> D [label='  No', fontsize=13]
+  D -> E [label='  Yes', fontsize=13]
+  D -> F [label='  No', fontsize=13]
+  F -> G [label='  Yes', fontsize=13]
+  F -> H [label='  No (clustered, \\n time series, etc.)', fontsize=12]
+}
+")
+```
+
+## Simulation Study: Comparison of Methods
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+# Under H0: compare Type I error
+# Under Ha: compare power
+
+run_three_tests <- function(n1 = 20, n2 = 20, delta = 0,
+                            dist = "normal", B_inner = 499) {
+  if (dist == "normal") {
+    x1 <- rnorm(n1, mean = delta); x2 <- rnorm(n2, mean = 0)
+  } else {
+    x1 <- rexp(n1, 1) - 1 + delta; x2 <- rexp(n2, 1) - 1
+  }
+
+  # Parametric t-test
+  p_t <- t.test(x1, x2)$p.value
+
+  # Bootstrap (pooled centered)
+  grand <- mean(c(x1, x2))
+  x1c   <- x1 - mean(x1) + grand
+  x2c   <- x2 - mean(x2) + grand
+  pool  <- c(x1c, x2c)
+  T_ob  <- mean(x1) - mean(x2)
+  T_bs  <- replicate(B_inner, {
+    mean(sample(pool, n1, T)) - mean(sample(pool, n2, T))
+  })
+  p_b <- mean(abs(T_bs) >= abs(T_ob))
+
+  # Permutation
+  comb  <- c(x1, x2)
+  T_pm  <- replicate(B_inner, {
+    pm <- sample(comb)
+    mean(pm[1:n1]) - mean(pm[(n1+1):(n1+n2)])
+  })
+  p_p <- (sum(abs(T_pm) >= abs(T_ob)) + 1) / (B_inner + 1)
+
+  c(p_t = p_t, p_boot = p_b, p_perm = p_p)
+}
+
+set.seed(99)
+scenarios_cmp <- expand_grid(delta = c(0, 1), dist = c("normal", "skewed"))
+
+res_cmp <- scenarios_cmp |>
+  rowwise() |>
+  mutate(
+    sims = list(replicate(300, run_three_tests(delta = delta, dist = dist,
+                                               B_inner = 299)) |>
+                  t() |> as_tibble())
+  ) |>
+  unnest(sims) |>
+  pivot_longer(starts_with("p_"), names_to = "method", values_to = "pval") |>
+  group_by(delta, dist, method) |>
+  summarise(rejection = mean(pval < 0.05), .groups = "drop") |>
+  mutate(
+    method = recode(method, p_t = "t-test", p_boot = "Bootstrap", p_perm = "Permutation"),
+    scenario = paste0(ifelse(dist == "normal", "Normal", "Skewed"),
+                      ", \u03b4 = ", delta),
+    quantity = ifelse(delta == 0, "Type I error (H\u2080 true)", "Power (H\u2090 true)")
+  )
+
+ggplot(res_cmp, aes(x = method, y = rejection, fill = method)) +
+  geom_col(alpha = 0.85) +
+  geom_hline(yintercept = 0.05, linetype = "dashed") +
+  facet_wrap(~scenario, nrow = 2) +
+  scale_fill_manual(values = c("t-test" = "steelblue", 
+                               "Bootstrap" = "#e74c3c", 
+                               "Permutation" = "#27ae60")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(
+    title = "Comparison of Tests: Type I Error (delta=0) and Power (delta=1)",
+    subtitle = "n1 = n2 = 20. All tests well-calibrated; permutation slightly conservative for skewed data.",
+    x = "Method", y = "Rejection rate", fill = NULL
+  ) +
+  theme(legend.position = "bottom", strip.text = element_text(size = 14))
+```
+
+## Summary: Key Properties of Each Method
+
+| Property | Parametric (t) | Bootstrap | Permutation |
+|----------|---------------|-----------|-------------|
+| Requires distributional assumptions | Yes (or large $n$) | No | No |
+| Valid for small $n$, skewed data | Only if normal | Yes | Yes |
+| Can use any test statistic | No | Yes | Yes |
+| Exact p-value possible | Only for normal | No | Yes (if enumerate all) |
+| One-sample tests | Yes | Yes | Less natural |
+| Naturally handles unequal variances | Yes (Welch) | Yes | Yes |
+| Computationally intensive | No | Moderate | Moderate |
+| Interpretation | Parametric theory | Empirical null | Randomization |
+
+. . .
+
+::: callout-tip
+## Practical Advice for Biostatistics
+In clinical trials with randomized treatment assignment, **permutation tests are the gold standard** — they require only the randomization mechanism, not any population model. For observational studies, bootstrap tests offer robustness to non-normality without assuming exchangeability.
+:::
+
+# Bootstrap Tests and the Duality with CIs {background-color="#16a085"}
+
+## Bootstrap Tests and Bootstrap CIs: Are They Dual?
+
+In the parametric setting, we showed that confidence intervals and tests are **exactly dual**. Does this hold for bootstrap tests and bootstrap CIs?
+
+. . .
+
+::: callout-important
+## Answer: Approximately, but the method matters
+
+- **Bootstrap percentile CI** ↔ **bootstrap test based on $\hat{\theta}$**: approximately dual
+- The duality is exact only if the bootstrap CI and test use the same pivot/statistic
+- In practice, they may give slightly different inferences for small $n$
+:::
+
+. . .
+
+```{r}
+#| echo: true
+#| code-fold: true
+set.seed(551)
+# One-sample example: check duality
+crp_small <- c(2.1, 3.4, 1.8, 4.2, 2.9, 3.7, 1.5, 5.1, 2.6, 3.8)
+n_s  <- length(crp_small)
+B_s  <- 4999
+
+# Bootstrap CI for mu (percentile method)
+boot_means <- replicate(B_s, mean(sample(crp_small, n_s, replace = TRUE)))
+ci_boot <- quantile(boot_means, c(0.025, 0.975))
+
+# Bootstrap test: H0: mu = 2.5 vs Ha: mu != 2.5
+mu0_test <- 2.5
+x_sh     <- crp_small - mean(crp_small) + mu0_test
+T_ob_s   <- mean(crp_small) - mu0_test
+T_bs_s   <- replicate(B_s, mean(sample(x_sh, n_s, replace = TRUE)) - mu0_test)
+p_boot_s <- mean(abs(T_bs_s) >= abs(T_ob_s))
+
+cat("Bootstrap 95% CI: [", round(ci_boot[1], 3), ",", round(ci_boot[2], 3), "]\n")
+cat("mu_0 = 2.5 in CI?", ci_boot[1] <= 2.5 & 2.5 <= ci_boot[2], "\n")
+cat("Bootstrap test p-value for mu_0 = 2.5:", round(p_boot_s, 4), "\n")
+cat("Consistent? (p>=0.05 iff in CI):", (p_boot_s >= 0.05) == (ci_boot[1] <= 2.5 & 2.5 <= ci_boot[2]))
+```
+
+# One-Sample Permutation Test (C&H 8.3) {background-color="#2c3e50"}
+
+## One-Sample Permutation Test: Sign Test Perspective
+
+For a one-sample test $H_0: \mu = \mu_0$, permutation tests work via **sign flipping** (not label permutation).
+
+. . .
+
+Under $H_0: \text{median} = \mu_0$ (or symmetry about $\mu_0$):
+
+The deviations $d_i = x_i - \mu_0$ are symmetric about 0, so **each sign is equally likely to be + or −**.
+
+. . .
+
+**Algorithm:**
+
+1. Compute $d_i = x_i - \mu_0$ and observed $T_{\text{obs}} = \bar{d}$
+2. For $b = 1, \ldots, B$: randomly assign $\pm 1$ to each $d_i$; compute $T^{*b} = \bar{d}^{*b}$
+3. p-value: fraction with $|T^{*b}| \geq |T_{\text{obs}}|$
+
+```{r}
+#| echo: true
+# Sign-flip permutation test for mean CRP
+crp_data_perm <- c(2.1, 3.4, 1.8, 4.2, 2.9, 3.7, 1.5, 5.1, 2.6, 3.8, 4.0, 2.2)
+mu_0_crp <- 2.5
+d <- crp_data_perm - mu_0_crp
+T_obs_crp <- mean(d)
+
+set.seed(551)
+B_sign <- 9999
+T_sign <- replicate(B_sign, {
+  signs <- sample(c(-1, 1), length(d), replace = TRUE)
+  mean(signs * d)
+})
+
+p_sign <- mean(abs(T_sign) >= abs(T_obs_crp))
+cat("Observed mean deviation:", round(T_obs_crp, 4), "\n")
+cat("Sign-flip permutation p-value:", round(p_sign, 4), "\n")
+cat("Parametric t-test p-value:", round(t.test(crp_data_perm, mu = mu_0_crp)$p.value, 4))
+```
+
+# Key Takeaways {background-color="#2c3e50"}
+
+## Key Takeaways
+
+::: callout-important
+## Today's Main Points (C&H Chapter 8)
+
+1. **Bootstrap hypothesis tests** approximate the null distribution by resampling from data **shifted to satisfy $H_0$** — this is different from bootstrap CIs
+
+2. **One-sample bootstrap test:** shift data so $\bar{x}^* = \theta_0$, resample, compute p-value from fraction of bootstrap statistics as extreme as observed
+
+3. **Two-sample bootstrap test:** center each group to the grand mean (pool under $H_0$), resample from pooled centered data
+
+4. **Permutation tests** are valid under **exchangeability** — especially natural for randomized experiments. The group labels are permuted; exact p-values are available by enumeration
+
+5. **Permutation $\neq$ Bootstrap:** permutation assumes exchangeability; bootstrap assumes iid resampling. Both avoid parametric distributional assumptions
+
+6. **All three methods** (parametric, bootstrap, permutation) give similar results for large normal samples; differences emerge for small $n$, skewed data, or non-standard statistics
+
+7. **Duality:** bootstrap tests and bootstrap CIs are approximately (but not exactly) dual
+:::
+
+## Looking Ahead
+
+**Next class (Lesson 18): Two-Sample z and t Confidence Intervals and Tests (Devore 9.5)**
+
+- Two-sample z-test for means ($\sigma$ known)
+- Welch t-test for means ($\sigma$ unknown)
+- Pooled t-test (equal variance assumption)
+- Two-sample inference for proportions
+- Inferences about two variances (F-test)
+- Power and sample size for two-sample tests
+
+## References
+
+::: nonincremental
+-   Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 8: Bootstrap Hypothesis Testing.
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Section 9.6.
+-   Efron, B. and Hastie, T. (2016). *Computer Age Statistical Inference*. Cambridge University Press. Chapter 15.
+-   Good, P. I. (2005). *Permutation, Parametric, and Bootstrap Tests of Hypotheses* (3rd ed.). Springer.
+-   Ernst, M. D. (2004). Permutation methods: a basis for exact inference. *Statistical Science*, 19(4), 676–685.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/17_BootstrapHypothesisTesting/17_BootstrapHypothesisTesting.html lessons/17_BootstrapHypothesisTesting/17_BootstrapHypothesisTesting.pdf
+```
+
+

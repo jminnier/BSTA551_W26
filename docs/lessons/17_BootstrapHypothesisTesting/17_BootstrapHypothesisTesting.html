@@ -11,7 +11,7 @@
 
   <meta name="author" content="Jessica Minnier">
   <meta name="dcterms.date" content="2026-03-02">
-  <title>Theory of Statistical Inference – Lesson 17: Bootstrap Hypothesis Testing; Permutation Tests</title>
+  <title>Theory of Statistical Inference – Lesson 17: Bootstrap Hypothesis Testing</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -202,7 +202,7 @@
     <div class="slides">
 
 <section id="title-slide" data-background-color="#006a4e" class="quarto-title-block center">
-  <h1 class="title">Lesson 17: Bootstrap Hypothesis Testing; Permutation Tests</h1>
+  <h1 class="title">Lesson 17: Bootstrap Hypothesis Testing</h1>
   <p class="subtitle">BSTA 551: Statistical Inference</p>
 
 <div class="quarto-title-authors">
@@ -268,24 +268,19 @@ Jessica Minnier
 <td>C&amp;H 8.1</td>
 </tr>
 <tr class="odd">
-<td>Two-sample bootstrap test</td>
-<td>Pool, then resample under <span class="math inline">\(H_0\)</span></td>
-<td>C&amp;H 8.2</td>
+<td>The naive bootstrap (wrong)</td>
+<td>Resampling without shifting gives invalid null</td>
+<td>C&amp;H 8.1</td>
 </tr>
 <tr class="even">
-<td>Permutation tests</td>
-<td>Permute group labels; exact under exchangeability</td>
-<td>C&amp;H 8.3</td>
-</tr>
-<tr class="odd">
 <td>Bootstrap p-value</td>
 <td>Fraction of bootstrap statistics exceeding observed</td>
 <td>C&amp;H 8.1</td>
 </tr>
-<tr class="even">
-<td>Comparison of methods</td>
-<td>Validity and power across situations</td>
-<td>C&amp;H 8.5</td>
+<tr class="odd">
+<td>Bootstrap vs.&nbsp;t-test</td>
+<td>Robustness for non-normal, small samples</td>
+<td>C&amp;H 8.1</td>
 </tr>
 </tbody>
 </table>
@@ -299,7 +294,7 @@ Jessica Minnier
 <p><strong>Why This Matters</strong></p>
 </div>
 <div class="callout-content">
-<p>Parametric tests (z, t, F) require distributional assumptions that may not hold in practice. Bootstrap and permutation tests provide <strong>distribution-free</strong> alternatives that are valid under much weaker conditions — essential for small samples, skewed outcomes, and novel statistics in biomedical research.</p>
+<p>Parametric tests (z, t) require distributional assumptions that may not hold in practice. The bootstrap test provides a <strong>distribution-free</strong> alternative that is valid under much weaker conditions — essential for small samples, skewed outcomes, and novel test statistics in biomedical research.</p>
 </div>
 </div>
 </div>
@@ -389,30 +384,51 @@ Jessica Minnier
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb1-2"><a></a>n_shift <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb1-2"><a></a>n_shift     <span class="ot">&lt;-</span> <span class="dv">20</span></span>
 <span id="cb1-3"><a></a>x_obs_shift <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n_shift, <span class="at">rate =</span> <span class="fl">0.2</span>)  <span class="co"># right-skewed; true mean = 5</span></span>
-<span id="cb1-4"><a></a>theta_0 <span class="ot">&lt;-</span> <span class="dv">4</span>  <span class="co"># null hypothesis value</span></span>
-<span id="cb1-5"><a></a></span>
-<span id="cb1-6"><a></a>x_shifted <span class="ot">&lt;-</span> x_obs_shift <span class="sc">-</span> <span class="fu">mean</span>(x_obs_shift) <span class="sc">+</span> theta_0</span>
-<span id="cb1-7"><a></a></span>
-<span id="cb1-8"><a></a>p_orig <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> x_obs_shift), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
-<span id="cb1-9"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">10</span>, <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb1-10"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(x_obs_shift), <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb1-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(x_obs_shift) <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">y =</span> <span class="fl">4.5</span>,</span>
-<span id="cb1-12"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"bar(x) == %.1f"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(x_obs_shift), <span class="dv">1</span>)),</span>
-<span id="cb1-13"><a></a>           <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb1-14"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original Data"</span>, <span class="at">x =</span> <span class="st">"x"</span>, <span class="at">y =</span> <span class="st">"count"</span>)</span>
-<span id="cb1-15"><a></a></span>
-<span id="cb1-16"><a></a>p_shift <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> x_shifted), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
-<span id="cb1-17"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">10</span>, <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb1-18"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> theta_0, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb1-19"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> theta_0 <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">y =</span> <span class="fl">4.5</span>,</span>
-<span id="cb1-20"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"theta[0] == %.0f"</span>, theta_0),</span>
-<span id="cb1-21"><a></a>           <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb1-22"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Shifted Data (mean = "</span> <span class="sc">*</span> theta[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">")"</span>),</span>
-<span id="cb1-23"><a></a>       <span class="at">x =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"count"</span>)</span>
-<span id="cb1-24"><a></a></span>
-<span id="cb1-25"><a></a>p_orig <span class="sc">+</span> p_shift</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-4"><a></a>theta_0     <span class="ot">&lt;-</span> <span class="dv">4</span>  <span class="co"># null hypothesis value</span></span>
+<span id="cb1-5"><a></a>x_shifted   <span class="ot">&lt;-</span> x_obs_shift <span class="sc">-</span> <span class="fu">mean</span>(x_obs_shift) <span class="sc">+</span> theta_0</span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a><span class="co"># Shared x-axis range across both panels</span></span>
+<span id="cb1-8"><a></a>x_range <span class="ot">&lt;-</span> <span class="fu">range</span>(<span class="fu">c</span>(x_obs_shift, x_shifted))</span>
+<span id="cb1-9"><a></a>x_pad   <span class="ot">&lt;-</span> <span class="fu">diff</span>(x_range) <span class="sc">*</span> <span class="fl">0.07</span></span>
+<span id="cb1-10"><a></a>x_lims  <span class="ot">&lt;-</span> x_range <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span>x_pad, x_pad)</span>
+<span id="cb1-11"><a></a></span>
+<span id="cb1-12"><a></a><span class="co"># Compute shared density y-range for annotation placement</span></span>
+<span id="cb1-13"><a></a>dens_orig  <span class="ot">&lt;-</span> <span class="fu">density</span>(x_obs_shift)</span>
+<span id="cb1-14"><a></a>dens_shift <span class="ot">&lt;-</span> <span class="fu">density</span>(x_shifted)</span>
+<span id="cb1-15"><a></a>y_ann_dens <span class="ot">&lt;-</span> <span class="fu">max</span>(dens_orig<span class="sc">$</span>y, dens_shift<span class="sc">$</span>y) <span class="sc">*</span> <span class="fl">0.88</span></span>
+<span id="cb1-16"><a></a></span>
+<span id="cb1-17"><a></a>p_orig <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> x_obs_shift), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb1-18"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
+<span id="cb1-19"><a></a>                 <span class="at">bins =</span> <span class="dv">10</span>, <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb1-20"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">linewidth =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb1-21"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(x_obs_shift), <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb1-22"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(x_obs_shift) <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> y_ann_dens,</span>
+<span id="cb1-23"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"bar(x) == %.1f"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(x_obs_shift), <span class="dv">1</span>)),</span>
+<span id="cb1-24"><a></a>           <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>) <span class="sc">+</span></span>
+<span id="cb1-25"><a></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> x_lims) <span class="sc">+</span></span>
+<span id="cb1-26"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original Data"</span>,</span>
+<span id="cb1-27"><a></a>       <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Mean = "</span> <span class="sc">*</span> .(<span class="fu">round</span>(<span class="fu">mean</span>(x_obs_shift), <span class="dv">1</span>)) <span class="sc">*</span></span>
+<span id="cb1-28"><a></a>                           <span class="st">"  \u2260  "</span> <span class="sc">*</span> theta[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> .(theta_0) <span class="sc">*</span></span>
+<span id="cb1-29"><a></a>                           <span class="st">"  (not satisfying "</span> <span class="sc">*</span> H[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">")"</span>),</span>
+<span id="cb1-30"><a></a>       <span class="at">x =</span> <span class="st">"x"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb1-31"><a></a></span>
+<span id="cb1-32"><a></a>p_shift <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">x =</span> x_shifted), <span class="fu">aes</span>(<span class="at">x =</span> x)) <span class="sc">+</span></span>
+<span id="cb1-33"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)),</span>
+<span id="cb1-34"><a></a>                 <span class="at">bins =</span> <span class="dv">10</span>, <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb1-35"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#27ae60"</span>, <span class="at">linewidth =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb1-36"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> theta_0, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb1-37"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> theta_0 <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> y_ann_dens,</span>
+<span id="cb1-38"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"theta[0] == %.0f"</span>, theta_0),</span>
+<span id="cb1-39"><a></a>           <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>) <span class="sc">+</span></span>
+<span id="cb1-40"><a></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> x_lims) <span class="sc">+</span></span>
+<span id="cb1-41"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Shifted Data (mean = "</span> <span class="sc">*</span> theta[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">")"</span>),</span>
+<span id="cb1-42"><a></a>       <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Same shape &amp; spread"</span> <span class="sc">*</span> <span class="st">" \u2014 "</span> <span class="sc">*</span></span>
+<span id="cb1-43"><a></a>                           <span class="st">"mean moved to "</span> <span class="sc">*</span> theta[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> .(theta_0)),</span>
+<span id="cb1-44"><a></a>       <span class="at">x =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb1-45"><a></a></span>
+<span id="cb1-46"><a></a>p_orig <span class="sc">+</span> p_shift</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -431,54 +447,69 @@ Jessica Minnier
 </section>
 <section id="full-implementation-one-sample-bootstrap-test" class="slide level2">
 <h2>Full Implementation: One-Sample Bootstrap Test</h2>
-<p><strong>Medical Context:</strong> A hospital monitors C-reactive protein (CRP, mg/L) as an inflammation marker. Population norm: mean CRP = 1.0 mg/L. We observe a sample of ICU patients and test whether their mean CRP differs from the population norm.</p>
-<p><span class="math display">\[H_0: \mu = 1.0 \quad \text{vs} \quad H_a: \mu \neq 1.0\]</span></p>
+<p><strong>Medical Context:</strong> A hospital monitors C-reactive protein (CRP, mg/L) as an inflammation marker. The healthy adult population norm is mean CRP = 1.5 mg/L. We observe a small sample of post-surgical patients and test whether their mean CRP differs from this norm.</p>
+<p><span class="math display">\[H_0: \mu = 1.5 \quad \text{vs} \quad H_a: \mu \neq 1.5\]</span></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb2-2"><a></a>n_crp <span class="ot">&lt;-</span> <span class="dv">35</span></span>
-<span id="cb2-3"><a></a>crp_data <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n_crp, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="fl">0.5</span>)  <span class="co"># right-skewed; mean = 4</span></span>
-<span id="cb2-4"><a></a></span>
-<span id="cb2-5"><a></a>mu_0 <span class="ot">&lt;-</span> <span class="fl">1.0</span></span>
-<span id="cb2-6"><a></a>B    <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
-<span id="cb2-7"><a></a></span>
-<span id="cb2-8"><a></a><span class="co"># Observed test statistic (t-statistic)</span></span>
-<span id="cb2-9"><a></a>T_obs <span class="ot">&lt;-</span> (<span class="fu">mean</span>(crp_data) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(crp_data) <span class="sc">/</span> <span class="fu">sqrt</span>(n_crp))</span>
-<span id="cb2-10"><a></a></span>
-<span id="cb2-11"><a></a><span class="co"># Shift data to satisfy H0</span></span>
-<span id="cb2-12"><a></a>crp_shifted <span class="ot">&lt;-</span> crp_data <span class="sc">-</span> <span class="fu">mean</span>(crp_data) <span class="sc">+</span> mu_0</span>
-<span id="cb2-13"><a></a></span>
-<span id="cb2-14"><a></a><span class="co"># Bootstrap</span></span>
-<span id="cb2-15"><a></a>T_boot <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
-<span id="cb2-16"><a></a>  boot_samp <span class="ot">&lt;-</span> <span class="fu">sample</span>(crp_shifted, <span class="at">size =</span> n_crp, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-17"><a></a>  (<span class="fu">mean</span>(boot_samp) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(boot_samp) <span class="sc">/</span> <span class="fu">sqrt</span>(n_crp))</span>
-<span id="cb2-18"><a></a>})</span>
-<span id="cb2-19"><a></a></span>
-<span id="cb2-20"><a></a><span class="co"># Bootstrap p-value (two-sided)</span></span>
-<span id="cb2-21"><a></a>p_boot <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_boot) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs))</span>
-<span id="cb2-22"><a></a></span>
-<span id="cb2-23"><a></a><span class="co"># Parametric t-test p-value</span></span>
-<span id="cb2-24"><a></a>p_param <span class="ot">&lt;-</span> <span class="fu">t.test</span>(crp_data, <span class="at">mu =</span> mu_0)<span class="sc">$</span>p.value</span>
-<span id="cb2-25"><a></a></span>
-<span id="cb2-26"><a></a><span class="fu">cat</span>(<span class="st">"Observed t-statistic:"</span>, <span class="fu">round</span>(T_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a></a>n_crp <span class="ot">&lt;-</span> <span class="dv">22</span></span>
+<span id="cb2-3"><a></a><span class="co"># Gamma(shape=2, rate=1): mean = 2, SD ≈ 1.41 — right-skewed, moderate elevation</span></span>
+<span id="cb2-4"><a></a>crp_data <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n_crp, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="dv">1</span>)</span>
+<span id="cb2-5"><a></a></span>
+<span id="cb2-6"><a></a>mu_0 <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb2-7"><a></a>B    <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb2-8"><a></a></span>
+<span id="cb2-9"><a></a><span class="co"># Observed test statistic (t-statistic)</span></span>
+<span id="cb2-10"><a></a>T_obs <span class="ot">&lt;-</span> (<span class="fu">mean</span>(crp_data) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(crp_data) <span class="sc">/</span> <span class="fu">sqrt</span>(n_crp))</span>
+<span id="cb2-11"><a></a></span>
+<span id="cb2-12"><a></a><span class="co"># Shift data to satisfy H0</span></span>
+<span id="cb2-13"><a></a>crp_shifted <span class="ot">&lt;-</span> crp_data <span class="sc">-</span> <span class="fu">mean</span>(crp_data) <span class="sc">+</span> mu_0</span>
+<span id="cb2-14"><a></a></span>
+<span id="cb2-15"><a></a><span class="co"># Bootstrap</span></span>
+<span id="cb2-16"><a></a>T_boot <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb2-17"><a></a>  boot_samp <span class="ot">&lt;-</span> <span class="fu">sample</span>(crp_shifted, <span class="at">size =</span> n_crp, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-18"><a></a>  (<span class="fu">mean</span>(boot_samp) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(boot_samp) <span class="sc">/</span> <span class="fu">sqrt</span>(n_crp))</span>
+<span id="cb2-19"><a></a>})</span>
+<span id="cb2-20"><a></a></span>
+<span id="cb2-21"><a></a><span class="co"># Bootstrap p-value (two-sided)</span></span>
+<span id="cb2-22"><a></a>p_boot <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_boot) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs))</span>
+<span id="cb2-23"><a></a></span>
+<span id="cb2-24"><a></a><span class="co"># Parametric t-test p-value</span></span>
+<span id="cb2-25"><a></a>p_param <span class="ot">&lt;-</span> <span class="fu">t.test</span>(crp_data, <span class="at">mu =</span> mu_0)<span class="sc">$</span>p.value</span>
+<span id="cb2-26"><a></a></span>
+<span id="cb2-27"><a></a><span class="fu">cat</span>(<span class="st">"Sample mean CRP:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(crp_data), <span class="dv">3</span>), <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Observed t-statistic: 6.3877 </code></pre>
+<pre><code>Sample mean CRP: 2.083 mg/L</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap p-value:"</span>, <span class="fu">round</span>(p_boot, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">cat</span>(<span class="st">"Sample SD:      "</span>, <span class="fu">round</span>(<span class="fu">sd</span>(crp_data), <span class="dv">3</span>),  <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bootstrap p-value: 4e-04 </code></pre>
+<pre><code>Sample SD:       1.588 mg/L</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">cat</span>(<span class="st">"Parametric t-test p-value:"</span>, <span class="fu">round</span>(p_param, <span class="dv">6</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">cat</span>(<span class="st">"Observed t-statistic:"</span>, <span class="fu">round</span>(T_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Parametric t-test p-value: 0 </code></pre>
+<pre><code>Observed t-statistic: 1.7238 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap p-value:   "</span>, <span class="fu">round</span>(p_boot, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap p-value:    0.1174 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="st">"Parametric t-test p: "</span>, <span class="fu">round</span>(p_param, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Parametric t-test p:  0.0994 </code></pre>
 </div>
 </div>
 </section>
@@ -487,46 +518,46 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>t_df <span class="ot">&lt;-</span> n_crp <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb8-2"><a></a>t_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
-<span id="cb8-3"><a></a></span>
-<span id="cb8-4"><a></a>p_boot_null <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_boot), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
-<span id="cb8-5"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
-<span id="cb8-6"><a></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb8-7"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> t_grid, <span class="at">y =</span> <span class="fu">dt</span>(t_grid, <span class="at">df =</span> t_df)),</span>
-<span id="cb8-8"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">color =</span> <span class="st">"coral"</span>, <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb8-9"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(T_obs), <span class="fu">abs</span>(T_obs)),</span>
-<span id="cb8-10"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb8-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="fu">abs</span>(T_obs), <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb8-12"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb8-13"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="sc">-</span><span class="fu">abs</span>(T_obs), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb8-14"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb8-15"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.5</span>, <span class="at">y =</span> <span class="fl">0.32</span>,</span>
-<span id="cb8-16"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p[boot] == %.4f"</span>, p_boot), <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb8-17"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb8-18"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Bootstrap"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>, <span class="st">"t(n-1)"</span> <span class="ot">=</span> <span class="st">"coral"</span>)) <span class="sc">+</span></span>
-<span id="cb8-19"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb8-20"><a></a>    <span class="at">title =</span> <span class="st">"Bootstrap Null Distribution vs. t Distribution"</span>,</span>
-<span id="cb8-21"><a></a>    <span class="at">subtitle =</span> <span class="st">"Blue histogram = bootstrap; dashed red = t(n-1). Red shading = p-value region."</span>,</span>
-<span id="cb8-22"><a></a>    <span class="at">x =</span> <span class="st">"t-statistic"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb8-23"><a></a>  )</span>
-<span id="cb8-24"><a></a></span>
-<span id="cb8-25"><a></a><span class="co"># Also show original data vs shifted</span></span>
-<span id="cb8-26"><a></a>p_data_compare <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb8-27"><a></a>  <span class="fu">tibble</span>(<span class="at">x =</span> crp_data, <span class="at">type =</span> <span class="st">"Original data"</span>),</span>
-<span id="cb8-28"><a></a>  <span class="fu">tibble</span>(<span class="at">x =</span> crp_shifted, <span class="at">type =</span> <span class="st">"Shifted data (H\u2080)"</span>)</span>
-<span id="cb8-29"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb8-30"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
-<span id="cb8-31"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb8-32"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_0, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb8-33"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Original data"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>,</span>
-<span id="cb8-34"><a></a>                               <span class="st">"Shifted data (H\u2080)"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
-<span id="cb8-35"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original vs. Shifted Data"</span>,</span>
-<span id="cb8-36"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Vertical line at "</span> <span class="sc">*</span> mu[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" = 1.0 mg/L"</span>),</span>
-<span id="cb8-37"><a></a>       <span class="at">x =</span> <span class="st">"CRP (mg/L)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb8-38"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb8-39"><a></a></span>
-<span id="cb8-40"><a></a>p_data_compare <span class="sc">+</span> p_boot_null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>t_df <span class="ot">&lt;-</span> n_crp <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb12-2"><a></a>t_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb12-3"><a></a></span>
+<span id="cb12-4"><a></a>p_boot_null <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_boot), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
+<span id="cb12-5"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
+<span id="cb12-6"><a></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb12-7"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> <span class="fu">tibble</span>(<span class="at">x =</span> t_grid, <span class="at">y =</span> <span class="fu">dt</span>(t_grid, <span class="at">df =</span> t_df)),</span>
+<span id="cb12-8"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> y), <span class="at">color =</span> <span class="st">"coral"</span>, <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb12-9"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(T_obs), <span class="fu">abs</span>(T_obs)),</span>
+<span id="cb12-10"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb12-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="fu">abs</span>(T_obs), <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
+<span id="cb12-12"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb12-13"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="sc">-</span><span class="fu">abs</span>(T_obs), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
+<span id="cb12-14"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb12-15"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">4.5</span>, <span class="at">y =</span> <span class="fl">0.32</span>,</span>
+<span id="cb12-16"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p[boot] == %.4f"</span>, p_boot), <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb12-17"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb12-18"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Bootstrap"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>, <span class="st">"t(n-1)"</span> <span class="ot">=</span> <span class="st">"coral"</span>)) <span class="sc">+</span></span>
+<span id="cb12-19"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb12-20"><a></a>    <span class="at">title =</span> <span class="st">"Bootstrap Null Distribution vs. t Distribution"</span>,</span>
+<span id="cb12-21"><a></a>    <span class="at">subtitle =</span> <span class="st">"Blue histogram = bootstrap; dashed red = t(n-1).</span><span class="sc">\n</span><span class="st">Red shading = p-value region."</span>,</span>
+<span id="cb12-22"><a></a>    <span class="at">x =</span> <span class="st">"t-statistic"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
+<span id="cb12-23"><a></a>  )</span>
+<span id="cb12-24"><a></a></span>
+<span id="cb12-25"><a></a><span class="co"># Also show original data vs shifted</span></span>
+<span id="cb12-26"><a></a>p_data_compare <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb12-27"><a></a>  <span class="fu">tibble</span>(<span class="at">x =</span> crp_data, <span class="at">type =</span> <span class="st">"Original data"</span>),</span>
+<span id="cb12-28"><a></a>  <span class="fu">tibble</span>(<span class="at">x =</span> crp_shifted, <span class="at">type =</span> <span class="st">"Shifted data (H0)"</span>)</span>
+<span id="cb12-29"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb12-30"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb12-31"><a></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb12-32"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_0, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb12-33"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Original data"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>,</span>
+<span id="cb12-34"><a></a>                               <span class="st">"Shifted data (H0)"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
+<span id="cb12-35"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Original vs. Shifted Data"</span>,</span>
+<span id="cb12-36"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"Vertical line at "</span> <span class="sc">*</span> mu[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" = 1.5 mg/L"</span>),</span>
+<span id="cb12-37"><a></a>       <span class="at">x =</span> <span class="st">"CRP (mg/L)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb12-38"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb12-39"><a></a></span>
+<span id="cb12-40"><a></a>p_data_compare <span class="sc">+</span> p_boot_null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
@@ -536,243 +567,374 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Compare rejection rates under H0 (alpha control) for normal vs skewed distributions</span></span>
-<span id="cb9-2"><a></a>sim_compare <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">999</span>, <span class="at">reps =</span> <span class="dv">500</span>) {</span>
-<span id="cb9-3"><a></a>  <span class="fu">replicate</span>(reps, {</span>
-<span id="cb9-4"><a></a>    <span class="cf">if</span> (dist <span class="sc">==</span> <span class="st">"normal"</span>) {</span>
-<span id="cb9-5"><a></a>      x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>)</span>
-<span id="cb9-6"><a></a>    } <span class="cf">else</span> {</span>
-<span id="cb9-7"><a></a>      x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span>  <span class="co"># centered exponential (mean=0, skewed)</span></span>
-<span id="cb9-8"><a></a>    }</span>
-<span id="cb9-9"><a></a>    </span>
-<span id="cb9-10"><a></a>    <span class="co"># t-test p-value</span></span>
-<span id="cb9-11"><a></a>    p_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x, <span class="at">mu =</span> <span class="dv">0</span>)<span class="sc">$</span>p.value</span>
-<span id="cb9-12"><a></a>    </span>
-<span id="cb9-13"><a></a>    <span class="co"># Bootstrap p-value</span></span>
-<span id="cb9-14"><a></a>    x_sh <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)  <span class="co"># shift to H0: mu = 0</span></span>
-<span id="cb9-15"><a></a>    T_ob <span class="ot">&lt;-</span> (<span class="fu">mean</span>(x)) <span class="sc">/</span> (<span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
-<span id="cb9-16"><a></a>    T_bs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_inner, {</span>
-<span id="cb9-17"><a></a>      bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x_sh, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb9-18"><a></a>      (<span class="fu">mean</span>(bs)) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
-<span id="cb9-19"><a></a>    })</span>
-<span id="cb9-20"><a></a>    p_bs <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob))</span>
-<span id="cb9-21"><a></a>    </span>
-<span id="cb9-22"><a></a>    <span class="fu">c</span>(<span class="at">p_t =</span> p_t, <span class="at">p_bs =</span> p_bs)</span>
-<span id="cb9-23"><a></a>  }) <span class="sc">|&gt;</span></span>
-<span id="cb9-24"><a></a>    <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-25"><a></a>    <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb9-26"><a></a>    <span class="fu">summarise</span>(</span>
-<span id="cb9-27"><a></a>      <span class="at">alpha_t  =</span> <span class="fu">mean</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>),</span>
-<span id="cb9-28"><a></a>      <span class="at">alpha_bs =</span> <span class="fu">mean</span>(p_bs <span class="sc">&lt;</span> <span class="fl">0.05</span>),</span>
-<span id="cb9-29"><a></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
-<span id="cb9-30"><a></a>    ) <span class="sc">|&gt;</span></span>
-<span id="cb9-31"><a></a>    <span class="fu">mutate</span>(<span class="at">n =</span> n, <span class="at">dist =</span> dist)</span>
-<span id="cb9-32"><a></a>}</span>
-<span id="cb9-33"><a></a></span>
-<span id="cb9-34"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb9-35"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>), <span class="at">dist =</span> <span class="fu">c</span>(<span class="st">"normal"</span>, <span class="st">"skewed"</span>))</span>
-<span id="cb9-36"><a></a>res <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(grid<span class="sc">$</span>n, grid<span class="sc">$</span>dist, sim_compare)</span>
-<span id="cb9-37"><a></a></span>
-<span id="cb9-38"><a></a>res <span class="sc">|&gt;</span></span>
-<span id="cb9-39"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"alpha"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"type1"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-40"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-41"><a></a>    <span class="at">method =</span> <span class="fu">recode</span>(method, <span class="at">alpha_t =</span> <span class="st">"t-test"</span>, <span class="at">alpha_bs =</span> <span class="st">"Bootstrap test"</span>),</span>
-<span id="cb9-42"><a></a>    <span class="at">dist   =</span> <span class="fu">recode</span>(dist, <span class="at">normal =</span> <span class="st">"Normal population"</span>, <span class="at">skewed =</span> <span class="st">"Skewed population (Exp-1)"</span>)</span>
-<span id="cb9-43"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb9-44"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(n), <span class="at">y =</span> type1, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
-<span id="cb9-45"><a></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
-<span id="cb9-46"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb9-47"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dist) <span class="sc">+</span></span>
-<span id="cb9-48"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"t-test"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Bootstrap test"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
-<span id="cb9-49"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.12</span>)) <span class="sc">+</span></span>
-<span id="cb9-50"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb9-51"><a></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Type I Error Rate Under "</span> <span class="sc">*</span> H[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" at "</span> <span class="sc">*</span> alpha <span class="sc">*</span> <span class="st">" = 0.05"</span>),</span>
-<span id="cb9-52"><a></a>    <span class="at">subtitle =</span> <span class="st">"Both methods well-calibrated for normal; bootstrap slightly better for small skewed samples"</span>,</span>
-<span id="cb9-53"><a></a>    <span class="at">x =</span> <span class="st">"Sample size (n)"</span>, <span class="at">y =</span> <span class="st">"Empirical Type I error rate"</span>,</span>
-<span id="cb9-54"><a></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
-<span id="cb9-55"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb9-56"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Compare rejection rates under H0 (alpha control) for normal vs skewed distributions</span></span>
+<span id="cb13-2"><a></a>sim_compare <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">999</span>, <span class="at">reps =</span> <span class="dv">500</span>) {</span>
+<span id="cb13-3"><a></a>  <span class="fu">replicate</span>(reps, {</span>
+<span id="cb13-4"><a></a>    <span class="cf">if</span> (dist <span class="sc">==</span> <span class="st">"normal"</span>) {</span>
+<span id="cb13-5"><a></a>      x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">0</span>)</span>
+<span id="cb13-6"><a></a>    } <span class="cf">else</span> {</span>
+<span id="cb13-7"><a></a>      x <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span>  <span class="co"># centered exponential (mean=0, skewed)</span></span>
+<span id="cb13-8"><a></a>    }</span>
+<span id="cb13-9"><a></a>    </span>
+<span id="cb13-10"><a></a>    <span class="co"># t-test p-value</span></span>
+<span id="cb13-11"><a></a>    p_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x, <span class="at">mu =</span> <span class="dv">0</span>)<span class="sc">$</span>p.value</span>
+<span id="cb13-12"><a></a>    </span>
+<span id="cb13-13"><a></a>    <span class="co"># Bootstrap p-value</span></span>
+<span id="cb13-14"><a></a>    x_sh <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x)  <span class="co"># shift to H0: mu = 0</span></span>
+<span id="cb13-15"><a></a>    T_ob <span class="ot">&lt;-</span> (<span class="fu">mean</span>(x)) <span class="sc">/</span> (<span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb13-16"><a></a>    T_bs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_inner, {</span>
+<span id="cb13-17"><a></a>      bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x_sh, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb13-18"><a></a>      (<span class="fu">mean</span>(bs)) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb13-19"><a></a>    })</span>
+<span id="cb13-20"><a></a>    p_bs <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob))</span>
+<span id="cb13-21"><a></a>    </span>
+<span id="cb13-22"><a></a>    <span class="fu">c</span>(<span class="at">p_t =</span> p_t, <span class="at">p_bs =</span> p_bs)</span>
+<span id="cb13-23"><a></a>  }) <span class="sc">|&gt;</span></span>
+<span id="cb13-24"><a></a>    <span class="fu">t</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-25"><a></a>    <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb13-26"><a></a>    <span class="fu">summarise</span>(</span>
+<span id="cb13-27"><a></a>      <span class="at">alpha_t  =</span> <span class="fu">mean</span>(p_t <span class="sc">&lt;</span> <span class="fl">0.05</span>),</span>
+<span id="cb13-28"><a></a>      <span class="at">alpha_bs =</span> <span class="fu">mean</span>(p_bs <span class="sc">&lt;</span> <span class="fl">0.05</span>),</span>
+<span id="cb13-29"><a></a>      <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb13-30"><a></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb13-31"><a></a>    <span class="fu">mutate</span>(<span class="at">n =</span> n, <span class="at">dist =</span> dist)</span>
+<span id="cb13-32"><a></a>}</span>
+<span id="cb13-33"><a></a></span>
+<span id="cb13-34"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb13-35"><a></a>grid <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">n =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">25</span>, <span class="dv">50</span>), <span class="at">dist =</span> <span class="fu">c</span>(<span class="st">"normal"</span>, <span class="st">"skewed"</span>))</span>
+<span id="cb13-36"><a></a>res <span class="ot">&lt;-</span> <span class="fu">map2_dfr</span>(grid<span class="sc">$</span>n, grid<span class="sc">$</span>dist, sim_compare)</span>
+<span id="cb13-37"><a></a></span>
+<span id="cb13-38"><a></a>res <span class="sc">|&gt;</span></span>
+<span id="cb13-39"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"alpha"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"type1"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb13-40"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb13-41"><a></a>    <span class="at">method =</span> <span class="fu">recode</span>(method, <span class="at">alpha_t =</span> <span class="st">"t-test"</span>, <span class="at">alpha_bs =</span> <span class="st">"Bootstrap test"</span>),</span>
+<span id="cb13-42"><a></a>    <span class="at">dist   =</span> <span class="fu">recode</span>(dist, <span class="at">normal =</span> <span class="st">"Normal population"</span>, <span class="at">skewed =</span> <span class="st">"Skewed population (Exp-1)"</span>)</span>
+<span id="cb13-43"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb13-44"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(n), <span class="at">y =</span> type1, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb13-45"><a></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb13-46"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb13-47"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>dist) <span class="sc">+</span></span>
+<span id="cb13-48"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"t-test"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Bootstrap test"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
+<span id="cb13-49"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.12</span>)) <span class="sc">+</span></span>
+<span id="cb13-50"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-51"><a></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Type I Error Rate Under "</span> <span class="sc">*</span> H[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" at "</span> <span class="sc">*</span> alpha <span class="sc">*</span> <span class="st">" = 0.05"</span>),</span>
+<span id="cb13-52"><a></a>    <span class="at">subtitle =</span> <span class="st">"Both methods well-calibrated for normal; bootstrap slightly better for small skewed samples"</span>,</span>
+<span id="cb13-53"><a></a>    <span class="at">x =</span> <span class="st">"Sample size (n)"</span>, <span class="at">y =</span> <span class="st">"Empirical Type I error rate"</span>,</span>
+<span id="cb13-54"><a></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb13-55"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb13-56"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 
 </div>
-<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-4-1.png" width="1344" class="r-stretch"></section></section>
-<section>
-<section id="two-sample-bootstrap-test-ch-8.2" class="title-slide slide level1 center" data-background-color="#8e44ad">
-<h1>Two-Sample Bootstrap Test (C&amp;H 8.2)</h1>
-
-</section>
-<section id="two-sample-setting" class="slide level2">
-<h2>Two-Sample Setting</h2>
-<p><strong>Goal:</strong> Test <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (or equivalently <span class="math inline">\(H_0: \mu_1 - \mu_2 = 0\)</span>) from two independent samples.</p>
+<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-4-1.png" width="1344" class="r-stretch"></section>
+<section id="what-happens-if-you-dont-shift-a-common-mistake" class="slide level2">
+<h2>What Happens If You Don’t Shift? (A Common Mistake)</h2>
+<p>It is tempting to simply bootstrap from the <strong>original</strong> data and compare to <span class="math inline">\(\theta_0\)</span>. Why is this wrong?</p>
 <div class="fragment">
-<p><strong>Parametric approach:</strong> Two-sample t-test (requires approximate normality, or large <span class="math inline">\(n\)</span>).</p>
-</div>
-<div class="fragment">
-<p><strong>Bootstrap approach:</strong> Must resample in a way that respects <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span>.</p>
-</div>
-<div class="fragment">
-<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout callout-warning callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Key Idea: Pool Under <span class="math inline">\(H_0\)</span> (C&amp;H 8.2)</strong></p>
+<p><strong>The Naive Bootstrap Test — Incorrect</strong></p>
 </div>
 <div class="callout-content">
-<p>Under <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span>, both groups come from distributions with the <strong>same mean</strong>. We can <strong>center each group</strong> by subtracting its own sample mean, then <strong>pool</strong> the centered data. Resampling from this pooled centered data generates bootstrap samples that satisfy <span class="math inline">\(H_0\)</span>.</p>
+<p>Resample from the original <span class="math inline">\(x_1, \ldots, x_n\)</span> and compute <span class="math inline">\(\bar{x}^{*b}\)</span>.<br>
+Compare the fraction of <span class="math inline">\(\bar{x}^{*b}\)</span> farther from <span class="math inline">\(\bar{x}\)</span> than <span class="math inline">\(|\bar{x} - \theta_0|\)</span>.</p>
+<p><strong>Problem:</strong> The bootstrap distribution is centered at <span class="math inline">\(\bar{x}\)</span>, not at <span class="math inline">\(\theta_0\)</span>.<br>
+It approximates the sampling distribution of <span class="math inline">\(\hat{\theta}\)</span>, <strong>not</strong> the null distribution.</p>
 </div>
 </div>
 </div>
 </div>
-</section>
-<section id="two-sample-bootstrap-algorithm" class="slide level2 scrollable">
-<h2>Two-Sample Bootstrap Algorithm</h2>
-<p><strong>Given:</strong> <span class="math inline">\(x_{1,1}, \ldots, x_{1,n_1}\)</span> from Group 1 and <span class="math inline">\(x_{2,1}, \ldots, x_{2,n_2}\)</span> from Group 2.</p>
-<p><strong>Observed statistic:</strong> <span class="math inline">\(T_{\text{obs}} = \bar{x}_1 - \bar{x}_2\)</span> (or t-statistic).</p>
 <div class="fragment">
-<p><strong>Algorithm (C&amp;H 8.2):</strong></p>
-<ol type="1">
-<li><p>Center each group: <span class="math inline">\(\tilde{x}_{1i} = x_{1i} - \bar{x}_1 + \bar{x}\)</span>; <span class="math inline">\(\tilde{x}_{2i} = x_{2i} - \bar{x}_2 + \bar{x}\)</span>, where <span class="math inline">\(\bar{x}\)</span> is the grand mean of the pooled data</p></li>
-<li><p>Pool centered data: <span class="math inline">\(\tilde{\mathbf{x}} = (\tilde{x}_{1,1}, \ldots, \tilde{x}_{1,n_1}, \tilde{x}_{2,1},\ldots,\tilde{x}_{2,n_2})\)</span></p></li>
-<li><p>For <span class="math inline">\(b = 1, \ldots, B\)</span>:</p>
-<ul>
-<li>Draw <span class="math inline">\(n_1\)</span> with replacement from <span class="math inline">\(\tilde{\mathbf{x}}\)</span> <span class="math inline">\(\to\)</span> bootstrap Group 1</li>
-<li>Draw <span class="math inline">\(n_2\)</span> with replacement from <span class="math inline">\(\tilde{\mathbf{x}}\)</span> <span class="math inline">\(\to\)</span> bootstrap Group 2</li>
-<li>Compute <span class="math inline">\(T^{*b} = \bar{x}_1^{*b} - \bar{x}_2^{*b}\)</span></li>
-</ul></li>
-<li><p>p-value: <span class="math inline">\(\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)\)</span></p></li>
-</ol>
-</div>
-</section>
-<section id="medical-example-ldl-cholesterol-reduction-by-treatment" class="slide level2">
-<h2>Medical Example: LDL Cholesterol Reduction by Treatment</h2>
-<p>A clinical trial compares two statins on LDL reduction (mg/dL). LDL change is right-skewed.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb10-2"><a></a>n1 <span class="ot">&lt;-</span> <span class="dv">30</span>; n2 <span class="ot">&lt;-</span> <span class="dv">35</span></span>
-<span id="cb10-3"><a></a></span>
-<span id="cb10-4"><a></a><span class="co"># Simulate LDL reduction (mg/dL): non-normal, different shapes</span></span>
-<span id="cb10-5"><a></a>ldl_a <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n1, <span class="at">shape =</span> <span class="dv">3</span>, <span class="at">rate =</span> <span class="fl">0.12</span>) <span class="sc">-</span> <span class="dv">10</span>  <span class="co"># Drug A</span></span>
-<span id="cb10-6"><a></a>ldl_b <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n2, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="fl">0.10</span>) <span class="sc">-</span> <span class="dv">5</span>   <span class="co"># Drug B</span></span>
-<span id="cb10-7"><a></a></span>
-<span id="cb10-8"><a></a>obs_diff <span class="ot">&lt;-</span> <span class="fu">mean</span>(ldl_a) <span class="sc">-</span> <span class="fu">mean</span>(ldl_b)</span>
-<span id="cb10-9"><a></a><span class="fu">cat</span>(<span class="st">"Drug A mean LDL reduction:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(ldl_a), <span class="dv">2</span>), <span class="st">"mg/dL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Drug A mean LDL reduction: 12.6 mg/dL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">cat</span>(<span class="st">"Drug B mean LDL reduction:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(ldl_b), <span class="dv">2</span>), <span class="st">"mg/dL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Drug B mean LDL reduction: 15.57 mg/dL</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">cat</span>(<span class="st">"Observed difference (A - B):"</span>, <span class="fu">round</span>(obs_diff, <span class="dv">2</span>), <span class="st">"mg/dL</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Observed difference (A - B): -2.98 mg/dL</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="co"># Two-sample bootstrap test</span></span>
-<span id="cb16-2"><a></a>grand_mean <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(ldl_a, ldl_b))</span>
-<span id="cb16-3"><a></a>ldl_a_c <span class="ot">&lt;-</span> ldl_a <span class="sc">-</span> <span class="fu">mean</span>(ldl_a) <span class="sc">+</span> grand_mean</span>
-<span id="cb16-4"><a></a>ldl_b_c <span class="ot">&lt;-</span> ldl_b <span class="sc">-</span> <span class="fu">mean</span>(ldl_b) <span class="sc">+</span> grand_mean</span>
-<span id="cb16-5"><a></a>pooled  <span class="ot">&lt;-</span> <span class="fu">c</span>(ldl_a_c, ldl_b_c)</span>
-<span id="cb16-6"><a></a></span>
-<span id="cb16-7"><a></a>B <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
-<span id="cb16-8"><a></a>T_boot_2 <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
-<span id="cb16-9"><a></a>  boot_a <span class="ot">&lt;-</span> <span class="fu">sample</span>(pooled, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-10"><a></a>  boot_b <span class="ot">&lt;-</span> <span class="fu">sample</span>(pooled, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-11"><a></a>  <span class="fu">mean</span>(boot_a) <span class="sc">-</span> <span class="fu">mean</span>(boot_b)</span>
-<span id="cb16-12"><a></a>})</span>
-<span id="cb16-13"><a></a></span>
-<span id="cb16-14"><a></a>p_boot_2 <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_boot_2) <span class="sc">&gt;=</span> <span class="fu">abs</span>(obs_diff))</span>
-<span id="cb16-15"><a></a>p_ttest   <span class="ot">&lt;-</span> <span class="fu">t.test</span>(ldl_a, ldl_b)<span class="sc">$</span>p.value</span>
-<span id="cb16-16"><a></a></span>
-<span id="cb16-17"><a></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Bootstrap p-value:"</span>, <span class="fu">round</span>(p_boot_2, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Bootstrap p-value: 0.4368 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">cat</span>(<span class="st">"Welch t-test p-value:"</span>, <span class="fu">round</span>(p_ttest, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Welch t-test p-value: 0.4429 </code></pre>
-</div>
-</div>
-</section>
-<section id="two-sample-bootstrap-visualizing-the-results" class="slide level2">
-<h2>Two-Sample Bootstrap: Visualizing the Results</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a>p_hist_boot <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_boot_2), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
-<span id="cb20-2"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
-<span id="cb20-3"><a></a>                 <span class="at">fill =</span> <span class="st">"#8e44ad"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
-<span id="cb20-4"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(obs_diff), <span class="fu">abs</span>(obs_diff)),</span>
-<span id="cb20-5"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb20-6"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="fu">abs</span>(obs_diff), <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb20-7"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb20-8"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="sc">-</span><span class="fu">abs</span>(obs_diff), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb20-9"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb20-10"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">max</span>(T_boot_2) <span class="sc">*</span> <span class="fl">0.6</span>, <span class="at">y =</span> <span class="fl">0.06</span>,</span>
-<span id="cb20-11"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p-value == %.4f"</span>, p_boot_2), <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb20-12"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb20-13"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb20-14"><a></a>    <span class="at">title =</span> <span class="st">"Bootstrap Null Distribution: Difference in Means (A - B)"</span>,</span>
-<span id="cb20-15"><a></a>    <span class="at">subtitle =</span> <span class="st">"Null: both groups same mean. Red lines = observed difference."</span>,</span>
-<span id="cb20-16"><a></a>    <span class="at">x =</span> <span class="st">"Bootstrap difference (mg/dL)"</span>, <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb20-17"><a></a>  )</span>
-<span id="cb20-18"><a></a></span>
-<span id="cb20-19"><a></a>p_raw <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb20-20"><a></a>  <span class="fu">tibble</span>(<span class="at">ldl =</span> ldl_a, <span class="at">Group =</span> <span class="st">"Drug A"</span>),</span>
-<span id="cb20-21"><a></a>  <span class="fu">tibble</span>(<span class="at">ldl =</span> ldl_b, <span class="at">Group =</span> <span class="st">"Drug B"</span>)</span>
-<span id="cb20-22"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb20-23"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ldl, <span class="at">fill =</span> Group)) <span class="sc">+</span></span>
-<span id="cb20-24"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">15</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb20-25"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Drug A"</span> <span class="ot">=</span> <span class="st">"#8e44ad"</span>, <span class="st">"Drug B"</span> <span class="ot">=</span> <span class="st">"#f39c12"</span>)) <span class="sc">+</span></span>
-<span id="cb20-26"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(ldl_a), <span class="at">color =</span> <span class="st">"#8e44ad"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb20-27"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(ldl_b), <span class="at">color =</span> <span class="st">"#f39c12"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb20-28"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"LDL Reduction by Treatment Group"</span>,</span>
-<span id="cb20-29"><a></a>       <span class="at">subtitle =</span> <span class="st">"Dashed lines = group means"</span>, <span class="at">x =</span> <span class="st">"LDL Reduction (mg/dL)"</span>,</span>
-<span id="cb20-30"><a></a>       <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb20-31"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
-<span id="cb20-32"><a></a></span>
-<span id="cb20-33"><a></a>p_raw <span class="sc">+</span> p_hist_boot</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb14-2"><a></a>n_demo <span class="ot">&lt;-</span> <span class="dv">22</span></span>
+<span id="cb14-3"><a></a>x_demo <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n_demo, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="dv">1</span>)   <span class="co"># true mean ≈ 2</span></span>
+<span id="cb14-4"><a></a>mu_demo <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb14-5"><a></a>B_demo  <span class="ot">&lt;-</span> <span class="dv">4000</span></span>
+<span id="cb14-6"><a></a></span>
+<span id="cb14-7"><a></a>xbar_demo <span class="ot">&lt;-</span> <span class="fu">mean</span>(x_demo)</span>
+<span id="cb14-8"><a></a></span>
+<span id="cb14-9"><a></a><span class="co"># WRONG: resample from original, compare distance from xbar</span></span>
+<span id="cb14-10"><a></a>T_naive <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_demo, <span class="fu">mean</span>(<span class="fu">sample</span>(x_demo, n_demo, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb14-11"><a></a>p_naive <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_naive <span class="sc">-</span> xbar_demo) <span class="sc">&gt;=</span> <span class="fu">abs</span>(xbar_demo <span class="sc">-</span> mu_demo))</span>
+<span id="cb14-12"><a></a></span>
+<span id="cb14-13"><a></a><span class="co"># CORRECT: shift then resample</span></span>
+<span id="cb14-14"><a></a>x_sh_demo <span class="ot">&lt;-</span> x_demo <span class="sc">-</span> xbar_demo <span class="sc">+</span> mu_demo</span>
+<span id="cb14-15"><a></a>T_correct <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_demo, {</span>
+<span id="cb14-16"><a></a>  bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x_sh_demo, n_demo, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb14-17"><a></a>  (<span class="fu">mean</span>(bs) <span class="sc">-</span> mu_demo) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n_demo))</span>
+<span id="cb14-18"><a></a>})</span>
+<span id="cb14-19"><a></a>T_obs_demo <span class="ot">&lt;-</span> (xbar_demo <span class="sc">-</span> mu_demo) <span class="sc">/</span> (<span class="fu">sd</span>(x_demo) <span class="sc">/</span> <span class="fu">sqrt</span>(n_demo))</span>
+<span id="cb14-20"><a></a>p_correct <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_correct) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs_demo))</span>
+<span id="cb14-21"><a></a>p_ttest_demo <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x_demo, <span class="at">mu =</span> mu_demo)<span class="sc">$</span>p.value</span>
+<span id="cb14-22"><a></a></span>
+<span id="cb14-23"><a></a>p_nv <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_naive), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
+<span id="cb14-24"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb14-25"><a></a>                 <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb14-26"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> xbar_demo, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb14-27"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_demo,   <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb14-28"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> xbar_demo <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">2.5</span>,</span>
+<span id="cb14-29"><a></a>           <span class="at">label =</span> <span class="st">"bar(x)"</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb14-30"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mu_demo <span class="sc">-</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">2.5</span>,</span>
+<span id="cb14-31"><a></a>           <span class="at">label =</span> <span class="st">"mu[0]"</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">hjust =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-32"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">bold</span>(<span class="st">"WRONG"</span>) <span class="sc">*</span> <span class="st">": Naive bootstrap"</span>),</span>
+<span id="cb14-33"><a></a>       <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Centered at x-bar, not theta0 \u2014 p = %.3f (not a valid null distribution)"</span>,</span>
+<span id="cb14-34"><a></a>                          p_naive),</span>
+<span id="cb14-35"><a></a>       <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb14-36"><a></a></span>
+<span id="cb14-37"><a></a>p_cr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_correct), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
+<span id="cb14-38"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb14-39"><a></a>                 <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb14-40"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(T_obs_demo), <span class="fu">abs</span>(T_obs_demo)),</span>
+<span id="cb14-41"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb14-42"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">abs</span>(T_obs_demo) <span class="sc">+</span> <span class="fl">0.15</span>, <span class="at">y =</span> <span class="fl">0.32</span>,</span>
+<span id="cb14-43"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(T[obs] <span class="sc">==</span> .(<span class="fu">round</span>(T_obs_demo, <span class="dv">2</span>))),</span>
+<span id="cb14-44"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb14-45"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">bold</span>(<span class="st">"CORRECT"</span>) <span class="sc">*</span> <span class="st">": Bootstrap from shifted data"</span>),</span>
+<span id="cb14-46"><a></a>       <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Centered at theta0 \u2014 Bootstrap p = %.3f,  t-test p = %.3f"</span>,</span>
+<span id="cb14-47"><a></a>                          p_correct, p_ttest_demo),</span>
+<span id="cb14-48"><a></a>       <span class="at">x =</span> <span class="st">"t-statistic"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb14-49"><a></a></span>
+<span id="cb14-50"><a></a>p_nv <span class="sc">+</span> p_cr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-
+<div class="cell-output-display">
+<div>
+<figure>
+<p><img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-5-1.png" width="1344"></p>
+</figure>
 </div>
-<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-7-1.png" width="1344" class="r-stretch"></section></section>
+</div>
+</div>
+</div>
+</section></section>
 <section>
-<section id="permutation-tests-ch-8.3" class="title-slide slide level1 center" data-background-color="#27ae60">
-<h1>Permutation Tests (C&amp;H 8.3)</h1>
+<section id="choosing-between-methods-one-sample-tests" class="title-slide slide level1 center" data-background-color="#f39c12">
+<h1>Choosing Between Methods: One-Sample Tests</h1>
 
 </section>
-<section id="the-permutation-test-idea" class="slide level2 scrollable">
-<h2>The Permutation Test Idea</h2>
-<div class="callout callout-important callout-titled callout-style-default">
+<section id="decision-framework" class="slide level2">
+<h2>Decision Framework</h2>
+<p>For a <strong>one-sample</strong> test <span class="math inline">\(H_0: \mu = \mu_0\)</span>, which method should you use?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
+<span id="cb15-2"><a></a></span>
+<span id="cb15-3"><a></a><span class="fu">grViz</span>(<span class="st">"</span></span>
+<span id="cb15-4"><a></a><span class="st">digraph test_choice {</span></span>
+<span id="cb15-5"><a></a><span class="st">  graph [rankdir=TB, bgcolor=transparent, fontsize=18]</span></span>
+<span id="cb15-6"><a></a><span class="st">  node [shape=box, style=filled, fontsize=14, fontname='Helvetica']</span></span>
+<span id="cb15-7"><a></a></span>
+<span id="cb15-8"><a></a><span class="st">  A [label='One-Sample Test</span><span class="sc">\n</span><span class="st">H0: mu = mu0', fillcolor='#3498db', fontcolor=white, width=4]</span></span>
+<span id="cb15-9"><a></a></span>
+<span id="cb15-10"><a></a><span class="st">  B [label='Normal population</span><span class="sc">\n</span><span class="st">or large n (CLT)?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]</span></span>
+<span id="cb15-11"><a></a></span>
+<span id="cb15-12"><a></a><span class="st">  C [label='One-sample t-test</span><span class="sc">\n</span><span class="st">(Most powerful for normal data)', fillcolor='#27ae60', fontcolor=white, width=3.5]</span></span>
+<span id="cb15-13"><a></a></span>
+<span id="cb15-14"><a></a><span class="st">  D [label='iid observations?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]</span></span>
+<span id="cb15-15"><a></a></span>
+<span id="cb15-16"><a></a><span class="st">  E [label='Bootstrap Test</span><span class="sc">\n</span><span class="st">Shift to mu0, resample', fillcolor='#e74c3c', fontcolor=white, width=3.5]</span></span>
+<span id="cb15-17"><a></a></span>
+<span id="cb15-18"><a></a><span class="st">  F [label='Non-iid structure present:</span><span class="sc">\n</span><span class="st">Consider GEE, mixed models,</span><span class="sc">\n</span><span class="st">or time series methods', fillcolor='#95a5a6', fontcolor=white, width=4]</span></span>
+<span id="cb15-19"><a></a></span>
+<span id="cb15-20"><a></a><span class="st">  A -&gt; B</span></span>
+<span id="cb15-21"><a></a><span class="st">  B -&gt; C [label='  Yes', fontsize=13]</span></span>
+<span id="cb15-22"><a></a><span class="st">  B -&gt; D [label='  No', fontsize=13]</span></span>
+<span id="cb15-23"><a></a><span class="st">  D -&gt; E [label='  Yes', fontsize=13]</span></span>
+<span id="cb15-24"><a></a><span class="st">  D -&gt; F [label='  No', fontsize=12]</span></span>
+<span id="cb15-25"><a></a><span class="st">}</span></span>
+<span id="cb15-26"><a></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-c4f7af6d4a271fbcaa5d" style="width:1248px;height:672px;"></div>
+<script type="application/json" data-for="htmlwidget-c4f7af6d4a271fbcaa5d">{"x":{"diagram":"\ndigraph test_choice {\n  graph [rankdir=TB, bgcolor=transparent, fontsize=18]\n  node [shape=box, style=filled, fontsize=14, fontname=\"Helvetica\"]\n\n  A [label=\"One-Sample Test\nH0: mu = mu0\", fillcolor=\"#3498db\", fontcolor=white, width=4]\n\n  B [label=\"Normal population\nor large n (CLT)?\", fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3.5]\n\n  C [label=\"One-sample t-test\n(Most powerful for normal data)\", fillcolor=\"#27ae60\", fontcolor=white, width=3.5]\n\n  D [label=\"iid observations?\", fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3]\n\n  E [label=\"Bootstrap Test\nShift to mu0, resample\", fillcolor=\"#e74c3c\", fontcolor=white, width=3.5]\n\n  F [label=\"Non-iid structure present:\nConsider GEE, mixed models,\nor time series methods\", fillcolor=\"#95a5a6\", fontcolor=white, width=4]\n\n  A -> B\n  B -> C [label=\"  Yes\", fontsize=13]\n  B -> D [label=\"  No\", fontsize=13]\n  D -> E [label=\"  Yes\", fontsize=13]\n  D -> F [label=\"  No\", fontsize=12]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="assumptions-compared" class="slide level2">
+<h2>Assumptions Compared</h2>
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th>Assumption</th>
+<th>t-test</th>
+<th>Bootstrap test</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Normal population (or large <span class="math inline">\(n\)</span>)</td>
+<td>Required</td>
+<td>Not required</td>
+</tr>
+<tr class="even">
+<td>iid observations</td>
+<td>Required</td>
+<td>Required</td>
+</tr>
+<tr class="odd">
+<td>Distribution-free validity</td>
+<td>No</td>
+<td>Approximately</td>
+</tr>
+<tr class="even">
+<td>Works for any test statistic</td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr class="odd">
+<td>Computationally intensive</td>
+<td>No</td>
+<td>Moderate</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Key Principle (C&amp;H 8.3)</strong></p>
+<p><strong>Key Message</strong></p>
 </div>
 <div class="callout-content">
-<p>Under <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (or more generally, <span class="math inline">\(H_0\)</span>: the two groups are <strong>exchangeable</strong>), the group labels are <strong>arbitrary</strong> — any assignment of observations to groups is equally likely.</p>
-<p>A <strong>permutation test</strong> generates the exact null distribution of the test statistic by considering <strong>all possible</strong> (or a large random sample of) permutations of the group labels.</p>
+<p>The <strong>bootstrap test</strong> is the most flexible choice for one-sample problems with non-normal, skewed data — it only requires iid sampling and makes no symmetry assumption. The <strong>t-test</strong> is optimal when normality holds. Permutation methods will be covered after two-sample inference.</p>
 </div>
 </div>
+</div>
+</div>
+</section>
+<section id="simulation-study-comparing-t-test-and-bootstrap" class="slide level2">
+<h2>Simulation Study: Comparing t-test and Bootstrap</h2>
+<p>How well does each method control Type I error, and what is the power, across different population shapes?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>run_onesample_tests <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">20</span>, <span class="at">delta =</span> <span class="dv">0</span>, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">499</span>) {</span>
+<span id="cb16-2"><a></a>  x <span class="ot">&lt;-</span> <span class="cf">switch</span>(dist,</span>
+<span id="cb16-3"><a></a>    <span class="at">normal  =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> delta),</span>
+<span id="cb16-4"><a></a>    <span class="at">skewed  =</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> delta,</span>
+<span id="cb16-5"><a></a>    <span class="at">heavyt  =</span> <span class="fu">rt</span>(n, <span class="at">df =</span> <span class="dv">3</span>) <span class="sc">+</span> delta</span>
+<span id="cb16-6"><a></a>  )</span>
+<span id="cb16-7"><a></a>  mu_0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb16-8"><a></a></span>
+<span id="cb16-9"><a></a>  <span class="co"># 1. Parametric t-test</span></span>
+<span id="cb16-10"><a></a>  p_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x, <span class="at">mu =</span> mu_0)<span class="sc">$</span>p.value</span>
+<span id="cb16-11"><a></a></span>
+<span id="cb16-12"><a></a>  <span class="co"># 2. Bootstrap test (shift-resample)</span></span>
+<span id="cb16-13"><a></a>  x_sh <span class="ot">&lt;-</span> x <span class="sc">-</span> <span class="fu">mean</span>(x) <span class="sc">+</span> mu_0</span>
+<span id="cb16-14"><a></a>  T_ob <span class="ot">&lt;-</span> (<span class="fu">mean</span>(x) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(x) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb16-15"><a></a>  T_bs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_inner, {</span>
+<span id="cb16-16"><a></a>    bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x_sh, n, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb16-17"><a></a>    (<span class="fu">mean</span>(bs) <span class="sc">-</span> mu_0) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb16-18"><a></a>  })</span>
+<span id="cb16-19"><a></a>  p_b <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob))</span>
+<span id="cb16-20"><a></a></span>
+<span id="cb16-21"><a></a>  <span class="fu">c</span>(<span class="at">p_t =</span> p_t, <span class="at">p_boot =</span> p_b)</span>
+<span id="cb16-22"><a></a>}</span>
+<span id="cb16-23"><a></a></span>
+<span id="cb16-24"><a></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
+<span id="cb16-25"><a></a>sim_grid <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(</span>
+<span id="cb16-26"><a></a>  <span class="at">n     =</span> <span class="fu">c</span>(<span class="dv">15</span>, <span class="dv">40</span>),</span>
+<span id="cb16-27"><a></a>  <span class="at">delta =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.6</span>),</span>
+<span id="cb16-28"><a></a>  <span class="at">dist  =</span> <span class="fu">c</span>(<span class="st">"normal"</span>, <span class="st">"skewed"</span>, <span class="st">"heavyt"</span>)</span>
+<span id="cb16-29"><a></a>)</span>
+<span id="cb16-30"><a></a></span>
+<span id="cb16-31"><a></a>sim_res <span class="ot">&lt;-</span> sim_grid <span class="sc">|&gt;</span></span>
+<span id="cb16-32"><a></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb16-33"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-34"><a></a>    <span class="at">sims =</span> <span class="fu">list</span>(</span>
+<span id="cb16-35"><a></a>      <span class="fu">replicate</span>(<span class="dv">500</span>, <span class="fu">run_onesample_tests</span>(<span class="at">n =</span> n, <span class="at">delta =</span> delta, <span class="at">dist =</span> dist,</span>
+<span id="cb16-36"><a></a>                                        <span class="at">B_inner =</span> <span class="dv">299</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb16-37"><a></a>        <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>()</span>
+<span id="cb16-38"><a></a>    )</span>
+<span id="cb16-39"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb16-40"><a></a>  <span class="fu">unnest</span>(sims) <span class="sc">|&gt;</span></span>
+<span id="cb16-41"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"p_"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pval"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-42"><a></a>  <span class="fu">group_by</span>(n, delta, dist, method) <span class="sc">|&gt;</span></span>
+<span id="cb16-43"><a></a>  <span class="fu">summarise</span>(<span class="at">rejection =</span> <span class="fu">mean</span>(pval <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb16-44"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb16-45"><a></a>    <span class="at">method   =</span> <span class="fu">recode</span>(method, <span class="at">p_t =</span> <span class="st">"t-test"</span>, <span class="at">p_boot =</span> <span class="st">"Bootstrap"</span>),</span>
+<span id="cb16-46"><a></a>    <span class="at">dist_lab =</span> <span class="fu">recode</span>(dist,</span>
+<span id="cb16-47"><a></a>                      <span class="at">normal =</span> <span class="st">"Normal"</span>,</span>
+<span id="cb16-48"><a></a>                      <span class="at">skewed =</span> <span class="st">"Skewed (Exp-1)"</span>,</span>
+<span id="cb16-49"><a></a>                      <span class="at">heavyt =</span> <span class="st">"Heavy-tailed (t3)"</span>),</span>
+<span id="cb16-50"><a></a>    <span class="at">quantity =</span> <span class="fu">ifelse</span>(delta <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb16-51"><a></a>                      <span class="st">"Type I Error  (H0 true, target = 5%)"</span>,</span>
+<span id="cb16-52"><a></a>                      <span class="st">"Power  (Ha true, delta = 0.6)"</span>)</span>
+<span id="cb16-53"><a></a>  )</span>
+<span id="cb16-54"><a></a></span>
+<span id="cb16-55"><a></a><span class="fu">ggplot</span>(sim_res <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">==</span> <span class="dv">15</span>),</span>
+<span id="cb16-56"><a></a>       <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> rejection, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb16-57"><a></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.85</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb16-58"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb16-59"><a></a>  <span class="fu">facet_grid</span>(quantity <span class="sc">~</span> dist_lab, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb16-60"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"t-test"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Bootstrap"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb16-61"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb16-62"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb16-63"><a></a>    <span class="at">title =</span> <span class="st">"t-test vs. Bootstrap: Type I Error and Power  (n = 15)"</span>,</span>
+<span id="cb16-64"><a></a>    <span class="at">subtitle =</span> <span class="st">"Bootstrap maintains better Type I error control for skewed/heavy-tailed data at small n"</span>,</span>
+<span id="cb16-65"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Rejection rate"</span>, <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb16-66"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb16-67"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb16-68"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb16-69"><a></a>        <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb16-70"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-7-1.png" width="1344" class="r-stretch"></section>
+<section id="simulation-larger-sample-n-40" class="slide level2">
+<h2>Simulation: Larger Sample (n = 40)</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">ggplot</span>(sim_res <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">==</span> <span class="dv">40</span>),</span>
+<span id="cb17-2"><a></a>       <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> rejection, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
+<span id="cb17-3"><a></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.85</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb17-4"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
+<span id="cb17-5"><a></a>  <span class="fu">facet_grid</span>(quantity <span class="sc">~</span> dist_lab, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb17-6"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"t-test"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Bootstrap"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb17-7"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>))) <span class="sc">+</span></span>
+<span id="cb17-8"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb17-9"><a></a>    <span class="at">title =</span> <span class="st">"t-test vs. Bootstrap: Type I Error and Power  (n = 40)"</span>,</span>
+<span id="cb17-10"><a></a>    <span class="at">subtitle =</span> <span class="st">"By n = 40, both methods converge — CLT smooths out distributional differences"</span>,</span>
+<span id="cb17-11"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Rejection rate"</span>, <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb17-12"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb17-13"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb17-14"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
+<span id="cb17-15"><a></a>        <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
+<span id="cb17-16"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-8-1.png" width="1344" class="r-stretch"></section>
+<section id="key-takeaways-from-simulation" class="slide level2">
+<h2>Key Takeaways from Simulation</h2>
+<ul>
+<li><strong>Normal data:</strong> Both methods control Type I error well at <span class="math inline">\(n = 15\)</span> and <span class="math inline">\(n = 40\)</span>; t-test has slightly higher power (it’s optimal here)</li>
+</ul>
+<div class="fragment">
+<ul>
+<li><strong>Skewed data, small <span class="math inline">\(n\)</span>:</strong> The t-test can be slightly anti-conservative (Type I error &gt; 5%); the bootstrap test maintains better control</li>
+</ul>
 </div>
 <div class="fragment">
-<p><strong>Algorithm:</strong></p>
-<ol type="1">
-<li>Compute observed statistic <span class="math inline">\(T_{\text{obs}} = \bar{x}_1 - \bar{x}_2\)</span></li>
-<li>For <span class="math inline">\(b = 1, \ldots, B\)</span>:
 <ul>
-<li>Randomly permute the combined vector of <span class="math inline">\(n_1 + n_2\)</span> observations</li>
-<li>Assign first <span class="math inline">\(n_1\)</span> to Group 1, remaining <span class="math inline">\(n_2\)</span> to Group 2</li>
-<li>Compute <span class="math inline">\(T^{*b} = \bar{x}_1^{*b} - \bar{x}_2^{*b}\)</span></li>
-</ul></li>
-<li>p-value: <span class="math inline">\(\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)\)</span></li>
-</ol>
+<li><strong>Heavy-tailed data (<span class="math inline">\(t_3\)</span>):</strong> Similar pattern — bootstrap is more robust for small samples</li>
+</ul>
+</div>
+<div class="fragment">
+<ul>
+<li><strong>Large <span class="math inline">\(n\)</span>:</strong> Differences wash out — the CLT rescues the t-test regardless of population shape</li>
+</ul>
 </div>
 <div class="fragment">
 <div class="callout callout-note callout-titled callout-style-default">
@@ -781,464 +943,10 @@ Bootstrap p-value: 0.4368 </code></pre>
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Exact vs.&nbsp;Approximate</strong></p>
+<p><strong>Practical Implication</strong></p>
 </div>
 <div class="callout-content">
-<p>With total <span class="math inline">\(n_1+n_2\)</span> observations, there are <span class="math inline">\(\binom{n_1+n_2}{n_1}\)</span> permutations. If this is small, we can enumerate all of them for an <strong>exact</strong> test. Otherwise, random permutations give a <strong>Monte Carlo approximation</strong> of the exact test.</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="permutation-test-vs.-bootstrap-test-the-key-distinction" class="slide level2">
-<h2>Permutation Test vs.&nbsp;Bootstrap Test: The Key Distinction</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 21%">
-<col style="width: 36%">
-<col style="width: 41%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Feature</th>
-<th>Bootstrap Test</th>
-<th>Permutation Test</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>How <span class="math inline">\(H_0\)</span> is imposed</td>
-<td>Shift/center data to satisfy <span class="math inline">\(H_0\)</span></td>
-<td>Permute group labels</td>
-</tr>
-<tr class="even">
-<td>What is resampled</td>
-<td>From modified data</td>
-<td>From original data</td>
-</tr>
-<tr class="odd">
-<td>Validity assumption</td>
-<td><span class="math inline">\(H_0\)</span> + iid resampling</td>
-<td>Exchangeability under <span class="math inline">\(H_0\)</span></td>
-</tr>
-<tr class="even">
-<td>When exact?</td>
-<td>Never (always approximate)</td>
-<td>Yes, if all permutations enumerated</td>
-</tr>
-<tr class="odd">
-<td>Handles one-sample?</td>
-<td>Yes (shift to <span class="math inline">\(\theta_0\)</span>)</td>
-<td>Not naturally</td>
-</tr>
-<tr class="even">
-<td>Computes standard errors?</td>
-<td>Yes</td>
-<td>No</td>
-</tr>
-</tbody>
-</table>
-<div class="fragment">
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>When to Prefer Permutation Tests</strong></p>
-</div>
-<div class="callout-content">
-<p>Permutation tests are preferred when: - You want an <strong>exact</strong> p-value under <span class="math inline">\(H_0\)</span> - Exchangeability is a natural assumption (randomized trials!) - You want a valid test without distributional assumptions</p>
-</div>
-</div>
-</div>
-</div>
-</section>
-<section id="medical-example-permutation-test-for-survival-times" class="slide level2">
-<h2>Medical Example: Permutation Test for Survival Times</h2>
-<p>A randomized trial compares time-to-discharge (days) between two ICU protocols. Small sample, non-normal.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="co"># ICU time to discharge (days)</span></span>
-<span id="cb21-2"><a></a>protocol_A <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">9</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">5</span>, <span class="dv">7</span>)</span>
-<span id="cb21-3"><a></a>protocol_B <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">9</span>, <span class="dv">11</span>, <span class="dv">14</span>, <span class="dv">8</span>, <span class="dv">10</span>, <span class="dv">7</span>, <span class="dv">15</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">11</span>)</span>
-<span id="cb21-4"><a></a></span>
-<span id="cb21-5"><a></a>n_A <span class="ot">&lt;-</span> <span class="fu">length</span>(protocol_A)</span>
-<span id="cb21-6"><a></a>n_B <span class="ot">&lt;-</span> <span class="fu">length</span>(protocol_B)</span>
-<span id="cb21-7"><a></a>combined <span class="ot">&lt;-</span> <span class="fu">c</span>(protocol_A, protocol_B)</span>
-<span id="cb21-8"><a></a>T_obs_perm <span class="ot">&lt;-</span> <span class="fu">mean</span>(protocol_A) <span class="sc">-</span> <span class="fu">mean</span>(protocol_B)</span>
-<span id="cb21-9"><a></a></span>
-<span id="cb21-10"><a></a><span class="fu">cat</span>(<span class="st">"Protocol A mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(protocol_A), <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Protocol A mean: 6.6 days</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">cat</span>(<span class="st">"Protocol B mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(protocol_B), <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Protocol B mean: 10.27 days</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">cat</span>(<span class="st">"Observed difference:"</span>, <span class="fu">round</span>(T_obs_perm, <span class="dv">2</span>), <span class="st">"days</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Observed difference: -3.67 days</code></pre>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="co"># Permutation test</span></span>
-<span id="cb27-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb27-3"><a></a>B_perm <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
-<span id="cb27-4"><a></a>T_perm <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_perm, {</span>
-<span id="cb27-5"><a></a>  perm <span class="ot">&lt;-</span> <span class="fu">sample</span>(combined)</span>
-<span id="cb27-6"><a></a>  <span class="fu">mean</span>(perm[<span class="dv">1</span><span class="sc">:</span>n_A]) <span class="sc">-</span> <span class="fu">mean</span>(perm[(n_A <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>(n_A <span class="sc">+</span> n_B)])</span>
-<span id="cb27-7"><a></a>})</span>
-<span id="cb27-8"><a></a></span>
-<span id="cb27-9"><a></a>p_perm <span class="ot">&lt;-</span> (<span class="fu">sum</span>(<span class="fu">abs</span>(T_perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs_perm)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (B_perm <span class="sc">+</span> <span class="dv">1</span>)  <span class="co"># +1 for observed</span></span>
-<span id="cb27-10"><a></a>p_ttest_icu <span class="ot">&lt;-</span> <span class="fu">t.test</span>(protocol_A, protocol_B)<span class="sc">$</span>p.value</span>
-<span id="cb27-11"><a></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Permutation p-value:"</span>, <span class="fu">round</span>(p_perm, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Permutation p-value: 0.0063 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">cat</span>(<span class="st">"Welch t-test p-value:"</span>, <span class="fu">round</span>(p_ttest_icu, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Welch t-test p-value: 0.0064 </code></pre>
-</div>
-</div>
-</section>
-<section id="visualizing-the-permutation-null-distribution" class="slide level2">
-<h2>Visualizing the Permutation Null Distribution</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">tibble</span>(<span class="at">T =</span> T_perm) <span class="sc">|&gt;</span></span>
-<span id="cb31-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
-<span id="cb31-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
-<span id="cb31-4"><a></a>                 <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb31-5"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(T_obs_perm), <span class="fu">abs</span>(T_obs_perm)),</span>
-<span id="cb31-6"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb31-7"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="fu">abs</span>(T_obs_perm), <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb31-8"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb31-9"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="sc">-</span><span class="fu">abs</span>(T_obs_perm), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb31-10"><a></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb31-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.5</span>, <span class="at">y =</span> <span class="fl">0.22</span>,</span>
-<span id="cb31-12"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p[perm] == %.4f"</span>, p_perm), <span class="at">parse =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb31-13"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>) <span class="sc">+</span></span>
-<span id="cb31-14"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb31-15"><a></a>    <span class="at">title =</span> <span class="st">"Permutation Null Distribution: Difference in Mean ICU Days"</span>,</span>
-<span id="cb31-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Under H\u2080: exchangeability. Red lines = observed difference \u00b13.64 days."</span>,</span>
-<span id="cb31-17"><a></a>    <span class="at">x =</span> <span class="st">"Permuted difference in means (days)"</span>,</span>
-<span id="cb31-18"><a></a>    <span class="at">y =</span> <span class="st">"Density"</span></span>
-<span id="cb31-19"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-
-</div>
-<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-10-1.png" width="1344" class="r-stretch"></section>
-<section id="exact-permutation-small-sample" class="slide level2">
-<h2>Exact Permutation: Small Sample</h2>
-<p>With small samples, we can enumerate <strong>all</strong> permutations exactly.</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a></a><span class="co"># Small example: 5 observations total, n1 = 2, n2 = 3</span></span>
-<span id="cb32-2"><a></a><span class="co"># All C(5,2) = 10 permutations</span></span>
-<span id="cb32-3"><a></a></span>
-<span id="cb32-4"><a></a>small_A <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">15</span>)</span>
-<span id="cb32-5"><a></a>small_B <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">18</span>, <span class="dv">20</span>)</span>
-<span id="cb32-6"><a></a>combined_small <span class="ot">&lt;-</span> <span class="fu">c</span>(small_A, small_B)</span>
-<span id="cb32-7"><a></a>T_obs_small <span class="ot">&lt;-</span> <span class="fu">mean</span>(small_A) <span class="sc">-</span> <span class="fu">mean</span>(small_B)</span>
-<span id="cb32-8"><a></a></span>
-<span id="cb32-9"><a></a><span class="co"># Enumerate all C(5,2) = 10 permutations</span></span>
-<span id="cb32-10"><a></a><span class="fu">library</span>(combinat)</span>
-<span id="cb32-11"><a></a>all_combs <span class="ot">&lt;-</span> <span class="fu">combn</span>(<span class="fu">length</span>(combined_small), <span class="fu">length</span>(small_A), <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb32-12"><a></a></span>
-<span id="cb32-13"><a></a>all_diffs <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(all_combs, <span class="cf">function</span>(idx) {</span>
-<span id="cb32-14"><a></a>  g1 <span class="ot">&lt;-</span> combined_small[idx]</span>
-<span id="cb32-15"><a></a>  g2 <span class="ot">&lt;-</span> combined_small[<span class="sc">-</span>idx]</span>
-<span id="cb32-16"><a></a>  <span class="fu">mean</span>(g1) <span class="sc">-</span> <span class="fu">mean</span>(g2)</span>
-<span id="cb32-17"><a></a>})</span>
-<span id="cb32-18"><a></a></span>
-<span id="cb32-19"><a></a>exact_p <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(all_diffs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs_small))</span>
-<span id="cb32-20"><a></a></span>
-<span id="cb32-21"><a></a><span class="fu">tibble</span>(</span>
-<span id="cb32-22"><a></a>  <span class="at">Permutation =</span> <span class="fu">seq_along</span>(all_diffs),</span>
-<span id="cb32-23"><a></a>  <span class="at">Difference  =</span> all_diffs,</span>
-<span id="cb32-24"><a></a>  <span class="at">As_extreme  =</span> <span class="fu">abs</span>(all_diffs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs_small)</span>
-<span id="cb32-25"><a></a>) <span class="sc">|&gt;</span></span>
-<span id="cb32-26"><a></a>  <span class="fu">mutate</span>(<span class="at">Difference =</span> <span class="fu">round</span>(Difference, <span class="dv">2</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb32-27"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="fu">sprintf</span>(<span class="st">"All C(5,2)=10 permutations. Observed diff = %.1f. Exact p = %.2f"</span>,</span>
-<span id="cb32-28"><a></a>                                 T_obs_small, exact_p))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<table class="caption-top">
-<caption>All C(5,2)=10 permutations. Observed diff = -4.2. Exact p = 0.30</caption>
-<thead>
-<tr class="header">
-<th style="text-align: right;">Permutation</th>
-<th style="text-align: right;">Difference</th>
-<th style="text-align: left;">As_extreme</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">-4.17</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">-6.67</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">-1.67</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">-2.50</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">2.50</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">4.17</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">0.00</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">1.67</td>
-<td style="text-align: left;">FALSE</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">6.67</td>
-<td style="text-align: left;">TRUE</td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</section></section>
-<section>
-<section id="choosing-between-parametric-bootstrap-and-permutation-tests" class="title-slide slide level1 center" data-background-color="#f39c12">
-<h1>Choosing Between Parametric, Bootstrap, and Permutation Tests</h1>
-
-</section>
-<section id="decision-framework" class="slide level2">
-<h2>Decision Framework</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
-<span id="cb33-2"><a></a></span>
-<span id="cb33-3"><a></a><span class="fu">grViz</span>(<span class="st">"</span></span>
-<span id="cb33-4"><a></a><span class="st">digraph test_choice {</span></span>
-<span id="cb33-5"><a></a><span class="st">  graph [rankdir=TB, bgcolor=transparent, fontsize=18]</span></span>
-<span id="cb33-6"><a></a><span class="st">  node [shape=box, style=filled, fontsize=14, fontname='Helvetica']</span></span>
-<span id="cb33-7"><a></a></span>
-<span id="cb33-8"><a></a><span class="st">  A [label='Two-Sample Hypothesis Test</span><span class="sc">\\</span><span class="st">nH0: mu1 = mu2', fillcolor='#3498db', fontcolor=white, width=4]</span></span>
-<span id="cb33-9"><a></a></span>
-<span id="cb33-10"><a></a><span class="st">  B [label='Normal populations</span><span class="sc">\\</span><span class="st">nor large n (CLT)?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]</span></span>
-<span id="cb33-11"><a></a></span>
-<span id="cb33-12"><a></a><span class="st">  C [label='Welch t-test or z-test</span><span class="sc">\\</span><span class="st">n(Most powerful when assumptions hold)', fillcolor='#27ae60', fontcolor=white, width=3.5]</span></span>
-<span id="cb33-13"><a></a></span>
-<span id="cb33-14"><a></a><span class="st">  D [label='Randomized experiment?</span><span class="sc">\\</span><span class="st">n(Exchangeable labels)', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]</span></span>
-<span id="cb33-15"><a></a></span>
-<span id="cb33-16"><a></a><span class="st">  E [label='Permutation Test</span><span class="sc">\\</span><span class="st">n(Exact; no distributional assumptions)', fillcolor='#8e44ad', fontcolor=white, width=3.5]</span></span>
-<span id="cb33-17"><a></a></span>
-<span id="cb33-18"><a></a><span class="st">  F [label='iid assumption reasonable?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]</span></span>
-<span id="cb33-19"><a></a></span>
-<span id="cb33-20"><a></a><span class="st">  G [label='Bootstrap Test</span><span class="sc">\\</span><span class="st">n(Resample under H0; distribution-free)', fillcolor='#e74c3c', fontcolor=white, width=3.5]</span></span>
-<span id="cb33-21"><a></a></span>
-<span id="cb33-22"><a></a><span class="st">  H [label='Consult a statistician!</span><span class="sc">\\</span><span class="st">n(Complex dependence structures)', fillcolor='#95a5a6', fontcolor=white, width=3.5]</span></span>
-<span id="cb33-23"><a></a></span>
-<span id="cb33-24"><a></a><span class="st">  A -&gt; B</span></span>
-<span id="cb33-25"><a></a><span class="st">  B -&gt; C [label='  Yes', fontsize=13]</span></span>
-<span id="cb33-26"><a></a><span class="st">  B -&gt; D [label='  No', fontsize=13]</span></span>
-<span id="cb33-27"><a></a><span class="st">  D -&gt; E [label='  Yes', fontsize=13]</span></span>
-<span id="cb33-28"><a></a><span class="st">  D -&gt; F [label='  No', fontsize=13]</span></span>
-<span id="cb33-29"><a></a><span class="st">  F -&gt; G [label='  Yes', fontsize=13]</span></span>
-<span id="cb33-30"><a></a><span class="st">  F -&gt; H [label='  No (clustered, </span><span class="sc">\\</span><span class="st">n time series, etc.)', fontsize=12]</span></span>
-<span id="cb33-31"><a></a><span class="st">}</span></span>
-<span id="cb33-32"><a></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div class="grViz html-widget html-fill-item" id="htmlwidget-3a6854fbdd8bbc28cfbc" style="width:1440px;height:768px;"></div>
-<script type="application/json" data-for="htmlwidget-3a6854fbdd8bbc28cfbc">{"x":{"diagram":"\ndigraph test_choice {\n  graph [rankdir=TB, bgcolor=transparent, fontsize=18]\n  node [shape=box, style=filled, fontsize=14, fontname=\"Helvetica\"]\n\n  A [label=\"Two-Sample Hypothesis Test\\nH0: mu1 = mu2\", fillcolor=\"#3498db\", fontcolor=white, width=4]\n\n  B [label=\"Normal populations\\nor large n (CLT)?\", fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3.5]\n\n  C [label=\"Welch t-test or z-test\\n(Most powerful when assumptions hold)\", fillcolor=\"#27ae60\", fontcolor=white, width=3.5]\n\n  D [label=\"Randomized experiment?\\n(Exchangeable labels)\", fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3.5]\n\n  E [label=\"Permutation Test\\n(Exact; no distributional assumptions)\", fillcolor=\"#8e44ad\", fontcolor=white, width=3.5]\n\n  F [label=\"iid assumption reasonable?\", fillcolor=\"#f39c12\", fontcolor=white, shape=diamond, width=3.5]\n\n  G [label=\"Bootstrap Test\\n(Resample under H0; distribution-free)\", fillcolor=\"#e74c3c\", fontcolor=white, width=3.5]\n\n  H [label=\"Consult a statistician!\\n(Complex dependence structures)\", fillcolor=\"#95a5a6\", fontcolor=white, width=3.5]\n\n  A -> B\n  B -> C [label=\"  Yes\", fontsize=13]\n  B -> D [label=\"  No\", fontsize=13]\n  D -> E [label=\"  Yes\", fontsize=13]\n  D -> F [label=\"  No\", fontsize=13]\n  F -> G [label=\"  Yes\", fontsize=13]\n  F -> H [label=\"  No (clustered, \\n time series, etc.)\", fontsize=12]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
-</div>
-</div>
-</section>
-<section id="simulation-study-comparison-of-methods" class="slide level2">
-<h2>Simulation Study: Comparison of Methods</h2>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a></a><span class="co"># Under H0: compare Type I error</span></span>
-<span id="cb34-2"><a></a><span class="co"># Under Ha: compare power</span></span>
-<span id="cb34-3"><a></a></span>
-<span id="cb34-4"><a></a>run_three_tests <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n1 =</span> <span class="dv">20</span>, <span class="at">n2 =</span> <span class="dv">20</span>, <span class="at">delta =</span> <span class="dv">0</span>,</span>
-<span id="cb34-5"><a></a>                            <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">499</span>) {</span>
-<span id="cb34-6"><a></a>  <span class="cf">if</span> (dist <span class="sc">==</span> <span class="st">"normal"</span>) {</span>
-<span id="cb34-7"><a></a>    x1 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n1, <span class="at">mean =</span> delta); x2 <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n2, <span class="at">mean =</span> <span class="dv">0</span>)</span>
-<span id="cb34-8"><a></a>  } <span class="cf">else</span> {</span>
-<span id="cb34-9"><a></a>    x1 <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n1, <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> delta; x2 <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n2, <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span></span>
-<span id="cb34-10"><a></a>  }</span>
-<span id="cb34-11"><a></a></span>
-<span id="cb34-12"><a></a>  <span class="co"># Parametric t-test</span></span>
-<span id="cb34-13"><a></a>  p_t <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x1, x2)<span class="sc">$</span>p.value</span>
-<span id="cb34-14"><a></a></span>
-<span id="cb34-15"><a></a>  <span class="co"># Bootstrap (pooled centered)</span></span>
-<span id="cb34-16"><a></a>  grand <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(x1, x2))</span>
-<span id="cb34-17"><a></a>  x1c   <span class="ot">&lt;-</span> x1 <span class="sc">-</span> <span class="fu">mean</span>(x1) <span class="sc">+</span> grand</span>
-<span id="cb34-18"><a></a>  x2c   <span class="ot">&lt;-</span> x2 <span class="sc">-</span> <span class="fu">mean</span>(x2) <span class="sc">+</span> grand</span>
-<span id="cb34-19"><a></a>  pool  <span class="ot">&lt;-</span> <span class="fu">c</span>(x1c, x2c)</span>
-<span id="cb34-20"><a></a>  T_ob  <span class="ot">&lt;-</span> <span class="fu">mean</span>(x1) <span class="sc">-</span> <span class="fu">mean</span>(x2)</span>
-<span id="cb34-21"><a></a>  T_bs  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_inner, {</span>
-<span id="cb34-22"><a></a>    <span class="fu">mean</span>(<span class="fu">sample</span>(pool, n1, T)) <span class="sc">-</span> <span class="fu">mean</span>(<span class="fu">sample</span>(pool, n2, T))</span>
-<span id="cb34-23"><a></a>  })</span>
-<span id="cb34-24"><a></a>  p_b <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob))</span>
-<span id="cb34-25"><a></a></span>
-<span id="cb34-26"><a></a>  <span class="co"># Permutation</span></span>
-<span id="cb34-27"><a></a>  comb  <span class="ot">&lt;-</span> <span class="fu">c</span>(x1, x2)</span>
-<span id="cb34-28"><a></a>  T_pm  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_inner, {</span>
-<span id="cb34-29"><a></a>    pm <span class="ot">&lt;-</span> <span class="fu">sample</span>(comb)</span>
-<span id="cb34-30"><a></a>    <span class="fu">mean</span>(pm[<span class="dv">1</span><span class="sc">:</span>n1]) <span class="sc">-</span> <span class="fu">mean</span>(pm[(n1<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(n1<span class="sc">+</span>n2)])</span>
-<span id="cb34-31"><a></a>  })</span>
-<span id="cb34-32"><a></a>  p_p <span class="ot">&lt;-</span> (<span class="fu">sum</span>(<span class="fu">abs</span>(T_pm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob)) <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (B_inner <span class="sc">+</span> <span class="dv">1</span>)</span>
-<span id="cb34-33"><a></a></span>
-<span id="cb34-34"><a></a>  <span class="fu">c</span>(<span class="at">p_t =</span> p_t, <span class="at">p_boot =</span> p_b, <span class="at">p_perm =</span> p_p)</span>
-<span id="cb34-35"><a></a>}</span>
-<span id="cb34-36"><a></a></span>
-<span id="cb34-37"><a></a><span class="fu">set.seed</span>(<span class="dv">99</span>)</span>
-<span id="cb34-38"><a></a>scenarios_cmp <span class="ot">&lt;-</span> <span class="fu">expand_grid</span>(<span class="at">delta =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">dist =</span> <span class="fu">c</span>(<span class="st">"normal"</span>, <span class="st">"skewed"</span>))</span>
-<span id="cb34-39"><a></a></span>
-<span id="cb34-40"><a></a>res_cmp <span class="ot">&lt;-</span> scenarios_cmp <span class="sc">|&gt;</span></span>
-<span id="cb34-41"><a></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
-<span id="cb34-42"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb34-43"><a></a>    <span class="at">sims =</span> <span class="fu">list</span>(<span class="fu">replicate</span>(<span class="dv">300</span>, <span class="fu">run_three_tests</span>(<span class="at">delta =</span> delta, <span class="at">dist =</span> dist,</span>
-<span id="cb34-44"><a></a>                                               <span class="at">B_inner =</span> <span class="dv">299</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb34-45"><a></a>                  <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>())</span>
-<span id="cb34-46"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb34-47"><a></a>  <span class="fu">unnest</span>(sims) <span class="sc">|&gt;</span></span>
-<span id="cb34-48"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">starts_with</span>(<span class="st">"p_"</span>), <span class="at">names_to =</span> <span class="st">"method"</span>, <span class="at">values_to =</span> <span class="st">"pval"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-49"><a></a>  <span class="fu">group_by</span>(delta, dist, method) <span class="sc">|&gt;</span></span>
-<span id="cb34-50"><a></a>  <span class="fu">summarise</span>(<span class="at">rejection =</span> <span class="fu">mean</span>(pval <span class="sc">&lt;</span> <span class="fl">0.05</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb34-51"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb34-52"><a></a>    <span class="at">method =</span> <span class="fu">recode</span>(method, <span class="at">p_t =</span> <span class="st">"t-test"</span>, <span class="at">p_boot =</span> <span class="st">"Bootstrap"</span>, <span class="at">p_perm =</span> <span class="st">"Permutation"</span>),</span>
-<span id="cb34-53"><a></a>    <span class="at">scenario =</span> <span class="fu">paste0</span>(<span class="fu">ifelse</span>(dist <span class="sc">==</span> <span class="st">"normal"</span>, <span class="st">"Normal"</span>, <span class="st">"Skewed"</span>),</span>
-<span id="cb34-54"><a></a>                      <span class="st">", \u03b4 = "</span>, delta),</span>
-<span id="cb34-55"><a></a>    <span class="at">quantity =</span> <span class="fu">ifelse</span>(delta <span class="sc">==</span> <span class="dv">0</span>, <span class="st">"Type I error (H\u2080 true)"</span>, <span class="st">"Power (H\u2090 true)"</span>)</span>
-<span id="cb34-56"><a></a>  )</span>
-<span id="cb34-57"><a></a></span>
-<span id="cb34-58"><a></a><span class="fu">ggplot</span>(res_cmp, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> rejection, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
-<span id="cb34-59"><a></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
-<span id="cb34-60"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb34-61"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>scenario, <span class="at">nrow =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
-<span id="cb34-62"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"t-test"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, </span>
-<span id="cb34-63"><a></a>                               <span class="st">"Bootstrap"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, </span>
-<span id="cb34-64"><a></a>                               <span class="st">"Permutation"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
-<span id="cb34-65"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)) <span class="sc">+</span></span>
-<span id="cb34-66"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb34-67"><a></a>    <span class="at">title =</span> <span class="st">"Comparison of Tests: Type I Error (delta=0) and Power (delta=1)"</span>,</span>
-<span id="cb34-68"><a></a>    <span class="at">subtitle =</span> <span class="st">"n1 = n2 = 20. All tests well-calibrated; permutation slightly conservative for skewed data."</span>,</span>
-<span id="cb34-69"><a></a>    <span class="at">x =</span> <span class="st">"Method"</span>, <span class="at">y =</span> <span class="st">"Rejection rate"</span>, <span class="at">fill =</span> <span class="cn">NULL</span></span>
-<span id="cb34-70"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb34-71"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>, <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-
-</div>
-<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-13-1.png" width="1344" class="r-stretch"></section>
-<section id="summary-key-properties-of-each-method" class="slide level2">
-<h2>Summary: Key Properties of Each Method</h2>
-<table class="caption-top">
-<colgroup>
-<col style="width: 20%">
-<col style="width: 30%">
-<col style="width: 22%">
-<col style="width: 26%">
-</colgroup>
-<thead>
-<tr class="header">
-<th>Property</th>
-<th>Parametric (t)</th>
-<th>Bootstrap</th>
-<th>Permutation</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>Requires distributional assumptions</td>
-<td>Yes (or large <span class="math inline">\(n\)</span>)</td>
-<td>No</td>
-<td>No</td>
-</tr>
-<tr class="even">
-<td>Valid for small <span class="math inline">\(n\)</span>, skewed data</td>
-<td>Only if normal</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td>Can use any test statistic</td>
-<td>No</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="even">
-<td>Exact p-value possible</td>
-<td>Only for normal</td>
-<td>No</td>
-<td>Yes (if enumerate all)</td>
-</tr>
-<tr class="odd">
-<td>One-sample tests</td>
-<td>Yes</td>
-<td>Yes</td>
-<td>Less natural</td>
-</tr>
-<tr class="even">
-<td>Naturally handles unequal variances</td>
-<td>Yes (Welch)</td>
-<td>Yes</td>
-<td>Yes</td>
-</tr>
-<tr class="odd">
-<td>Computationally intensive</td>
-<td>No</td>
-<td>Moderate</td>
-<td>Moderate</td>
-</tr>
-<tr class="even">
-<td>Interpretation</td>
-<td>Parametric theory</td>
-<td>Empirical null</td>
-<td>Randomization</td>
-</tr>
-</tbody>
-</table>
-<div class="fragment">
-<div class="callout callout-tip callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Practical Advice for Biostatistics</strong></p>
-</div>
-<div class="callout-content">
-<p>In clinical trials with randomized treatment assignment, <strong>permutation tests are the gold standard</strong> — they require only the randomization mechanism, not any population model. For observational studies, bootstrap tests offer robustness to non-normality without assuming exchangeability.</p>
+<p>For small samples (<span class="math inline">\(n &lt; 30\)</span>) with non-normal data, the bootstrap test is preferable. For <span class="math inline">\(n \geq 40\)</span>, the t-test is nearly equivalent in practice.</p>
 </div>
 </div>
 </div>
@@ -1251,121 +959,125 @@ Permutation p-value: 0.0063 </code></pre>
 </section>
 <section id="bootstrap-tests-and-bootstrap-cis-are-they-dual" class="slide level2">
 <h2>Bootstrap Tests and Bootstrap CIs: Are They Dual?</h2>
-<p>In the parametric setting, we showed that confidence intervals and tests are <strong>exactly dual</strong>. Does this hold for bootstrap tests and bootstrap CIs?</p>
-<div class="fragment">
+<p>In the parametric setting, confidence intervals and tests are <strong>exactly dual</strong>. For bootstrap methods this is only <strong>approximate</strong> — and only when the CI and test use the <strong>same pivot</strong>.</p>
 <div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
-<p><strong>Answer: Approximately, but the method matters</strong></p>
+<p><strong>The Key Condition</strong></p>
 </div>
 <div class="callout-content">
 <ul>
-<li><strong>Bootstrap percentile CI</strong> ↔︎ <strong>bootstrap test based on <span class="math inline">\(\hat{\theta}\)</span></strong>: approximately dual</li>
-<li>The duality is exact only if the bootstrap CI and test use the same pivot/statistic</li>
-<li>In practice, they may give slightly different inferences for small <span class="math inline">\(n\)</span></li>
+<li><strong>Percentile CI</strong> resamples from the original data and uses <span class="math inline">\(\bar{X}^*\)</span> as the pivot</li>
+<li><strong>Bootstrap test</strong> resamples from the shifted data and uses some test statistic <span class="math inline">\(T^*\)</span></li>
+<li>If both use the <strong>same pivot</strong> (e.g., raw mean), duality is approximate with only boundary disagreements from Monte Carlo noise</li>
+<li>If they use <strong>different pivots</strong> (e.g., percentile CI with raw mean vs.&nbsp;test with standardised <span class="math inline">\(t\)</span>), they can disagree systematically over a wide range</li>
 </ul>
 </div>
 </div>
 </div>
-</div>
-<div class="fragment">
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb35-2"><a></a><span class="co"># One-sample example: check duality</span></span>
-<span id="cb35-3"><a></a>crp_small <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.1</span>, <span class="fl">3.4</span>, <span class="fl">1.8</span>, <span class="fl">4.2</span>, <span class="fl">2.9</span>, <span class="fl">3.7</span>, <span class="fl">1.5</span>, <span class="fl">5.1</span>, <span class="fl">2.6</span>, <span class="fl">3.8</span>)</span>
-<span id="cb35-4"><a></a>n_s  <span class="ot">&lt;-</span> <span class="fu">length</span>(crp_small)</span>
-<span id="cb35-5"><a></a>B_s  <span class="ot">&lt;-</span> <span class="dv">4999</span></span>
-<span id="cb35-6"><a></a></span>
-<span id="cb35-7"><a></a><span class="co"># Bootstrap CI for mu (percentile method)</span></span>
-<span id="cb35-8"><a></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_s, <span class="fu">mean</span>(<span class="fu">sample</span>(crp_small, n_s, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb35-9"><a></a>ci_boot <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
-<span id="cb35-10"><a></a></span>
-<span id="cb35-11"><a></a><span class="co"># Bootstrap test: H0: mu = 2.5 vs Ha: mu != 2.5</span></span>
-<span id="cb35-12"><a></a>mu0_test <span class="ot">&lt;-</span> <span class="fl">2.5</span></span>
-<span id="cb35-13"><a></a>x_sh     <span class="ot">&lt;-</span> crp_small <span class="sc">-</span> <span class="fu">mean</span>(crp_small) <span class="sc">+</span> mu0_test</span>
-<span id="cb35-14"><a></a>T_ob_s   <span class="ot">&lt;-</span> <span class="fu">mean</span>(crp_small) <span class="sc">-</span> mu0_test</span>
-<span id="cb35-15"><a></a>T_bs_s   <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_s, <span class="fu">mean</span>(<span class="fu">sample</span>(x_sh, n_s, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span> mu0_test)</span>
-<span id="cb35-16"><a></a>p_boot_s <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs_s) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob_s))</span>
-<span id="cb35-17"><a></a></span>
-<span id="cb35-18"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap 95% CI: ["</span>, <span class="fu">round</span>(ci_boot[<span class="dv">1</span>], <span class="dv">3</span>), <span class="st">","</span>, <span class="fu">round</span>(ci_boot[<span class="dv">2</span>], <span class="dv">3</span>), <span class="st">"]</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Bootstrap 95% CI: [ 2.47 , 3.79 ]</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">cat</span>(<span class="st">"mu_0 = 2.5 in CI?"</span>, ci_boot[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="fl">2.5</span> <span class="sc">&amp;</span> <span class="fl">2.5</span> <span class="sc">&lt;=</span> ci_boot[<span class="dv">2</span>], <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>mu_0 = 2.5 in CI? TRUE </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap test p-value for mu_0 = 2.5:"</span>, <span class="fu">round</span>(p_boot_s, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Bootstrap test p-value for mu_0 = 2.5: 0.0688 </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">cat</span>(<span class="st">"Consistent? (p&gt;=0.05 iff in CI):"</span>, (p_boot_s <span class="sc">&gt;=</span> <span class="fl">0.05</span>) <span class="sc">==</span> (ci_boot[<span class="dv">1</span>] <span class="sc">&lt;=</span> <span class="fl">2.5</span> <span class="sc">&amp;</span> <span class="fl">2.5</span> <span class="sc">&lt;=</span> ci_boot[<span class="dv">2</span>]))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Consistent? (p&gt;=0.05 iff in CI): TRUE</code></pre>
-</div>
-</div>
-</div>
-</section></section>
-<section>
-<section id="one-sample-permutation-test-ch-8.3" class="title-slide slide level1 center" data-background-color="#2c3e50">
-<h1>One-Sample Permutation Test (C&amp;H 8.3)</h1>
-
 </section>
-<section id="one-sample-permutation-test-sign-test-perspective" class="slide level2 scrollable">
-<h2>One-Sample Permutation Test: Sign Test Perspective</h2>
-<p>For a one-sample test <span class="math inline">\(H_0: \mu = \mu_0\)</span>, permutation tests work via <strong>sign flipping</strong> (not label permutation).</p>
-<div class="fragment">
-<p>Under <span class="math inline">\(H_0: \text{median} = \mu_0\)</span> (or symmetry about <span class="math inline">\(\mu_0\)</span>):</p>
-<p>The deviations <span class="math inline">\(d_i = x_i - \mu_0\)</span> are symmetric about 0, so <strong>each sign is equally likely to be + or −</strong>.</p>
-</div>
-<div class="fragment">
-<p><strong>Algorithm:</strong></p>
-<ol type="1">
-<li>Compute <span class="math inline">\(d_i = x_i - \mu_0\)</span> and observed <span class="math inline">\(T_{\text{obs}} = \bar{d}\)</span></li>
-<li>For <span class="math inline">\(b = 1, \ldots, B\)</span>: randomly assign <span class="math inline">\(\pm 1\)</span> to each <span class="math inline">\(d_i\)</span>; compute <span class="math inline">\(T^{*b} = \bar{d}^{*b}\)</span></li>
-<li>p-value: fraction with <span class="math inline">\(|T^{*b}| \geq |T_{\text{obs}}|\)</span></li>
-</ol>
+<section id="demonstrating-same-pivot-vs.-different-pivots" class="slide level2">
+<h2>Demonstrating: Same Pivot vs.&nbsp;Different Pivots</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a></a><span class="co"># Sign-flip permutation test for mean CRP</span></span>
-<span id="cb43-2"><a></a>crp_data_perm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.1</span>, <span class="fl">3.4</span>, <span class="fl">1.8</span>, <span class="fl">4.2</span>, <span class="fl">2.9</span>, <span class="fl">3.7</span>, <span class="fl">1.5</span>, <span class="fl">5.1</span>, <span class="fl">2.6</span>, <span class="fl">3.8</span>, <span class="fl">4.0</span>, <span class="fl">2.2</span>)</span>
-<span id="cb43-3"><a></a>mu_0_crp <span class="ot">&lt;-</span> <span class="fl">2.5</span></span>
-<span id="cb43-4"><a></a>d <span class="ot">&lt;-</span> crp_data_perm <span class="sc">-</span> mu_0_crp</span>
-<span id="cb43-5"><a></a>T_obs_crp <span class="ot">&lt;-</span> <span class="fu">mean</span>(d)</span>
-<span id="cb43-6"><a></a></span>
-<span id="cb43-7"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb43-8"><a></a>B_sign <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
-<span id="cb43-9"><a></a>T_sign <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_sign, {</span>
-<span id="cb43-10"><a></a>  signs <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="fu">length</span>(d), <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb43-11"><a></a>  <span class="fu">mean</span>(signs <span class="sc">*</span> d)</span>
-<span id="cb43-12"><a></a>})</span>
-<span id="cb43-13"><a></a></span>
-<span id="cb43-14"><a></a>p_sign <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_sign) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs_crp))</span>
-<span id="cb43-15"><a></a><span class="fu">cat</span>(<span class="st">"Observed mean deviation:"</span>, <span class="fu">round</span>(T_obs_crp, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Observed mean deviation: 0.6083 </code></pre>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb18-2"><a></a><span class="co"># Right-skewed small sample: CRP values (mg/L)</span></span>
+<span id="cb18-3"><a></a>crp_small <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.2</span>, <span class="fl">1.5</span>, <span class="fl">2.3</span>, <span class="fl">1.8</span>, <span class="fl">4.7</span>, <span class="fl">3.1</span>, <span class="fl">1.4</span>, <span class="fl">6.2</span>, <span class="fl">2.0</span>, <span class="fl">1.6</span>)</span>
+<span id="cb18-4"><a></a>n_s   <span class="ot">&lt;-</span> <span class="fu">length</span>(crp_small)</span>
+<span id="cb18-5"><a></a>B_s   <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
+<span id="cb18-6"><a></a>xbar_s <span class="ot">&lt;-</span> <span class="fu">mean</span>(crp_small)</span>
+<span id="cb18-7"><a></a></span>
+<span id="cb18-8"><a></a><span class="co"># Percentile CI (pivot: raw mean from original data)</span></span>
+<span id="cb18-9"><a></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_s, <span class="fu">mean</span>(<span class="fu">sample</span>(crp_small, n_s, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb18-10"><a></a>ci_lo <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.025</span>)</span>
+<span id="cb18-11"><a></a>ci_hi <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fl">0.975</span>)</span>
+<span id="cb18-12"><a></a></span>
+<span id="cb18-13"><a></a>mu0_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.8</span>, <span class="fl">4.8</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
+<span id="cb18-14"><a></a></span>
+<span id="cb18-15"><a></a>scan_results <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(mu0_grid, <span class="cf">function</span>(mu0) {</span>
+<span id="cb18-16"><a></a>  x_sh <span class="ot">&lt;-</span> crp_small <span class="sc">-</span> xbar_s <span class="sc">+</span> mu0</span>
+<span id="cb18-17"><a></a>  in_ci <span class="ot">&lt;-</span> mu0 <span class="sc">&gt;=</span> ci_lo <span class="sc">&amp;</span> mu0 <span class="sc">&lt;=</span> ci_hi</span>
+<span id="cb18-18"><a></a></span>
+<span id="cb18-19"><a></a>  <span class="co"># Same pivot: raw mean difference (matches what percentile CI inverts)</span></span>
+<span id="cb18-20"><a></a>  T_ob_raw <span class="ot">&lt;-</span> xbar_s <span class="sc">-</span> mu0</span>
+<span id="cb18-21"><a></a>  T_bs_raw <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_s, <span class="fu">mean</span>(<span class="fu">sample</span>(x_sh, n_s, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span> mu0)</span>
+<span id="cb18-22"><a></a>  p_raw <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs_raw) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob_raw))</span>
+<span id="cb18-23"><a></a></span>
+<span id="cb18-24"><a></a>  <span class="co"># Different pivot: standardised t-statistic</span></span>
+<span id="cb18-25"><a></a>  T_ob_t <span class="ot">&lt;-</span> (xbar_s <span class="sc">-</span> mu0) <span class="sc">/</span> (<span class="fu">sd</span>(crp_small) <span class="sc">/</span> <span class="fu">sqrt</span>(n_s))</span>
+<span id="cb18-26"><a></a>  T_bs_t <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_s, {</span>
+<span id="cb18-27"><a></a>    bs <span class="ot">&lt;-</span> <span class="fu">sample</span>(x_sh, n_s, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb18-28"><a></a>    (<span class="fu">mean</span>(bs) <span class="sc">-</span> mu0) <span class="sc">/</span> (<span class="fu">sd</span>(bs) <span class="sc">/</span> <span class="fu">sqrt</span>(n_s))</span>
+<span id="cb18-29"><a></a>  })</span>
+<span id="cb18-30"><a></a>  p_t <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_bs_t) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_ob_t))</span>
+<span id="cb18-31"><a></a></span>
+<span id="cb18-32"><a></a>  <span class="fu">tibble</span>(<span class="at">mu0      =</span> mu0,</span>
+<span id="cb18-33"><a></a>         <span class="at">in_ci    =</span> in_ci,</span>
+<span id="cb18-34"><a></a>         <span class="at">p_raw    =</span> p_raw,</span>
+<span id="cb18-35"><a></a>         <span class="at">p_t      =</span> p_t,</span>
+<span id="cb18-36"><a></a>         <span class="at">agree_raw =</span> in_ci <span class="sc">==</span> (p_raw <span class="sc">&gt;=</span> <span class="fl">0.05</span>),</span>
+<span id="cb18-37"><a></a>         <span class="at">agree_t   =</span> in_ci <span class="sc">==</span> (p_t   <span class="sc">&gt;=</span> <span class="fl">0.05</span>))</span>
+<span id="cb18-38"><a></a>})</span>
+<span id="cb18-39"><a></a></span>
+<span id="cb18-40"><a></a>make_panel <span class="ot">&lt;-</span> <span class="cf">function</span>(data, p_col, agree_col, pivot_label) {</span>
+<span id="cb18-41"><a></a>  <span class="fu">ggplot</span>(data, <span class="fu">aes</span>(<span class="at">x =</span> mu0, <span class="at">y =</span> .data[[p_col]])) <span class="sc">+</span></span>
+<span id="cb18-42"><a></a>    <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> ci_lo, <span class="at">xmax =</span> ci_hi, <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
+<span id="cb18-43"><a></a>             <span class="at">fill =</span> <span class="st">"#16a085"</span>, <span class="at">alpha =</span> <span class="fl">0.12</span>) <span class="sc">+</span></span>
+<span id="cb18-44"><a></a>    <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(ci_lo, ci_hi),</span>
+<span id="cb18-45"><a></a>               <span class="at">color =</span> <span class="st">"#16a085"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb18-46"><a></a>    <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb18-47"><a></a>    <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> .data[[agree_col]]), <span class="at">linewidth =</span> <span class="fl">1.6</span>) <span class="sc">+</span></span>
+<span id="cb18-48"><a></a>    <span class="fu">geom_point</span>(<span class="at">data =</span> <span class="fu">filter</span>(data, <span class="sc">!</span>.data[[agree_col]]),</span>
+<span id="cb18-49"><a></a>               <span class="fu">aes</span>(<span class="at">x =</span> mu0, <span class="at">y =</span> .data[[p_col]]),</span>
+<span id="cb18-50"><a></a>               <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb18-51"><a></a>    <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>),</span>
+<span id="cb18-52"><a></a>                       <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"Agree"</span>, <span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"Disagree"</span>)) <span class="sc">+</span></span>
+<span id="cb18-53"><a></a>    <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(<span class="fu">c</span>(ci_lo, ci_hi)), <span class="at">y =</span> <span class="fl">0.88</span>,</span>
+<span id="cb18-54"><a></a>             <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"95%% CI [%.2f, %.2f]"</span>, ci_lo, ci_hi),</span>
+<span id="cb18-55"><a></a>             <span class="at">color =</span> <span class="st">"#16a085"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb18-56"><a></a>    <span class="fu">labs</span>(<span class="at">title =</span> pivot_label,</span>
+<span id="cb18-57"><a></a>         <span class="at">x =</span> <span class="fu">expression</span>(mu[<span class="dv">0</span>]),</span>
+<span id="cb18-58"><a></a>         <span class="at">y =</span> <span class="st">"Bootstrap test p-value"</span>,</span>
+<span id="cb18-59"><a></a>         <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb18-60"><a></a>    <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb18-61"><a></a>          <span class="at">plot.title  =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">15</span>, <span class="at">lineheight =</span> <span class="fl">1.2</span>),</span>
+<span id="cb18-62"><a></a>          <span class="at">axis.title  =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>),</span>
+<span id="cb18-63"><a></a>          <span class="at">axis.text   =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>),</span>
+<span id="cb18-64"><a></a>          <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">13</span>))</span>
+<span id="cb18-65"><a></a>}</span>
+<span id="cb18-66"><a></a></span>
+<span id="cb18-67"><a></a>p_raw_panel <span class="ot">&lt;-</span> <span class="fu">make_panel</span>(scan_results, <span class="st">"p_raw"</span>, <span class="st">"agree_raw"</span>,</span>
+<span id="cb18-68"><a></a>  <span class="st">"Same pivot: raw mean</span><span class="sc">\n</span><span class="st">(percentile CI approx. dual to bootstrap test)"</span>)</span>
+<span id="cb18-69"><a></a>p_t_panel   <span class="ot">&lt;-</span> <span class="fu">make_panel</span>(scan_results, <span class="st">"p_t"</span>, <span class="st">"agree_t"</span>,</span>
+<span id="cb18-70"><a></a>  <span class="st">"Different pivots: percentile CI (raw mean)</span><span class="sc">\n</span><span class="st">vs. bootstrap test (standardised t)"</span>)</span>
+<span id="cb18-71"><a></a></span>
+<span id="cb18-72"><a></a>p_raw_panel <span class="sc">+</span> p_t_panel <span class="sc">+</span></span>
+<span id="cb18-73"><a></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb18-74"><a></a>    <span class="at">title    =</span> <span class="st">"Bootstrap CI-Test Duality: Matching vs. Mismatched Pivots"</span>,</span>
+<span id="cb18-75"><a></a>    <span class="at">subtitle =</span> <span class="st">"Green region = 95% percentile CI. Red points = mu0 where CI and test give contradictory decisions."</span>,</span>
+<span id="cb18-76"><a></a>    <span class="at">theme =</span> <span class="fu">theme</span>(<span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">17</span>),</span>
+<span id="cb18-77"><a></a>                  <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>))</span>
+<span id="cb18-78"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
 </div>
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a></a><span class="fu">cat</span>(<span class="st">"Sign-flip permutation p-value:"</span>, <span class="fu">round</span>(p_sign, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Sign-flip permutation p-value: 0.0869 </code></pre>
+<img data-src="17_BootstrapHypothesisTesting_files/figure-revealjs/unnamed-chunk-9-1.png" width="1440" class="r-stretch"><div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
 </div>
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a></a><span class="fu">cat</span>(<span class="st">"Parametric t-test p-value:"</span>, <span class="fu">round</span>(<span class="fu">t.test</span>(crp_data_perm, <span class="at">mu =</span> mu_0_crp)<span class="sc">$</span>p.value, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Parametric t-test p-value: 0.0817</code></pre>
+<p><strong>Key Lesson</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Left panel:</strong> Using the same pivot (raw mean), disagreements are rare and only occur right at the CI boundary due to Monte Carlo variability — duality is approximately satisfied.<br>
+<strong>Right panel:</strong> Using different pivots (percentile CI vs.&nbsp;standardised <span class="math inline">\(t\)</span>-test), disagreements are systematic and spread over a range — this is a methodological mismatch, not boundary noise.</p>
+</div>
 </div>
 </div>
 </div>
@@ -1387,13 +1099,11 @@ Permutation p-value: 0.0063 </code></pre>
 </div>
 <div class="callout-content">
 <ol type="1">
-<li><p><strong>Bootstrap hypothesis tests</strong> approximate the null distribution by resampling from data <strong>shifted to satisfy <span class="math inline">\(H_0\)</span></strong> — this is different from bootstrap CIs</p></li>
-<li><p><strong>One-sample bootstrap test:</strong> shift data so <span class="math inline">\(\bar{x}^* = \theta_0\)</span>, resample, compute p-value from fraction of bootstrap statistics as extreme as observed</p></li>
-<li><p><strong>Two-sample bootstrap test:</strong> center each group to the grand mean (pool under <span class="math inline">\(H_0\)</span>), resample from pooled centered data</p></li>
-<li><p><strong>Permutation tests</strong> are valid under <strong>exchangeability</strong> — especially natural for randomized experiments. The group labels are permuted; exact p-values are available by enumeration</p></li>
-<li><p><strong>Permutation <span class="math inline">\(\neq\)</span> Bootstrap:</strong> permutation assumes exchangeability; bootstrap assumes iid resampling. Both avoid parametric distributional assumptions</p></li>
-<li><p><strong>All three methods</strong> (parametric, bootstrap, permutation) give similar results for large normal samples; differences emerge for small <span class="math inline">\(n\)</span>, skewed data, or non-standard statistics</p></li>
-<li><p><strong>Duality:</strong> bootstrap tests and bootstrap CIs are approximately (but not exactly) dual</p></li>
+<li><p><strong>Bootstrap hypothesis tests</strong> approximate the null distribution by resampling from data <strong>shifted to satisfy <span class="math inline">\(H_0\)</span></strong> — this is fundamentally different from bootstrap CIs (which resample from the original data)</p></li>
+<li><p><strong>The naive bootstrap is wrong:</strong> resampling from the original data without shifting produces a distribution centered at <span class="math inline">\(\bar{x}\)</span>, not at <span class="math inline">\(\mu_0\)</span> — it does not represent the null distribution</p></li>
+<li><p><strong>One-sample bootstrap test:</strong> shift data so <span class="math inline">\(\bar{x}^* = \theta_0\)</span>, resample, compute the t-statistic; the p-value is the fraction of bootstrap statistics as extreme as observed</p></li>
+<li><p><strong>Bootstrap vs.&nbsp;t-test:</strong> the bootstrap requires only iid sampling and no distributional assumptions; benefits are largest at small <span class="math inline">\(n\)</span> with skewed or heavy-tailed data; both converge for large <span class="math inline">\(n\)</span></p></li>
+<li><p><strong>Duality is approximate, not exact:</strong> the bootstrap percentile CI and bootstrap t-test use different pivots, so near CI boundaries with small, skewed samples they can give contradictory decisions — reject by one criterion but not the other</p></li>
 </ol>
 </div>
 </div>
@@ -1401,15 +1111,21 @@ Permutation p-value: 0.0063 </code></pre>
 </section>
 <section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
-<p><strong>Next class (Lesson 18): Two-Sample z and t Confidence Intervals and Tests (Devore 9.5)</strong></p>
+<p><strong>Next class: Two-Sample z and t Tests; Confidence Intervals</strong></p>
 <ul>
 <li>Two-sample z-test for means (<span class="math inline">\(\sigma\)</span> known)</li>
 <li>Welch t-test for means (<span class="math inline">\(\sigma\)</span> unknown)</li>
 <li>Pooled t-test (equal variance assumption)</li>
 <li>Two-sample inference for proportions</li>
-<li>Inferences about two variances (F-test)</li>
-<li>Power and sample size for two-sample tests</li>
 </ul>
+<div class="fragment">
+<p><strong>Later: Permutation and Bootstrap Tests for Two Samples (C&amp;H Ch. 8)</strong></p>
+<ul>
+<li>Label-permutation tests for two independent groups</li>
+<li>One-sample sign-flip permutation test</li>
+<li>Bootstrap two-sample test</li>
+</ul>
+</div>
 </section>
 <section id="references" class="slide level2">
 <h2>References</h2>
@@ -1417,8 +1133,6 @@ Permutation p-value: 0.0063 </code></pre>
 <li>Chihara, L. M. and Hesterberg, T. C. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapter 8: Bootstrap Hypothesis Testing.</li>
 <li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Section 9.6.</li>
 <li>Efron, B. and Hastie, T. (2016). <em>Computer Age Statistical Inference</em>. Cambridge University Press. Chapter 15.</li>
-<li>Good, P. I. (2005). <em>Permutation, Parametric, and Bootstrap Tests of Hypotheses</em> (3rd ed.). Springer.</li>
-<li>Ernst, M. D. (2004). Permutation methods: a basis for exact inference. <em>Statistical Science</em>, 19(4), 676–685.</li>
 </ul>
 </section>
 <section id="questions" class="slide level2 center" data-background-color="#3498db">
@@ -1430,7 +1144,7 @@ Permutation p-value: 0.0063 </code></pre>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Lesson 17 - Bootstrap Hypothesis Testing; Permutation Tests</p>
+<p>Lesson 17 - Bootstrap Hypothesis Testing</p>
 </div>
 </div></div>
 

@@ -1,5 +1,5 @@
 ---
-title: "Lesson 17: Bootstrap Hypothesis Testing"
+title: "Lesson 17: Bootstrap Hypothesis Testing; Permutation Tests"
 subtitle: "BSTA 551: Statistical Inference"
 author: "Jessica Minnier"
 title-slide-attributes:
@@ -14,7 +14,7 @@ format:
     show-slide-number: all
     width: 1955
     height: 1100
-    footer: Lesson 17 - Bootstrap Hypothesis Testing
+    footer: Lesson 17 - Bootstrap Hypothesis Testing; Permutation Tests
     html-math-method: mathjax
     highlight-style: atom-one
 execute:
@@ -61,15 +61,16 @@ theme_set(theme_minimal(base_size = 18))
 |-------|----------|-----------|
 | Why bootstrap testing? | When parametric assumptions fail | C&H Ch. 8 |
 | One-sample bootstrap test | Resample after shifting to $H_0$ | C&H 8.1 |
-| The naive bootstrap (wrong) | Resampling without shifting gives invalid null | C&H 8.1 |
+| Two-sample bootstrap test | Pool, then resample under $H_0$ | C&H 8.2 |
+| Permutation tests | Permute group labels; exact under exchangeability | C&H 8.3 |
 | Bootstrap p-value | Fraction of bootstrap statistics exceeding observed | C&H 8.1 |
-| Bootstrap vs. t-test | Robustness for non-normal, small samples | C&H 8.1 |
+| Comparison of methods | Validity and power across situations | C&H 8.5 |
 
 . . .
 
 ::: callout-note
 ## Why This Matters
-Parametric tests (z, t) require distributional assumptions that may not hold in practice. The bootstrap test provides a **distribution-free** alternative that is valid under much weaker conditions — essential for small samples, skewed outcomes, and novel test statistics in biomedical research.
+Parametric tests (z, t, F) require distributional assumptions that may not hold in practice. Bootstrap and permutation tests provide **distribution-free** alternatives that are valid under much weaker conditions — essential for small samples, skewed outcomes, and novel statistics in biomedical research.
 :::
 
 # The Bootstrap Hypothesis Test Framework (C&H Ch. 8) {background-color="#3498db"}
@@ -261,13 +262,13 @@ p_boot_null <- ggplot(tibble(T = T_boot), aes(x = T)) +
 # Also show original data vs shifted
 p_data_compare <- bind_rows(
   tibble(x = crp_data, type = "Original data"),
-  tibble(x = crp_shifted, type = "Shifted data (H0)")
+  tibble(x = crp_shifted, type = "Shifted data (H\u2080)")
 ) |>
   ggplot(aes(x = x, fill = type)) +
   geom_density(alpha = 0.5) +
   geom_vline(xintercept = mu_0, linetype = "dashed", linewidth = 1) +
   scale_fill_manual(values = c("Original data" = "#3498db",
-                               "Shifted data (H0)" = "#27ae60")) +
+                               "Shifted data (H\u2080)" = "#27ae60")) +
   labs(title = "Original vs. Shifted Data",
        subtitle = expression("Vertical line at " * mu[0] * " = 1.5 mg/L"),
        x = "CRP (mg/L)", y = "Density", fill = NULL) +
@@ -397,7 +398,7 @@ p_nv <- ggplot(tibble(T = T_naive), aes(x = T)) +
   annotate("text", x = mu_demo - 0.05, y = 2.5,
            label = "mu[0]", parse = TRUE, size = 5, color = "#3498db", hjust = 1) +
   labs(title = expression(bold("WRONG") * ": Naive bootstrap"),
-       subtitle = sprintf("Centered at x-bar, not theta0 \u2014 p = %.3f (not a valid null distribution)",
+       subtitle = sprintf("Centered at \u0078\u0305, not \u03b8\u2080 \u2014 p = %.3f (not a valid null distribution)",
                           p_naive),
        x = expression(bar(x)^"*"), y = "Density")
 
@@ -410,11 +411,164 @@ p_cr <- ggplot(tibble(T = T_correct), aes(x = T)) +
            label = bquote(T[obs] == .(round(T_obs_demo, 2))),
            color = "#e74c3c", size = 4.5) +
   labs(title = expression(bold("CORRECT") * ": Bootstrap from shifted data"),
-       subtitle = sprintf("Centered at theta0 \u2014 Bootstrap p = %.3f,  t-test p = %.3f",
+       subtitle = sprintf("Centered at \u03b8\u2080 \u2014 Bootstrap p = %.3f,  t-test p = %.3f",
                           p_correct, p_ttest_demo),
        x = "t-statistic", y = "Density")
 
 p_nv + p_cr
+```
+
+# Permutation Tests (C&H 8.3) {background-color="#27ae60"}
+
+## The Permutation Test Idea
+
+::: callout-important
+## Key Principle (C&H 8.3)
+Under $H_0: \mu_1 = \mu_2$ (or more generally, $H_0$: the two groups are **exchangeable**), the group labels are **arbitrary** — any assignment of observations to groups is equally likely.
+
+A **permutation test** generates the exact null distribution of the test statistic by considering **all possible** (or a large random sample of) permutations of the group labels.
+:::
+
+. . .
+
+**Algorithm:**
+
+1. Compute observed statistic $T_{\text{obs}} = \bar{x}_1 - \bar{x}_2$
+2. For $b = 1, \ldots, B$:
+   - Randomly permute the combined vector of $n_1 + n_2$ observations
+   - Assign first $n_1$ to Group 1, remaining $n_2$ to Group 2
+   - Compute $T^{*b} = \bar{x}_1^{*b} - \bar{x}_2^{*b}$
+3. p-value: $\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)$
+
+. . .
+
+::: callout-note
+## Exact vs. Approximate
+With total $n_1+n_2$ observations, there are $\binom{n_1+n_2}{n_1}$ permutations. If this is small, we can enumerate all of them for an **exact** test. Otherwise, random permutations give a **Monte Carlo approximation** of the exact test.
+:::
+
+## Permutation Test vs. Bootstrap Test: The Key Distinction
+
+| Feature | Bootstrap Test | Permutation Test |
+|---------|---------------|-----------------|
+| How $H_0$ is imposed | Shift/center data to satisfy $H_0$ | Permute group labels |
+| What is resampled | From modified data | From original data |
+| Validity assumption | $H_0$ + iid resampling | Exchangeability under $H_0$ |
+| When exact? | Never (always approximate) | Yes, if all permutations enumerated |
+| Handles one-sample? | Yes (shift to $\theta_0$) | Not naturally |
+| Computes standard errors? | Yes | No |
+
+. . .
+
+::: callout-tip
+## When to Prefer Permutation Tests
+Permutation tests are preferred when:
+
+- You want an **exact** p-value under $H_0$
+- Exchangeability is a natural assumption (randomized trials!)
+- You want a valid test without distributional assumptions
+:::
+
+## Medical Example: Permutation Test for Survival Times
+
+A randomized trial compares time-to-discharge (days) between two ICU protocols. Small sample, non-normal.
+
+```{r}
+#| echo: true
+# ICU time to discharge (days)
+protocol_A <- c(3, 5, 7, 9, 4, 6, 8, 12, 5, 7)
+protocol_B <- c(6, 9, 11, 14, 8, 10, 7, 15, 9, 13, 11)
+
+n_A <- length(protocol_A)
+n_B <- length(protocol_B)
+combined <- c(protocol_A, protocol_B)
+T_obs_perm <- mean(protocol_A) - mean(protocol_B)
+
+cat("Protocol A mean:", round(mean(protocol_A), 2), "days\n")
+cat("Protocol B mean:", round(mean(protocol_B), 2), "days\n")
+cat("Observed difference:", round(T_obs_perm, 2), "days\n")
+```
+
+```{r}
+#| echo: true
+# Permutation test
+set.seed(551)
+B_perm <- 9999
+T_perm <- replicate(B_perm, {
+  perm <- sample(combined)
+  mean(perm[1:n_A]) - mean(perm[(n_A + 1):(n_A + n_B)])
+})
+
+p_perm <- (sum(abs(T_perm) >= abs(T_obs_perm)) + 1) / (B_perm + 1)  # +1 for observed
+p_ttest_icu <- t.test(protocol_A, protocol_B)$p.value
+cat("\nPermutation p-value:", round(p_perm, 4), "\n")
+cat("Welch t-test p-value:", round(p_ttest_icu, 4), "\n")
+```
+
+## Visualizing the Permutation Null Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+tibble(T = T_perm) |>
+  ggplot(aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#27ae60", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = c(-abs(T_obs_perm), abs(T_obs_perm)),
+             color = "#e74c3c", linewidth = 1.5) +
+  annotate("rect", xmin = abs(T_obs_perm), xmax = Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("rect", xmin = -Inf, xmax = -abs(T_obs_perm), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.15) +
+  annotate("text", x = 3.5, y = 0.22,
+           label = sprintf("p[perm] == %.4f", p_perm), parse = TRUE,
+           color = "#e74c3c", size = 5.5) +
+  labs(
+    title = "Permutation Null Distribution: Difference in Mean ICU Days",
+    subtitle = "Under H\u2080: exchangeability. Red lines = observed difference \u00b13.64 days.",
+    x = "Permuted difference in means (days)",
+    y = "Density"
+  )
+```
+
+## Exact Permutation: Small Sample
+
+With small samples, we can enumerate **all** permutations exactly.
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Small example: 5 observations total, n1 = 2, n2 = 3
+# All C(5,2) = 10 permutations
+
+small_A <- c(10, 15)
+small_B <- c(12, 18, 20)
+combined_small <- c(small_A, small_B)
+T_obs_small <- mean(small_A) - mean(small_B)
+
+# Enumerate all C(5,2) = 10 permutations
+library(combinat)
+all_combs <- combn(length(combined_small), length(small_A), simplify = FALSE)
+
+all_diffs <- map_dbl(all_combs, function(idx) {
+  g1 <- combined_small[idx]
+  g2 <- combined_small[-idx]
+  mean(g1) - mean(g2)
+})
+
+exact_p <- mean(abs(all_diffs) >= abs(T_obs_small))
+
+tibble(
+  Permutation = seq_along(all_diffs),
+  Difference  = all_diffs,
+  As_extreme  = abs(all_diffs) >= abs(T_obs_small)
+) |>
+  mutate(Difference = round(Difference, 2)) |>
+  knitr::kable(caption = sprintf("All C(5,2)=10 permutations. Observed diff = %.1f. Exact p = %.2f",
+                                 T_obs_small, exact_p))
 ```
 
 # Choosing Between Methods: One-Sample Tests {background-color="#f39c12"}
@@ -426,8 +580,8 @@ For a **one-sample** test $H_0: \mu = \mu_0$, which method should you use?
 ```{r}
 #| echo: true
 #| code-fold: true
-#| fig-height: 7
-#| fig-width: 13
+#| fig-height: 8
+#| fig-width: 15
 library(DiagrammeR)
 
 grViz("
@@ -443,39 +597,46 @@ digraph test_choice {
 
   D [label='iid observations?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3]
 
-  E [label='Bootstrap Test\nShift to mu0, resample', fillcolor='#e74c3c', fontcolor=white, width=3.5]
+  E [label='Symmetric around mu0\nunder H0?', fillcolor='#f39c12', fontcolor=white, shape=diamond, width=3.5]
 
-  F [label='Non-iid structure present:\nConsider GEE, mixed models,\nor time series methods', fillcolor='#95a5a6', fontcolor=white, width=4]
+  F [label='Bootstrap Test\nShift to mu0, resample', fillcolor='#e74c3c', fontcolor=white, width=3.5]
+
+  G [label='Sign-Flip Permutation Test\nFlip signs of (xi - mu0)', fillcolor='#8e44ad', fontcolor=white, width=3.5]
+
+  H [label='Consult a statistician!\n(Dependent / clustered data)', fillcolor='#95a5a6', fontcolor=white, width=3.5]
 
   A -> B
   B -> C [label='  Yes', fontsize=13]
   B -> D [label='  No', fontsize=13]
   D -> E [label='  Yes', fontsize=13]
-  D -> F [label='  No', fontsize=12]
+  D -> H [label='  No', fontsize=12]
+  E -> G [label='  Yes', fontsize=13]
+  E -> F [label='  No (or unsure)', fontsize=12]
 }
 ")
 ```
 
 ## Assumptions Compared
 
-| Assumption | t-test | Bootstrap test |
-|-----------|--------|----------------|
-| Normal population (or large $n$) | Required | Not required |
-| iid observations | Required | Required |
-| Distribution-free validity | No | Approximately |
-| Works for any test statistic | No | **Yes** |
-| Computationally intensive | No | Moderate |
+| Assumption | t-test | Bootstrap test | Sign-flip permutation |
+|-----------|--------|---------------|-----------------------|
+| Normal population (or large $n$) | Required | Not required | Not required |
+| iid observations | Required | Required | Required |
+| Symmetric around $\mu_0$ under $H_0$ | Not required | Not required | **Required** |
+| Distribution-free validity | No | Approximately | Yes (exact) |
+| Works for any test statistic | No | **Yes** | **Yes** |
+| Computationally intensive | No | Moderate | Moderate |
 
 . . .
 
 ::: callout-tip
 ## Key Message
-The **bootstrap test** is the most flexible choice for one-sample problems with non-normal, skewed data — it only requires iid sampling and makes no symmetry assumption. The **t-test** is optimal when normality holds. Permutation methods will be covered after two-sample inference.
+The **bootstrap test** is the most flexible choice for one-sample problems with non-normal, skewed data — it only requires iid sampling and makes no symmetry assumption. The **sign-flip permutation test** is exact under symmetry. The **t-test** is optimal when normality holds.
 :::
 
-## Simulation Study: Comparing t-test and Bootstrap
+## Simulation Study: Comparing the Three Methods
 
-How well does each method control Type I error, and what is the power, across different population shapes?
+How well does each method control the Type I error rate, and what is the power, for different population shapes?
 
 ```{r}
 #| echo: true
@@ -484,26 +645,36 @@ How well does each method control Type I error, and what is the power, across di
 #| fig-width: 14
 
 run_onesample_tests <- function(n = 20, delta = 0, dist = "normal", B_inner = 499) {
+  # Generate data under true mean = delta (H0: mu = 0)
   x <- switch(dist,
     normal  = rnorm(n, mean = delta),
-    skewed  = rexp(n, rate = 1) - 1 + delta,
-    heavyt  = rt(n, df = 3) + delta
+    skewed  = rexp(n, rate = 1) - 1 + delta,   # centered Exp, mean = delta
+    heavyt  = rt(n, df = 3) + delta             # heavy-tailed t(3)
   )
+
   mu_0 <- 0
 
   # 1. Parametric t-test
   p_t <- t.test(x, mu = mu_0)$p.value
 
   # 2. Bootstrap test (shift-resample)
-  x_sh <- x - mean(x) + mu_0
-  T_ob <- (mean(x) - mu_0) / (sd(x) / sqrt(n))
-  T_bs <- replicate(B_inner, {
+  x_sh  <- x - mean(x) + mu_0
+  T_ob  <- (mean(x) - mu_0) / (sd(x) / sqrt(n))
+  T_bs  <- replicate(B_inner, {
     bs <- sample(x_sh, n, replace = TRUE)
     (mean(bs) - mu_0) / (sd(bs) / sqrt(n))
   })
   p_b <- mean(abs(T_bs) >= abs(T_ob))
 
-  c(p_t = p_t, p_boot = p_b)
+  # 3. Sign-flip permutation test
+  d      <- x - mu_0
+  T_sign <- replicate(B_inner, {
+    signs <- sample(c(-1, 1), n, replace = TRUE)
+    mean(signs * d)
+  })
+  p_s <- (sum(abs(T_sign) >= abs(mean(d))) + 1) / (B_inner + 1)
+
+  c(p_t = p_t, p_boot = p_b, p_sign = p_s)
 }
 
 set.seed(99)
@@ -527,32 +698,30 @@ sim_res <- sim_grid |>
   group_by(n, delta, dist, method) |>
   summarise(rejection = mean(pval < 0.05), .groups = "drop") |>
   mutate(
-    method   = recode(method, p_t = "t-test", p_boot = "Bootstrap"),
-    dist_lab = recode(dist,
-                      normal = "Normal",
-                      skewed = "Skewed (Exp-1)",
-                      heavyt = "Heavy-tailed (t3)"),
+    method   = recode(method, p_t = "t-test", p_boot = "Bootstrap", p_sign = "Sign-flip"),
+    dist_lab = recode(dist, normal = "Normal", skewed = "Skewed (Exp-1)", heavyt = "Heavy-tailed (t\u2083)"),
     quantity = ifelse(delta == 0,
-                      "Type I Error  (H0 true, target = 5%)",
-                      "Power  (Ha true, delta = 0.6)")
+                      "Type I error rate (H\u2080 true, target = 5%)",
+                      "Power (H\u2090 true, \u03b4 = 0.6)")
   )
 
 ggplot(sim_res |> filter(n == 15),
        aes(x = method, y = rejection, fill = method)) +
-  geom_col(alpha = 0.85, width = 0.5) +
+  geom_col(alpha = 0.85, width = 0.6) +
   geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 0.8) +
   facet_grid(quantity ~ dist_lab, scales = "free_y") +
-  scale_fill_manual(values = c("t-test" = "steelblue", "Bootstrap" = "#e74c3c")) +
-  scale_y_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.1))) +
+  scale_fill_manual(values = c("t-test" = "steelblue",
+                               "Bootstrap" = "#e74c3c",
+                               "Sign-flip" = "#8e44ad")) +
+  scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "t-test vs. Bootstrap: Type I Error and Power  (n = 15)",
-    subtitle = "Bootstrap maintains better Type I error control for skewed/heavy-tailed data at small n",
+    title = "One-Sample Tests: Type I Error and Power  (n = 15)",
+    subtitle = "All methods well-calibrated; bootstrap and sign-flip more robust for skewed/heavy-tailed data",
     x = NULL, y = "Rejection rate", fill = NULL
   ) +
   theme(legend.position = "bottom",
-        strip.text = element_text(size = 12),
-        strip.text.y = element_text(size = 11),
-        plot.margin = margin(5, 20, 5, 5))
+        strip.text = element_text(size = 13),
+        axis.text.x = element_text(angle = 20, hjust = 1))
 ```
 
 ## Simulation: Larger Sample (n = 40)
@@ -565,154 +734,130 @@ ggplot(sim_res |> filter(n == 15),
 
 ggplot(sim_res |> filter(n == 40),
        aes(x = method, y = rejection, fill = method)) +
-  geom_col(alpha = 0.85, width = 0.5) +
+  geom_col(alpha = 0.85, width = 0.6) +
   geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 0.8) +
   facet_grid(quantity ~ dist_lab, scales = "free_y") +
-  scale_fill_manual(values = c("t-test" = "steelblue", "Bootstrap" = "#e74c3c")) +
-  scale_y_continuous(labels = scales::percent, expand = expansion(mult = c(0, 0.1))) +
+  scale_fill_manual(values = c("t-test" = "steelblue",
+                               "Bootstrap" = "#e74c3c",
+                               "Sign-flip" = "#8e44ad")) +
+  scale_y_continuous(labels = scales::percent) +
   labs(
-    title = "t-test vs. Bootstrap: Type I Error and Power  (n = 40)",
-    subtitle = "By n = 40, both methods converge — CLT smooths out distributional differences",
+    title = "One-Sample Tests: Type I Error and Power  (n = 40)",
+    subtitle = "By n = 40, all three methods converge — CLT smooths out distributional differences",
     x = NULL, y = "Rejection rate", fill = NULL
   ) +
   theme(legend.position = "bottom",
-        strip.text = element_text(size = 12),
-        strip.text.y = element_text(size = 11),
-        plot.margin = margin(5, 20, 5, 5))
+        strip.text = element_text(size = 13),
+        axis.text.x = element_text(angle = 20, hjust = 1))
 ```
 
 ## Key Takeaways from Simulation
 
-- **Normal data:** Both methods control Type I error well at $n = 15$ and $n = 40$; t-test has slightly higher power (it's optimal here)
+- **Normal data:** All three methods control Type I error well at both $n = 15$ and $n = 40$; t-test has the highest power (it's optimal here)
 
 . . .
 
-- **Skewed data, small $n$:** The t-test can be slightly anti-conservative (Type I error > 5%); the bootstrap test maintains better control
+- **Skewed data, small $n$:** The t-test can be slightly anti-conservative (Type I error > 5%); the bootstrap and sign-flip tests maintain better control
 
 . . .
 
-- **Heavy-tailed data ($t_3$):** Similar pattern — bootstrap is more robust for small samples
+- **Heavy-tailed data ($t_3$):** Similar pattern — bootstrap and sign-flip are more robust for small samples
 
 . . .
 
-- **Large $n$:** Differences wash out — the CLT rescues the t-test regardless of population shape
+- **Large $n$:** All differences wash out — the CLT rescues the t-test regardless of the population shape
 
 . . .
 
 ::: callout-note
 ## Practical Implication
-For small samples ($n < 30$) with non-normal data, the bootstrap test is preferable. For $n \geq 40$, the t-test is nearly equivalent in practice.
+For small samples ($n < 30$) with non-normal data, bootstrap or sign-flip tests are preferable. For $n \geq 40$, the t-test is nearly equivalent in practice. The computational cost of bootstrap/permutation is rarely a concern in modern software.
 :::
 
 # Bootstrap Tests and the Duality with CIs {background-color="#16a085"}
 
 ## Bootstrap Tests and Bootstrap CIs: Are They Dual?
 
-In the parametric setting, confidence intervals and tests are **exactly dual**. For bootstrap methods this is only **approximate** — and only when the CI and test use the **same pivot**.
+In the parametric setting, we showed that confidence intervals and tests are **exactly dual**. Does this hold for bootstrap tests and bootstrap CIs?
+
+. . .
 
 ::: callout-important
-## The Key Condition
-- **Percentile CI** resamples from the original data and uses $\bar{X}^*$ as the pivot
-- **Bootstrap test** resamples from the shifted data and uses some test statistic $T^*$
-- If both use the **same pivot** (e.g., raw mean), duality is approximate with only boundary disagreements from Monte Carlo noise
-- If they use **different pivots** (e.g., percentile CI with raw mean vs. test with standardised $t$), they can disagree systematically over a wide range
+## Answer: Approximately, but the method matters
+
+- **Bootstrap percentile CI** ↔ **bootstrap test based on $\hat{\theta}$**: approximately dual
+- The duality is exact only if the bootstrap CI and test use the same pivot/statistic
+- In practice, they may give slightly different inferences for small $n$
 :::
 
-## Demonstrating: Same Pivot vs. Different Pivots
+. . .
 
 ```{r}
 #| echo: true
 #| code-fold: true
-#| fig-height: 7
-#| fig-width: 15
+set.seed(551)
+# One-sample example: check duality
+crp_small <- c(2.1, 3.4, 1.8, 4.2, 2.9, 3.7, 1.5, 5.1, 2.6, 3.8)
+n_s  <- length(crp_small)
+B_s  <- 4999
 
-set.seed(42)
-# Right-skewed small sample: CRP values (mg/L)
-crp_small <- c(1.2, 1.5, 2.3, 1.8, 4.7, 3.1, 1.4, 6.2, 2.0, 1.6)
-n_s   <- length(crp_small)
-B_s   <- 9999
-xbar_s <- mean(crp_small)
-
-# Percentile CI (pivot: raw mean from original data)
+# Bootstrap CI for mu (percentile method)
 boot_means <- replicate(B_s, mean(sample(crp_small, n_s, replace = TRUE)))
-ci_lo <- quantile(boot_means, 0.025)
-ci_hi <- quantile(boot_means, 0.975)
+ci_boot <- quantile(boot_means, c(0.025, 0.975))
 
-mu0_grid <- seq(0.8, 4.8, by = 0.05)
+# Bootstrap test: H0: mu = 2.5 vs Ha: mu != 2.5
+mu0_test <- 2.5
+x_sh     <- crp_small - mean(crp_small) + mu0_test
+T_ob_s   <- mean(crp_small) - mu0_test
+T_bs_s   <- replicate(B_s, mean(sample(x_sh, n_s, replace = TRUE)) - mu0_test)
+p_boot_s <- mean(abs(T_bs_s) >= abs(T_ob_s))
 
-scan_results <- map_dfr(mu0_grid, function(mu0) {
-  x_sh <- crp_small - xbar_s + mu0
-  in_ci <- mu0 >= ci_lo & mu0 <= ci_hi
-
-  # Same pivot: raw mean difference (matches what percentile CI inverts)
-  T_ob_raw <- xbar_s - mu0
-  T_bs_raw <- replicate(B_s, mean(sample(x_sh, n_s, replace = TRUE)) - mu0)
-  p_raw <- mean(abs(T_bs_raw) >= abs(T_ob_raw))
-
-  # Different pivot: standardised t-statistic
-  T_ob_t <- (xbar_s - mu0) / (sd(crp_small) / sqrt(n_s))
-  T_bs_t <- replicate(B_s, {
-    bs <- sample(x_sh, n_s, replace = TRUE)
-    (mean(bs) - mu0) / (sd(bs) / sqrt(n_s))
-  })
-  p_t <- mean(abs(T_bs_t) >= abs(T_ob_t))
-
-  tibble(mu0      = mu0,
-         in_ci    = in_ci,
-         p_raw    = p_raw,
-         p_t      = p_t,
-         agree_raw = in_ci == (p_raw >= 0.05),
-         agree_t   = in_ci == (p_t   >= 0.05))
-})
-
-make_panel <- function(data, p_col, agree_col, pivot_label) {
-  ggplot(data, aes(x = mu0, y = .data[[p_col]])) +
-    annotate("rect", xmin = ci_lo, xmax = ci_hi, ymin = -Inf, ymax = Inf,
-             fill = "#16a085", alpha = 0.12) +
-    geom_vline(xintercept = c(ci_lo, ci_hi),
-               color = "#16a085", linewidth = 1.0, linetype = "dotted") +
-    geom_hline(yintercept = 0.05, linetype = "dashed", color = "gray40") +
-    geom_line(aes(color = .data[[agree_col]]), linewidth = 1.6) +
-    geom_point(data = filter(data, !.data[[agree_col]]),
-               aes(x = mu0, y = .data[[p_col]]),
-               color = "#e74c3c", size = 3) +
-    scale_color_manual(values = c("TRUE" = "#006a4e", "FALSE" = "#e74c3c"),
-                       labels = c("TRUE" = "Agree", "FALSE" = "Disagree")) +
-    annotate("text", x = mean(c(ci_lo, ci_hi)), y = 0.88,
-             label = sprintf("95%% CI [%.2f, %.2f]", ci_lo, ci_hi),
-             color = "#16a085", size = 5) +
-    labs(title = pivot_label,
-         x = expression(mu[0]),
-         y = "Bootstrap test p-value",
-         color = NULL) +
-    theme(legend.position = "bottom",
-          plot.title  = element_text(size = 15, lineheight = 1.2),
-          axis.title  = element_text(size = 14),
-          axis.text   = element_text(size = 13),
-          legend.text = element_text(size = 13))
-}
-
-p_raw_panel <- make_panel(scan_results, "p_raw", "agree_raw",
-  "Same pivot: raw mean\n(percentile CI approx. dual to bootstrap test)")
-p_t_panel   <- make_panel(scan_results, "p_t", "agree_t",
-  "Different pivots: percentile CI (raw mean)\nvs. bootstrap test (standardised t)")
-
-p_raw_panel + p_t_panel +
-  plot_annotation(
-    title    = "Bootstrap CI-Test Duality: Matching vs. Mismatched Pivots",
-    subtitle = "Green region = 95% percentile CI. Red points = mu0 where CI and test give contradictory decisions.",
-    theme = theme(plot.title    = element_text(size = 17),
-                  plot.subtitle = element_text(size = 14))
-  )
+cat("Bootstrap 95% CI: [", round(ci_boot[1], 3), ",", round(ci_boot[2], 3), "]\n")
+cat("mu_0 = 2.5 in CI?", ci_boot[1] <= 2.5 & 2.5 <= ci_boot[2], "\n")
+cat("Bootstrap test p-value for mu_0 = 2.5:", round(p_boot_s, 4), "\n")
+cat("Consistent? (p>=0.05 iff in CI):", (p_boot_s >= 0.05) == (ci_boot[1] <= 2.5 & 2.5 <= ci_boot[2]))
 ```
+
+# One-Sample Permutation Test (C&H 8.3) {background-color="#2c3e50"}
+
+## One-Sample Permutation Test: Sign Test Perspective
+
+For a one-sample test $H_0: \mu = \mu_0$, permutation tests work via **sign flipping** (not label permutation).
 
 . . .
 
-::: callout-warning
-## Key Lesson
-**Left panel:** Using the same pivot (raw mean), disagreements are rare and only occur right at the CI boundary due to Monte Carlo variability — duality is approximately satisfied.  
-**Right panel:** Using different pivots (percentile CI vs. standardised $t$-test), disagreements are systematic and spread over a range — this is a methodological mismatch, not boundary noise.
-:::
+Under $H_0: \text{median} = \mu_0$ (or symmetry about $\mu_0$):
+
+The deviations $d_i = x_i - \mu_0$ are symmetric about 0, so **each sign is equally likely to be + or −**.
+
+. . .
+
+**Algorithm:**
+
+1. Compute $d_i = x_i - \mu_0$ and observed $T_{\text{obs}} = \bar{d}$
+2. For $b = 1, \ldots, B$: randomly assign $\pm 1$ to each $d_i$; compute $T^{*b} = \bar{d}^{*b}$
+3. p-value: fraction with $|T^{*b}| \geq |T_{\text{obs}}|$
+
+```{r}
+#| echo: true
+# Sign-flip permutation test for mean CRP
+crp_data_perm <- c(2.1, 3.4, 1.8, 4.2, 2.9, 3.7, 1.5, 5.1, 2.6, 3.8, 4.0, 2.2)
+mu_0_crp <- 2.5
+d <- crp_data_perm - mu_0_crp
+T_obs_crp <- mean(d)
+
+set.seed(551)
+B_sign <- 9999
+T_sign <- replicate(B_sign, {
+  signs <- sample(c(-1, 1), length(d), replace = TRUE)
+  mean(signs * d)
+})
+
+p_sign <- mean(abs(T_sign) >= abs(T_obs_crp))
+cat("Observed mean deviation:", round(T_obs_crp, 4), "\n")
+cat("Sign-flip permutation p-value:", round(p_sign, 4), "\n")
+cat("Parametric t-test p-value:", round(t.test(crp_data_perm, mu = mu_0_crp)$p.value, 4))
+```
 
 # Key Takeaways {background-color="#2c3e50"}
 
@@ -725,29 +870,27 @@ p_raw_panel + p_t_panel +
 
 2. **The naive bootstrap is wrong:** resampling from the original data without shifting produces a distribution centered at $\bar{x}$, not at $\mu_0$ — it does not represent the null distribution
 
-3. **One-sample bootstrap test:** shift data so $\bar{x}^* = \theta_0$, resample, compute the t-statistic; the p-value is the fraction of bootstrap statistics as extreme as observed
+3. **One-sample bootstrap test:** shift data so $\bar{x}^* = \theta_0$, resample, compute the t-statistic, obtain p-value as the fraction of bootstrap statistics as extreme as observed
 
-4. **Bootstrap vs. t-test:** the bootstrap requires only iid sampling and no distributional assumptions; benefits are largest at small $n$ with skewed or heavy-tailed data; both converge for large $n$
+4. **Sign-flip permutation test:** under $H_0$ and symmetry, the signs of $d_i = x_i - \mu_0$ are exchangeable — randomly flipping them generates the exact null distribution
 
-5. **Duality is approximate, not exact:** the bootstrap percentile CI and bootstrap t-test use different pivots, so near CI boundaries with small, skewed samples they can give contradictory decisions — reject by one criterion but not the other
+5. **Permutation $\neq$ Bootstrap:** sign-flip permutation requires symmetry around $\mu_0$; bootstrap requires only iid resampling. Both avoid parametric distributional assumptions
+
+6. **All three methods** converge for large $n$ (CLT); differences matter most for small, skewed, or heavy-tailed samples
+
+7. **Duality:** bootstrap tests and bootstrap CIs are approximately (but not exactly) dual — the CI is not simply the set of values where the bootstrap test fails to reject
 :::
 
 ## Looking Ahead
 
-**Next class: Two-Sample z and t Tests; Confidence Intervals**
+**Next class (Lesson 18): Two-Sample z and t Confidence Intervals and Tests (Devore 9.5)**
 
 - Two-sample z-test for means ($\sigma$ known)
 - Welch t-test for means ($\sigma$ unknown)
 - Pooled t-test (equal variance assumption)
 - Two-sample inference for proportions
-
-. . .
-
-**Later: Permutation and Bootstrap Tests for Two Samples (C&H Ch. 8)**
-
-- Label-permutation tests for two independent groups
-- One-sample sign-flip permutation test
-- Bootstrap two-sample test
+- Inferences about two variances (F-test)
+- Power and sample size for two-sample tests
 
 ## References
 
@@ -755,6 +898,8 @@ p_raw_panel + p_t_panel +
 -   Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 8: Bootstrap Hypothesis Testing.
 -   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Section 9.6.
 -   Efron, B. and Hastie, T. (2016). *Computer Age Statistical Inference*. Cambridge University Press. Chapter 15.
+-   Good, P. I. (2005). *Permutation, Parametric, and Bootstrap Tests of Hypotheses* (3rd ed.). Springer.
+-   Ernst, M. D. (2004). Permutation methods: a basis for exact inference. *Statistical Science*, 19(4), 676–685.
 :::
 
 ## Questions? {.center background-color="#3498db"}
