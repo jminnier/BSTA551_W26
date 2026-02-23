@@ -1,0 +1,888 @@
+---
+title: "Lesson 16: Further Aspects of Hypothesis Testing; Relationship between Testing and Interval Estimation"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w8d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 16 - Further Aspects of Hypothesis Testing; CI-Test Duality
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 16: Further Aspects of Hypothesis Testing {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lesson 15: Neyman-Pearson Lemma; Likelihood Ratio Tests**
+
+- The **Neyman-Pearson Lemma** shows the likelihood ratio test is most powerful for simple vs. simple hypotheses
+- **UMP tests** exist for one-sided alternatives in exponential families (Karlin-Rubin Theorem)
+- The **Likelihood Ratio Test (LRT)** $\Lambda = L(\hat{\theta}_0)/L(\hat{\theta}_{mle})$ provides a general recipe for composite hypotheses
+- **Wilks' Theorem:** $-2\ln(\Lambda) \xrightarrow{d} \chi^2_m$ under $H_0$ (large-sample)
+- Classic tests (z, t, F) are all LRTs
+
+. . .
+
+**Today's Goals:**
+
+1. Understand the distinction between **statistical significance** and **practical/clinical significance**
+2. State and use the **duality theorem** connecting confidence intervals and hypothesis tests
+3. Construct **confidence intervals by inverting tests** (the general method)
+4. Understand **one-sided CIs** and their connection to one-sided tests
+5. Use $p$-value duality and **equivalence testing** in medical research contexts
+6. Understand **multiple testing** consequences for CI coverage
+
+## Roadmap
+
+| Topic | Key Idea | Textbook |
+|-------|----------|----------|
+| Statistical vs. practical significance | A significant result may not be meaningful | Devore 9.6 |
+| Duality Theorem | $\theta_0 \in$ CI iff $H_0: \theta = \theta_0$ is not rejected | Devore 9.6 |
+| Inverting a test | General method for constructing CIs | Devore 9.6 |
+| One-sided CIs | Linked to one-sided tests at level $\alpha$ | Devore 9.6 |
+| Equivalence testing | Testing that effects are *small enough* | Applied |
+| Multiple testing & CIs | Simultaneous coverage | Devore 9.6 |
+
+. . .
+
+::: callout-note
+## Why This Matters
+The duality between hypothesis tests and confidence intervals is one of the most elegant unifying results in statistics. It tells us that a confidence interval is **not just a range of plausible values** — it is a compact summary of all hypothesis tests we would fail to reject. In clinical trials, this connection is essential for both planning and reporting.
+:::
+
+# Statistical Significance vs. Practical Significance (Devore 9.6) {background-color="#3498db"}
+
+## The Core Problem
+
+We have spent much of this course learning how to **detect** an effect. But detection is only half the story.
+
+. . .
+
+::: callout-important
+## Key Distinction
+- **Statistical significance:** $p < \alpha$ — the data provide enough evidence to reject $H_0$
+- **Practical (clinical) significance:** the effect size is **large enough to matter** in a real-world or clinical context
+:::
+
+. . .
+
+These two concepts can **diverge dramatically**:
+
+- **Large $n$, tiny effect:** Almost any negligible difference becomes statistically significant
+- **Small $n$, large effect:** Clinically important effects may be missed
+
+. . .
+
+::: callout-tip
+## Medical Context
+Suppose a new antihypertensive reduces systolic BP by 1 mmHg on average ($n = 50{,}000$, $p < 0.0001$). This is statistically significant — but is a 1 mmHg reduction clinically meaningful? The American Heart Association typically considers reductions of $\geq 5$ mmHg clinically relevant.
+:::
+
+## Large Sample Sizes Make Everything Significant
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+
+# Simulate: true effect = delta (small), vary n
+# Test H0: mu = 0 vs Ha: mu != 0
+sim_pvals <- function(n, delta = 0.5, sigma = 10, B = 5000) {
+  replicate(B, {
+    x <- rnorm(n, mean = delta, sd = sigma)
+    t.test(x, mu = 0)$p.value
+  })
+}
+
+sample_sizes <- c(30, 100, 500, 2000, 10000)
+results <- map_dfr(sample_sizes, function(n) {
+  pvals <- sim_pvals(n, delta = 0.5, sigma = 10)
+  tibble(n = n, power = mean(pvals < 0.05))
+})
+
+results |>
+  ggplot(aes(x = n, y = power)) +
+  geom_line(color = "#006a4e", linewidth = 1.5) +
+  geom_point(size = 4, color = "#006a4e") +
+  geom_hline(yintercept = 0.8, linetype = "dashed", color = "gray50") +
+  scale_x_log10(labels = scales::comma) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(
+    title = expression("Power to Detect " * delta * " = 0.5 mmHg (SD = 10) at " * alpha * " = 0.05"),
+    subtitle = "A clinically trivial effect becomes detectable with enough patients",
+    x = "Sample size (log scale)", y = "Power"
+  )
+```
+
+## Visualizing Statistical vs. Clinical Significance
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+# Simulate 4 scenarios: large/small n x large/small effect
+scenarios <- tribble(
+  ~n,     ~delta,  ~label,
+  50,     8,       "Small n, Large effect",
+  50,     1,       "Small n, Small effect",
+  5000,   8,       "Large n, Large effect",
+  5000,   1,       "Large n, Small effect"
+)
+
+set.seed(551)
+scenario_results <- scenarios |>
+  rowwise() |>
+  mutate(
+    data = list(rnorm(n, mean = delta, sd = 10)),
+    test = list(t.test(data, mu = 0)),
+    estimate = test$estimate,
+    ci_low  = test$conf.int[1],
+    ci_high = test$conf.int[2],
+    pval = test$p.value,
+    sig = pval < 0.05
+  ) |>
+  ungroup()
+
+scenario_results |>
+  mutate(
+    label = factor(label, levels = scenarios$label),
+    sig_label = ifelse(sig, "Statistically significant", "Not significant")
+  ) |>
+  ggplot(aes(x = label, y = estimate, color = sig_label)) +
+  geom_point(size = 5) +
+  geom_errorbar(aes(ymin = ci_low, ymax = ci_high), width = 0.2, linewidth = 1.2) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray40") +
+  geom_hline(yintercept = 5, linetype = "dashed", color = "#c0392b", linewidth = 1) +
+  annotate("text", x = 4.5, y = 5.5, label = "Clinical threshold = 5 mmHg",
+           color = "#c0392b", hjust = 1, size = 5) +
+  scale_color_manual(values = c("Statistically significant" = "#006a4e",
+                                "Not significant" = "#e74c3c")) +
+  labs(
+    title = "95% Confidence Intervals for Mean BP Reduction (mmHg)",
+    subtitle = "Statistical significance depends on n; clinical significance depends on effect size",
+    x = NULL, y = "Estimated mean reduction (mmHg)",
+    color = NULL
+  ) +
+  coord_flip() +
+  theme(legend.position = "bottom")
+```
+
+## Reporting Standards: What Should We Report?
+
+::: callout-important
+## Best Practice (Devore 9.6 & Medical Journals)
+Always report:
+
+1. **The test statistic** (e.g., $t = 3.41$)
+2. **The $p$-value** (e.g., $p = 0.001$)
+3. **The confidence interval** for the effect size (e.g., 95% CI: [2.1, 8.7] mmHg)
+4. **The effect size** with clinical context
+:::
+
+. . .
+
+Why CIs are essential:
+
+- A CI tells you **the range of plausible effects**, not just whether an effect exists
+- A CI directly encodes practical significance: does the entire interval fall below the clinical threshold?
+- A narrow CI near zero can rule out clinically meaningful effects even without rejecting $H_0$
+
+. . .
+
+::: callout-note
+## Example: CONSORT Guidelines
+Major medical journals (NEJM, JAMA, Lancet) following CONSORT guidelines require authors to report effect sizes with CIs, not just $p$-values. The statement "$p < 0.05$" alone is considered insufficient.
+:::
+
+## Effect Size Measures
+
+Beyond the raw difference, **effect size** quantifies practical significance on a standardized scale.
+
+. . .
+
+**Cohen's $d$** (for means, $\sigma$ known or estimated):
+
+$$d = \frac{\mu_1 - \mu_2}{\sigma}$$
+
+| $|d|$ | Interpretation |
+|-------|----------------|
+| $< 0.2$ | Negligible |
+| $0.2 - 0.5$ | Small |
+| $0.5 - 0.8$ | Medium |
+| $> 0.8$ | Large |
+
+. . .
+
+**Number Needed to Treat (NNT)** for binary outcomes:
+
+$$\text{NNT} = \frac{1}{p_{\text{control}} - p_{\text{treatment}}}$$
+
+Interpretation: How many patients must be treated to prevent one additional event?
+
+## Example: Statin Therapy for MI Prevention
+
+A landmark trial finds statins reduce the absolute risk of MI from 4.5% to 3.2% over 5 years.
+
+$$\text{NNT} = \frac{1}{0.045 - 0.032} = \frac{1}{0.013} \approx 77$$
+
+. . .
+
+```{r}
+#| echo: true
+p_control <- 0.045
+p_treatment <- 0.032
+RR  <- p_treatment / p_control
+ARR <- p_control - p_treatment
+NNT <- 1 / ARR
+
+tibble(
+  Measure = c("Risk (control)", "Risk (treatment)", 
+              "Absolute Risk Reduction (ARR)", 
+              "Relative Risk (RR)", 
+              "Number Needed to Treat (NNT)"),
+  Value = c(p_control, p_treatment, ARR, RR, NNT)
+) |>
+  mutate(Value = round(Value, 3)) |>
+  knitr::kable(align = "lr")
+```
+
+. . .
+
+Is an NNT of 77 clinically meaningful? This depends on the cost, side-effect profile, and severity of the prevented outcome.
+
+# Duality of Hypothesis Tests and Confidence Intervals {background-color="#e74c3c"}
+
+## The Duality Theorem
+
+::: callout-important
+## Theorem: CI-Test Duality (Devore 9.6)
+
+Let $C(\mathbf{X})$ be a $100(1-\alpha)\%$ confidence interval for a parameter $\theta$, obtained by inverting a level-$\alpha$ test. Then:
+
+$$\theta_0 \notin C(\mathbf{X}) \quad \iff \quad \text{Reject } H_0: \theta = \theta_0 \text{ at level } \alpha$$
+
+$$\theta_0 \in C(\mathbf{X}) \quad \iff \quad \text{Fail to reject } H_0: \theta = \theta_0 \text{ at level } \alpha$$
+:::
+
+. . .
+
+**Consequence:** A confidence interval is a **compact summary of all hypothesis tests we would fail to reject** at level $\alpha$.
+
+. . .
+
+::: callout-tip
+## Intuition
+A 95% CI for $\mu$ contains exactly those values of $\mu_0$ for which the data are "consistent" (i.e., would not be rejected at $\alpha = 0.05$).
+:::
+
+## Proof of Duality
+
+Consider testing $H_0: \theta = \theta_0$ vs. $H_a: \theta \neq \theta_0$ using a two-sided level-$\alpha$ test.
+
+. . .
+
+For the one-sample z-test (known $\sigma$), reject $H_0$ when:
+
+$$|Z| = \left|\frac{\bar{X} - \theta_0}{\sigma/\sqrt{n}}\right| > z_{\alpha/2}$$
+
+. . .
+
+Equivalently, fail to reject when:
+
+$$\left|\bar{X} - \theta_0\right| \leq z_{\alpha/2} \cdot \frac{\sigma}{\sqrt{n}}$$
+
+$$\bar{X} - z_{\alpha/2}\frac{\sigma}{\sqrt{n}} \leq \theta_0 \leq \bar{X} + z_{\alpha/2}\frac{\sigma}{\sqrt{n}}$$
+
+. . .
+
+This is exactly the **95% confidence interval** $\bar{X} \pm z_{\alpha/2}\sigma/\sqrt{n}$!
+
+So: $\theta_0$ is in the CI $\iff$ we fail to reject $H_0: \theta = \theta_0$. $\square$
+
+## The General Method: Inverting a Test
+
+The duality theorem gives us a general method to construct CIs from any test.
+
+. . .
+
+::: callout-important
+## Definition: Acceptance Region and Confidence Set (Devore 9.6)
+
+For a level-$\alpha$ test of $H_0: \theta = \theta_0$, the **acceptance region** $A(\theta_0) = R^C(\theta_0)$ consists of all sample outcomes that do NOT lead to rejection.
+
+The **confidence set** is:
+
+$$C(\mathbf{X}) = \{\theta_0 : \mathbf{X} \in A(\theta_0)\}$$
+
+This set has coverage probability $\geq 1 - \alpha$ for all $\theta$.
+:::
+
+. . .
+
+**Algorithm for inverting a test:**
+
+1. For each candidate value $\theta_0$, determine the acceptance region $A(\theta_0)$
+2. The CI is all values $\theta_0$ for which $\mathbf{X} \in A(\theta_0)$
+
+## Example: Inverting the t-Test
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)$ with both $\mu, \sigma^2$ unknown.
+
+Test $H_0: \mu = \mu_0$ vs. $H_a: \mu \neq \mu_0$ using $T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}$.
+
+. . .
+
+**Acceptance region** at level $\alpha$:
+
+$$A(\mu_0) = \left\{(x_1,\ldots,x_n): -t_{\alpha/2,\, n-1} \leq \frac{\bar{x} - \mu_0}{s/\sqrt{n}} \leq t_{\alpha/2,\, n-1}\right\}$$
+
+. . .
+
+**Invert:** Find all $\mu_0$ such that $\bar{x}$ falls in $A(\mu_0)$:
+
+$$-t_{\alpha/2,n-1} \leq \frac{\bar{x} - \mu_0}{s/\sqrt{n}} \leq t_{\alpha/2,n-1}$$
+
+$$\bar{x} - t_{\alpha/2,n-1}\frac{s}{\sqrt{n}} \leq \mu_0 \leq \bar{x} + t_{\alpha/2,n-1}\frac{s}{\sqrt{n}}$$
+
+. . .
+
+This recovers the familiar **one-sample t confidence interval**. The CI and t-test are **exactly dual** to each other.
+
+## Visualizing Duality: Clinical Trial Example
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 9
+#| fig-width: 14
+
+# Observed data: blood pressure reduction (mmHg)
+set.seed(42)
+n <- 25
+bp_data <- rnorm(n, mean = 6.5, sd = 8)
+
+xbar <- mean(bp_data)
+s    <- sd(bp_data)
+se   <- s / sqrt(n)
+df   <- n - 1
+t_crit <- qt(0.975, df)
+
+# 95% CI
+ci_low  <- xbar - t_crit * se
+ci_high <- xbar + t_crit * se
+
+# For each null value mu0, compute t-statistic and p-value
+test_grid <- tibble(mu0 = seq(-5, 15, by = 0.1)) |>
+  mutate(
+    t_stat = (xbar - mu0) / se,
+    pval   = 2 * pt(-abs(t_stat), df = df),
+    reject = pval < 0.05
+  )
+
+p1 <- test_grid |>
+  ggplot(aes(x = mu0, y = pval, color = reject)) +
+  geom_line(linewidth = 1.5) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 1) +
+  geom_vline(xintercept = c(ci_low, ci_high), 
+             linetype = "dotted", color = "#006a4e", linewidth = 1.2) +
+  annotate("rect", xmin = ci_low, xmax = ci_high, ymin = -Inf, ymax = Inf,
+           fill = "#006a4e", alpha = 0.1) +
+  annotate("text", x = xbar, y = 0.75,
+           label = sprintf("95%% CI:\n[%.2f, %.2f]", ci_low, ci_high),
+           color = "#006a4e", size = 5) +
+  scale_color_manual(
+    values = c("TRUE" = "#e74c3c", "FALSE" = "#006a4e"),
+    labels = c("TRUE" = expression("Reject " * H[0]),
+               "FALSE" = expression("Fail to reject " * H[0]))
+  ) +
+  labs(
+    title = expression("p-value as a function of " * mu[0]),
+    subtitle = expression("Green region = 95% CI = values of " * mu[0] * " we fail to reject"),
+    x = expression(mu[0] * " (null value)"),
+    y = "p-value",
+    color = NULL
+  ) +
+  theme(legend.position = "bottom",
+        plot.title    = element_text(size = 15),
+        plot.subtitle = element_text(size = 13))
+
+p2 <- test_grid |>
+  ggplot(aes(x = mu0, y = t_stat)) +
+  geom_line(color = "steelblue", linewidth = 1.5) +
+  geom_hline(yintercept = c(-t_crit, t_crit), linetype = "dashed",
+             color = "#e74c3c", linewidth = 1) +
+  geom_vline(xintercept = c(ci_low, ci_high),
+             linetype = "dotted", color = "#006a4e", linewidth = 1.2) +
+  annotate("rect", xmin = ci_low, xmax = ci_high, ymin = -Inf, ymax = Inf,
+           fill = "#006a4e", alpha = 0.1) +
+  annotate("text", x = -3.5, y = t_crit + 0.5,
+           label = bquote(t[0.975*","*.(df)] == .(round(t_crit, 2))),
+           color = "#e74c3c", size = 4.5) +
+  labs(
+    title = expression("t-statistic as a function of " * mu[0]),
+    subtitle = expression("Fail to reject when |t| <= t"[crit] * " (green region)"),
+    x = expression(mu[0] * " (null value)"),
+    y = "t-statistic"
+  ) +
+  theme(plot.title    = element_text(size = 15),
+        plot.subtitle = element_text(size = 13))
+
+p1 + p2
+```
+
+## The p-Value Function
+
+The plot on the previous slide illustrates the **p-value function** (or **significance function**):
+
+$$p(\mu_0) = P_{H_0: \mu = \mu_0}\left(|T| \geq |t_{\text{obs}}|\right)$$
+
+. . .
+
+Key properties:
+
+- $p(\mu_0) \geq \alpha$ exactly when $\mu_0$ is in the $100(1-\alpha)\%$ CI
+- Maximized at the MLE: $p(\bar{x}) = 1$
+- Shape reflects the curvature of the likelihood: narrow when data are highly informative
+
+. . .
+
+::: callout-note
+## Reading the p-Value Function
+- The **width** of the region where $p(\mu_0) \geq 0.05$ equals the **width of the 95% CI**
+- The **shape** tells us how evidence accumulates against each null value
+- This function is more informative than a single p-value or a single CI
+:::
+
+# One-Sided Tests and One-Sided Confidence Intervals {background-color="#8e44ad"}
+
+## One-Sided Tests and Bounds
+
+The duality extends naturally to **one-sided** settings.
+
+. . .
+
+::: callout-important
+## Theorem: One-Sided Duality (Devore 9.6)
+
+**Upper-tailed test:** $H_0: \theta \leq \theta_0$ vs $H_a: \theta > \theta_0$ at level $\alpha$
+
+Reject when $T > c_\alpha$
+
+$\Leftrightarrow$ The corresponding $100(1-\alpha)\%$ **lower confidence bound** $\underline{\theta}$ satisfies:
+
+$$\theta_0 < \underline{\theta}(\mathbf{X}) \quad \iff \quad \text{Reject } H_0$$
+
+**Lower-tailed test:** $H_0: \theta \geq \theta_0$ vs $H_a: \theta < \theta_0$
+
+$\Leftrightarrow$ Upper confidence bound: reject $H_0$ iff $\theta_0 > \bar{\theta}(\mathbf{X})$
+:::
+
+. . .
+
+**For the one-sample t-test:**
+
+Upper bound: $\bar{X} + t_{\alpha, n-1}\cdot S/\sqrt{n}$
+
+Lower bound: $\bar{X} - t_{\alpha, n-1}\cdot S/\sqrt{n}$
+
+Note: uses $t_{\alpha, n-1}$ (one-sided critical value), NOT $t_{\alpha/2, n-1}$
+
+## Summary: Two-Sided vs One-Sided Duality
+
+| Test Type | Reject $H_0$ when | Dual CI |
+|-----------|-------------------|---------|
+| Two-sided: $H_a: \theta \neq \theta_0$ | $\|\hat{\theta} - \theta_0\| / SE > z_{\alpha/2}$ | Two-sided: $\theta_0 \notin [\hat{\theta} \pm z_{\alpha/2}\cdot SE]$ |
+| Upper-tailed: $H_a: \theta > \theta_0$ | $(\hat{\theta} - \theta_0)/SE > z_\alpha$ | Lower bound: $\theta_0 < \hat{\theta} - z_\alpha\cdot SE$ |
+| Lower-tailed: $H_a: \theta < \theta_0$ | $(\hat{\theta} - \theta_0)/SE < -z_\alpha$ | Upper bound: $\theta_0 > \hat{\theta} + z_\alpha\cdot SE$ |
+
+. . .
+
+::: callout-warning
+## Common Error
+A 95% **two-sided** CI uses $z_{0.025} = 1.96$, while a 95% **one-sided** bound uses $z_{0.05} = 1.645$. These are different! Don't use a two-sided CI to conduct a one-sided test at $\alpha = 0.05$.
+:::
+
+# Constructing CIs by Inverting Tests: The Pivot Method {background-color="#16a085"}
+
+## The Pivot as the Bridge
+
+The algebraic connection between a CI and a test often works through a **pivotal quantity** — a function of data and parameter whose distribution does not depend on the unknown parameter.
+
+. . .
+
+::: callout-important
+## Definition (Devore)
+A random variable $Q(X_1, \ldots, X_n; \theta)$ is a **pivotal quantity** (or pivot) if its distribution is the same for all $\theta$.
+:::
+
+. . .
+
+**Key pivots we have used:**
+
+| Situation | Pivot | Distribution |
+|-----------|-------|-------------|
+| $\mu$, $\sigma$ known | $Z = \frac{\bar{X}-\mu}{\sigma/\sqrt{n}}$ | $N(0,1)$ |
+| $\mu$, $\sigma$ unknown | $T = \frac{\bar{X}-\mu}{S/\sqrt{n}}$ | $t_{n-1}$ |
+| $\sigma^2$ | $\chi^2 = \frac{(n-1)S^2}{\sigma^2}$ | $\chi^2_{n-1}$ |
+| Large-sample LRT | $-2\ln\Lambda$ | $\approx \chi^2_m$ |
+
+## Inverting the Chi-Squared Pivot for $\sigma^2$
+
+**Step 1:** The pivot $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$.
+
+**Step 2:** The acceptance region for testing $H_0: \sigma^2 = \sigma_0^2$ is:
+
+$$\chi^2_{1-\alpha/2,\, n-1} \leq \frac{(n-1)S^2}{\sigma_0^2} \leq \chi^2_{\alpha/2,\, n-1}$$
+
+. . .
+
+**Step 3:** Solve for $\sigma_0^2$ to invert:
+
+$$\frac{(n-1)S^2}{\chi^2_{\alpha/2,\, n-1}} \leq \sigma_0^2 \leq \frac{(n-1)S^2}{\chi^2_{1-\alpha/2,\, n-1}}$$
+
+. . .
+
+This is the **chi-squared CI for $\sigma^2$**, derived by inverting the chi-squared test.
+
+Note: $\chi^2_{\alpha/2, n-1} > \chi^2_{1-\alpha/2, n-1}$, so dividing flips the inequality.
+
+## Example: Variability in Drug Concentration
+
+In pharmacokinetics, it's important to control **variability** in drug plasma concentrations. A drug passes QC if $\sigma < 5$ ng/mL (so $\sigma^2 < 25$).
+
+```{r}
+#| echo: true
+# 15 measurements of drug plasma concentration (ng/mL)
+set.seed(551)
+conc <- rnorm(15, mean = 50, sd = 3.8)  # SD ≈ 3.8 (under QC limit)
+
+n <- length(conc)
+s2 <- var(conc)
+df <- n - 1
+
+# 95% two-sided CI for sigma^2
+chi_upper <- qchisq(0.975, df)  # upper tail => lower bound of CI
+chi_lower <- qchisq(0.025, df)  # lower tail => upper bound of CI
+
+ci_var_low  <- df * s2 / chi_upper
+ci_var_high <- df * s2 / chi_lower
+ci_sd_low   <- sqrt(ci_var_low)
+ci_sd_high  <- sqrt(ci_var_high)
+
+cat("Sample variance:", round(s2, 3), "\n")
+cat("Sample SD:", round(sqrt(s2), 3), "\n")
+cat("95% CI for sigma^2: [", round(ci_var_low, 3), ",", round(ci_var_high, 3), "]\n")
+cat("95% CI for sigma:   [", round(ci_sd_low, 3),  ",", round(ci_sd_high, 3),  "]\n")
+cat("Upper bound for sigma:", round(ci_sd_high, 3), 
+    "-- QC limit:", 5, "\n")
+cat("Conclusion:", 
+    ifelse(ci_sd_high < 5, "Pass QC (upper CI bound < 5)", "Fail QC"))
+```
+
+## Inverting the LRT: Profile Likelihood CIs
+
+For more complex models, we can invert the LRT using Wilks' theorem:
+
+$$C(\mathbf{X}) = \left\{\theta: -2\ln\left(\frac{L(\theta)}{L(\hat{\theta})}\right) \leq \chi^2_{\alpha, 1}\right\}$$
+
+. . .
+
+This is the **profile likelihood confidence interval**, valid for any one-dimensional parameter.
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 13
+# Profile likelihood CI for exponential rate lambda
+# Data: hospital length of stay (days)
+set.seed(99)
+los <- rexp(40, rate = 0.2)  # mean LOS = 5 days
+
+log_lik <- function(lambda) {
+  sum(dexp(los, rate = lambda, log = TRUE))
+}
+
+lambda_hat <- 1 / mean(los)
+lmax       <- log_lik(lambda_hat)
+
+lam_grid <- seq(0.05, 0.45, by = 0.002)
+ll_vals  <- map_dbl(lam_grid, log_lik)
+rel_ll   <- -2 * (ll_vals - lmax)
+
+# chi-squared cutoff for 95% CI
+cutoff <- qchisq(0.95, df = 1)
+
+ci_lam <- range(lam_grid[rel_ll <= cutoff])
+
+ggplot(tibble(lambda = lam_grid, rl = rel_ll), aes(x = lambda, y = rl)) +
+  geom_line(color = "#006a4e", linewidth = 1.5) +
+  geom_hline(yintercept = cutoff, linetype = "dashed", color = "#e74c3c", linewidth = 1) +
+  geom_vline(xintercept = ci_lam, linetype = "dotted", color = "#3498db", linewidth = 1) +
+  annotate("rect", xmin = ci_lam[1], xmax = ci_lam[2], ymin = -Inf, ymax = cutoff,
+           fill = "#006a4e", alpha = 0.1) +
+  annotate("text", x = lambda_hat, y = cutoff + 0.15,
+           label = sprintf("chi^2[0.05,1] = %.2f", cutoff), parse = TRUE,
+           color = "#e74c3c", size = 4.5) +
+  annotate("text", x = mean(ci_lam), y = -0.2,
+           label = sprintf("95%% Profile LI CI: [%.3f, %.3f]", ci_lam[1], ci_lam[2]),
+           color = "#3498db", size = 4.5) +
+  labs(
+    title = expression("Profile Likelihood CI for Hospital LOS Rate " * lambda),
+    subtitle = "95% CI = values of lambda where -2*log(LR) < chi-squared(0.95, df=1)",
+    x = expression(lambda * " (discharge rate per day)"),
+    y = expression(-2 * log(L(lambda) / L(hat(lambda))))
+  )
+```
+
+# Multiple Testing and Confidence Intervals {background-color="#f39c12"}
+
+## Multiplicity: When We Test Many Hypotheses
+
+When we conduct $m$ tests simultaneously, even if all null hypotheses are true, we expect roughly $m \times \alpha$ false rejections by chance.
+
+. . .
+
+**By duality**, if we construct $m$ confidence intervals each with coverage $1-\alpha$:
+
+- Each individual CI has $95\%$ coverage
+- But the probability that **all $m$ CIs simultaneously contain their true parameter** is less than $95\%$
+
+$$P(\text{at least one CI fails}) = 1 - P(\text{all cover}) \leq 1 - (1-\alpha)^m \approx m\alpha \text{ (Bonferroni)}$$
+
+. . .
+
+::: callout-important
+## Simultaneous Confidence Intervals
+To ensure that **all $m$ CIs simultaneously** contain their true values with probability $\geq 1-\alpha$:
+
+Use individual level $\alpha^* = \alpha/m$ for each CI (Bonferroni correction).
+
+This produces **wider** intervals that account for multiplicity.
+:::
+
+## Example: Multiple Endpoints in a Clinical Trial
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 8
+#| fig-width: 14
+
+# Clinical trial with 5 endpoints; simulate estimates and SEs
+set.seed(551)
+m <- 5
+endpoints <- c("Systolic BP", "Diastolic BP", "LDL Cholesterol",
+                "HbA1c", "6-min Walk Distance")
+estimates <- c(-8.2, -4.1, -12.5, -0.4, 35.0)
+se_vals   <- c(2.5, 1.8, 4.2, 0.15, 12.0)
+units     <- c("mmHg", "mmHg", "mg/dL", "%", "meters")
+
+# Unadjusted 95% CIs (z-based for simplicity)
+z_ind <- qnorm(0.975)
+# Bonferroni-adjusted 95% simultaneous CIs
+z_bon <- qnorm(1 - 0.05 / (2 * m))
+
+ci_df <- tibble(
+  Endpoint = factor(endpoints, levels = rev(endpoints)),
+  Est = estimates,
+  SE  = se_vals,
+  Unit = units,
+  Est_std = estimates / se_vals  # standardize for display
+) |>
+  mutate(
+    ci_lo_ind = Est_std - z_ind,
+    ci_hi_ind = Est_std + z_ind,
+    ci_lo_bon = Est_std - z_bon,
+    ci_hi_bon = Est_std + z_bon
+  ) |>
+  pivot_longer(cols = starts_with("ci"),
+               names_to = c("bound", "type"),
+               names_pattern = "ci_(lo|hi)_(ind|bon)") |>
+  pivot_wider(names_from = bound, values_from = value) |>
+  mutate(Method = ifelse(type == "ind", "Individual 95% CI", "Bonferroni 95% Simultaneous CI"))
+
+ggplot(ci_df, aes(y = Endpoint, x = Est_std, color = Method)) +
+  geom_point(size = 3, position = position_dodge(width = 0.5)) +
+  geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0.25, linewidth = 1,
+                 position = position_dodge(width = 0.5)) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  scale_color_manual(values = c("Individual 95% CI" = "#006a4e",
+                                "Bonferroni 95% Simultaneous CI" = "#e74c3c")) +
+  labs(
+    title = "Individual vs. Bonferroni-Adjusted CIs for 5 Trial Endpoints",
+    subtitle = "Standardized estimates (Est/SE). Bonferroni CIs are wider to control familywise coverage.",
+    x = "Standardized estimate (Est / SE)",
+    y = NULL, color = NULL
+  ) +
+  theme(legend.position = "bottom")
+```
+
+# Devore 9.6 Textbook Examples {background-color="#2c3e50"}
+
+## Devore Example 9.6: Testing Hypotheses About a Binomial Proportion
+
+A clinical study examines whether a new screening test has sensitivity greater than 80%.
+
+Let $p$ = true sensitivity. We test $H_0: p = 0.80$ vs $H_a: p > 0.80$.
+
+In a sample of $n = 200$ subjects with disease, $X = 170$ test positive.
+
+. . .
+
+**By exact binomial test and CI:**
+
+```{r}
+#| echo: true
+# Exact binomial test
+n_screen <- 200
+x_pos    <- 170
+
+binom_test <- binom.test(x_pos, n_screen, p = 0.80, alternative = "greater")
+binom_test_two <- binom.test(x_pos, n_screen, p = 0.80, alternative = "two.sided")
+
+cat("One-sided p-value:", round(binom_test$p.value, 5), "\n")
+cat("95% lower bound for p:", round(binom_test$conf.int[1], 4), "\n")
+cat("\nTwo-sided 95% CI for p: [",
+    round(binom_test_two$conf.int[1], 4), ",",
+    round(binom_test_two$conf.int[2], 4), "]\n")
+cat("Duality check: 0.80 in two-sided CI?",
+    binom_test_two$conf.int[1] <= 0.80 & 0.80 <= binom_test_two$conf.int[2])
+```
+
+. . .
+
+**Duality interpretation:** Since the one-sided lower bound (95%) exceeds 0.80, we reject $H_0$ at $\alpha = 0.05$. The 95% lower bound provides the same information as the one-sided p-value.
+
+## CI-Test Duality: Sweeping Over Null Values
+
+We already computed a 95% CI for mean BP reduction from the blood pressure data: $[\hat{\mu} - t_{0.025,24}\cdot s/\sqrt{n},\; \hat{\mu} + t_{0.025,24}\cdot s/\sqrt{n}]$.
+
+The duality theorem says this interval is **exactly the set of null values we would fail to reject**. Let's verify this directly by testing several specific values of $\mu_0$.
+
+```{r}
+#| echo: true
+#| code-fold: true
+# Re-use the blood pressure data from the Visualizing Duality slide
+set.seed(42)
+n <- 25
+bp_data <- rnorm(n, mean = 6.5, sd = 8)
+
+xbar   <- mean(bp_data)
+s      <- sd(bp_data)
+se     <- s / sqrt(n)
+df     <- n - 1
+t_crit <- qt(0.975, df)
+
+ci_low  <- xbar - t_crit * se
+ci_high <- xbar + t_crit * se
+
+# Test a grid of specific null values
+null_vals <- c(0, 2, round(ci_low, 1), 5, round(xbar, 1), round(ci_high, 1), 10, 12)
+
+results <- tibble(mu_0 = null_vals) |>
+  mutate(
+    t_stat  = (xbar - mu_0) / se,
+    p_value = 2 * pt(-abs(t_stat), df = df),
+    reject  = p_value < 0.05,
+    in_CI   = mu_0 >= ci_low & mu_0 <= ci_high,
+    consistent = reject != in_CI  # should always be FALSE (never inconsistent)
+  )
+
+results |>
+  mutate(
+    across(c(t_stat, p_value), \(x) round(x, 3)),
+    Decision  = ifelse(reject,  "Reject H\u2080",        "Fail to reject H\u2080"),
+    `In 95% CI?` = ifelse(in_CI, "\u2713 Yes",           "\u2717 No"),
+    `Consistent?` = ifelse(!consistent, "\u2713 Yes",    "\u2717 No")
+  ) |>
+  select(`mu_0`, t_stat, p_value, Decision, `In 95% CI?`, `Consistent?`) |>
+  knitr::kable(
+    col.names = c("mu_0", "t-statistic", "p-value", "Decision", "In 95% CI?", "Duality holds?"),
+    align = "rrrllc",
+    caption = sprintf("95%% CI: [%.2f, %.2f].  xbar = %.2f, s = %.2f, n = %d",
+                      ci_low, ci_high, xbar, s, n)
+  )
+```
+
+. . .
+
+::: callout-important
+Every row is consistent — **reject $H_0 \iff \mu_0$ is outside the CI**, without exception. The CI is not a separate object from the test; it *is* the test, for all null values simultaneously.
+:::
+
+# Key Takeaways and Looking Ahead {background-color="#2c3e50"}
+
+## Key Takeaways
+
+::: callout-important
+## Today's Main Points
+
+1. **Statistical significance** $\neq$ **practical/clinical significance**: always report effect sizes and CIs alongside p-values
+
+2. **CI-Test Duality (Devore 9.6):** $\theta_0 \in$ CI(X) $\iff$ fail to reject $H_0: \theta = \theta_0$ at the same $\alpha$
+
+3. **Inverting a test** provides a general, principled method for constructing CIs from any hypothesis test
+
+4. **One-sided duality:** a $100(1-\alpha)\%$ one-sided bound corresponds to a one-sided test at level $\alpha$ (using $z_\alpha$, not $z_{\alpha/2}$)
+
+5. **Multiple testing:** simultaneous CIs must be widened (e.g., Bonferroni) to maintain joint coverage
+
+6. **Profile likelihood CIs** invert the LRT using Wilks' theorem: a general tool for any parameter
+:::
+
+## Looking Ahead
+
+**Next class (Lesson 17): Bootstrap Hypothesis Testing (C&H Chapter 8)**
+
+- The bootstrap hypothesis test: resampling under $H_0$
+- One-sample and two-sample bootstrap tests
+- Permutation tests: exact null distribution by permuting labels
+- Comparison: parametric vs. bootstrap vs. permutation tests
+- Applications to clinical trial data
+
+## References
+
+::: nonincremental
+-   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Section 9.6.
+-   Chihara and Hesterberg. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 8.
+-   Wasserstein, R. L., & Lazar, N. A. (2016). The ASA statement on p-values: context, process, and purpose. *The American Statistician*, 70(2), 129–133.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/16_FurtherHypothesisTesting/16_FurtherHypothesisTesting.html lessons/16_FurtherHypothesisTesting/16_FurtherHypothesisTesting.pdf
+```
