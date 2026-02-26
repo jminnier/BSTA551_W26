@@ -13,12 +13,136 @@ editor_options:
 ---
 
 
+```{r}
+#| label: "setup"
+#| include: false
+knitr::opts_chunk$set(echo = TRUE)
+library(here)
+source(here("class_dates.R"))
+```
+
 ## Directions
 
-**Please turn in this homework on Sakai.** Please submit your homework in pdf or html format. 
+For simulation problems, set your seed to `set.seed(551)` for reproducibility.
 
-You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.
+For the qmd of this Homework page, see this [github link](https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_06.qmd)
 
 *You must show all of your work to receive credit.*
 
+
+This homework covers material from Lessons 15, 16, and 17: Neyman-Pearson Lemma and Likelihood Ratio Tests; Further Aspects of Hypothesis Testing and CI-Test Duality; Bootstrap Hypothesis Testing.
+
+---
+
 ## Questions
+
+### Problem 1: Neyman-Pearson Lemma (Lesson 15)
+
+Adverse events in a clinical trial are monitored over successive reporting windows. The number of adverse events per window follows $X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)$. A safety board tests whether the adverse event rate has doubled from the historical baseline.
+
+$$H_0: \lambda = 2 \quad \text{vs} \quad H_a: \lambda = 4$$
+
+based on $n = 6$ reporting windows.
+
+**(a)** Compute the Neyman-Pearson likelihood ratio $\Lambda^* = L(\lambda = 4)/L(\lambda = 2)$ and show that the NP rejection region $\Lambda^* \geq k$ simplifies to $\sum_{i=1}^6 X_i \geq c$ for some constant $c$. (*Hint:* the joint PMF is $e^{-n\lambda}\lambda^{\sum x_i}/\prod x_i!$.)
+
+**(b)** Under $H_0$, $Y = \sum_{i=1}^6 X_i \sim \text{Poisson}(12)$. Find the critical value $c$ such that the Type I error $\alpha^* = P_{H_0}(Y \geq c) \leq 0.05$. Use `ppois()` in R. Report the exact achieved $\alpha^*$.
+
+**(c)** Compute the power of this test at $\lambda = 4$ (i.e., $1 - \beta^*$). Under $H_a$, $Y \sim \text{Poisson}(24)$.
+
+---
+
+### Problem 2: Likelihood Ratio Test and Wilks' Theorem (Lesson 15)
+
+In a study of hospital-acquired infections, the number of infections per 100 patient-days follows $X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)$. The national benchmark rate is $\lambda_0 = 3.5$ infections per 100 patient-days. A hospital records the following counts over $n = 10$ monthly reporting periods:
+
+$$X = \{5, 2, 4, 6, 3, 5, 4, 7, 3, 4\}$$
+
+Test $H_0: \lambda = 3.5$ vs $H_a: \lambda \neq 3.5$.
+
+**(a)** Write down the log-likelihood $\ell(\lambda) = \sum_{i=1}^n \ln f(x_i; \lambda)$ for the Poisson model and find the MLE $\hat{\lambda}$.
+
+**(b)** The LRT statistic is $\Lambda = L(\lambda_0)/L(\hat{\lambda})$. Compute $-2\ln(\Lambda)$ using the formula:
+
+$$-2\ln(\Lambda) = 2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]$$
+
+using the observed data. (*Show the numerical calculation.*)
+
+**(c)** By Wilks' theorem, $-2\ln(\Lambda) \xrightarrow{d} \chi^2_1$ under $H_0$. Compute the p-value and state your conclusion at $\alpha = 0.05$. Also compute the exact p-value using `poisson.test()` and compare.
+
+**(d)** How many free parameters does $H_0$ constrain? Why does the $\chi^2$ approximation have 1 degree of freedom here?
+
+---
+
+### Problem 3: Statistical vs. Practical Significance (Lesson 16)
+
+A large randomized controlled trial ($n = 3{,}200$ patients per arm) evaluates a new lipid-lowering drug. The primary outcome is LDL cholesterol (mg/dL) measured after 6 months. Results:
+
+- Control arm: $\bar{x}_{\text{control}} = 142.1$ mg/dL
+- Treatment arm: $\bar{x}_{\text{treat}} = 140.3$ mg/dL
+
+Assume equal and known $\sigma = 28.15$ mg/dL and use a two-sample z-test.
+
+**(a)** Compute the observed z-statistic, two-sided p-value, and 95% CI for $\mu_{\text{treat}} - \mu_{\text{control}}$.
+
+**(b)** Compute Cohen's $d = |\bar{x}_{\text{treat}} - \bar{x}_{\text{control}}|/\sigma$. Clinical guidelines require a reduction of $\geq 10$ mg/dL to be meaningful. Does the CI provide evidence of a clinically meaningful reduction?
+
+**(c)** In 2–3 sentences, explain how a study can produce a statistically significant result that is not clinically significant, and why the CI is more informative than the p-value alone.
+
+---
+
+### Problem 4: CI-Test Duality — Theory and Computation (Lesson 16)
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\lambda)$. The exact two-sided $100(1-\alpha)\%$ confidence interval for $\lambda$ based on $T = \sum_{i=1}^n X_i$ is:
+
+$$\left(\frac{\chi^2_{\alpha/2,\; 2T}}{2n},\; \frac{\chi^2_{1-\alpha/2,\; 2T+2}}{2n}\right)$$
+
+**(a)** State the CI-Test Duality Theorem precisely. Then argue that the Poisson CI above is dual to the exact level-$\alpha$ test of $H_0: \lambda = \lambda_0$ vs $H_a: \lambda \neq \lambda_0$.
+
+**(b)** Using the hospital infection data from Problem 2 ($n = 10$, $\sum x_i = 43$):
+
+  (i) Compute the 95% Poisson CI using `qchisq()`.
+  (ii) Test $H_0: \lambda = 3.5$ using `poisson.test()`. Is the test decision consistent with CI membership?
+  (iii) Test $H_0: \lambda = 4.5$. Does $\lambda_0 = 4.5$ fall inside or outside the CI? Is this consistent?
+
+**(c)** Compute the 95% lower confidence bound for $\lambda$ and use it to test $H_0: \lambda \leq 3.5$ vs $H_a: \lambda > 3.5$ at $\alpha = 0.05$.
+
+---
+
+### Problem 5: Constructing CIs and the p-Value Function (Lesson 16)
+
+The plasma concentration (mg/L) of a drug is measured for $n = 12$ patients:
+
+$$X = \{1.8,\ 2.6,\ 3.1,\ 2.2,\ 4.7,\ 2.9,\ 3.8,\ 2.4,\ 1.6,\ 3.5,\ 4.1,\ 2.7\}$$
+
+The regulatory target mean concentration is $\mu_0 = 3.0$ mg/L.
+
+**(a)** Compute the 95% two-sided t-interval for $\mu$. Without computing a test statistic, use the duality theorem to determine whether you would reject $H_0: \mu = 3.0$ at $\alpha = 0.05$.
+
+**(b)** Starting from the pivot $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$, compute a 95% two-sided CI for $\sigma^2$ and for $\sigma$ using the sample data. Use `qchisq()`.
+
+**(c)** Sweep $\mu_0$ over $[1.5, 4.5]$ in steps of 0.05. For each value compute the two-sided t-test p-value. Plot the p-value function with the 95% CI shaded as the region where $p(\mu_0) \geq 0.05$. Verify visually that the CI from part (a) corresponds exactly to this region.
+
+```{r}
+mu0_grid <- seq(1.5, 4.5, by = 0.05)
+```
+
+---
+
+### Problem 6: Bootstrap Hypothesis Testing (Lesson 17)
+
+Serum ferritin (ng/mL) is a biomarker for iron stores. A study of $n = 18$ patients with chronic kidney disease gives:
+
+```{r}
+#| label: ferritin-data
+ferritin <- c(28.4, 45.2, 19.8, 67.3, 31.5, 88.1, 22.6, 54.9,
+              41.2, 76.8, 33.7, 29.4, 58.3, 44.1, 92.5, 37.6,
+              25.8, 61.4)
+```
+
+The population norm for healthy adults is $\mu_0 = 40$ ng/mL. Test $H_0: \mu = 40$ vs $H_a: \mu \neq 40$ at $\alpha = 0.05$.
+
+**(a)** Make a histogram of the data. Does normality seem reasonable? Compute $T_{\text{obs}} = (\bar{x} - \mu_0)/(s/\sqrt{n})$ and the parametric t-test p-value.
+
+**(b)** Implement the bootstrap test with $B = 5{,}000$ resamples (`set.seed(551)`): shift the data so $\bar{x}^* = \mu_0$, resample with replacement, compute bootstrap t-statistics, and compute the p-value $\hat{p} = B^{-1}\sum \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)$. Compare to the t-test p-value.
+

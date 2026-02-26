@@ -1,0 +1,17 @@
+{
+  "hash": "4b8d3545c77a6e4fe15eedb6ab1825c9",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Homework 6\"\nsubtitle: \"BSTA 551\"\ndescription: \"Due: 03/05 at 11pm\"\ndate-modified: \"today\"\nformat: \n  html:\n    link-external-newwindow: true\n    toc: true\n  pdf: default \neditor_options: \n  chunk_output_type: console\n---\n\n\n\n\n## Directions\n\nFor simulation problems, set your seed to `set.seed(551)` for reproducibility.\n\nFor the qmd of this Homework page, see this [github link](https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_06.qmd)\n\n*You must show all of your work to receive credit.*\n",
+    "supporting": [
+      "HW_06_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": null,
+    "postProcess": false
+  }
+}

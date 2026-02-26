@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Due: 02/05 at 11pm">
+
+<title>Homework 6 – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
+  <li><a href="#problem-1-neyman-pearson-lemma-for-exponential-data-lesson-15" id="toc-problem-1-neyman-pearson-lemma-for-exponential-data-lesson-15" class="nav-link" data-scroll-target="#problem-1-neyman-pearson-lemma-for-exponential-data-lesson-15">Problem 1: Neyman-Pearson Lemma for Exponential Data (Lesson 15)</a></li>
+  <li><a href="#problem-2-power-function-and-ump-test-lesson-15" id="toc-problem-2-power-function-and-ump-test-lesson-15" class="nav-link" data-scroll-target="#problem-2-power-function-and-ump-test-lesson-15">Problem 2: Power Function and UMP Test (Lesson 15)</a></li>
+  <li><a href="#problem-3-likelihood-ratio-test-for-a-poisson-rate-lesson-15" id="toc-problem-3-likelihood-ratio-test-for-a-poisson-rate-lesson-15" class="nav-link" data-scroll-target="#problem-3-likelihood-ratio-test-for-a-poisson-rate-lesson-15">Problem 3: Likelihood Ratio Test for a Poisson Rate (Lesson 15)</a></li>
+  <li><a href="#problem-4-statistical-vs.-practical-significance-lesson-16" id="toc-problem-4-statistical-vs.-practical-significance-lesson-16" class="nav-link" data-scroll-target="#problem-4-statistical-vs.-practical-significance-lesson-16">Problem 4: Statistical vs.&nbsp;Practical Significance (Lesson 16)</a></li>
+  <li><a href="#problem-5-ci-test-duality-inverting-the-chi-squared-test-lesson-16" id="toc-problem-5-ci-test-duality-inverting-the-chi-squared-test-lesson-16" class="nav-link" data-scroll-target="#problem-5-ci-test-duality-inverting-the-chi-squared-test-lesson-16">Problem 5: CI-Test Duality — Inverting the Chi-Squared Test (Lesson 16)</a></li>
+  <li><a href="#problem-6-one-sided-duality-and-multiple-testing-lesson-16" id="toc-problem-6-one-sided-duality-and-multiple-testing-lesson-16" class="nav-link" data-scroll-target="#problem-6-one-sided-duality-and-multiple-testing-lesson-16">Problem 6: One-Sided Duality and Multiple Testing (Lesson 16)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-one-sided-duality" id="toc-part-a-one-sided-duality" class="nav-link" data-scroll-target="#part-a-one-sided-duality">Part A — One-Sided Duality</a></li>
+  <li><a href="#part-b-multiple-testing" id="toc-part-b-multiple-testing" class="nav-link" data-scroll-target="#part-b-multiple-testing">Part B — Multiple Testing</a></li>
+  </ul></li>
+  <li><a href="#problem-7-bootstrap-hypothesis-testing-lesson-17" id="toc-problem-7-bootstrap-hypothesis-testing-lesson-17" class="nav-link" data-scroll-target="#problem-7-bootstrap-hypothesis-testing-lesson-17">Problem 7: Bootstrap Hypothesis Testing (Lesson 17)</a></li>
+  <li><a href="#problem-8-textbook-problem-ump-tests-devore-9.5-style" id="toc-problem-8-textbook-problem-ump-tests-devore-9.5-style" class="nav-link" data-scroll-target="#problem-8-textbook-problem-ump-tests-devore-9.5-style">Problem 8: Textbook Problem — UMP Tests (Devore 9.5 style)</a></li>
+  <li><a href="#problem-9-textbook-problem-the-p-value-function-devore-9.6-style" id="toc-problem-9-textbook-problem-the-p-value-function-devore-9.6-style" class="nav-link" data-scroll-target="#problem-9-textbook-problem-the-p-value-function-devore-9.6-style">Problem 9: Textbook Problem — The p-Value Function (Devore 9.6 style)</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_06_v2.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 6</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+<div>
+  <div class="description">
+    Due: 02/05 at 11pm
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 25, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="directions" class="level2">
+<h2 class="anchored" data-anchor-id="directions">Directions</h2>
+<p>For simulation and computational problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_06.qmd">github link</a></p>
+<p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 15–17: Neyman-Pearson Lemma and Likelihood Ratio Tests (Devore 9.5); Further Aspects of Hypothesis Testing and CI-Test Duality (Devore 9.6); and Bootstrap Hypothesis Testing (C&amp;H Chapter 8).</p>
+<hr>
+</section>
+<section id="problem-1-neyman-pearson-lemma-for-exponential-data-lesson-15" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1-neyman-pearson-lemma-for-exponential-data-lesson-15">Problem 1: Neyman-Pearson Lemma for Exponential Data (Lesson 15)</h2>
+<p>In a post-market drug safety study, the time (in months) between serious adverse events follows an Exponential distribution with rate <span class="math inline">\(\lambda\)</span>. A higher rate means events occur more frequently, signaling greater risk.</p>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)\)</span>, so <span class="math inline">\(f(x; \lambda) = \lambda e^{-\lambda x}\)</span> for <span class="math inline">\(x &gt; 0\)</span>. We test: <span class="math display">\[H_0: \lambda = \lambda_0 \qquad \text{vs} \qquad H_a: \lambda = \lambda_a\]</span> where <span class="math inline">\(\lambda_a &gt; \lambda_0\)</span>.</p>
+<p><strong>(a)</strong> Write out the likelihood ratio <span class="math inline">\(\Lambda^* = L(\lambda_a) / L(\lambda_0)\)</span> for a sample <span class="math inline">\(x_1, \ldots, x_n\)</span>. Simplify as much as possible.</p>
+<p><strong>(b)</strong> By the Neyman-Pearson Lemma, the most powerful test rejects <span class="math inline">\(H_0\)</span> when <span class="math inline">\(\Lambda^* \geq k\)</span>. Show that this rejection region is equivalent to: <span class="math display">\[\sum_{i=1}^n x_i \leq c\]</span> for some constant <span class="math inline">\(c\)</span>. Interpret this intuitively: why should a <em>small</em> total time between adverse events serve as evidence against the null hypothesis?</p>
+<p><strong>(c)</strong> Under <span class="math inline">\(H_0\)</span>, we have <span class="math inline">\(\sum_{i=1}^n X_i \sim \text{Gamma}(n, \lambda_0)\)</span>. Write an expression for the critical value <span class="math inline">\(c\)</span> that gives the test exactly level <span class="math inline">\(\alpha\)</span>. <em>(Express <span class="math inline">\(c\)</span> using a quantile of the Gamma distribution.)</em></p>
+<p><strong>(d)</strong> Suppose <span class="math inline">\(\lambda_0 = 0.5\)</span>, <span class="math inline">\(\lambda_a = 1.0\)</span>, <span class="math inline">\(n = 8\)</span>, and <span class="math inline">\(\alpha = 0.05\)</span>. Use R to compute the critical value <span class="math inline">\(c\)</span>, the Type II error <span class="math inline">\(\beta\)</span>, and the power <span class="math inline">\(1 - \beta\)</span>.</p>
+<p><strong>(e)</strong> Explain in 2–3 sentences what the Neyman-Pearson guarantee means in the drug safety monitoring context, and why the directionality (<span class="math inline">\(\lambda_a &gt; \lambda_0\)</span>) is essential to the UMP argument in Problem 2.</p>
+<hr>
+</section>
+<section id="problem-2-power-function-and-ump-test-lesson-15" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2-power-function-and-ump-test-lesson-15">Problem 2: Power Function and UMP Test (Lesson 15)</h2>
+<p>Continue with the exponential setting of Problem 1 but now with a <strong>composite</strong> alternative <span class="math inline">\(H_a: \lambda &gt; \lambda_0\)</span>.</p>
+<p><strong>(a)</strong> Argue that the test “reject when <span class="math inline">\(\sum X_i \leq c\)</span>” (with <span class="math inline">\(c\)</span> chosen to give level <span class="math inline">\(\alpha\)</span> under <span class="math inline">\(H_0: \lambda = \lambda_0\)</span>) is <strong>UMP</strong> for <span class="math inline">\(H_0: \lambda \leq \lambda_0\)</span> vs <span class="math inline">\(H_a: \lambda &gt; \lambda_0\)</span>. What property of the NP rejection region makes it work for every <span class="math inline">\(\lambda_a &gt; \lambda_0\)</span>?</p>
+<p><strong>(b)</strong> Write down the power function <span class="math inline">\(\pi(\lambda')\)</span> for this test. <em>(Hint: express it using the CDF of a <span class="math inline">\(\text{Gamma}(n, \lambda')\)</span> distribution.)</em></p>
+<p><strong>(c)</strong> Using R with <span class="math inline">\(\lambda_0 = 0.5\)</span>, <span class="math inline">\(n = 8\)</span>, <span class="math inline">\(\alpha = 0.05\)</span>: plot <span class="math inline">\(\pi(\lambda')\)</span> for <span class="math inline">\(\lambda' \in [0.3, 2.5]\)</span>. Mark <span class="math inline">\(\lambda_0 = 0.5\)</span> with a vertical dashed line and <span class="math inline">\(\alpha = 0.05\)</span> with a horizontal dashed line. Label axes using <code>expression()</code>.</p>
+<p><strong>(d)</strong> From your plot, approximately what value of <span class="math inline">\(\lambda'\)</span> is needed to achieve power <span class="math inline">\(\geq 0.80\)</span>? What does this say about whether <span class="math inline">\(n = 8\)</span> is adequate for detecting a doubling of the hazard rate from 0.5 to 1.0?</p>
+<hr>
+</section>
+<section id="problem-3-likelihood-ratio-test-for-a-poisson-rate-lesson-15" class="level2">
+<h2 class="anchored" data-anchor-id="problem-3-likelihood-ratio-test-for-a-poisson-rate-lesson-15">Problem 3: Likelihood Ratio Test for a Poisson Rate (Lesson 15)</h2>
+<p>During a Phase II oncology trial, the number of Grade 3+ adverse events per 100 patient-weeks is modeled as <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span> over <span class="math inline">\(n\)</span> monitoring windows. We test: <span class="math display">\[H_0: \lambda = \lambda_0 \qquad \text{vs} \qquad H_a: \lambda \neq \lambda_0\]</span></p>
+<p><strong>(a)</strong> Derive the LRT statistic <span class="math inline">\(\Lambda = L(\hat\lambda_0) / L(\hat\lambda_{mle})\)</span>. Show that <span class="math inline">\(\hat\lambda_{mle} = \bar{x}\)</span> and simplify <span class="math inline">\(\Lambda\)</span> as much as possible.</p>
+<p><strong>(b)</strong> How many degrees of freedom does the Wilks chi-squared approximation have? Justify by counting free parameters in <span class="math inline">\(\Omega\)</span> vs <span class="math inline">\(\Omega_0\)</span>.</p>
+<p><strong>(c)</strong> Suppose <span class="math inline">\(n = 20\)</span> and <span class="math inline">\(\sum x_i = 34\)</span>, with historical baseline <span class="math inline">\(\lambda_0 = 1.5\)</span>. In R:</p>
+<ul>
+<li>Compute <span class="math inline">\(\hat\lambda_{mle}\)</span>, <span class="math inline">\(\Lambda\)</span>, and <span class="math inline">\(-2\ln(\Lambda)\)</span></li>
+<li>Find the p-value from the <span class="math inline">\(\chi^2_1\)</span> approximation</li>
+<li>Compare to the exact p-value from <code>poisson.test()</code></li>
+<li>Comment on the quality of the large-sample approximation here</li>
+</ul>
+<p><strong>(d)</strong> Repeat part (c) with <span class="math inline">\(n = 5\)</span> and <span class="math inline">\(\sum x_i = 11\)</span>. Does Wilks’ approximation perform well? What does this illustrate about applying Wilks’ theorem?</p>
+<hr>
+</section>
+<section id="problem-4-statistical-vs.-practical-significance-lesson-16" class="level2">
+<h2 class="anchored" data-anchor-id="problem-4-statistical-vs.-practical-significance-lesson-16">Problem 4: Statistical vs.&nbsp;Practical Significance (Lesson 16)</h2>
+<p>A large RCT (<span class="math inline">\(n = 4{,}000\)</span>) of a new antidiabetic drug reports:</p>
+<ul>
+<li>Mean HbA1c reduction: <span class="math inline">\(\bar{x} = 0.22\)</span> percentage points</li>
+<li>Sample standard deviation: <span class="math inline">\(s = 2.10\)</span> percentage points</li>
+<li>Two-sided p-value: <span class="math inline">\(p = 0.0093\)</span></li>
+</ul>
+<p>The minimum clinically important difference (MCID) for this drug class is <span class="math inline">\(\geq 0.5\)</span> percentage points.</p>
+<p><strong>(a)</strong> Compute the 95% CI for mean HbA1c reduction. Show your work.</p>
+<p><strong>(b)</strong> Compute Cohen’s <span class="math inline">\(d = \bar{x}/s\)</span>. Classify the effect size using the conventions from the lecture slides (negligible <span class="math inline">\(&lt; 0.2\)</span>; small <span class="math inline">\(0.2\)</span>–<span class="math inline">\(0.5\)</span>; medium <span class="math inline">\(0.5\)</span>–<span class="math inline">\(0.8\)</span>; large <span class="math inline">\(&gt; 0.8\)</span>).</p>
+<p><strong>(c)</strong> The control group had a mean HbA1c reduction of <span class="math inline">\(0.01\)</span> pp (<span class="math inline">\(s_c = 2.05\)</span> pp). Treating the outcome as binary — “achieved <span class="math inline">\(\geq 1\)</span> pp reduction” — use a normal approximation (<span class="math inline">\(P(\text{reduction} \geq 1) \approx 1 - \Phi((1 - \mu)/s)\)</span>) to estimate the proportion achieving this threshold in each group, and compute the NNT.</p>
+<p><strong>(d)</strong> Is the result statistically significant? Is it clinically meaningful? What should the authors report per CONSORT guidelines?</p>
+<p><strong>(e)</strong> If only <span class="math inline">\(n = 80\)</span> patients had been enrolled (same <span class="math inline">\(\bar{x}\)</span> and <span class="math inline">\(s\)</span>), would the result be statistically significant at <span class="math inline">\(\alpha = 0.05\)</span>? Compute the p-value. What does this contrast illustrate?</p>
+<hr>
+</section>
+<section id="problem-5-ci-test-duality-inverting-the-chi-squared-test-lesson-16" class="level2">
+<h2 class="anchored" data-anchor-id="problem-5-ci-test-duality-inverting-the-chi-squared-test-lesson-16">Problem 5: CI-Test Duality — Inverting the Chi-Squared Test (Lesson 16)</h2>
+<p><strong>(a)</strong> Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\sigma^2\)</span> unknown. For testing <span class="math inline">\(H_0: \sigma^2 = \sigma^2_0\)</span> vs <span class="math inline">\(H_a: \sigma^2 \neq \sigma^2_0\)</span>, the level-<span class="math inline">\(\alpha\)</span> acceptance region is: <span class="math display">\[A(\sigma^2_0) = \left\{\chi^2_{1-\alpha/2,\, n-1} \;\leq\; \frac{(n-1)S^2}{\sigma^2_0} \;\leq\; \chi^2_{\alpha/2,\, n-1}\right\}\]</span> Write this acceptance region out explicitly and verify that it is an acceptance region (i.e., <span class="math inline">\(P_{\sigma^2_0}(\text{data} \in A(\sigma^2_0)) = 1 - \alpha\)</span>).</p>
+<p><strong>(b)</strong> Invert the acceptance region to derive the <span class="math inline">\(100(1-\alpha)\%\)</span> confidence interval for <span class="math inline">\(\sigma^2\)</span>. Show all algebraic steps, paying attention to how the chi-squared quantiles appear in the bounds and why the larger quantile gives the lower CI bound.</p>
+<p><strong>(c)</strong> By the duality theorem, state what it means for <span class="math inline">\(\sigma^2_0 = 9\)</span> to be inside this CI, without doing any computation.</p>
+<p><strong>(d)</strong> A QC lab measures drug potency (mg/tablet) for <span class="math inline">\(n = 12\)</span> tablets and finds <span class="math inline">\(s^2 = 4.86\)</span>.</p>
+<ul>
+<li>Compute the 95% CI for <span class="math inline">\(\sigma^2\)</span> and <span class="math inline">\(\sigma\)</span> using R</li>
+<li>Test <span class="math inline">\(H_0: \sigma^2 = 4\)</span> vs <span class="math inline">\(H_a: \sigma^2 \neq 4\)</span> at <span class="math inline">\(\alpha = 0.05\)</span> using both the chi-squared p-value approach and the CI-duality approach</li>
+<li>Verify the two approaches give identical conclusions</li>
+</ul>
+<hr>
+</section>
+<section id="problem-6-one-sided-duality-and-multiple-testing-lesson-16" class="level2">
+<h2 class="anchored" data-anchor-id="problem-6-one-sided-duality-and-multiple-testing-lesson-16">Problem 6: One-Sided Duality and Multiple Testing (Lesson 16)</h2>
+<section id="part-a-one-sided-duality" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-one-sided-duality">Part A — One-Sided Duality</h3>
+<p>A cardiovascular trial tests whether a new statin reduces mean LDL below a reference value of <span class="math inline">\(\mu_0 = 130\)</span> mg/dL. From <span class="math inline">\(n = 25\)</span> patients: <span class="math inline">\(\bar{x} = 121.4\)</span> mg/dL, <span class="math inline">\(s = 18.3\)</span> mg/dL.</p>
+<p><strong>(a)</strong> State the appropriate one-sided hypotheses (<span class="math inline">\(H_0\)</span> and <span class="math inline">\(H_a\)</span>).</p>
+<p><strong>(b)</strong> Compute the 95% <strong>lower confidence bound</strong> <span class="math inline">\(\underline{\mu} = \bar{x} - t_{0.05,\, 24} \cdot s/\sqrt{n}\)</span>. Using the one-sided duality theorem, state what this bound implies about the hypothesis test at level <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(c)</strong> Explain why using a 95% two-sided CI (i.e., checking whether <span class="math inline">\(\mu_0 = 130\)</span> falls outside it) is the wrong approach for this one-sided test at <span class="math inline">\(\alpha = 0.05\)</span>. What effective significance level does that correspond to?</p>
+</section>
+<section id="part-b-multiple-testing" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-multiple-testing">Part B — Multiple Testing</h3>
+<p>A Phase III trial reports <span class="math inline">\(m = 6\)</span> pre-specified endpoints, each tested at <span class="math inline">\(\alpha = 0.05\)</span> using individual 95% CIs.</p>
+<p><strong>(d)</strong> Assuming all null hypotheses are true and tests are independent, compute the probability that at least one CI fails to capture its true parameter (exact formula, not Bonferroni).</p>
+<p><strong>(e)</strong> What Bonferroni-corrected level <span class="math inline">\(\alpha^* = \alpha/m\)</span> should each test use to control the familywise error rate at 0.05? What CI coverage does this correspond to?</p>
+<p><strong>(f)</strong> In R, the six standardized estimates (Est/SE) are: <span class="math display">\[z = (2.45,\; 1.82,\; 0.95,\; -0.33,\; 2.11,\; 1.55)\]</span> Construct individual 95% CIs and Bonferroni-adjusted 95% simultaneous CIs for all six endpoints. Produce a forest plot. Which endpoints are significant under each approach?</p>
+<hr>
+</section>
+</section>
+<section id="problem-7-bootstrap-hypothesis-testing-lesson-17" class="level2">
+<h2 class="anchored" data-anchor-id="problem-7-bootstrap-hypothesis-testing-lesson-17">Problem 7: Bootstrap Hypothesis Testing (Lesson 17)</h2>
+<p>Serum ferritin (ng/mL) was measured in <span class="math inline">\(n = 18\)</span> hospitalized patients with suspected iron-deficiency anemia. The clinical lower limit of normal is <span class="math inline">\(\mu_0 = 30\)</span> ng/mL. We test <span class="math inline">\(H_0: \mu = 30\)</span> vs <span class="math inline">\(H_a: \mu \neq 30\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">12.4</span>, <span class="fl">28.1</span>,  <span class="fl">8.7</span>, <span class="fl">35.2</span>, <span class="fl">19.6</span>, <span class="fl">14.3</span>, <span class="fl">41.8</span>, <span class="fl">22.5</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               <span class="fl">9.1</span>, <span class="fl">17.8</span>, <span class="fl">31.4</span>, <span class="fl">11.2</span>, <span class="fl">24.6</span>, <span class="fl">16.9</span>, <span class="fl">38.7</span>, <span class="fl">13.5</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>              <span class="fl">20.1</span>, <span class="fl">27.3</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu_0 <span class="ot">&lt;-</span> <span class="dv">30</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong>(a)</strong> Compute the sample mean and SD. Run <code>t.test()</code> and report the p-value and conclusion at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(b)</strong> Plot a histogram and Q-Q plot. Does normality seem reasonable for these data?</p>
+<p><strong>(c)</strong> Implement the <strong>correct</strong> bootstrap hypothesis test with <span class="math inline">\(B = 9{,}999\)</span> resamples: 1. Shift the data so <span class="math inline">\(\bar{x}^* = \mu_0\)</span>: <span class="math inline">\(x_i^* = x_i - \bar{x} + \mu_0\)</span> 2. For each bootstrap resample from <span class="math inline">\(x^*\)</span>, compute the t-statistic <span class="math inline">\(T^{*b}\)</span> 3. p-value = fraction of <span class="math inline">\(|T^{*b}| \geq |T_{\text{obs}}|\)</span></p>
+<p>Report the bootstrap p-value and compare to the t-test.</p>
+<p><strong>(d)</strong> Implement the <strong>naive (incorrect)</strong> bootstrap: resample from the <strong>original</strong> unshifted data and compare the resampled means to <span class="math inline">\(\bar{x}\)</span> (not <span class="math inline">\(\mu_0\)</span>). Report this p-value and explain why this is invalid.</p>
+<p><strong>(e)</strong> Construct a 95% percentile bootstrap CI for <span class="math inline">\(\mu\)</span> (resample from original data). Does <span class="math inline">\(\mu_0 = 30\)</span> fall inside or outside the CI? Is this consistent with the test from part (c)? What does this demonstrate about CI-test duality for bootstrap methods?</p>
+<p><strong>(f)</strong> Given what you learned from the Lesson 17 simulation study, would you expect larger differences between the t-test and bootstrap test for these data at larger or smaller sample sizes? For more symmetric or more skewed data?</p>
+<hr>
+</section>
+<section id="problem-8-textbook-problem-ump-tests-devore-9.5-style" class="level2">
+<h2 class="anchored" data-anchor-id="problem-8-textbook-problem-ump-tests-devore-9.5-style">Problem 8: Textbook Problem — UMP Tests (Devore 9.5 style)</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\sigma^2\)</span> <strong>known</strong>. Test <span class="math inline">\(H_0: \mu = \mu_0\)</span> vs <span class="math inline">\(H_a: \mu = \mu_a\)</span> where <span class="math inline">\(\mu_a &gt; \mu_0\)</span>.</p>
+<p><strong>(a)</strong> Show that the NP most powerful test has rejection region <span class="math inline">\(\bar{X} \geq c\)</span> for some constant <span class="math inline">\(c\)</span>.</p>
+<p><strong>(b)</strong> Show that the power against the specific alternative <span class="math inline">\(\mu_a\)</span> is: <span class="math display">\[\pi(\mu_a) = \Phi\!\left(\frac{\mu_a - \mu_0}{\sigma/\sqrt{n}} - z_\alpha\right)\]</span></p>
+<p><strong>(c)</strong> Since this rejection region does not depend on the particular value of <span class="math inline">\(\mu_a &gt; \mu_0\)</span>, what does the Neyman-Pearson Lemma imply about the test’s UMP status for the composite alternative <span class="math inline">\(H_a: \mu &gt; \mu_0\)</span>?</p>
+<p><strong>(d)</strong> For <span class="math inline">\(\mu_0 = 100\)</span>, <span class="math inline">\(\sigma = 15\)</span>, <span class="math inline">\(n = 36\)</span>, <span class="math inline">\(\alpha = 0.05\)</span>: compute the power against <span class="math inline">\(\mu_a = 105\)</span> and <span class="math inline">\(\mu_a = 110\)</span>.</p>
+<hr>
+</section>
+<section id="problem-9-textbook-problem-the-p-value-function-devore-9.6-style" class="level2">
+<h2 class="anchored" data-anchor-id="problem-9-textbook-problem-the-p-value-function-devore-9.6-style">Problem 9: Textbook Problem — The p-Value Function (Devore 9.6 style)</h2>
+<p>The <strong>p-value function</strong> <span class="math inline">\(p(\mu_0)\)</span> plots the two-sided one-sample t-test p-value as a function of the null value <span class="math inline">\(\mu_0\)</span>.</p>
+<p><strong>(a)</strong> At what value of <span class="math inline">\(\mu_0\)</span> is <span class="math inline">\(p(\mu_0)\)</span> maximized? What is the maximum? Explain why.</p>
+<p><strong>(b)</strong> The 95% CI is exactly the set of <span class="math inline">\(\mu_0\)</span> values where <span class="math inline">\(p(\mu_0) \geq 0.05\)</span>. What CI corresponds to the set where <span class="math inline">\(p(\mu_0) \geq 0.01\)</span>?</p>
+<p><strong>(c)</strong> For a sample of <span class="math inline">\(n = 20\)</span> from a normal population with <span class="math inline">\(\bar{x} = 48.3\)</span> and <span class="math inline">\(s = 6.1\)</span>: plot <span class="math inline">\(p(\mu_0)\)</span> for <span class="math inline">\(\mu_0 \in [40, 57]\)</span> in R. Shade the 95% CI region. Add a horizontal dashed line at <span class="math inline">\(p = 0.05\)</span>. Verify that the boundaries of the shaded region match the 95% t-interval.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

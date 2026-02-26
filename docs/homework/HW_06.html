@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="Due: r library(here); source(here('class_dates.R')); hw6 %>% format('%m/%d') at 11pm">
+<meta name="description" content="Due: 03/05 at 11pm">
 
 <title>Homework 6 – Theory of Statistical Inference</title>
 <style>
@@ -20,6 +20,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -69,6 +104,35 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 </head>
 
@@ -125,7 +189,15 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
-  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-neyman-pearson-lemma-lesson-15" id="toc-problem-1-neyman-pearson-lemma-lesson-15" class="nav-link" data-scroll-target="#problem-1-neyman-pearson-lemma-lesson-15">Problem 1: Neyman-Pearson Lemma (Lesson 15)</a></li>
+  <li><a href="#problem-2-likelihood-ratio-test-and-wilks-theorem-lesson-15" id="toc-problem-2-likelihood-ratio-test-and-wilks-theorem-lesson-15" class="nav-link" data-scroll-target="#problem-2-likelihood-ratio-test-and-wilks-theorem-lesson-15">Problem 2: Likelihood Ratio Test and Wilks’ Theorem (Lesson 15)</a></li>
+  <li><a href="#problem-3-statistical-vs.-practical-significance-lesson-16" id="toc-problem-3-statistical-vs.-practical-significance-lesson-16" class="nav-link" data-scroll-target="#problem-3-statistical-vs.-practical-significance-lesson-16">Problem 3: Statistical vs.&nbsp;Practical Significance (Lesson 16)</a></li>
+  <li><a href="#problem-4-ci-test-duality-theory-and-computation-lesson-16" id="toc-problem-4-ci-test-duality-theory-and-computation-lesson-16" class="nav-link" data-scroll-target="#problem-4-ci-test-duality-theory-and-computation-lesson-16">Problem 4: CI-Test Duality — Theory and Computation (Lesson 16)</a></li>
+  <li><a href="#problem-5-constructing-cis-and-the-p-value-function-lesson-16" id="toc-problem-5-constructing-cis-and-the-p-value-function-lesson-16" class="nav-link" data-scroll-target="#problem-5-constructing-cis-and-the-p-value-function-lesson-16">Problem 5: Constructing CIs and the p-Value Function (Lesson 16)</a></li>
+  <li><a href="#problem-6-bootstrap-hypothesis-testing-lesson-17" id="toc-problem-6-bootstrap-hypothesis-testing-lesson-17" class="nav-link" data-scroll-target="#problem-6-bootstrap-hypothesis-testing-lesson-17">Problem 6: Bootstrap Hypothesis Testing (Lesson 17)</a></li>
+  </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_06.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
     </div>
@@ -140,7 +212,7 @@ ul.task-list li input[type="checkbox"] {
 
 <div>
   <div class="description">
-    Due: <code>r library(here); source(here('class_dates.R')); hw6 %&gt;% format('%m/%d')</code> at 11pm
+    Due: 03/05 at 11pm
   </div>
 </div>
 
@@ -152,7 +224,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">January 27, 2026</p>
+      <p class="date-modified">February 25, 2026</p>
     </div>
   </div>
     
@@ -165,14 +237,91 @@ ul.task-list li input[type="checkbox"] {
 
 <section id="directions" class="level2">
 <h2 class="anchored" data-anchor-id="directions">Directions</h2>
-<p><strong>Please turn in this homework on Sakai.</strong> Please submit your homework in pdf or html format.</p>
-<p>You can type your work on your computer or submit a photo of your written work or any other method that can be turned into a pdf. The Adobe Scan phone app is an easy way to scan photos and compile into a PDF. Please let me know if you greatly prefer to submit a physical copy. We can work out another way for you to turn in homework.</p>
+<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_06.qmd">github link</a></p>
 <p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 15, 16, and 17: Neyman-Pearson Lemma and Likelihood Ratio Tests; Further Aspects of Hypothesis Testing and CI-Test Duality; Bootstrap Hypothesis Testing.</p>
+<hr>
 </section>
 <section id="questions" class="level2">
 <h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-neyman-pearson-lemma-lesson-15" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-neyman-pearson-lemma-lesson-15">Problem 1: Neyman-Pearson Lemma (Lesson 15)</h3>
+<p>Adverse events in a clinical trial are monitored over successive reporting windows. The number of adverse events per window follows <span class="math inline">\(X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span>. A safety board tests whether the adverse event rate has doubled from the historical baseline.</p>
+<p><span class="math display">\[H_0: \lambda = 2 \quad \text{vs} \quad H_a: \lambda = 4\]</span></p>
+<p>based on <span class="math inline">\(n = 6\)</span> reporting windows.</p>
+<p><strong>(a)</strong> Compute the Neyman-Pearson likelihood ratio <span class="math inline">\(\Lambda^* = L(\lambda = 4)/L(\lambda = 2)\)</span> and show that the NP rejection region <span class="math inline">\(\Lambda^* \geq k\)</span> simplifies to <span class="math inline">\(\sum_{i=1}^6 X_i \geq c\)</span> for some constant <span class="math inline">\(c\)</span>. (<em>Hint:</em> the joint PMF is <span class="math inline">\(e^{-n\lambda}\lambda^{\sum x_i}/\prod x_i!\)</span>.)</p>
+<p><strong>(b)</strong> Under <span class="math inline">\(H_0\)</span>, <span class="math inline">\(Y = \sum_{i=1}^6 X_i \sim \text{Poisson}(12)\)</span>. Find the critical value <span class="math inline">\(c\)</span> such that the Type I error <span class="math inline">\(\alpha^* = P_{H_0}(Y \geq c) \leq 0.05\)</span>. Use <code>ppois()</code> in R. Report the exact achieved <span class="math inline">\(\alpha^*\)</span>.</p>
+<p><strong>(c)</strong> Compute the power of this test at <span class="math inline">\(\lambda = 4\)</span> (i.e., <span class="math inline">\(1 - \beta^*\)</span>). Under <span class="math inline">\(H_a\)</span>, <span class="math inline">\(Y \sim \text{Poisson}(24)\)</span>.</p>
+<hr>
+</section>
+<section id="problem-2-likelihood-ratio-test-and-wilks-theorem-lesson-15" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-likelihood-ratio-test-and-wilks-theorem-lesson-15">Problem 2: Likelihood Ratio Test and Wilks’ Theorem (Lesson 15)</h3>
+<p>In a study of hospital-acquired infections, the number of infections per 100 patient-days follows <span class="math inline">\(X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span>. The national benchmark rate is <span class="math inline">\(\lambda_0 = 3.5\)</span> infections per 100 patient-days. A hospital records the following counts over <span class="math inline">\(n = 10\)</span> monthly reporting periods:</p>
+<p><span class="math display">\[X = \{5, 2, 4, 6, 3, 5, 4, 7, 3, 4\}\]</span></p>
+<p>Test <span class="math inline">\(H_0: \lambda = 3.5\)</span> vs <span class="math inline">\(H_a: \lambda \neq 3.5\)</span>.</p>
+<p><strong>(a)</strong> Write down the log-likelihood <span class="math inline">\(\ell(\lambda) = \sum_{i=1}^n \ln f(x_i; \lambda)\)</span> for the Poisson model and find the MLE <span class="math inline">\(\hat{\lambda}\)</span>.</p>
+<p><strong>(b)</strong> The LRT statistic is <span class="math inline">\(\Lambda = L(\lambda_0)/L(\hat{\lambda})\)</span>. Compute <span class="math inline">\(-2\ln(\Lambda)\)</span> using the formula:</p>
+<p><span class="math display">\[-2\ln(\Lambda) = 2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]\]</span></p>
+<p>using the observed data. (<em>Show the numerical calculation.</em>)</p>
+<p><strong>(c)</strong> By Wilks’ theorem, <span class="math inline">\(-2\ln(\Lambda) \xrightarrow{d} \chi^2_1\)</span> under <span class="math inline">\(H_0\)</span>. Compute the p-value and state your conclusion at <span class="math inline">\(\alpha = 0.05\)</span>. Also compute the exact p-value using <code>poisson.test()</code> and compare.</p>
+<p><strong>(d)</strong> How many free parameters does <span class="math inline">\(H_0\)</span> constrain? Why does the <span class="math inline">\(\chi^2\)</span> approximation have 1 degree of freedom here?</p>
+<hr>
+</section>
+<section id="problem-3-statistical-vs.-practical-significance-lesson-16" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-statistical-vs.-practical-significance-lesson-16">Problem 3: Statistical vs.&nbsp;Practical Significance (Lesson 16)</h3>
+<p>A large randomized controlled trial (<span class="math inline">\(n = 3{,}200\)</span> patients per arm) evaluates a new lipid-lowering drug. The primary outcome is LDL cholesterol (mg/dL) measured after 6 months. Results:</p>
+<ul>
+<li>Control arm: <span class="math inline">\(\bar{x}_{\text{control}} = 142.1\)</span> mg/dL</li>
+<li>Treatment arm: <span class="math inline">\(\bar{x}_{\text{treat}} = 140.3\)</span> mg/dL</li>
+</ul>
+<p>Assume equal and known <span class="math inline">\(\sigma = 28.15\)</span> mg/dL and use a two-sample z-test.</p>
+<p><strong>(a)</strong> Compute the observed z-statistic, two-sided p-value, and 95% CI for <span class="math inline">\(\mu_{\text{treat}} - \mu_{\text{control}}\)</span>.</p>
+<p><strong>(b)</strong> Compute Cohen’s <span class="math inline">\(d = |\bar{x}_{\text{treat}} - \bar{x}_{\text{control}}|/\sigma\)</span>. Clinical guidelines require a reduction of <span class="math inline">\(\geq 10\)</span> mg/dL to be meaningful. Does the CI provide evidence of a clinically meaningful reduction?</p>
+<p><strong>(c)</strong> In 2–3 sentences, explain how a study can produce a statistically significant result that is not clinically significant, and why the CI is more informative than the p-value alone.</p>
+<hr>
+</section>
+<section id="problem-4-ci-test-duality-theory-and-computation-lesson-16" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-ci-test-duality-theory-and-computation-lesson-16">Problem 4: CI-Test Duality — Theory and Computation (Lesson 16)</h3>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span>. The exact two-sided <span class="math inline">\(100(1-\alpha)\%\)</span> confidence interval for <span class="math inline">\(\lambda\)</span> based on <span class="math inline">\(T = \sum_{i=1}^n X_i\)</span> is:</p>
+<p><span class="math display">\[\left(\frac{\chi^2_{\alpha/2,\; 2T}}{2n},\; \frac{\chi^2_{1-\alpha/2,\; 2T+2}}{2n}\right)\]</span></p>
+<p><strong>(a)</strong> State the CI-Test Duality Theorem precisely. Then argue that the Poisson CI above is dual to the exact level-<span class="math inline">\(\alpha\)</span> test of <span class="math inline">\(H_0: \lambda = \lambda_0\)</span> vs <span class="math inline">\(H_a: \lambda \neq \lambda_0\)</span>.</p>
+<p><strong>(b)</strong> Using the hospital infection data from Problem 2 (<span class="math inline">\(n = 10\)</span>, <span class="math inline">\(\sum x_i = 43\)</span>):</p>
+<ol type="i">
+<li>Compute the 95% Poisson CI using <code>qchisq()</code>.</li>
+<li>Test <span class="math inline">\(H_0: \lambda = 3.5\)</span> using <code>poisson.test()</code>. Is the test decision consistent with CI membership?</li>
+<li>Test <span class="math inline">\(H_0: \lambda = 4.5\)</span>. Does <span class="math inline">\(\lambda_0 = 4.5\)</span> fall inside or outside the CI? Is this consistent?</li>
+</ol>
+<p><strong>(c)</strong> Compute the 95% lower confidence bound for <span class="math inline">\(\lambda\)</span> and use it to test <span class="math inline">\(H_0: \lambda \leq 3.5\)</span> vs <span class="math inline">\(H_a: \lambda &gt; 3.5\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<hr>
+</section>
+<section id="problem-5-constructing-cis-and-the-p-value-function-lesson-16" class="level3">
+<h3 class="anchored" data-anchor-id="problem-5-constructing-cis-and-the-p-value-function-lesson-16">Problem 5: Constructing CIs and the p-Value Function (Lesson 16)</h3>
+<p>The plasma concentration (mg/L) of a drug is measured for <span class="math inline">\(n = 12\)</span> patients:</p>
+<p><span class="math display">\[X = \{1.8,\ 2.6,\ 3.1,\ 2.2,\ 4.7,\ 2.9,\ 3.8,\ 2.4,\ 1.6,\ 3.5,\ 4.1,\ 2.7\}\]</span></p>
+<p>The regulatory target mean concentration is <span class="math inline">\(\mu_0 = 3.0\)</span> mg/L.</p>
+<p><strong>(a)</strong> Compute the 95% two-sided t-interval for <span class="math inline">\(\mu\)</span>. Without computing a test statistic, use the duality theorem to determine whether you would reject <span class="math inline">\(H_0: \mu = 3.0\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(b)</strong> Starting from the pivot <span class="math inline">\((n-1)S^2/\sigma^2 \sim \chi^2_{n-1}\)</span>, compute a 95% two-sided CI for <span class="math inline">\(\sigma^2\)</span> and for <span class="math inline">\(\sigma\)</span> using the sample data. Use <code>qchisq()</code>.</p>
+<p><strong>(c)</strong> Sweep <span class="math inline">\(\mu_0\)</span> over <span class="math inline">\([1.5, 4.5]\)</span> in steps of 0.05. For each value compute the two-sided t-test p-value. Plot the p-value function with the 95% CI shaded as the region where <span class="math inline">\(p(\mu_0) \geq 0.05\)</span>. Verify visually that the CI from part (a) corresponds exactly to this region.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu0_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">1.5</span>, <span class="fl">4.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+</section>
+<section id="problem-6-bootstrap-hypothesis-testing-lesson-17" class="level3">
+<h3 class="anchored" data-anchor-id="problem-6-bootstrap-hypothesis-testing-lesson-17">Problem 6: Bootstrap Hypothesis Testing (Lesson 17)</h3>
+<p>Serum ferritin (ng/mL) is a biomarker for iron stores. A study of <span class="math inline">\(n = 18\)</span> patients with chronic kidney disease gives:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">28.4</span>, <span class="fl">45.2</span>, <span class="fl">19.8</span>, <span class="fl">67.3</span>, <span class="fl">31.5</span>, <span class="fl">88.1</span>, <span class="fl">22.6</span>, <span class="fl">54.9</span>,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              <span class="fl">41.2</span>, <span class="fl">76.8</span>, <span class="fl">33.7</span>, <span class="fl">29.4</span>, <span class="fl">58.3</span>, <span class="fl">44.1</span>, <span class="fl">92.5</span>, <span class="fl">37.6</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>              <span class="fl">25.8</span>, <span class="fl">61.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The population norm for healthy adults is <span class="math inline">\(\mu_0 = 40\)</span> ng/mL. Test <span class="math inline">\(H_0: \mu = 40\)</span> vs <span class="math inline">\(H_a: \mu \neq 40\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(a)</strong> Make a histogram of the data. Does normality seem reasonable? Compute <span class="math inline">\(T_{\text{obs}} = (\bar{x} - \mu_0)/(s/\sqrt{n})\)</span> and the parametric t-test p-value.</p>
+<p><strong>(b)</strong> Implement the bootstrap test with <span class="math inline">\(B = 5{,}000\)</span> resamples (<code>set.seed(551)</code>): shift the data so <span class="math inline">\(\bar{x}^* = \mu_0\)</span>, resample with replacement, compute bootstrap t-statistics, and compute the p-value <span class="math inline">\(\hat{p} = B^{-1}\sum \mathbf{1}(|T^{*b}| \geq |T_{\text{obs}}|)\)</span>. Compare to the t-test p-value.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

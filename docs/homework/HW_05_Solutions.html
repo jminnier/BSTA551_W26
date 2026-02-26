@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.32">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Due: 02/26 at 11pm">
+
+<title>Homework 5 Solutions – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#problem-1-hypothesis-testing-framework" id="toc-problem-1-hypothesis-testing-framework" class="nav-link active" data-scroll-target="#problem-1-hypothesis-testing-framework">Problem 1: Hypothesis Testing Framework</a>
+  <ul class="collapse">
+  <li><a href="#part-a" id="toc-part-a" class="nav-link" data-scroll-target="#part-a">Part (a)</a></li>
+  <li><a href="#part-b" id="toc-part-b" class="nav-link" data-scroll-target="#part-b">Part (b)</a></li>
+  <li><a href="#part-c" id="toc-part-c" class="nav-link" data-scroll-target="#part-c">Part (c)</a></li>
+  <li><a href="#part-d" id="toc-part-d" class="nav-link" data-scroll-target="#part-d">Part (d)</a></li>
+  <li><a href="#part-e" id="toc-part-e" class="nav-link" data-scroll-target="#part-e">Part (e)</a></li>
+  </ul></li>
+  <li><a href="#problem-2-one-sample-t-test" id="toc-problem-2-one-sample-t-test" class="nav-link" data-scroll-target="#problem-2-one-sample-t-test">Problem 2: One-Sample t Test</a>
+  <ul class="collapse">
+  <li><a href="#part-a-1" id="toc-part-a-1" class="nav-link" data-scroll-target="#part-a-1">Part (a)</a></li>
+  <li><a href="#part-b-1" id="toc-part-b-1" class="nav-link" data-scroll-target="#part-b-1">Part (b)</a></li>
+  <li><a href="#part-c-1" id="toc-part-c-1" class="nav-link" data-scroll-target="#part-c-1">Part (c)</a></li>
+  <li><a href="#part-d-1" id="toc-part-d-1" class="nav-link" data-scroll-target="#part-d-1">Part (d)</a></li>
+  </ul></li>
+  <li><a href="#problem-3-test-for-a-proportion" id="toc-problem-3-test-for-a-proportion" class="nav-link" data-scroll-target="#problem-3-test-for-a-proportion">Problem 3: Test for a Proportion</a>
+  <ul class="collapse">
+  <li><a href="#part-a-2" id="toc-part-a-2" class="nav-link" data-scroll-target="#part-a-2">Part (a)</a></li>
+  <li><a href="#part-b-2" id="toc-part-b-2" class="nav-link" data-scroll-target="#part-b-2">Part (b)</a></li>
+  <li><a href="#part-c-2" id="toc-part-c-2" class="nav-link" data-scroll-target="#part-c-2">Part (c)</a></li>
+  <li><a href="#part-d-2" id="toc-part-d-2" class="nav-link" data-scroll-target="#part-d-2">Part (d)</a></li>
+  <li><a href="#part-e-1" id="toc-part-e-1" class="nav-link" data-scroll-target="#part-e-1">Part (e)</a></li>
+  </ul></li>
+  <li><a href="#problem-4-p-values-power-and-sample-size-eras-study" id="toc-problem-4-p-values-power-and-sample-size-eras-study" class="nav-link" data-scroll-target="#problem-4-p-values-power-and-sample-size-eras-study">Problem 4: P-Values, Power, and Sample Size (ERAS Study)</a>
+  <ul class="collapse">
+  <li><a href="#part-a-3" id="toc-part-a-3" class="nav-link" data-scroll-target="#part-a-3">Part (a)</a></li>
+  <li><a href="#part-b-3" id="toc-part-b-3" class="nav-link" data-scroll-target="#part-b-3">Part (b)</a></li>
+  <li><a href="#part-c-3" id="toc-part-c-3" class="nav-link" data-scroll-target="#part-c-3">Part (c)</a></li>
+  <li><a href="#part-d-3" id="toc-part-d-3" class="nav-link" data-scroll-target="#part-d-3">Part (d)</a></li>
+  <li><a href="#part-e-2" id="toc-part-e-2" class="nav-link" data-scroll-target="#part-e-2">Part (e)</a></li>
+  </ul></li>
+  <li><a href="#problem-5-multiple-testing" id="toc-problem-5-multiple-testing" class="nav-link" data-scroll-target="#problem-5-multiple-testing">Problem 5: Multiple Testing</a>
+  <ul class="collapse">
+  <li><a href="#part-a-4" id="toc-part-a-4" class="nav-link" data-scroll-target="#part-a-4">Part (a)</a></li>
+  <li><a href="#part-b-4" id="toc-part-b-4" class="nav-link" data-scroll-target="#part-b-4">Part (b)</a></li>
+  <li><a href="#part-c-4" id="toc-part-c-4" class="nav-link" data-scroll-target="#part-c-4">Part (c)</a></li>
+  <li><a href="#part-d-4" id="toc-part-d-4" class="nav-link" data-scroll-target="#part-d-4">Part (d)</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_05_Solutions.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 5 Solutions</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+<div>
+  <div class="description">
+    Due: 02/26 at 11pm
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 18, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<section id="problem-1-hypothesis-testing-framework" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1-hypothesis-testing-framework">Problem 1: Hypothesis Testing Framework</h2>
+<section id="part-a" class="level3">
+<h3 class="anchored" data-anchor-id="part-a">Part (a)</h3>
+<p>Since clinicians specifically suspect the device reads <strong>higher</strong> than truth, a one-sided (upper-tailed) test is appropriate.</p>
+<p><span class="math display">\[H_0: \mu = 120 \quad \text{vs} \quad H_a: \mu &gt; 120\]</span></p>
+<p>A two-sided test would be appropriate if deviations in either direction were of concern, but the clinical question is directional.</p>
+</section>
+<section id="part-b" class="level3">
+<h3 class="anchored" data-anchor-id="part-b">Part (b)</h3>
+<p>Since the population is Normal with known <span class="math inline">\(\sigma\)</span>, by properties of the normal distribution:</p>
+<p><span class="math display">\[\bar{X} \sim N\!\left(\mu_0,\, \frac{\sigma^2}{n}\right) = N\!\left(120,\, \frac{225}{36}\right) = N(120,\, 6.25)\]</span></p>
+<p>Under <span class="math inline">\(H_0\)</span>, the standardized test statistic follows:</p>
+<p><span class="math display">\[Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0, 1)\]</span></p>
+<p>The observed value is:</p>
+<p><span class="math display">\[z_{\text{obs}} = \frac{124.5 - 120}{15/\sqrt{36}} = \frac{4.5}{2.5} = 1.80\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fl">124.5</span>; mu0 <span class="ot">&lt;-</span> <span class="dv">120</span>; sigma <span class="ot">&lt;-</span> <span class="dv">15</span>; n <span class="ot">&lt;-</span> <span class="dv">36</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>se <span class="ot">&lt;-</span> sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>z_obs <span class="ot">&lt;-</span> (xbar <span class="sc">-</span> mu0) <span class="sc">/</span> se</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Standard error:"</span>, se, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Standard error: 2.5 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"z_obs ="</span>, <span class="fu">round</span>(z_obs, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>z_obs = 1.8</code></pre>
+</div>
+</div>
+</section>
+<section id="part-c" class="level3">
+<h3 class="anchored" data-anchor-id="part-c">Part (c)</h3>
+<p>For an upper-tailed test at <span class="math inline">\(\alpha = 0.05\)</span>, the rejection region is <span class="math inline">\(Z \geq z_{0.05} = 1.645\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>z_crit <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.95</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Critical value z_0.05 ="</span>, <span class="fu">round</span>(z_crit, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Critical value z_0.05 = 1.6449 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observed z ="</span>, <span class="fu">round</span>(z_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed z = 1.8 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Reject H0?"</span>, z_obs <span class="sc">&gt;=</span> z_crit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reject H0? TRUE</code></pre>
+</div>
+</div>
+<p>Since <span class="math inline">\(z_{\text{obs}} = 1.80 &gt; 1.645\)</span>, we <strong>reject <span class="math inline">\(H_0\)</span></strong> at <span class="math inline">\(\alpha = 0.05\)</span>. There is statistically significant evidence that the device reads higher than the true mean of 120 mmHg.</p>
+</section>
+<section id="part-d" class="level3">
+<h3 class="anchored" data-anchor-id="part-d">Part (d)</h3>
+<ul>
+<li><p><strong>Type I error</strong> in this context: Concluding that the device is systematically biased (reads too high) when in reality it is accurate. Consequence: the hospital discards or recalibrates a perfectly good device unnecessarily.</p></li>
+<li><p><strong>Type II error</strong> in this context: Failing to detect that the device is systematically biased when it actually does read too high. Consequence: the hospital continues using an inaccurate device, potentially leading to incorrect clinical decisions.</p></li>
+</ul>
+<p>The Type I error rate is <span class="math inline">\(\alpha = 0.05\)</span>, meaning there is a 5% chance of falsely concluding the device is biased if it is actually unbiased.</p>
+</section>
+<section id="part-e" class="level3">
+<h3 class="anchored" data-anchor-id="part-e">Part (e)</h3>
+<p>Since the consequence of a Type I error (discarding a good device at high cost) is severe, the hospital should prefer <strong><span class="math inline">\(\alpha = 0.01\)</span></strong>. A smaller <span class="math inline">\(\alpha\)</span> makes it harder to reject <span class="math inline">\(H_0\)</span>, requiring stronger evidence before concluding the device is biased. The trade-off is reduced power (higher <span class="math inline">\(\beta\)</span>), meaning the test is less likely to detect a real bias — but in this context, that is the more acceptable risk.</p>
+<hr>
+</section>
+</section>
+<section id="problem-2-one-sample-t-test" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2-one-sample-t-test">Problem 2: One-Sample t Test</h2>
+<section id="part-a-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-1">Part (a)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>glucose <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">98</span>, <span class="dv">103</span>, <span class="dv">91</span>, <span class="dv">107</span>, <span class="dv">96</span>, <span class="dv">88</span>, <span class="dv">101</span>, <span class="dv">95</span>, <span class="dv">99</span>, <span class="dv">102</span>, <span class="dv">94</span>, <span class="dv">97</span>, <span class="dv">89</span>, <span class="dv">100</span>, <span class="dv">93</span>)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(glucose)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>xbar <span class="ot">&lt;-</span> <span class="fu">mean</span>(glucose)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> <span class="fu">sd</span>(glucose)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">105</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"n ="</span>, n, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n = 15 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"x-bar ="</span>, <span class="fu">round</span>(xbar, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>x-bar = 96.8667 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"s ="</span>, <span class="fu">round</span>(s, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>s = 5.3568</code></pre>
+</div>
+</div>
+<p><strong>Hypotheses:</strong> The intervention aims to reduce fasting glucose, so this is a one-sided lower-tailed test.</p>
+<p><span class="math display">\[H_0: \mu = 105 \quad \text{vs} \quad H_a: \mu &lt; 105\]</span></p>
+<p><strong>Test statistic:</strong></p>
+<p><span class="math display">\[T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}} = \frac{97.53 - 105}{5.30/\sqrt{15}}\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>t_stat <span class="ot">&lt;-</span> (xbar <span class="sc">-</span> mu0) <span class="sc">/</span> (s <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>t_crit <span class="ot">&lt;-</span> <span class="fu">qt</span>(alpha, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>)  <span class="co"># lower-tailed: negative critical value</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"t statistic:"</span>, <span class="fu">round</span>(t_stat, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t statistic: -5.8804 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Critical value t_{0.05, 14} ="</span>, <span class="fu">round</span>(t_crit, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Critical value t_{0.05, 14} = -1.7613 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Rejection region: T &lt;="</span>, <span class="fu">round</span>(t_crit, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rejection region: T &lt;= -1.7613 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Reject H0?"</span>, t_stat <span class="sc">&lt;=</span> t_crit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reject H0? TRUE</code></pre>
+</div>
+</div>
+<p>Since <span class="math inline">\(t_{\text{obs}} = -5.88\)</span> is less than <span class="math inline">\(t_{0.05,14} = -1.761\)</span>, we <strong>reject <span class="math inline">\(H_0\)</span></strong> at <span class="math inline">\(\alpha = 0.05\)</span>. There is statistically significant evidence that the dietary intervention reduces mean fasting glucose below 105 mg/dL.</p>
+</section>
+<section id="part-b-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-1">Part (b)</h3>
+<p>For a lower-tailed test, the p-value is <span class="math inline">\(P(T_{14} \leq t_{\text{obs}})\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">&lt;-</span> <span class="fu">pt</span>(t_stat, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value:"</span>, <span class="fu">round</span>(pval, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value: 2e-05</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> If the true mean fasting glucose in this population were 105 mg/dL (i.e., if the intervention had no effect), there would be only a 0% chance of observing a sample mean as low as or lower than 97.53 mg/dL just by chance with a sample of 15 patients. This constitutes strong evidence against <span class="math inline">\(H_0\)</span>.</p>
+</section>
+<section id="part-c-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-1">Part (c)</h3>
+<p>A 95% one-sided lower confidence bound (the interval <span class="math inline">\((-\infty, \bar{x} + t_{\alpha, n-1} \cdot s/\sqrt{n})\)</span>) provides an upper bound on <span class="math inline">\(\mu\)</span>:</p>
+<p><span class="math display">\[\left(-\infty,\; \bar{x} + t_{0.05,14} \cdot \frac{s}{\sqrt{n}}\right)\]</span></p>
+<p>Note: since <span class="math inline">\(H_a: \mu &lt; 105\)</span>, we report an <strong>upper</strong> confidence bound.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>t_crit_upper <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alpha, <span class="at">df =</span> n <span class="sc">-</span> <span class="dv">1</span>)  <span class="co"># +1.761</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>upper_bound <span class="ot">&lt;-</span> xbar <span class="sc">+</span> t_crit_upper <span class="sc">*</span> (s <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"95% upper confidence bound:"</span>, <span class="fu">round</span>(upper_bound, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% upper confidence bound: 99.3028 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Interval: (-inf,"</span>, <span class="fu">round</span>(upper_bound, <span class="dv">4</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Interval: (-inf, 99.3028 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Does the interval exclude mu0 = 105?"</span>, upper_bound <span class="sc">&lt;</span> <span class="dv">105</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Does the interval exclude mu0 = 105? TRUE</code></pre>
+</div>
+</div>
+<p>The 95% upper confidence bound is 99.303 mg/dL. Since the entire interval <span class="math inline">\((-\infty,\; 99.303)\)</span> lies below <span class="math inline">\(\mu_0 = 105\)</span>, this is consistent with rejecting <span class="math inline">\(H_0\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+</section>
+<section id="part-d-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-1">Part (d)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(glucose, <span class="at">mu =</span> <span class="dv">105</span>, <span class="at">alternative =</span> <span class="st">"less"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    One Sample t-test
+
+data:  glucose
+t = -5.8804, df = 14, p-value = 2.001e-05
+alternative hypothesis: true mean is less than 105
+95 percent confidence interval:
+     -Inf 99.30277
+sample estimates:
+mean of x 
+ 96.86667 </code></pre>
+</div>
+</div>
+<p>The <code>t.test()</code> output confirms: <span class="math inline">\(t = -5.88\)</span>, <span class="math inline">\(p = 2\times 10^{-5}\)</span>, 95% upper bound <span class="math inline">\(= 99.303\)</span>.</p>
+<hr>
+</section>
+</section>
+<section id="problem-3-test-for-a-proportion" class="level2">
+<h2 class="anchored" data-anchor-id="problem-3-test-for-a-proportion">Problem 3: Test for a Proportion</h2>
+<section id="part-a-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-2">Part (a)</h3>
+<p>The hospital wants to detect a difference in either direction (the program could increase or decrease readmissions), so a <strong>two-sided</strong> test is appropriate.</p>
+<p><span class="math display">\[H_0: p = 0.22 \quad \text{vs} \quad H_a: p \neq 0.22\]</span></p>
+</section>
+<section id="part-b-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-2">Part (b)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">180</span>; x <span class="ot">&lt;-</span> <span class="dv">31</span>; p0 <span class="ot">&lt;-</span> <span class="fl">0.22</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>p_hat <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>se_null <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(p0 <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p0) <span class="sc">/</span> n)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>z_obs <span class="ot">&lt;-</span> (p_hat <span class="sc">-</span> p0) <span class="sc">/</span> se_null</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-hat ="</span>, <span class="fu">round</span>(p_hat, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-hat = 0.1722 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"SE under H0 ="</span>, <span class="fu">round</span>(se_null, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE under H0 = 0.03088 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"z ="</span>, <span class="fu">round</span>(z_obs, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>z = -1.5474</code></pre>
+</div>
+</div>
+<p><span class="math display">\[\hat{p} = \frac{31}{180} = 0.1722, \quad
+  Z = \frac{0.1722 - 0.22}{\sqrt{0.22 \times 0.78 / 180}} = -1.5474\]</span></p>
+</section>
+<section id="part-c-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-2">Part (c)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(z_obs)  <span class="co"># lower tail (z_obs is negative)</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>z_crit <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Two-sided p-value:"</span>, <span class="fu">round</span>(pval, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Two-sided p-value: 0.12177 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Critical value z_{0.025} ="</span>, <span class="fu">round</span>(z_crit, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Critical value z_{0.025} = 1.96 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Reject H0?"</span>, pval <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reject H0? FALSE</code></pre>
+</div>
+</div>
+<p>The two-sided p-value is 0.1218. Since <span class="math inline">\(p = 0.1218 &lt; 0.05\)</span>, we <strong>reject <span class="math inline">\(H_0\)</span></strong> at <span class="math inline">\(\alpha = 0.05\)</span>. There is statistically significant evidence that the readmission rate under the new program differs from 22%.</p>
+<p><em>Note:</em> The direction of the effect is a reduction — <span class="math inline">\(\hat{p} = 0.172\)</span> (about 17.2%) is lower than <span class="math inline">\(p_0 = 0.22\)</span> — which is clinically encouraging.</p>
+</section>
+<section id="part-d-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-2">Part (d)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Wilson score interval via prop.test()</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>prop_result <span class="ot">&lt;-</span> <span class="fu">prop.test</span>(x, n, <span class="at">p =</span> p0, <span class="at">alternative =</span> <span class="st">"two.sided"</span>, <span class="at">correct =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>ci <span class="ot">&lt;-</span> prop_result<span class="sc">$</span>conf.int</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Wilson score 95% CI: ("</span>, <span class="fu">round</span>(ci[<span class="dv">1</span>], <span class="dv">4</span>), <span class="st">","</span>, <span class="fu">round</span>(ci[<span class="dv">2</span>], <span class="dv">4</span>), <span class="st">")</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Wilson score 95% CI: ( 0.1241 , 0.2341 )</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Does p0 = 0.22 fall inside the CI?"</span>, ci[<span class="dv">1</span>] <span class="sc">&lt;=</span> p0 <span class="sc">&amp;</span> p0 <span class="sc">&lt;=</span> ci[<span class="dv">2</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Does p0 = 0.22 fall inside the CI? TRUE</code></pre>
+</div>
+</div>
+<p>The 95% Wilson score confidence interval is approximately <span class="math inline">\((0.124, 0.234)\)</span>. Since <span class="math inline">\(p_0 = 0.22\)</span> lies <strong>outside</strong> this interval, we reject <span class="math inline">\(H_0\)</span> — consistent with the hypothesis test conclusion. This illustrates <strong>CI–test duality</strong>: a <span class="math inline">\(100(1-\alpha)\%\)</span> CI excludes values that would be rejected at level <span class="math inline">\(\alpha\)</span>.</p>
+</section>
+<section id="part-e-1" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-1">Part (e)</h3>
+<p>The standard rule of thumb for the large-sample z test for proportions is:</p>
+<p><span class="math display">\[n p_0 \geq 10 \quad \text{and} \quad n(1 - p_0) \geq 10\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"n*p0 ="</span>, n <span class="sc">*</span> p0, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n*p0 = 39.6 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"n*(1-p0) ="</span>, n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p0), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n*(1-p0) = 140.4 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Both &gt;= 10?"</span>, (n <span class="sc">*</span> p0 <span class="sc">&gt;=</span> <span class="dv">10</span>) <span class="sc">&amp;</span> (n <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p0) <span class="sc">&gt;=</span> <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Both &gt;= 10? TRUE</code></pre>
+</div>
+</div>
+<p>Both conditions are satisfied (<span class="math inline">\(np_0 = 39.6\)</span> and <span class="math inline">\(n(1-p_0) = 140.4\)</span>), so the Normal approximation is valid here.</p>
+<hr>
+</section>
+</section>
+<section id="problem-4-p-values-power-and-sample-size-eras-study" class="level2">
+<h2 class="anchored" data-anchor-id="problem-4-p-values-power-and-sample-size-eras-study">Problem 4: P-Values, Power, and Sample Size (ERAS Study)</h2>
+<section id="part-a-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-3">Part (a)</h3>
+<p>The ERAS protocol is intended to <strong>reduce</strong> LOS, so this is a one-sided lower-tailed test:</p>
+<p><span class="math display">\[H_0: \mu = 7 \quad \text{vs} \quad H_a: \mu &lt; 7\]</span></p>
+<p>A two-sided test would be appropriate if we had no prior expectation of direction. Here, the clinical hypothesis is explicit: ERAS is expected to shorten (not lengthen) stay.</p>
+</section>
+<section id="part-b-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-3">Part (b)</h3>
+<p>For a lower-tailed z test, the power against <span class="math inline">\(\mu_a = 5.5\)</span> is:</p>
+<p><span class="math display">\[\text{Power} = \Phi\!\left(\frac{\mu_0 - \mu_a}{\sigma/\sqrt{n}} - z_\alpha\right)\]</span></p>
+<p>where <span class="math inline">\(z_\alpha = z_{0.05} = 1.645\)</span>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">7</span>; mu_a <span class="ot">&lt;-</span> <span class="fl">5.5</span>; sigma <span class="ot">&lt;-</span> <span class="fl">2.5</span>; n <span class="ot">&lt;-</span> <span class="dv">40</span>; alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>z_alpha <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>effect_over_se <span class="ot">&lt;-</span> (mu0 <span class="sc">-</span> mu_a) <span class="sc">/</span> (sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n))</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>power_n40 <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(effect_over_se <span class="sc">-</span> z_alpha)</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"z_alpha (z_0.05) ="</span>, <span class="fu">round</span>(z_alpha, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>z_alpha (z_0.05) = 1.6449 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"(mu0 - mu_a) / (sigma/sqrt(n)) ="</span>, <span class="fu">round</span>(effect_over_se, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(mu0 - mu_a) / (sigma/sqrt(n)) = 3.7947 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Argument to Phi:"</span>, <span class="fu">round</span>(effect_over_se <span class="sc">-</span> z_alpha, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Argument to Phi: 2.1499 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Power at n = 40:"</span>, <span class="fu">round</span>(power_n40, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Power at n = 40: 0.9842</code></pre>
+</div>
+</div>
+<p><span class="math display">\[\text{Power} = \Phi\!\left(\frac{7 - 5.5}{2.5/\sqrt{40}} - 1.645\right) = \Phi\!\left(3.795 - 1.645\right) = \Phi(2.15) \approx 0.984\]</span></p>
+<p>The power is approximately 98.4% at <span class="math inline">\(n = 40\)</span>, which is below the 85% target.</p>
+</section>
+<section id="part-c-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-3">Part (c)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">power.t.test</span>(</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> <span class="fl">1.5</span>,</span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> <span class="fl">2.5</span>,</span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> <span class="fl">0.05</span>,</span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">power =</span> <span class="fl">0.85</span>,</span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"one.sample"</span>,</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alternative =</span> <span class="st">"one.sided"</span></span>
+<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>result</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+     One-sample t test power calculation 
+
+              n = 21.39359
+          delta = 1.5
+             sd = 2.5
+      sig.level = 0.05
+          power = 0.85
+    alternative = one.sided</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>n_required <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(result<span class="sc">$</span>n)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Required sample size (rounded up):"</span>, n_required)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Required sample size (rounded up): 22</code></pre>
+</div>
+</div>
+<p><code>power.t.test()</code> gives <span class="math inline">\(n \approx 22\)</span> patients (rounding up to the nearest integer). Note this uses the t distribution rather than the normal approximation, so it is slightly more conservative than the z-based formula.</p>
+</section>
+<section id="part-d-3" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-3">Part (d)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>n_vals <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">120</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>power_vals <span class="ot">&lt;-</span> <span class="fu">pnorm</span>((mu0 <span class="sc">-</span> mu_a) <span class="sc">/</span> (sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n_vals)) <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha))</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">n =</span> n_vals, <span class="at">power =</span> power_vals) <span class="sc">|&gt;</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> n, <span class="at">y =</span> power)) <span class="sc">+</span></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.85</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> n_required, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"darkgreen"</span>) <span class="sc">+</span></span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> n_required <span class="sc">+</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fl">0.15</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_required), <span class="at">color =</span> <span class="st">"darkgreen"</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">10</span>, <span class="at">y =</span> <span class="fl">0.87</span>, <span class="at">hjust =</span> <span class="dv">0</span>,</span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"85% power"</span>, <span class="at">color =</span> <span class="st">"firebrick"</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample size (n)"</span>,</span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Power"</span>,</span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">"Power curve: ERAS post-surgical LOS study"</span>),</span>
+<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">==</span> .(mu_a)<span class="sc">~</span><span class="st">"days,"</span><span class="sc">~</span>sigma <span class="sc">==</span> .(sigma)<span class="sc">~</span><span class="st">","</span><span class="sc">~</span>alpha <span class="sc">==</span> .(alpha))</span>
+<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent) <span class="sc">+</span></span>
+<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">14</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_05_Solutions_files/figure-html/prob4d-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The power curve shows that power increases monotonically with <span class="math inline">\(n\)</span>. The 85% target (red dashed line) is achieved at <span class="math inline">\(n = 22\)</span> (green dashed line).</p>
+</section>
+<section id="part-e-2" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-2">Part (e)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="dv">55</span>; xbar_obs <span class="ot">&lt;-</span> <span class="fl">6.1</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>se_obs <span class="ot">&lt;-</span> sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n_obs)</span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>z_obs <span class="ot">&lt;-</span> (xbar_obs <span class="sc">-</span> mu0) <span class="sc">/</span> se_obs</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>pval <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(z_obs)  <span class="co"># lower-tailed</span></span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Observed z:"</span>, <span class="fu">round</span>(z_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed z: -2.6698 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"p-value (lower-tailed):"</span>, <span class="fu">round</span>(pval, <span class="dv">5</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value (lower-tailed): 0.00379 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Statistically significant at alpha = 0.05?"</span>, pval <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Statistically significant at alpha = 0.05? TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Observed reduction (days):"</span>, mu0 <span class="sc">-</span> xbar_obs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Observed reduction (days): 0.9</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Target reduction (days): 1.5"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Target reduction (days): 1.5</code></pre>
+</div>
+</div>
+<p><strong>P-value:</strong> <span class="math inline">\(p \approx 0.004\)</span>.</p>
+<p><strong>Clinical interpretation:</strong> If the true mean LOS under ERAS were the same as the standard protocol (7 days), there would be only about a 0.4% chance of observing a sample mean as low as 6.1 days or lower in a sample of 55 patients just by chance — strong evidence that ERAS does reduce LOS.</p>
+<p><strong>Statistical vs.&nbsp;clinical significance:</strong> The result <strong>is</strong> statistically significant at <span class="math inline">\(\alpha = 0.05\)</span> (<span class="math inline">\(p \approx 0.004 &lt; 0.05\)</span>). However, the observed reduction is <span class="math inline">\(7 - 6.1 = 0.9\)</span> days, which is smaller than the clinically meaningful threshold of 1.5 days the team set out to detect. So the study detected a real effect, but one smaller than originally targeted. This illustrates an important distinction: statistical and clinical significance are not the same thing. With <span class="math inline">\(n = 55\)</span>, the study has enough power to detect even modest departures from <span class="math inline">\(\mu_0 = 7\)</span>, and a 0.9-day reduction, while real, may not justify the cost and workflow changes involved in implementing ERAS. Conversely, a study can also be statistically <em>non-significant</em> yet show a clinically important trend if it is underpowered. Researchers and clinicians must evaluate both the <span class="math inline">\(p\)</span>-value and the magnitude of the estimated effect.</p>
+<hr>
+</section>
+</section>
+<section id="problem-5-multiple-testing" class="level2">
+<h2 class="anchored" data-anchor-id="problem-5-multiple-testing">Problem 5: Multiple Testing</h2>
+<section id="part-a-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-4">Part (a)</h3>
+<p>If all 500 null hypotheses are true and each test is conducted at <span class="math inline">\(\alpha = 0.05\)</span>:</p>
+<p><span class="math display">\[E(\text{false positives}) = 500 \times 0.05 = 25\]</span></p>
+<p>This is called the <strong>family-wise error rate (FWER)</strong> problem (or multiple comparisons problem). When conducting many simultaneous tests, the probability of at least one false positive becomes very large even if every individual test is properly conducted. Declaring 37 genes “significant” when 25 of them might be false positives makes the findings unreliable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">500</span>; alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>expected_fp <span class="ot">&lt;-</span> m <span class="sc">*</span> alpha</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Expected false positives under global H0:"</span>, expected_fp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Expected false positives under global H0: 25</code></pre>
+</div>
+</div>
+</section>
+<section id="part-b-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-4">Part (b)</h3>
+<p>The Bonferroni correction controls the FWER at level <span class="math inline">\(\alpha_{\text{FWER}}\)</span> by testing each hypothesis at:</p>
+<p><span class="math display">\[\alpha^* = \frac{\alpha_{\text{FWER}}}{m} = \frac{0.05}{500} = 0.0001\]</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>alpha_bonf <span class="ot">&lt;-</span> alpha <span class="sc">/</span> m</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Bonferroni-adjusted threshold:"</span>, alpha_bonf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bonferroni-adjusted threshold: 1e-04</code></pre>
+</div>
+</div>
+</section>
+<section id="part-c-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-4">Part (c)</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>sig_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">37</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.05</span>)</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni: adjusted p-values = min(raw p-value * m, 1)</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>adj_pvals_bonf <span class="ot">&lt;-</span> <span class="fu">p.adjust</span>(sig_pvals, <span class="at">method =</span> <span class="st">"bonferroni"</span>, <span class="at">n =</span> m)</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>n_sig_bonf <span class="ot">&lt;-</span> <span class="fu">sum</span>(adj_pvals_bonf <span class="sc">&lt;</span> <span class="fl">0.05</span>)</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Number of genes remaining significant after Bonferroni:"</span>, n_sig_bonf, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of genes remaining significant after Bonferroni: 0 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">raw_p =</span> <span class="fu">round</span>(sig_pvals, <span class="dv">5</span>),</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">bonf_adj_p =</span> <span class="fu">round</span>(adj_pvals_bonf, <span class="dv">5</span>),</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">significant =</span> adj_pvals_bonf <span class="sc">&lt;</span> <span class="fl">0.05</span></span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> <span class="fu">arrange</span>(raw_p) <span class="sc">|&gt;</span> <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 37 × 3
+     raw_p bonf_adj_p significant
+     &lt;dbl&gt;      &lt;dbl&gt; &lt;lgl&gt;      
+ 1 0.0034           1 FALSE      
+ 2 0.00411          1 FALSE      
+ 3 0.00439          1 FALSE      
+ 4 0.00459          1 FALSE      
+ 5 0.00489          1 FALSE      
+ 6 0.00556          1 FALSE      
+ 7 0.00694          1 FALSE      
+ 8 0.00903          1 FALSE      
+ 9 0.0101           1 FALSE      
+10 0.0106           1 FALSE      
+# ℹ 27 more rows</code></pre>
+</div>
+</div>
+<p>After Bonferroni correction, <strong>0 genes</strong> remain significant. The correction is very stringent: since <span class="math inline">\(\alpha^* = 0.0001\)</span>, a raw p-value must be less than <span class="math inline">\(0.0001\)</span> to survive, and none of the 37 simulated p-values (all generated uniformly on <span class="math inline">\([0, 0.05]\)</span>) fall that low.</p>
+</section>
+<section id="part-d-4" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-4">Part (d)</h3>
+<p>The Bonferroni procedure controls the <strong>family-wise error rate</strong> (FWER) — the probability of making <em>any</em> false discovery. This is very conservative: it virtually eliminates false positives but at the cost of very low power. In genomics, when screening thousands of genes, the biologically realistic expectation is that <em>some</em> genes truly are differentially expressed. Discarding all discoveries except those meeting a very stringent threshold means many true effects go undetected.</p>
+<p>The <strong>Benjamini-Hochberg (BH) procedure</strong> controls the <strong>false discovery rate (FDR)</strong> — the expected <em>proportion</em> of false positives among declared discoveries. This is a more lenient criterion that allows a small, controlled fraction of discoveries to be false. In exploratory genomics screens (where you expect hundreds of truly DE genes and can follow up with validation), tolerating 5% false discoveries to preserve power over truly DE genes is scientifically preferable to the near-zero power of Bonferroni.</p>
+<p>In short: Bonferroni asks “did I make even one mistake?”; BH asks “of the genes I flagged, roughly what fraction are wrong?” — and the latter question is more scientifically appropriate for large-scale discovery.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
