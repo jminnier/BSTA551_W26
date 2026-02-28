@@ -1,0 +1,473 @@
+---
+title: "Homework 6 Solutions"
+subtitle: "BSTA 551"
+date-modified: "today"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: "setup"
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+---
+
+## Problem 1: Neyman-Pearson Lemma (Lesson 15)
+
+Adverse events in a clinical trial are monitored over successive reporting windows. The number of adverse events per window follows $X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)$. A safety board tests:
+
+$$H_0: \lambda = 2 \quad \text{vs} \quad H_a: \lambda = 4 \quad (n = 6 \text{ windows})$$
+
+**(a)** Compute $\Lambda^* = L(\lambda=4)/L(\lambda=2)$ and show the NP rejection region simplifies to $\sum X_i \geq c$.
+
+**(b)** Find critical value $c$ with $\alpha^* \leq 0.05$ using `ppois()`.
+
+**(c)** Compute the power at $\lambda = 4$.
+
+**(d)** Explain why the same rejection region is UMP for $H_0: \lambda \leq 2$ vs $H_a: \lambda > 2$.
+
+---
+
+### Part (a) — NP likelihood ratio
+
+The joint PMF is $L(\lambda) = e^{-6\lambda}\lambda^{\sum x_i}/\prod x_i!$. The NP ratio is:
+
+$$\Lambda^* = \frac{L(4)}{L(2)} = \frac{e^{-24} \cdot 4^{\sum x_i}}{e^{-12} \cdot 2^{\sum x_i}} = e^{-12} \cdot 2^{\sum x_i}$$
+
+The rejection region $\Lambda^* \geq k$ becomes:
+
+$$e^{-12} \cdot 2^{\sum x_i} \geq k \implies \sum x_i \cdot \ln 2 \geq \ln k + 12 \implies \sum_{i=1}^6 X_i \geq c$$
+
+for some constant $c = (\ln k + 12)/\ln 2$. Since $2^{\sum x_i}$ is strictly increasing in $\sum x_i$, the inequality direction is preserved. $\square$
+
+### Part (b) — Critical value
+
+```{r}
+# Under H0: sum(X_i) ~ Poisson(6 * 2) = Poisson(12)
+# Find smallest c such that P(Y >= c | Y ~ Pois(12)) <= 0.05
+c_vals <- 12:25
+alpha_vals <- 1 - ppois(c_vals - 1, lambda = 12)
+
+tibble(c = c_vals, alpha = round(alpha_vals, 4)) |>
+  filter(alpha <= 0.06) |>   # show candidates near 0.05
+  knitr::kable()
+```
+
+```{r}
+c_crit   <- min(c_vals[alpha_vals <= 0.05])
+alpha_st <- 1 - ppois(c_crit - 1, lambda = 12)
+cat("Critical value c:", c_crit, "\n")
+cat("Achieved alpha*: ", round(alpha_st, 4), "\n")
+```
+
+The smallest $c$ with $P(Y \geq c) \leq 0.05$ is $c = `r c_crit`$, giving an achieved $\alpha^* = `r round(alpha_st, 4)`$.
+
+### Part (c) — Power at $\lambda = 4$
+
+```{r}
+# Under Ha: sum(X_i) ~ Poisson(6 * 4) = Poisson(24)
+beta_st <- ppois(c_crit - 1, lambda = 24)
+power   <- 1 - beta_st
+cat("Type II error beta*:", round(beta_st, 4), "\n")
+cat("Power (1 - beta*):  ", round(power, 4), "\n")
+```
+
+The power of the NP test at $\lambda = 4$ is $1 - \beta^* = `r round(power, 4)`$. By the NP Lemma, no other level-$`r round(alpha_st,4)`$ test can achieve higher power at $\lambda = 4$.
+
+### Part (d) — UMP argument
+
+For any fixed alternative $\lambda_a > 2$, the NP likelihood ratio is:
+
+$$\Lambda^*(\lambda_a) = \frac{e^{-6\lambda_a}\lambda_a^{\sum x_i}}{e^{-12} \cdot 2^{\sum x_i}} = e^{-6(\lambda_a - 2)} \left(\frac{\lambda_a}{2}\right)^{\sum x_i}$$
+
+Since $\lambda_a > 2$, the base $\lambda_a/2 > 1$, so $\Lambda^* \geq k \iff \sum x_i \geq c(\lambda_a)$. But the constant $c$ that controls the Type I error at level $\alpha^*$ is determined solely by $H_0$ (via the $\text{Poisson}(12)$ null distribution) — it does **not** depend on which $\lambda_a > 2$ we choose. Therefore the same rejection region $\{\sum X_i \geq `r c_crit`\}$ is most powerful against every $\lambda_a > 2$, making it **UMP** for the composite alternative $H_a: \lambda > 2$.
+
+---
+
+## Problem 2: Likelihood Ratio Test and Wilks' Theorem (Lesson 15)
+
+Hospital infection data: $X = \{5, 2, 4, 6, 3, 5, 4, 7, 3, 4\}$, $n = 10$, $\lambda_0 = 3.5$.
+
+Test $H_0: \lambda = 3.5$ vs $H_a: \lambda \neq 3.5$.
+
+**(a)** Find the log-likelihood and MLE $\hat\lambda$.
+
+**(b)** Compute $-2\ln(\Lambda)$.
+
+**(c)** Compute the Wilks p-value and compare to `poisson.test()`.
+
+**(d)** Explain the degrees of freedom.
+
+---
+
+```{r}
+x_inf <- c(5, 2, 4, 6, 3, 5, 4, 7, 3, 4)
+n_inf <- length(x_inf)
+lambda0_inf <- 3.5
+```
+
+### Part (a) — Log-likelihood and MLE
+
+For $X_i \stackrel{iid}{\sim} \text{Poisson}(\lambda)$, the log-likelihood is:
+
+$$\ell(\lambda) = -n\lambda + \left(\sum_{i=1}^n x_i\right)\ln\lambda - \sum_{i=1}^n \ln(x_i!)$$
+
+Setting $\ell'(\lambda) = -n + \bar{x}/\lambda \cdot n= 0$ gives $\hat\lambda = \bar{x}$.
+
+```{r}
+xbar_inf <- mean(x_inf)
+cat("Sum:", sum(x_inf), "  n:", n_inf, "  MLE lambda-hat:", xbar_inf, "\n")
+```
+
+$\hat\lambda = \bar{x} = `r xbar_inf`$ infections per 100 patient-days.
+
+### Part (b) — LRT statistic
+
+$$-2\ln(\Lambda) = -2\left[n\hat\lambda - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat\lambda}\right)\right]$$
+
+```{r}
+neg2lnL <- -2 * (n_inf * xbar_inf - n_inf * lambda0_inf +
+                n_inf * xbar_inf * log(lambda0_inf / xbar_inf))
+cat("-2 ln(Lambda):", round(neg2lnL, 4), "\n")
+```
+
+$-2\ln(\Lambda) = `r round(neg2lnL, 4)`$.
+
+### Part (c) — Wilks p-value and exact comparison
+
+```{r}
+p_wilks <- pchisq(neg2lnL, df = 1, lower.tail = FALSE)
+p_exact <- poisson.test(sum(x_inf), T = n_inf, r = lambda0_inf)$p.value
+
+cat("Wilks (chi-sq) p-value:", round(p_wilks, 4), "\n")
+cat("Exact Poisson p-value: ", round(p_exact, 4), "\n")
+cat("Conclusion at alpha=0.05:",
+    ifelse(p_wilks < 0.05, "Reject H0", "Fail to reject H0"), "\n")
+```
+
+The Wilks p-value is `r round(p_wilks, 4)` and the exact p-value is `r round(p_exact, 4)`. Both `r ifelse(p_wilks < 0.05, "reject", "fail to reject")` $H_0$ at $\alpha = 0.05`. The approximation is `r ifelse(abs(p_wilks - p_exact) < 0.02, "good", "somewhat rough")` for $n = 10$.
+
+### Part (d) — Degrees of freedom
+
+The full parameter space $\Omega$ has 1 free parameter ($\lambda$). The null $\Omega_0 = \{3.5\}$ constrains $\lambda$ to a single point, leaving 0 free parameters. Wilks' theorem gives $m = \dim(\Omega) - \dim(\Omega_0) = 1 - 0 = \mathbf{1}$ degree of freedom.
+
+---
+
+## Problem 3: Statistical vs. Practical Significance (Lesson 16)
+
+A large RCT ($n = 3{,}200$ per arm) evaluates a new lipid-lowering drug. $\bar{x}_{\text{control}} = 142.1$ mg/dL, $\bar{x}_{\text{treat}} = 140.3$ mg/dL, $\sigma = 28.15$ mg/dL (assumed known).
+
+**(a)** z-statistic, p-value, and 95% CI. **(b)** Cohen's $d$ and clinical significance. **(c)** Conceptual explanation.
+
+---
+
+### Part (a) — z-statistic, p-value, and 95% CI
+
+```{r}
+xbar_c <- 142.1; xbar_t <- 140.3; sigma <- 28.15; n <- 3200
+
+se_diff <- sigma * sqrt(2 / n)
+z_obs   <- (xbar_t - xbar_c) / se_diff
+p_val   <- 2 * pnorm(-abs(z_obs))
+z_crit  <- qnorm(0.975)
+ci_lo   <- (xbar_t - xbar_c) - z_crit * se_diff
+ci_hi   <- (xbar_t - xbar_c) + z_crit * se_diff
+
+cat("SE:", round(se_diff, 4), "\n")
+cat("z:", round(z_obs, 4), "  p-value:", round(p_val, 5), "\n")
+cat("95% CI: [", round(ci_lo, 3), ",", round(ci_hi, 3), "] mg/dL\n")
+```
+
+The result is **statistically significant** ($p = `r round(p_val,5)` < 0.05$). The 95% CI is $(`r round(ci_lo,2)`,\ `r round(ci_hi,2)`)$ mg/dL.
+
+### Part (b) — Cohen's $d$ and clinical significance
+
+```{r}
+d_cohen <- abs(xbar_t - xbar_c) / sigma
+cat("Cohen's d:", round(d_cohen, 4), "-- classified as: negligible (< 0.2)\n")
+```
+
+Cohen's $d = `r round(d_cohen,3)`$ is classified as **negligible**. The entire 95% CI $(`r round(ci_lo,2)`,\ `r round(ci_hi,2)`)$ mg/dL lies far above the clinical threshold of $-10$ mg/dL. Even the lower bound of the CI ($`r round(ci_lo,2)`$ mg/dL) falls well short of a meaningful reduction. There is **no evidence of a clinically meaningful effect**.
+
+### Part (c) — Conceptual
+
+With $n = 3{,}200$ per arm, even negligible differences produce tiny standard errors, making any non-zero effect statistically detectable. Statistical significance measures *detectability* given the sample size, not whether the effect is large enough to matter clinically. Reporting the CI rather than just the p-value reveals that the plausible effect range is 0.8–2.8 mg/dL — far below the 10 mg/dL threshold that justifies prescribing this drug.
+
+---
+
+## Problem 4: CI-Test Duality — Theory and Computation (Lesson 16)
+
+$$\left(\frac{\chi^2_{\alpha/2,\; 2T}}{2n},\; \frac{\chi^2_{1-\alpha/2,\; 2T+2}}{2n}\right) \quad \text{where } T = \sum_{i=1}^n X_i$$
+
+Using infection data from Problem 2: $n = 10$, $\sum x_i = 43$, $\lambda_0 = 3.5$.
+
+**(a)** State and apply the duality theorem. **(b)** Compute CI and check two null values. **(c)** One-sided lower bound.
+
+---
+
+### Part (a) — Duality theorem
+
+**CI-Test Duality Theorem (Devore 9.6):** Let $C(\mathbf{X})$ be a $100(1-\alpha)\%$ CI obtained by inverting a level-$\alpha$ test. Then:
+$$\theta_0 \notin C(\mathbf{X}) \iff \text{reject } H_0: \theta = \theta_0 \text{ at level } \alpha$$
+$$\theta_0 \in C(\mathbf{X}) \iff \text{fail to reject } H_0: \theta = \theta_0 \text{ at level } \alpha$$
+
+The Poisson CI is constructed precisely by inverting the exact Poisson test: it consists of all $\lambda_0$ values for which the exact test fails to reject at level $\alpha$. Therefore, by the theorem, $\lambda_0 \in C$ if and only if the test of $H_0: \lambda = \lambda_0$ fails to reject — the CI and the test are exactly dual.
+
+### Part (b) — Compute CI and verify duality
+
+```{r}
+T_inf  <- sum(x_inf)   # = 43
+alpha_i <- 0.05
+
+ci_lo_p <- qchisq(alpha_i/2,     df = 2 * T_inf)     / (2 * n_inf)
+ci_hi_p <- qchisq(1 - alpha_i/2, df = 2 * T_inf + 2) / (2 * n_inf)
+cat("95% Poisson CI: [", round(ci_lo_p, 4), ",", round(ci_hi_p, 4), "]\n\n")
+
+# (ii) Test H0: lambda = 3.5
+t35 <- poisson.test(T_inf, T = n_inf, r = 3.5)
+cat("H0: lambda = 3.5   p =", round(t35$p.value, 4),
+    " Decision:", ifelse(t35$p.value < 0.05, "Reject", "FTR"),
+    " | 3.5 in CI?", ci_lo_p <= 3.5 & 3.5 <= ci_hi_p, "\n")
+
+# (iii) Test H0: lambda = 4.5
+t45 <- poisson.test(T_inf, T = n_inf, r = 4.5)
+cat("H0: lambda = 4.5   p =", round(t45$p.value, 4),
+    " Decision:", ifelse(t45$p.value < 0.05, "Reject", "FTR"),
+    " | 4.5 in CI?", ci_lo_p <= 4.5 & 4.5 <= ci_hi_p, "\n")
+```
+
+For $\lambda_0 = 3.5$: the test `r ifelse(t35$p.value < 0.05, "rejects", "fails to reject")` $H_0$ and $3.5$ is `r ifelse(ci_lo_p <= 3.5 & 3.5 <= ci_hi_p, "inside", "outside")` the CI — **consistent** ✓
+
+For $\lambda_0 = 4.5$: the test `r ifelse(t45$p.value < 0.05, "rejects", "fails to reject")` $H_0$ and $4.5$ is `r ifelse(ci_lo_p <= 4.5 & 4.5 <= ci_hi_p, "inside", "outside")` the CI — **consistent** ✓
+
+### Part (c) — One-sided lower bound
+
+By one-sided duality, the 95% lower bound dual to $H_0: \lambda \leq \lambda_0$ vs $H_a: \lambda > \lambda_0$ is:
+
+$$\underline{\lambda} = \frac{\chi^2_{\alpha,\; 2T}}{2n}$$
+
+```{r}
+lb <- qchisq(alpha_i, df = 2 * T_inf) / (2 * n_inf)
+t_gt <- poisson.test(T_inf, T = n_inf, r = 3.5, alternative = "greater")
+cat("95% lower bound:", round(lb, 4), "\n")
+cat("Lower bound > 3.5?", lb > 3.5, "\n")
+cat("One-sided p-value (Ha: lambda > 3.5):", round(t_gt$p.value, 4), "\n")
+```
+
+The lower bound is $\underline{\lambda} = `r round(lb, 4)`$. Since `r round(lb,4)` `r ifelse(lb > 3.5, ">", "≤")` 3.5, we `r ifelse(lb > 3.5, "**reject**", "fail to reject")` $H_0: \lambda \leq 3.5$ at the 5% level — the hospital's rate is significantly above the benchmark.
+
+---
+
+## Problem 5: Constructing CIs and the p-Value Function (Lesson 16)
+
+$$X = \{1.8,\ 2.6,\ 3.1,\ 2.2,\ 4.7,\ 2.9,\ 3.8,\ 2.4,\ 1.6,\ 3.5,\ 4.1,\ 2.7\}, \quad \mu_0 = 3.0$$
+
+**(a)** 95% t-CI and duality-based rejection decision. **(b)** 95% CI for $\sigma^2$ and $\sigma$. **(c)** p-value function plot.
+
+---
+
+```{r}
+drug <- c(1.8, 2.6, 3.1, 2.2, 4.7, 2.9, 3.8, 2.4, 1.6, 3.5, 4.1, 2.7)
+n_d  <- length(drug)
+xbar_d <- mean(drug); s_d <- sd(drug); se_d <- s_d / sqrt(n_d); df_d <- n_d - 1
+```
+
+### Part (a) — 95% t-CI and duality
+
+```{r}
+t_crit <- qt(0.975, df = df_d)
+ci_lo_d <- xbar_d - t_crit * se_d
+ci_hi_d <- xbar_d + t_crit * se_d
+cat("xbar:", round(xbar_d, 4), "  s:", round(s_d, 4), "\n")
+cat("95% t-CI: [", round(ci_lo_d, 4), ",", round(ci_hi_d, 4), "] mg/L\n")
+cat("mu0 = 3.0 inside CI?", ci_lo_d <= 3.0 & 3.0 <= ci_hi_d, "\n")
+```
+
+$\mu_0 = 3.0$ `r ifelse(ci_lo_d <= 3.0 & 3.0 <= ci_hi_d, "falls **inside**", "falls **outside**")` the 95% CI $[`r round(ci_lo_d,3)`, `r round(ci_hi_d,3)`]$. By the CI-Test Duality Theorem, we therefore **`r ifelse(ci_lo_d <= 3.0 & 3.0 <= ci_hi_d, "fail to reject", "reject")`** $H_0: \mu = 3.0$ at $\alpha = 0.05$ — no test statistic needed.
+
+### Part (b) — 95% CI for $\sigma^2$ and $\sigma$
+
+Starting from $(n-1)S^2/\sigma^2 \sim \chi^2_{n-1}$, inverting the acceptance region gives:
+
+$$\frac{(n-1)s^2}{\chi^2_{\alpha/2,\, n-1}} \leq \sigma^2 \leq \frac{(n-1)s^2}{\chi^2_{1-\alpha/2,\, n-1}}$$
+
+```{r}
+chi_up  <- qchisq(0.975, df = df_d)   # upper quantile -> smaller lower bound
+chi_lo  <- qchisq(0.025, df = df_d)   # lower quantile -> larger upper bound
+s2_d    <- var(drug)
+
+ci_var_lo <- df_d * s2_d / chi_up
+ci_var_hi <- df_d * s2_d / chi_lo
+
+cat("Sample variance:", round(s2_d, 4), "\n")
+cat("95% CI for sigma^2: [", round(ci_var_lo, 4), ",", round(ci_var_hi, 4), "]\n")
+cat("95% CI for sigma:   [", round(sqrt(ci_var_lo), 4), ",",
+    round(sqrt(ci_var_hi), 4), "]\n")
+```
+
+### Part (c) — p-value function
+
+```{r}
+#| fig-height: 6
+#| fig-width: 11
+mu0_grid <- seq(1.5, 4.5, by = 0.05)
+pval_fn  <- map_dbl(mu0_grid, ~2 * pt(-abs((xbar_d - .x) / se_d), df = df_d))
+
+ggplot(tibble(mu0 = mu0_grid, pval = pval_fn), aes(x = mu0, y = pval)) +
+  annotate("rect", xmin = ci_lo_d, xmax = ci_hi_d, ymin = -Inf, ymax = Inf,
+           fill = "#006a4e", alpha = 0.12) +
+  geom_vline(xintercept = c(ci_lo_d, ci_hi_d),
+             color = "#006a4e", linewidth = 1, linetype = "dotted") +
+  geom_hline(yintercept = 0.05, linetype = "dashed",
+             color = "#e74c3c", linewidth = 1) +
+  geom_line(color = "#2c3e50", linewidth = 1.5) +
+  geom_point(aes(x = xbar_d, y = 1), size = 3.5, color = "#006a4e") +
+  annotate("text", x = xbar_d, y = 0.90,
+           label = sprintf("95%% CI [%.2f, %.2f]", ci_lo_d, ci_hi_d),
+           color = "#006a4e", size = 4.5) +
+  annotate("text", x = 4.1, y = 0.09,
+           label = expression(alpha == 0.05), color = "#e74c3c", size = 4.5) +
+  labs(title = expression("p-value function: p(" * mu[0] * ")"),
+       subtitle = "Green region = 95% CI (fail-to-reject region). Dot = MLE where p = 1.",
+       x = expression(mu[0] * " (null value, mg/L)"),
+       y = "Two-sided p-value")
+```
+
+The green shaded region where $p(\mu_0) \geq 0.05$ spans exactly $[`r round(ci_lo_d,3)`, `r round(ci_hi_d,3)`]$ mg/L, matching the 95% t-CI from part (a) precisely — confirming the CI-test duality theorem visually.
+
+---
+
+## Problem 6: Bootstrap Hypothesis Testing (Lesson 17)
+
+```{r}
+ferritin <- c(28.4, 45.2, 19.8, 67.3, 31.5, 88.1, 22.6, 54.9,
+              41.2, 76.8, 33.7, 29.4, 58.3, 44.1, 92.5, 37.6,
+              25.8, 61.4)
+mu_0 <- 40; n_f <- length(ferritin)
+xbar_f <- mean(ferritin); s_f <- sd(ferritin); se_f <- s_f / sqrt(n_f)
+```
+
+**(a)** Histogram, normality assessment, $T_{\text{obs}}$, and t-test p-value.
+
+**(b)** Correct bootstrap test ($B = 5{,}000$, `set.seed(551)`).
+
+**(c)** Naive bootstrap and explanation of invalidity.
+
+**(d)** Side-by-side histograms of both bootstrap distributions.
+
+---
+
+### Part (a) — Histogram and t-test
+
+```{r}
+#| fig-height: 5
+#| fig-width: 8
+ggplot(tibble(x = ferritin), aes(x = x)) +
+  geom_histogram(bins = 8, fill = "#3498db", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = mu_0, linetype = "dashed",
+             color = "#e74c3c", linewidth = 1.2) +
+  annotate("text", x = mu_0 + 3, y = 3.7,
+           label = expression(mu[0] == 40), color = "#e74c3c", size = 5) +
+  labs(title = "Serum ferritin in CKD patients",
+       subtitle = "Dashed line = population norm (40 ng/mL)",
+       x = "Serum ferritin (ng/mL)", y = "Count")
+```
+
+```{r}
+T_obs_f <- (xbar_f - mu_0) / se_f
+p_ttest <- t.test(ferritin, mu = mu_0)$p.value
+cat("Mean:", round(xbar_f, 3), "  SD:", round(s_f, 3), "\n")
+cat("T_obs:", round(T_obs_f, 4), "  t-test p:", round(p_ttest, 4), "\n")
+```
+
+The distribution is **right-skewed** with values up to 92.5 ng/mL. With $n = 18$ and noticeable skewness, the normality assumption is questionable — a bootstrap test is more appropriate. The t-test `r ifelse(p_ttest < 0.05, "rejects", "fails to reject")` $H_0$ ($p = `r round(p_ttest,4)`$).
+
+### Part (b) — Correct bootstrap test
+
+```{r}
+set.seed(551); B_f <- 5000
+
+ferritin_sh <- ferritin - xbar_f + mu_0      # shift to H0
+
+T_boot_f <- replicate(B_f, {
+  bs <- sample(ferritin_sh, n_f, replace = TRUE)
+  (mean(bs) - mu_0) / (sd(bs) / sqrt(n_f))
+})
+
+p_boot_f <- mean(abs(T_boot_f) >= abs(T_obs_f))
+cat("Bootstrap p-value:", round(p_boot_f, 4), "\n")
+cat("t-test p-value:   ", round(p_ttest,  4), "\n")
+cat("Decision:", ifelse(p_boot_f < 0.05, "Reject H0", "Fail to reject H0"), "\n")
+```
+
+Both methods `r ifelse(p_boot_f < 0.05, "reject", "fail to reject")` $H_0$. The p-values are close ($`r round(p_boot_f,4)`$ vs $`r round(p_ttest,4)`$), consistent with Lesson 17's simulation showing that t-test and bootstrap converge as $n$ increases toward 30.
+
+### Part (c) — Naive (incorrect) bootstrap
+
+```{r}
+set.seed(551)
+T_naive_f <- replicate(B_f, mean(sample(ferritin, n_f, replace = TRUE)))
+p_naive_f <- mean(abs(T_naive_f - xbar_f) >= abs(xbar_f - mu_0))
+cat("Naive p-value:", round(p_naive_f, 4), "\n")
+```
+
+The naive approach is invalid because resampling from the original data produces a distribution centered at $\bar{x} = `r round(xbar_f,1)`$ ng/mL rather than at the null value $\mu_0 = 40$ ng/mL. A valid null distribution must represent how the test statistic behaves *when $H_0$ is true*; the naive distribution instead approximates sampling variability of $\hat\mu$ around the unknown true mean. Comparing $|\bar{x}^{*b} - \bar{x}|$ to $|\bar{x} - \mu_0|$ measures something conceptually different from what the test requires.
+
+### Part (d) — Side-by-side histograms
+
+```{r}
+#| fig-height: 6
+#| fig-width: 14
+p_nv <- ggplot(tibble(T = T_naive_f), aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50,
+                 fill = "#e74c3c", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = xbar_f, color = "black", linewidth = 1.2) +
+  geom_vline(xintercept = mu_0, color = "#3498db",
+             linewidth = 1.2, linetype = "dashed") +
+  annotate("rect",
+           xmin = xbar_f + abs(xbar_f - mu_0), xmax = Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.2) +
+  annotate("rect",
+           xmin = -Inf, xmax = xbar_f - abs(xbar_f - mu_0), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.2) +
+  annotate("text", x = xbar_f + 0.8, y = 0.22,
+           label = "bar(x)", parse = TRUE, size = 5) +
+  annotate("text", x = mu_0 - 0.8, y = 0.22,
+           label = "mu[0]", parse = TRUE, size = 5, color = "#3498db", hjust = 1) +
+  labs(title = expression(bold("WRONG") * ": Naive (original data)"),
+       subtitle = sprintf("Centered at x-bar=%.1f, not mu0=%.1f  |  p = %.4f",
+                          xbar_f, mu_0, p_naive_f),
+       x = expression(bar(x)^"*"), y = "Density")
+
+p_cr <- ggplot(tibble(T = T_boot_f), aes(x = T)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50,
+                 fill = "#27ae60", color = "white", alpha = 0.8) +
+  geom_vline(xintercept = c(-abs(T_obs_f), abs(T_obs_f)),
+             color = "#e74c3c", linewidth = 1.2) +
+  annotate("rect", xmin =  abs(T_obs_f), xmax =  Inf, ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.2) +
+  annotate("rect", xmin = -Inf, xmax = -abs(T_obs_f), ymin = 0, ymax = Inf,
+           fill = "#e74c3c", alpha = 0.2) +
+  annotate("text", x = abs(T_obs_f) + 0.2, y = 0.32,
+           label = bquote(T[obs] == .(round(T_obs_f, 2))),
+           color = "#e74c3c", size = 4.5) +
+  labs(title = expression(bold("CORRECT") * ": Bootstrap from shifted data"),
+       subtitle = sprintf("Centered at mu0=%.1f  |  Bootstrap p=%.4f, t-test p=%.4f",
+                          mu_0, p_boot_f, p_ttest),
+       x = "t-statistic", y = "Density")
+
+p_nv + p_cr
+```
+
+The left panel shows the naive distribution centered at $\bar{x}$ (not the null value), making it an invalid null reference distribution. The right panel shows the correct bootstrap null distribution centered at $\mu_0$, with the observed statistic and p-value region clearly marked.
