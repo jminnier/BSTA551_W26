@@ -64,7 +64,7 @@ Test $H_0: \lambda = 3.5$ vs $H_a: \lambda \neq 3.5$.
 
 **(b)** The LRT statistic is $\Lambda = L(\lambda_0)/L(\hat{\lambda})$. Compute $-2\ln(\Lambda)$ using the formula:
 
-$$-2\ln(\Lambda) = 2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]$$
+$$-2\ln(\Lambda) = -2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]$$
 
 using the observed data. (*Show the numerical calculation.*)
 

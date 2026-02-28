@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -68,14 +68,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3fbce8e5d0ad6a145f129f53e9b2a4da.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -118,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -144,7 +145,8 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo light-content">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Theory of Statistical Inference</span>
@@ -224,7 +226,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 25, 2026</p>
+      <p class="date-modified">February 28, 2026</p>
     </div>
   </div>
     
@@ -262,7 +264,7 @@ window.Quarto = {
 <p>Test <span class="math inline">\(H_0: \lambda = 3.5\)</span> vs <span class="math inline">\(H_a: \lambda \neq 3.5\)</span>.</p>
 <p><strong>(a)</strong> Write down the log-likelihood <span class="math inline">\(\ell(\lambda) = \sum_{i=1}^n \ln f(x_i; \lambda)\)</span> for the Poisson model and find the MLE <span class="math inline">\(\hat{\lambda}\)</span>.</p>
 <p><strong>(b)</strong> The LRT statistic is <span class="math inline">\(\Lambda = L(\lambda_0)/L(\hat{\lambda})\)</span>. Compute <span class="math inline">\(-2\ln(\Lambda)\)</span> using the formula:</p>
-<p><span class="math display">\[-2\ln(\Lambda) = 2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]\]</span></p>
+<p><span class="math display">\[-2\ln(\Lambda) = -2\left[n\hat{\lambda} - n\lambda_0 + n\bar{x}\ln\!\left(\frac{\lambda_0}{\hat{\lambda}}\right)\right]\]</span></p>
 <p>using the observed data. (<em>Show the numerical calculation.</em>)</p>
 <p><strong>(c)</strong> By Wilks’ theorem, <span class="math inline">\(-2\ln(\Lambda) \xrightarrow{d} \chi^2_1\)</span> under <span class="math inline">\(H_0\)</span>. Compute the p-value and state your conclusion at <span class="math inline">\(\alpha = 0.05\)</span>. Also compute the exact p-value using <code>poisson.test()</code> and compare.</p>
 <p><strong>(d)</strong> How many free parameters does <span class="math inline">\(H_0\)</span> constrain? Why does the <span class="math inline">\(\chi^2\)</span> approximation have 1 degree of freedom here?</p>
@@ -304,7 +306,7 @@ window.Quarto = {
 <p><strong>(b)</strong> Starting from the pivot <span class="math inline">\((n-1)S^2/\sigma^2 \sim \chi^2_{n-1}\)</span>, compute a 95% two-sided CI for <span class="math inline">\(\sigma^2\)</span> and for <span class="math inline">\(\sigma\)</span> using the sample data. Use <code>qchisq()</code>.</p>
 <p><strong>(c)</strong> Sweep <span class="math inline">\(\mu_0\)</span> over <span class="math inline">\([1.5, 4.5]\)</span> in steps of 0.05. For each value compute the two-sided t-test p-value. Plot the p-value function with the 95% CI shaded as the region where <span class="math inline">\(p(\mu_0) \geq 0.05\)</span>. Verify visually that the CI from part (a) corresponds exactly to this region.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu0_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">1.5</span>, <span class="fl">4.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mu0_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">1.5</span>, <span class="fl">4.5</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <hr>
 </section>
@@ -312,9 +314,9 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="problem-6-bootstrap-hypothesis-testing-lesson-17">Problem 6: Bootstrap Hypothesis Testing (Lesson 17)</h3>
 <p>Serum ferritin (ng/mL) is a biomarker for iron stores. A study of <span class="math inline">\(n = 18\)</span> patients with chronic kidney disease gives:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">28.4</span>, <span class="fl">45.2</span>, <span class="fl">19.8</span>, <span class="fl">67.3</span>, <span class="fl">31.5</span>, <span class="fl">88.1</span>, <span class="fl">22.6</span>, <span class="fl">54.9</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ferritin <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">28.4</span>, <span class="fl">45.2</span>, <span class="fl">19.8</span>, <span class="fl">67.3</span>, <span class="fl">31.5</span>, <span class="fl">88.1</span>, <span class="fl">22.6</span>, <span class="fl">54.9</span>,</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>              <span class="fl">41.2</span>, <span class="fl">76.8</span>, <span class="fl">33.7</span>, <span class="fl">29.4</span>, <span class="fl">58.3</span>, <span class="fl">44.1</span>, <span class="fl">92.5</span>, <span class="fl">37.6</span>,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>              <span class="fl">25.8</span>, <span class="fl">61.4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>              <span class="fl">25.8</span>, <span class="fl">61.4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The population norm for healthy adults is <span class="math inline">\(\mu_0 = 40\)</span> ng/mL. Test <span class="math inline">\(H_0: \mu = 40\)</span> vs <span class="math inline">\(H_a: \mu \neq 40\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
 <p><strong>(a)</strong> Make a histogram of the data. Does normality seem reasonable? Compute <span class="math inline">\(T_{\text{obs}} = (\bar{x} - \mu_0)/(s/\sqrt{n})\)</span> and the parametric t-test p-value.</p>
@@ -376,13 +378,14 @@ window.Quarto = {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

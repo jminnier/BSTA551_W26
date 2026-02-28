@@ -6,11 +6,11 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c1f63da3e08f13bc72dc17e92cfd001d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Jessica Minnier">
-  <meta name="dcterms.date" content="2026-03-02">
+  <meta name="dcterms.date" content="2026-02-25">
   <title>Theory of Statistical Inference – Lesson 17: Bootstrap Hypothesis Testing</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -96,7 +96,7 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-956f8314d6009c897a35e82a733a9b04.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -213,7 +213,7 @@ Jessica Minnier
 </div>
 </div>
 
-  <p class="date">2026-03-02</p>
+  <p class="date">2026-02-25</p>
 </section>
 <section>
 <section id="lesson-17-bootstrap-hypothesis-testing" class="title-slide slide level1 center" data-background-color="#2c3e50">
@@ -383,7 +383,7 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb1-2"><a></a>n_shift     <span class="ot">&lt;-</span> <span class="dv">20</span></span>
 <span id="cb1-3"><a></a>x_obs_shift <span class="ot">&lt;-</span> <span class="fu">rexp</span>(n_shift, <span class="at">rate =</span> <span class="fl">0.2</span>)  <span class="co"># right-skewed; true mean = 5</span></span>
 <span id="cb1-4"><a></a>theta_0     <span class="ot">&lt;-</span> <span class="dv">4</span>  <span class="co"># null hypothesis value</span></span>
@@ -428,7 +428,7 @@ Jessica Minnier
 <span id="cb1-43"><a></a>                           <span class="st">"mean moved to "</span> <span class="sc">*</span> theta[<span class="dv">0</span>] <span class="sc">*</span> <span class="st">" = "</span> <span class="sc">*</span> .(theta_0)),</span>
 <span id="cb1-44"><a></a>       <span class="at">x =</span> <span class="fu">expression</span>(x<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
 <span id="cb1-45"><a></a></span>
-<span id="cb1-46"><a></a>p_orig <span class="sc">+</span> p_shift</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-46"><a></a>p_orig <span class="sc">+</span> p_shift</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -452,7 +452,7 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
 <span id="cb2-2"><a></a>n_crp <span class="ot">&lt;-</span> <span class="dv">22</span></span>
 <span id="cb2-3"><a></a><span class="co"># Gamma(shape=2, rate=1): mean = 2, SD ≈ 1.41 — right-skewed, moderate elevation</span></span>
 <span id="cb2-4"><a></a>crp_data <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n_crp, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="dv">1</span>)</span>
@@ -478,35 +478,35 @@ Jessica Minnier
 <span id="cb2-24"><a></a><span class="co"># Parametric t-test p-value</span></span>
 <span id="cb2-25"><a></a>p_param <span class="ot">&lt;-</span> <span class="fu">t.test</span>(crp_data, <span class="at">mu =</span> mu_0)<span class="sc">$</span>p.value</span>
 <span id="cb2-26"><a></a></span>
-<span id="cb2-27"><a></a><span class="fu">cat</span>(<span class="st">"Sample mean CRP:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(crp_data), <span class="dv">3</span>), <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-27"><a></a><span class="fu">cat</span>(<span class="st">"Sample mean CRP:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(crp_data), <span class="dv">3</span>), <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sample mean CRP: 2.083 mg/L</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">cat</span>(<span class="st">"Sample SD:      "</span>, <span class="fu">round</span>(<span class="fu">sd</span>(crp_data), <span class="dv">3</span>),  <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">cat</span>(<span class="st">"Sample SD:      "</span>, <span class="fu">round</span>(<span class="fu">sd</span>(crp_data), <span class="dv">3</span>),  <span class="st">"mg/L</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Sample SD:       1.588 mg/L</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">cat</span>(<span class="st">"Observed t-statistic:"</span>, <span class="fu">round</span>(T_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">cat</span>(<span class="st">"Observed t-statistic:"</span>, <span class="fu">round</span>(T_obs, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Observed t-statistic: 1.7238 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap p-value:   "</span>, <span class="fu">round</span>(p_boot, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">cat</span>(<span class="st">"Bootstrap p-value:   "</span>, <span class="fu">round</span>(p_boot, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Bootstrap p-value:    0.1174 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="st">"Parametric t-test p: "</span>, <span class="fu">round</span>(p_param, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="st">"Parametric t-test p: "</span>, <span class="fu">round</span>(p_param, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Parametric t-test p:  0.0994 </code></pre>
@@ -518,7 +518,7 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>t_df <span class="ot">&lt;-</span> n_crp <span class="sc">-</span> <span class="dv">1</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a>t_df <span class="ot">&lt;-</span> n_crp <span class="sc">-</span> <span class="dv">1</span></span>
 <span id="cb12-2"><a></a>t_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">6</span>, <span class="dv">6</span>, <span class="at">by =</span> <span class="fl">0.05</span>)</span>
 <span id="cb12-3"><a></a></span>
 <span id="cb12-4"><a></a>p_boot_null <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_boot), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
@@ -557,7 +557,7 @@ Jessica Minnier
 <span id="cb12-37"><a></a>       <span class="at">x =</span> <span class="st">"CRP (mg/L)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">fill =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb12-38"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
 <span id="cb12-39"><a></a></span>
-<span id="cb12-40"><a></a>p_data_compare <span class="sc">+</span> p_boot_null</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb12-40"><a></a>p_data_compare <span class="sc">+</span> p_boot_null</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -567,7 +567,7 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Compare rejection rates under H0 (alpha control) for normal vs skewed distributions</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Compare rejection rates under H0 (alpha control) for normal vs skewed distributions</span></span>
 <span id="cb13-2"><a></a>sim_compare <span class="ot">&lt;-</span> <span class="cf">function</span>(n, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">999</span>, <span class="at">reps =</span> <span class="dv">500</span>) {</span>
 <span id="cb13-3"><a></a>  <span class="fu">replicate</span>(reps, {</span>
 <span id="cb13-4"><a></a>    <span class="cf">if</span> (dist <span class="sc">==</span> <span class="st">"normal"</span>) {</span>
@@ -622,7 +622,7 @@ Jessica Minnier
 <span id="cb13-53"><a></a>    <span class="at">x =</span> <span class="st">"Sample size (n)"</span>, <span class="at">y =</span> <span class="st">"Empirical Type I error rate"</span>,</span>
 <span id="cb13-54"><a></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
 <span id="cb13-55"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb13-56"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-56"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -652,7 +652,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
 <span id="cb14-2"><a></a>n_demo <span class="ot">&lt;-</span> <span class="dv">22</span></span>
 <span id="cb14-3"><a></a>x_demo <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(n_demo, <span class="at">shape =</span> <span class="dv">2</span>, <span class="at">rate =</span> <span class="dv">1</span>)   <span class="co"># true mean ≈ 2</span></span>
 <span id="cb14-4"><a></a>mu_demo <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
@@ -701,7 +701,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <span id="cb14-47"><a></a>                          p_correct, p_ttest_demo),</span>
 <span id="cb14-48"><a></a>       <span class="at">x =</span> <span class="st">"t-statistic"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span>
 <span id="cb14-49"><a></a></span>
-<span id="cb14-50"><a></a>p_nv <span class="sc">+</span> p_cr</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb14-50"><a></a>p_nv <span class="sc">+</span> p_cr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -724,7 +724,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">library</span>(DiagrammeR)</span>
 <span id="cb15-2"><a></a></span>
 <span id="cb15-3"><a></a><span class="fu">grViz</span>(<span class="st">"</span></span>
 <span id="cb15-4"><a></a><span class="st">digraph test_choice {</span></span>
@@ -749,7 +749,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <span id="cb15-23"><a></a><span class="st">  D -&gt; E [label='  Yes', fontsize=13]</span></span>
 <span id="cb15-24"><a></a><span class="st">  D -&gt; F [label='  No', fontsize=12]</span></span>
 <span id="cb15-25"><a></a><span class="st">}</span></span>
-<span id="cb15-26"><a></a><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb15-26"><a></a><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div class="grViz html-widget html-fill-item" id="htmlwidget-c4f7af6d4a271fbcaa5d" style="width:1248px;height:672px;"></div>
@@ -817,7 +817,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>run_onesample_tests <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">20</span>, <span class="at">delta =</span> <span class="dv">0</span>, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">499</span>) {</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a>run_onesample_tests <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n =</span> <span class="dv">20</span>, <span class="at">delta =</span> <span class="dv">0</span>, <span class="at">dist =</span> <span class="st">"normal"</span>, <span class="at">B_inner =</span> <span class="dv">499</span>) {</span>
 <span id="cb16-2"><a></a>  x <span class="ot">&lt;-</span> <span class="cf">switch</span>(dist,</span>
 <span id="cb16-3"><a></a>    <span class="at">normal  =</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> delta),</span>
 <span id="cb16-4"><a></a>    <span class="at">skewed  =</span> <span class="fu">rexp</span>(n, <span class="at">rate =</span> <span class="dv">1</span>) <span class="sc">-</span> <span class="dv">1</span> <span class="sc">+</span> delta,</span>
@@ -886,7 +886,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <span id="cb16-67"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
 <span id="cb16-68"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb16-69"><a></a>        <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb16-70"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-70"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -896,7 +896,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">ggplot</span>(sim_res <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">==</span> <span class="dv">40</span>),</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">ggplot</span>(sim_res <span class="sc">|&gt;</span> <span class="fu">filter</span>(n <span class="sc">==</span> <span class="dv">40</span>),</span>
 <span id="cb17-2"><a></a>       <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> rejection, <span class="at">fill =</span> method)) <span class="sc">+</span></span>
 <span id="cb17-3"><a></a>  <span class="fu">geom_col</span>(<span class="at">alpha =</span> <span class="fl">0.85</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb17-4"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
@@ -911,7 +911,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <span id="cb17-13"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
 <span id="cb17-14"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>),</span>
 <span id="cb17-15"><a></a>        <span class="at">strip.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>),</span>
-<span id="cb17-16"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-16"><a></a>        <span class="at">plot.margin =</span> <span class="fu">margin</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">5</span>, <span class="dv">5</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -984,7 +984,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
 <span id="cb18-2"><a></a><span class="co"># Right-skewed small sample: CRP values (mg/L)</span></span>
 <span id="cb18-3"><a></a>crp_small <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.2</span>, <span class="fl">1.5</span>, <span class="fl">2.3</span>, <span class="fl">1.8</span>, <span class="fl">4.7</span>, <span class="fl">3.1</span>, <span class="fl">1.4</span>, <span class="fl">6.2</span>, <span class="fl">2.0</span>, <span class="fl">1.6</span>)</span>
 <span id="cb18-4"><a></a>n_s   <span class="ot">&lt;-</span> <span class="fu">length</span>(crp_small)</span>
@@ -1061,7 +1061,7 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
 <span id="cb18-75"><a></a>    <span class="at">subtitle =</span> <span class="st">"Green region = 95% percentile CI. Red points = mu0 where CI and test give contradictory decisions."</span>,</span>
 <span id="cb18-76"><a></a>    <span class="at">theme =</span> <span class="fu">theme</span>(<span class="at">plot.title    =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">17</span>),</span>
 <span id="cb18-77"><a></a>                  <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">14</span>))</span>
-<span id="cb18-78"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb18-78"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -1444,13 +1444,14 @@ It approximates the sampling distribution of <span class="math inline">\(\hat{\t
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

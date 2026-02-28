@@ -1,0 +1,1019 @@
+---
+title: "Lesson 18: Two-Sample Confidence Intervals and Tests"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w9d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 18 - Two-Sample Inference
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 18: Two-Sample Inference {background-color="#2c3e50"}
+
+## Review: Where We Left Off
+
+**Lessons 15–17: Hypothesis Testing**
+
+- Neyman-Pearson Lemma: MP tests via likelihood ratio
+- Likelihood Ratio Tests (LRT) for composite hypotheses
+- Bootstrap hypothesis tests: shift data to $H_0$, approximate null distribution
+
+. . .
+
+**Today's Goals:**
+
+1. Extend one-sample inference to **two independent samples**
+2. Derive and apply the two-sample **z-test and CI** for means ($\sigma$ known)
+3. Derive and apply the **Welch t-test** and **pooled t-test** ($\sigma$ unknown)
+4. Extend to **binary outcomes**: CIs and tests for $p_1 - p_2$
+5. Derive the **F-distribution** and test for $\sigma_1^2/\sigma_2^2$
+6. Apply all methods to medical research examples
+
+## Roadmap
+
+| Parameter | Setting | Method | Reference |
+|-----------|---------|--------|-----------|
+| $\mu_1 - \mu_2$ | $\sigma_1^2, \sigma_2^2$ known | Two-sample $z$ | DBC 9.5 |
+| $\mu_1 - \mu_2$ | $\sigma_1^2 \neq \sigma_2^2$ unknown | Welch $t$ | DBC 9.5 |
+| $\mu_1 - \mu_2$ | $\sigma_1^2 = \sigma_2^2$ unknown | Pooled $t$ | DBC 9.5 |
+| $p_1 - p_2$ | Large samples | $z$-test / Wald CI | DBC 9.6 |
+| $\sigma_1^2 / \sigma_2^2$ | Normal populations | $F$-test | DBC 9.6 |
+
+. . .
+
+::: callout-note
+## Motivating Context
+All of these settings arise constantly in medical research: comparing treatment vs. control on a continuous biomarker, comparing adverse event rates between arms, comparing lab variability between sites.
+:::
+
+# Two-Sample Setup and Point Estimation {background-color="#3498db"}
+
+## The Two-Sample Model
+
+**Setup:** Two independent random samples from possibly different populations:
+
+$$X_{11}, X_{12}, \ldots, X_{1n_1} \stackrel{iid}{\sim} F_1 \quad \text{with mean } \mu_1, \text{ variance } \sigma_1^2$$
+
+$$X_{21}, X_{22}, \ldots, X_{2n_2} \stackrel{iid}{\sim} F_2 \quad \text{with mean } \mu_2, \text{ variance } \sigma_2^2$$
+
+The two samples are **independent of each other**.
+
+. . .
+
+**Parameter of interest:** $\Delta = \mu_1 - \mu_2$
+
+**Point estimator:** $\hat{\Delta} = \bar{X}_1 - \bar{X}_2$
+
+. . .
+
+**Properties of $\hat{\Delta}$:**
+
+- $E[\bar{X}_1 - \bar{X}_2] = \mu_1 - \mu_2 \Rightarrow$ **unbiased**
+- $\text{Var}(\bar{X}_1 - \bar{X}_2) = \dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}$ (by independence)
+- $\text{SE}(\bar{X}_1 - \bar{X}_2) = \sqrt{\dfrac{\sigma_1^2}{n_1} + \dfrac{\sigma_2^2}{n_2}}$
+
+## Why Is $\bar{X}_1 - \bar{X}_2$ Approximately Normal? {.smaller}
+
+**Case 1: Both populations are normal** — exact result for any $n_1, n_2$:
+
+$$\bar{X}_1 \sim N\!\left(\mu_1, \frac{\sigma_1^2}{n_1}\right), \quad \bar{X}_2 \sim N\!\left(\mu_2, \frac{\sigma_2^2}{n_2}\right)$$
+
+A linear combination of independent normals is normal, so $\bar{X}_1 - \bar{X}_2 \sim N\!\left(\mu_1-\mu_2,\; \sigma_1^2/n_1 + \sigma_2^2/n_2\right)$ exactly.
+
+. . .
+
+**Case 2: Non-normal populations, large $n_1$ and $n_2$** — CLT applies *separately* to each sample mean:
+
+$$\bar{X}_1 = \frac{1}{n_1}\sum_{j=1}^{n_1} X_{1j} \;\dot{\sim}\; N\!\left(\mu_1, \frac{\sigma_1^2}{n_1}\right) \quad \text{(CLT, as } n_1 \to \infty\text{)}$$
+
+$$\bar{X}_2 = \frac{1}{n_2}\sum_{j=1}^{n_2} X_{2j} \;\dot{\sim}\; N\!\left(\mu_2, \frac{\sigma_2^2}{n_2}\right) \quad \text{(CLT, as } n_2 \to \infty\text{)}$$
+
+Because the two samples are **independent**, $\bar{X}_1 - \bar{X}_2$ is a sum of two asymptotically independent normal quantities:
+
+$$\bar{X}_1 - \bar{X}_2 \;\dot{\sim}\; N\!\left(\mu_1 - \mu_2,\; \frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}\right)$$
+
+. . .
+
+::: callout-note
+Both $n_1$ and $n_2$ must be large — if one is small, the CLT approximation may be poor for that group, undermining the overall approximation. A common rule of thumb is $n_1 \geq 30$ and $n_2 \geq 30$.
+:::
+
+## The Pivot: Standardizing the Difference
+
+In either case (exact or approximate), after standardizing:
+
+$$Z = \frac{(\bar{X}_1 - \bar{X}_2) - (\mu_1 - \mu_2)}{\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}} \;\sim\; N(0,1)$$
+
+This is a **pivotal quantity** when $\sigma_1^2$ and $\sigma_2^2$ are known — its distribution does not depend on any unknown parameters.
+
+. . .
+
+We can invert it to get a CI, just as in the one-sample case:
+
+$$P\!\left(-z_{\alpha/2} \leq \frac{(\bar{X}_1-\bar{X}_2)-\Delta}{\sqrt{\sigma_1^2/n_1+\sigma_2^2/n_2}} \leq z_{\alpha/2}\right) = 1-\alpha$$
+
+$$\Rightarrow \quad (\bar{X}_1 - \bar{X}_2) \pm z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}$$
+
+# Two-Sample z-Procedures ($\sigma$ Known) {background-color="#e74c3c"}
+
+## Two-Sample z-Test and CI (DBC 9.5)
+
+**Two-sample z-test** of $H_0: \mu_1 - \mu_2 = \Delta_0$:
+
+$$Z = \frac{(\bar{X}_1 - \bar{X}_2) - \Delta_0}{\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}}$$
+
+Reject $H_0$ at level $\alpha$:
+
+| Alternative | Rejection Region |
+|-------------|-----------------|
+| $\mu_1 - \mu_2 > \Delta_0$ | $Z > z_\alpha$ |
+| $\mu_1 - \mu_2 < \Delta_0$ | $Z < -z_\alpha$ |
+| $\mu_1 - \mu_2 \neq \Delta_0$ | $|Z| > z_{\alpha/2}$ |
+
+**Two-sample z-CI** (95%, two-sided):
+$$(\bar{X}_1 - \bar{X}_2) \pm z_{\alpha/2} \sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}$$
+
+## Medical Example: Two-Sample z-Test
+
+**Study:** A pilot study compares mean serum cortisol ($\mu$g/dL) between ICU patients with sepsis ($n_1 = 30$, known $\sigma_1 = 6$) and non-septic ICU controls ($n_2 = 35$, known $\sigma_2 = 5$). Observed: $\bar{x}_1 = 28.4$, $\bar{x}_2 = 22.1$. Test $H_0: \mu_1 = \mu_2$ vs. $H_a: \mu_1 > \mu_2$ at $\alpha = 0.05$.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+xbar1 <- 28.4; xbar2 <- 22.1
+sigma1 <- 6;   sigma2 <- 5
+n1 <- 30;      n2 <- 35
+
+se_diff <- sqrt(sigma1^2/n1 + sigma2^2/n2)
+z_obs   <- (xbar1 - xbar2) / se_diff
+p_value <- pnorm(z_obs, lower.tail = FALSE)  # one-sided
+
+z_crit <- qnorm(0.975)
+ci_lo  <- (xbar1 - xbar2) - z_crit * se_diff
+ci_hi  <- (xbar1 - xbar2) + z_crit * se_diff
+
+cat("SE:", round(se_diff, 3), "| Z:", round(z_obs, 3),
+    "| One-sided p:", round(p_value, 5), "\n")
+cat("95% CI for mu1 - mu2: (", round(ci_lo, 2), ",", round(ci_hi, 2), ")\n")
+```
+
+**Conclusion:** $Z = `r round((28.4-22.1)/sqrt(6^2/30+5^2/35), 2)`$, $p < 0.001$. Strong evidence that septic ICU patients have higher mean cortisol.
+
+# Two-Sample t-Procedures ($\sigma$ Unknown) {background-color="#27ae60"}
+
+## The Behrens-Fisher Problem
+
+In practice $\sigma_1^2$ and $\sigma_2^2$ are **rarely known**. Replacing them with sample variances $S_1^2$, $S_2^2$ gives the statistic:
+
+$$T = \frac{(\bar{X}_1 - \bar{X}_2) - \Delta_0}{\sqrt{S_1^2/n_1 + S_2^2/n_2}}$$
+
+**Problem:** $T$ does **not** follow an exact $t$ distribution when $\sigma_1^2 \neq \sigma_2^2$ — the numerator and denominator are not independent in the way needed for an exact $t$ pivot. This is the **Behrens-Fisher problem**.
+
+. . .
+
+**Two solutions:**
+
+| Approach | Assumption | Null distribution |
+|----------|-----------|------------------|
+| Welch (Satterthwaite) | $\sigma_1^2 \neq \sigma_2^2$ allowed | $T \approx t_{\hat\nu}$ |
+| Pooled | $\sigma_1^2 = \sigma_2^2 = \sigma^2$ required | $T_P \sim t_{n_1+n_2-2}$ (exact) |
+
+## Welch's t-Test — Recommended Default (DBC 9.5)
+
+**Welch's t-statistic:**
+$$T_W = \frac{(\bar{X}_1 - \bar{X}_2) - \Delta_0}{\sqrt{S_1^2/n_1 + S_2^2/n_2}}$$
+
+Under $H_0$, $T_W \approx t_{\hat\nu}$ where the **Welch-Satterthwaite degrees of freedom** are:
+
+$$\hat\nu = \frac{(S_1^2/n_1 + S_2^2/n_2)^2}{\dfrac{(S_1^2/n_1)^2}{n_1-1} + \dfrac{(S_2^2/n_2)^2}{n_2-1}}$$
+
+Note: $\hat\nu$ is always between $\min(n_1, n_2)-1$ and $n_1+n_2-2$.
+
+. . .
+
+**Welch 95% CI for $\mu_1 - \mu_2$:**
+$$(\bar{X}_1 - \bar{X}_2) \pm t_{\alpha/2,\,\hat\nu}\,\sqrt{\frac{S_1^2}{n_1} + \frac{S_2^2}{n_2}}$$
+
+::: callout-important
+## Why Welch?
+The Welch test is robust to unequal variances and performs well even when $\sigma_1^2 = \sigma_2^2$. It is the **default in R's `t.test()`** and recommended by most statisticians as the standard two-sample test.
+:::
+
+## The Pooled t-Test (DBC 9.5)
+
+When $\sigma_1^2 = \sigma_2^2 = \sigma^2$ (equal variances assumed), we estimate the common variance by pooling:
+
+$$S_p^2 = \frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1 + n_2 - 2}$$
+
+$S_p^2$ is an unbiased estimator of $\sigma^2$ and uses all $n_1 + n_2 - 2$ degrees of freedom.
+
+**Pooled t-statistic:**
+$$T_P = \frac{(\bar{X}_1 - \bar{X}_2) - \Delta_0}{S_p\sqrt{1/n_1 + 1/n_2}} \sim t_{n_1+n_2-2} \quad \text{(exact under normality + equal } \sigma^2\text{)}$$
+
+**Pooled 95% CI:**
+$$(\bar{X}_1 - \bar{X}_2) \pm t_{\alpha/2,\,n_1+n_2-2}\;S_p\sqrt{\frac{1}{n_1} + \frac{1}{n_2}}$$
+
+::: callout-warning
+## When to Use Pooled t
+Only use the pooled t when there is **strong prior subject-matter reason** to believe $\sigma_1^2 = \sigma_2^2$. Do **not** use an F-test on the same data to justify pooling — this inflates Type I error.
+:::
+
+## Why the Direction of Bias Matters
+
+When $\sigma_1^2 \neq \sigma_2^2$, $S_p^2$ is a weighted average of two estimators targeting *different* quantities. The pooled SE can be either too big or too small:
+
+$$S_p^2 = \frac{(n_1-1)S_1^2 + (n_2-1)S_2^2}{n_1+n_2-2} \approx \frac{(n_1-1)\sigma_1^2 + (n_2-1)\sigma_2^2}{n_1+n_2-2}$$
+
+The **true** SE of $\bar{X}_1 - \bar{X}_2$ is $\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}$. Whether the pooled SE over- or underestimates this depends on the $n$–$\sigma$ relationship:
+
+| Configuration | Pooled SE vs. true SE | Pooled test |
+|---------------|-----------------------|-------------|
+| $n_1 = n_2$ (balanced) | Approximately correct regardless of $\sigma_1 \neq \sigma_2$ | $\approx$ 5% |
+| Larger group has **larger** $\sigma$ (Scenario 3 below) | Pooled SE **too large** → $T$ deflated | **Conservative** (< 5%) |
+| Larger group has **smaller** $\sigma$ (Scenario 4 below) | Pooled SE **too small** → $T$ inflated | **Anti-conservative** (> 5%) |
+
+. . .
+
+::: callout-note
+The Welch test is robust to all of these scenarios because it uses $S_1^2/n_1 + S_2^2/n_2$ directly without pooling.
+:::
+
+## Welch vs. Pooled: Type I Error Simulation
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 16
+
+set.seed(551)
+sim_ttest <- function(n1, n2, sigma1, sigma2, B = 3000) {
+  map_dfr(1:B, function(i) {
+    x1 <- rnorm(n1, mean = 0, sd = sigma1)
+    x2 <- rnorm(n2, mean = 0, sd = sigma2)
+    tibble(
+      p_welch  = t.test(x1, x2, var.equal = FALSE)$p.value,
+      p_pooled = t.test(x1, x2, var.equal = TRUE)$p.value
+    )
+  })
+}
+
+# Compute true SE and pooled-approx SE for annotation
+true_se   <- function(n1, n2, s1, s2) sqrt(s1^2/n1 + s2^2/n2)
+pooled_se <- function(n1, n2, s1, s2) {
+  sp <- sqrt(((n1-1)*s1^2 + (n2-1)*s2^2) / (n1+n2-2))
+  sp * sqrt(1/n1 + 1/n2)
+}
+
+scenarios <- tibble(
+  n1     = c(20, 20, 10, 30),
+  n2     = c(20, 20, 30, 10),
+  sigma1 = c( 2,  1,  1,  1),
+  sigma2 = c( 2,  3,  3,  3),
+  label  = c(
+    "Equal n, equal variances\nn1=n2=20, s1=s2=2",
+    "Equal n, unequal variances\nn1=n2=20, s1=1, s2=3",
+    "Larger group has larger variance\nn1=10, n2=30, s1=1, s2=3",
+    "Larger group has smaller variance\nn1=30, n2=10, s1=1, s2=3"
+  )
+)
+
+results <- pmap_dfr(scenarios, function(n1, n2, sigma1, sigma2, label) {
+  sim_ttest(n1, n2, sigma1, sigma2) |>
+    summarise(Welch  = mean(p_welch  < 0.05),
+              Pooled = mean(p_pooled < 0.05)) |>
+    mutate(
+      Scenario  = label,
+      true_se   = true_se(n1, n2, sigma1, sigma2),
+      pooled_se = pooled_se(n1, n2, sigma1, sigma2),
+      se_bias   = case_when(
+        abs(pooled_se - true_se) < 0.02 ~ "Pooled SE ~ True SE",
+        pooled_se > true_se             ~ "Pooled SE too LARGE\n(conservative)",
+        TRUE                            ~ "Pooled SE too SMALL\n(anti-conservative)"
+      )
+    )
+})
+
+# Annotation data: only label the pooled bar
+pooled_annot <- results |>
+  select(Scenario, se_bias) |>
+  mutate(Test = "Pooled", x_pos = 1)
+
+plot_data <- results |>
+  pivot_longer(c(Welch, Pooled), names_to = "Test", values_to = "TypeI")
+
+ggplot(plot_data, aes(x = Test, y = TypeI, fill = Test)) +
+  geom_col(width = 0.5) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 1.2) +
+  geom_text(
+    data = filter(plot_data, Test == "Pooled"),
+    aes(label = se_bias, y = TypeI + 0.008),
+    color = "#c0392b", size = 3.5, lineheight = 0.9
+  ) +
+  scale_fill_manual(values = c("Welch" = "#006a4e", "Pooled" = "#e74c3c")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.30),
+                     expand = expansion(mult = c(0, 0.05))) +
+  facet_wrap(~Scenario, nrow = 1) +
+  labs(
+    title    = "Type I Error Rate: Welch vs. Pooled t-test  (nominal alpha = 5%)",
+    subtitle = paste0(
+      "Pooled test can be conservative OR anti-conservative depending on which group has the larger variance.\n",
+      "Welch test stays near 5% in all scenarios."
+    ),
+    x = NULL, y = "Type I Error Rate", fill = "Method"
+  ) +
+  theme(legend.position = "bottom",
+        strip.text    = element_text(size = 10),
+        axis.text.x   = element_blank(),
+        axis.ticks.x  = element_blank())
+```
+
+## Medical Example: Welch t-Test in R
+
+**RCT:** A randomized trial compares 12-week LDL cholesterol reduction (mg/dL) between a statin ($n_1 = 45$) and placebo ($n_2 = 43$).
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(42)
+ldl_drug    <- rnorm(45, mean = 32, sd = 18)
+ldl_placebo <- rnorm(43, mean =  8, sd = 12)
+
+# Welch t-test (R default)
+result_welch <- t.test(ldl_drug, ldl_placebo,
+                       alternative = "two.sided", conf.level = 0.95)
+tidy(result_welch)
+```
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Store for use below
+ci_result <- result_welch
+cat("Welch df:", round(ci_result$parameter, 1), "\n")
+cat("Mean difference:", round(diff(rev(ci_result$estimate)), 2), "mg/dL\n")
+cat("95% CI: (", round(ci_result$conf.int[1], 2), ",",
+                  round(ci_result$conf.int[2], 2), ")\n")
+```
+
+## Visualizing the LDL Data
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 11
+
+tibble(
+  reduction = c(ldl_drug, ldl_placebo),
+  group     = rep(c("Statin", "Placebo"), c(45, 43))
+) |>
+  ggplot(aes(x = group, y = reduction, fill = group)) +
+  geom_boxplot(alpha = 0.7, width = 0.4, outlier.shape = 1) +
+  geom_jitter(width = 0.12, alpha = 0.4, size = 1.8) +
+  stat_summary(fun = mean, geom = "point", shape = 18,
+               size = 5, color = "black") +
+  scale_fill_manual(values = c("Statin" = "#006a4e", "Placebo" = "#3498db")) +
+  labs(title = "LDL Cholesterol Reduction by Treatment Group",
+       subtitle = "Diamond = group mean. Welch two-sample t-test.",
+       x = NULL, y = "LDL Reduction (mg/dL)", fill = NULL) +
+  theme(legend.position = "none")
+```
+
+**Interpretation:** The statin reduces LDL by approximately `r round(diff(rev(ci_result$estimate)), 1)` mg/dL more than placebo (95% CI: `r round(ci_result$conf.int[1],1)` to `r round(ci_result$conf.int[2],1)` mg/dL, $p < 0.001$, Welch t-test, df = `r round(ci_result$parameter,1)`).
+
+## Pooled t-Test: DBC Example
+
+**DBC 9.5:** Two care groups measured for systolic blood pressure (mmHg). Prior clinical knowledge supports equal variability.
+
+- Standard care: $n_1 = 12$, $\bar{x}_1 = 140.2$, $s_1 = 14.3$
+- Intensive care: $n_2 = 10$, $\bar{x}_2 = 128.7$, $s_2 = 13.8$
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+n1 <- 12; xbar1 <- 140.2; s1 <- 14.3
+n2 <- 10; xbar2 <- 128.7; s2 <- 13.8
+
+sp2 <- ((n1-1)*s1^2 + (n2-1)*s2^2) / (n1 + n2 - 2)
+sp  <- sqrt(sp2)
+
+t_obs <- (xbar1 - xbar2) / (sp * sqrt(1/n1 + 1/n2))
+df    <- n1 + n2 - 2
+p_val <- 2 * pt(abs(t_obs), df = df, lower.tail = FALSE)
+t_crit <- qt(0.975, df = df)
+margin <- t_crit * sp * sqrt(1/n1 + 1/n2)
+
+cat(sprintf("Sp = %.2f,  df = %d\n", sp, df))
+cat(sprintf("T_obs = %.3f,  p-value = %.4f\n", t_obs, p_val))
+cat(sprintf("95%% CI: (%.2f, %.2f)\n",
+            xbar1 - xbar2 - margin, xbar1 - xbar2 + margin))
+```
+
+**Conclusion:** $t = `r round(t_obs, 3)`$, $df = `r df`$, $p = `r round(p_val, 4)`$. Reject $H_0$ at $\alpha = 0.05$; evidence of a difference in systolic BP between care groups.
+
+## When Do Welch and Pooled t-Distributions Differ?
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6.5
+#| fig-width: 16
+
+# Scenario A: similar n and similar s (Welch ~ Pooled)
+nA1 <- 45; nA2 <- 43; sA1 <- 18; sA2 <- 12
+nuA_welch  <- (sA1^2/nA1 + sA2^2/nA2)^2 /
+              ((sA1^2/nA1)^2/(nA1-1) + (sA2^2/nA2)^2/(nA2-1))
+nuA_pooled <- nA1 + nA2 - 2
+
+# Scenario B: very unequal n and s (Welch << Pooled)
+nB1 <- 8;  nB2 <- 40; sB1 <- 15; sB2 <- 3
+nuB_welch  <- (sB1^2/nB1 + sB2^2/nB2)^2 /
+              ((sB1^2/nB1)^2/(nB1-1) + (sB2^2/nB2)^2/(nB2-1))
+nuB_pooled <- nB1 + nB2 - 2
+
+t_grid <- seq(-5, 5, length.out = 600)
+
+make_df <- function(nu_w, nu_p, label) {
+  bind_rows(
+    tibble(t = t_grid,
+           density = dt(t_grid, df = nu_w),
+           Method  = sprintf("Welch (df=%.1f)", nu_w)),
+    tibble(t = t_grid,
+           density = dt(t_grid, df = nu_p),
+           Method  = sprintf("Pooled (df=%d)", nu_p))
+  ) |> mutate(Scenario = label)
+}
+
+df_both <- bind_rows(
+  make_df(nuA_welch, nuA_pooled,
+          sprintf("Scenario A: balanced, similar variances\nn1=%d, n2=%d, s1=%.0f, s2=%.0f",
+                  nA1, nA2, sA1, sA2)),
+  make_df(nuB_welch, nuB_pooled,
+          sprintf("Scenario B: small n1, very unequal variances\nn1=%d, n2=%d, s1=%.0f, s2=%.0f",
+                  nB1, nB2, sB1, sB2))
+)
+
+# Show T_obs = 2 in each panel (representative value in rejection region)
+t_ref <- 2.0
+
+ggplot(df_both, aes(x = t, y = density, color = Method, linetype = Method)) +
+  geom_line(linewidth = 1.5) +
+  geom_vline(xintercept = c(-t_ref, t_ref), color = "#e74c3c",
+             linewidth = 1.1, linetype = "dotted") +
+  annotate("text", x = t_ref + 0.15, y = 0.37,
+           label = paste0("T = ", t_ref),
+           color = "#e74c3c", size = 5, hjust = 0) +
+  facet_wrap(~Scenario) +
+  scale_color_manual(values    = c("#006a4e", "#e74c3c",
+                                   "#3498db", "#9b59b6")) +
+  scale_linetype_manual(values = c("solid", "dashed",
+                                   "solid", "dashed")) +
+  labs(
+    title    = "Welch vs. Pooled t-Distributions: When Do They Differ?",
+    subtitle = paste0("Scenario A: nearly identical distributions — pooled and Welch agree.\n",
+                      "Scenario B: small n1 with large s1 → Welch df much smaller → heavier tails → larger p-values"),
+    x = "t", y = "Density", color = NULL, linetype = NULL
+  ) +
+  theme(legend.position = "bottom",
+        strip.text = element_text(size = 12))
+```
+
+## Sample Size for Two-Sample t-Test
+
+For a two-sided test at level $\alpha$, power $1-\beta$, to detect $|\mu_1 - \mu_2| = \delta$ (assuming $\sigma_1 = \sigma_2 = \sigma$, $n_1 = n_2 = n$):
+
+$$n \approx \frac{2\sigma^2(z_{\alpha/2} + z_\beta)^2}{\delta^2}$$
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Detect 10 mmHg SBP difference; sigma = 15; 90% power; alpha = 0.05
+sigma <- 15; delta <- 10; alpha <- 0.05; power <- 0.90
+
+n_approx <- ceiling(2 * sigma^2 * (qnorm(1-alpha/2) + qnorm(power))^2 / delta^2)
+cat("Formula approximation, n per arm:", n_approx, "\n\n")
+
+power.t.test(delta = delta, sd = sigma, sig.level = alpha,
+             power = power, type = "two.sample", alternative = "two.sided")
+```
+
+## Summary: Which Two-Sample Test?
+
+| Condition | Method | Degrees of Freedom |
+|-----------|--------|-------------------|
+| $\sigma_1^2, \sigma_2^2$ known; large $n$ or normal | Two-sample $z$ | $\infty$ (use $z_{\alpha/2}$) |
+| $\sigma_1^2 \neq \sigma_2^2$, unknown **(default)** | **Welch $t$** | $\hat\nu$ (Satterthwaite) |
+| $\sigma_1^2 = \sigma_2^2$, strong prior knowledge | Pooled $t$ | $n_1 + n_2 - 2$ |
+| Non-normal, small $n$ | Bootstrap or Wilcoxon rank-sum | — |
+
+. . .
+
+::: callout-important
+## Rules of Thumb
+- **Default:** Use Welch. It performs well whether or not variances are equal.
+- **Pooled:** Only when there is strong external (prior) subject-matter justification for equal variances — not based on testing the same data.
+- **Checking normality:** Plot the data (histogram, Q-Q plot). For $n_i \geq 30$, the CLT provides protection; for small $n$, departures from normality matter more.
+:::
+
+# Two-Sample Inference for Proportions (DBC 9.6) {background-color="#e74c3c"}
+
+## Setup: Two Independent Bernoulli Samples
+
+**Group 1:** $X_{11}, \ldots, X_{1n_1} \stackrel{iid}{\sim} \text{Bernoulli}(p_1)$; count $Y_1 \sim \text{Bin}(n_1, p_1)$
+
+**Group 2:** $X_{21}, \ldots, X_{2n_2} \stackrel{iid}{\sim} \text{Bernoulli}(p_2)$; count $Y_2 \sim \text{Bin}(n_2, p_2)$
+
+**Parameter of interest:** $\Delta = p_1 - p_2$. **Estimator:** $\hat\Delta = \hat{p}_1 - \hat{p}_2 = Y_1/n_1 - Y_2/n_2$
+
+. . .
+
+**Why CLT applies:** Each $\hat{p}_i = Y_i/n_i$ is a sample mean of iid $\text{Bernoulli}(p_i)$ observations. By CLT:
+
+$$\hat{p}_i = \frac{1}{n_i}\sum_{j=1}^{n_i} X_{ij} \;\dot{\sim}\; N\!\left(p_i,\; \frac{p_i(1-p_i)}{n_i}\right) \quad \text{for large } n_i$$
+
+Since the groups are independent, the difference of two approximately normal quantities is approximately normal:
+
+$$\hat{p}_1 - \hat{p}_2 \;\dot{\sim}\; N\!\left(p_1 - p_2,\; \frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}\right)$$
+
+. . .
+
+::: callout-note
+## Large-Sample Condition
+The normal approximation is adequate when $n_i\hat{p}_i \geq 5$ and $n_i(1-\hat{p}_i) \geq 5$ for both $i = 1, 2$.
+For rare events or small $n$, use **Fisher's exact test** or a **bootstrap CI**.
+:::
+
+## CI and Test for $p_1 - p_2$ (DBC 9.6)
+
+**Wald CI** (plug in $\hat{p}_1, \hat{p}_2$ for unknown $p_1, p_2$):
+$$(\hat{p}_1 - \hat{p}_2) \pm z_{\alpha/2} \sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}$$
+
+**Hypothesis test** of $H_0: p_1 = p_2$: Under $H_0$ both groups share a common $p$. Estimate it as $\hat{p} = (Y_1 + Y_2)/(n_1 + n_2)$ — the **pooled proportion**.
+
+**Pooled z-statistic:**
+$$Z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1-\hat{p})\left(\dfrac{1}{n_1} + \dfrac{1}{n_2}\right)}}$$
+
+. . .
+
+::: callout-important
+## Pooled vs. Unpooled SE
+- **Test:** Use **pooled** $\hat{p}$ — $H_0$ says $p_1 = p_2$, so exploit that constraint.
+- **CI:** Use **unpooled** $\hat{p}_1, \hat{p}_2$ — the CI makes no assumption about $p_1 = p_2$.
+:::
+
+## Medical Example: Adverse Event Rates
+
+**Clinical Trial:** A drug trial compares 30-day SAE rates: treatment ($n_1 = 150$, $y_1 = 12$) vs. control ($n_2 = 148$, $y_2 = 24$). Test $H_0: p_1 = p_2$ and construct a 95% CI.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+n1 <- 150; y1 <- 12
+n2 <- 148; y2 <- 24
+
+p1_hat <- y1/n1; p2_hat <- y2/n2
+p_pool <- (y1 + y2) / (n1 + n2)
+
+# Test (pooled SE)
+se_pool <- sqrt(p_pool*(1-p_pool)*(1/n1 + 1/n2))
+z_stat  <- (p1_hat - p2_hat) / se_pool
+p_val   <- 2 * pnorm(abs(z_stat), lower.tail = FALSE)
+
+# 95% CI (unpooled SE)
+se_ci <- sqrt(p1_hat*(1-p1_hat)/n1 + p2_hat*(1-p2_hat)/n2)
+ci    <- (p1_hat - p2_hat) + c(-1, 1) * qnorm(0.975) * se_ci
+
+cat(sprintf("p1_hat = %.4f | p2_hat = %.4f | pooled p = %.4f\n",
+            p1_hat, p2_hat, p_pool))
+cat(sprintf("Z = %.3f | p-value = %.4f\n", z_stat, p_val))
+cat(sprintf("95%% CI for p1-p2: (%.4f, %.4f)\n", ci[1], ci[2]))
+```
+
+## Compare with prop.test(), and Visualize
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+prop.test(c(y1, y2), c(n1, n2), correct = FALSE) |> tidy()
+```
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 4.5
+#| fig-width: 9
+
+tribble(
+  ~Group,       ~rate,   ~n,
+  "Treatment",  p1_hat,  n1,
+  "Control",    p2_hat,  n2
+) |>
+  mutate(
+    se = sqrt(rate*(1-rate)/n),
+    lo = rate - qnorm(0.975)*se,
+    hi = rate + qnorm(0.975)*se
+  ) |>
+  ggplot(aes(x = Group, y = rate, color = Group)) +
+  geom_point(size = 6) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.08, linewidth = 1.3) +
+  scale_color_manual(values = c("Treatment" = "#006a4e", "Control" = "#e74c3c")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.25)) +
+  labs(title = "30-Day SAE Rate by Treatment Arm",
+       subtitle = "Points: estimated rates; bars: 95% Wald CIs",
+       x = NULL, y = "SAE Rate") +
+  theme(legend.position = "none")
+```
+
+## Relative Risk and Odds Ratio
+
+The difference $p_1 - p_2$ (risk difference) is one effect measure. Medical research often reports:
+
+$$\text{Relative Risk (RR)} = \frac{p_1}{p_2}, \qquad \text{Odds Ratio (OR)} = \frac{p_1/(1-p_1)}{p_2/(1-p_2)}$$
+
+CIs for RR and OR are constructed on the log scale (approximately normal), then back-transformed.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+RR <- p1_hat / p2_hat
+OR <- (p1_hat/(1-p1_hat)) / (p2_hat/(1-p2_hat))
+
+# Delta-method SE on log scale
+se_logRR <- sqrt(1/y1 - 1/n1 + 1/y2 - 1/n2)
+se_logOR <- sqrt(1/y1 + 1/(n1-y1) + 1/y2 + 1/(n2-y2))
+
+cat(sprintf("RR = %.3f  (95%% CI: %.3f, %.3f)\n",
+    RR, exp(log(RR) - 1.96*se_logRR), exp(log(RR) + 1.96*se_logRR)))
+cat(sprintf("OR = %.3f  (95%% CI: %.3f, %.3f)\n",
+    OR, exp(log(OR) - 1.96*se_logOR), exp(log(OR) + 1.96*se_logOR)))
+```
+
+. . .
+
+**Interpretation:** The treatment arm had approximately half the SAE rate of control (RR ≈ 0.49). When $p$ is small, RR $\approx$ OR; they diverge as event rates increase.
+
+# Inferences About Two Variances (DBC 9.6) {background-color="#9b59b6"}
+
+## The F-Distribution
+
+When comparing variability between two groups, we need the **F-distribution**.
+
+**Key result:** If $U \sim \chi^2_m$ and $V \sim \chi^2_n$ are independent, then:
+$$F = \frac{U/m}{V/n} \sim F_{m,n}$$
+
+Connection to sample variances: Under normality, $(n_i-1)S_i^2/\sigma_i^2 \sim \chi^2_{n_i-1}$ independently, so:
+
+$$F = \frac{S_1^2/\sigma_1^2}{S_2^2/\sigma_2^2} \sim F_{n_1-1,\;n_2-1}$$
+
+Under $H_0: \sigma_1^2 = \sigma_2^2$, the ratio simplifies to $F = S_1^2/S_2^2$.
+
+. . .
+
+**Properties of $F_{m,n}$:**
+
+- Support: $(0, \infty)$; right-skewed for small $m, n$
+- $E[F] = n/(n-2)$ for $n > 2$
+- **Reciprocal:** if $F \sim F_{m,n}$ then $1/F \sim F_{n,m}$
+- Critical values in R: `qf(p, df1, df2)`
+
+## F-Distribution Shape
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6.5
+#| fig-width: 13
+
+x_f <- seq(0.01, 6, length.out = 500)
+
+expand_grid(
+  x   = x_f,
+  df1 = c(1, 5, 10, 20)
+) |>
+  mutate(
+    density = df(x, df1 = df1, df2 = df1),
+    label   = paste0("F(", df1, ",", df1, ")")
+  ) |>
+  ggplot(aes(x = x, y = density, color = label)) +
+  geom_line(linewidth = 1.4) +
+  scale_color_brewer(palette = "Dark2") +
+  coord_cartesian(ylim = c(0, 1.2)) +
+  labs(
+    title    = "F-Distribution for Various Degrees of Freedom  (df1 = df2)",
+    subtitle = "As degrees of freedom increase, the F-distribution concentrates near 1",
+    x        = "f",
+    y        = "Density",
+    color    = "Distribution"
+  ) +
+  theme(legend.position = "right")
+```
+
+## F-Test for $H_0: \sigma_1^2 = \sigma_2^2$ (DBC 9.6)
+
+**Test statistic:** $f = s_1^2/s_2^2$; under $H_0$, $F = S_1^2/S_2^2 \sim F_{n_1-1,\,n_2-1}$
+
+| Alternative | Rejection Region | p-value |
+|-------------|-----------------|---------|
+| $\sigma_1^2 > \sigma_2^2$ | $f > F_{\alpha,\,n_1-1,\,n_2-1}$ | $P(F \geq f)$ |
+| $\sigma_1^2 < \sigma_2^2$ | $f < F_{1-\alpha,\,n_1-1,\,n_2-1}$ | $P(F \leq f)$ |
+| $\sigma_1^2 \neq \sigma_2^2$ | $f < F_{1-\alpha/2}$ or $f > F_{\alpha/2}$ | $2\min(P(F \leq f),\,P(F \geq f))$ |
+
+**CI for $\sigma_1^2/\sigma_2^2$:**
+
+$$\left(\frac{s_1^2/s_2^2}{F_{\alpha/2,\,n_1-1,\,n_2-1}},\;\; \frac{s_1^2/s_2^2}{F_{1-\alpha/2,\,n_1-1,\,n_2-1}}\right)$$
+
+Note: use the reciprocal property $F_{1-\alpha/2,\,m,n} = 1/F_{\alpha/2,\,n,m}$.
+
+## Medical Example: Comparing Lab Variability
+
+**Study:** Two clinical labs each measure serum potassium (mEq/L) on the same patient samples.
+
+- Lab 1: $n_1 = 16$, $s_1 = 0.38$ mEq/L
+- Lab 2: $n_2 = 21$, $s_2 = 0.22$ mEq/L
+
+Test $H_0: \sigma_1^2 = \sigma_2^2$ vs. $H_a: \sigma_1^2 > \sigma_2^2$ at $\alpha = 0.05$.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+n1 <- 16; s1 <- 0.38
+n2 <- 21; s2 <- 0.22
+
+f_stat <- s1^2 / s2^2
+df1    <- n1 - 1; df2 <- n2 - 1
+
+p_val  <- pf(f_stat, df1 = df1, df2 = df2, lower.tail = FALSE)
+
+f_lo  <- qf(0.025, df1 = df1, df2 = df2)
+f_hi  <- qf(0.975, df1 = df1, df2 = df2)
+ci_lo <- f_stat / f_hi;   ci_hi <- f_stat / f_lo
+
+cat(sprintf("F = %.3f  (df: %d, %d)  |  one-sided p = %.4f\n",
+            f_stat, df1, df2, p_val))
+cat(sprintf("95%% CI for sigma1^2/sigma2^2: (%.3f, %.3f)\n", ci_lo, ci_hi))
+```
+
+**Conclusion:** $F = `r round(s1^2/s2^2, 3)`$, $p = `r round(pf(s1^2/s2^2, 15, 20, lower.tail=FALSE), 4)`$. Strong evidence Lab 1 has greater measurement variability. Verify with `var.test()`.
+
+## F-Test in R and Sensitivity Warning
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+lab1 <- rnorm(16, mean = 4.2, sd = 0.38)
+lab2 <- rnorm(21, mean = 4.2, sd = 0.22)
+
+var.test(lab1, lab2, alternative = "greater") |> tidy()
+```
+
+. . .
+
+::: callout-warning
+## The F-test is Extremely Sensitive to Non-Normality
+
+The F-test for equality of variances assumes **exact normality** of both populations — far more sensitive than the t-test for means. For non-normal data:
+
+- **Levene's test** (`car::leveneTest()`) — uses absolute deviations from group medians; robust to non-normality
+- **Bartlett's test** (`bartlett.test()`) — equivalent power to F-test but also assumes normality
+
+In medical research, the F-test for variances is most appropriate when normality is well-established (e.g., duplicate laboratory measurements). In most other settings, Levene's test is preferred.
+:::
+
+## F-Test Sensitivity to Non-Normality: Simulation
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 13
+
+set.seed(551)
+B <- 3000
+
+sim_ftest <- function(dist_fn, n = 20) {
+  map_dbl(1:B, function(i) {
+    var.test(dist_fn(n), dist_fn(n))$p.value
+  })
+}
+
+tibble(
+  p_value = c(
+    sim_ftest(function(n) rnorm(n)),
+    sim_ftest(function(n) rt(n, df = 3)),
+    sim_ftest(function(n) rexp(n)),
+    sim_ftest(function(n) rchisq(n, df = 5))
+  ),
+  Distribution = rep(
+    c("Normal", "t(3) - heavy tails",
+      "Exponential - right skew", "chi-sq(5) - right skew"),
+    each = B
+  )
+) |>
+  group_by(Distribution) |>
+  summarise(RejectionRate = mean(p_value < 0.05)) |>
+  ggplot(aes(x = reorder(Distribution, RejectionRate),
+             y = RejectionRate, fill = Distribution)) +
+  geom_col(width = 0.55) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 1.2) +
+  scale_fill_brewer(palette = "Set2") +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.32),
+                     expand = expansion(mult = c(0, 0.05))) +
+  labs(
+    title    = "F-Test Type I Error Under H0 (equal variances) by Distribution Shape",
+    subtitle = "F-test is severely inflated for heavy-tailed and skewed data. Nominal level = 5%.",
+    x        = NULL,
+    y        = "Rejection Rate (alpha = 0.05)",
+    fill     = NULL
+  ) +
+  coord_flip() +
+  theme(legend.position = "none",
+        axis.text.y = element_text(size = 13))
+```
+
+# Complete Clinical Trial Example {background-color="#2c3e50"}
+
+## Anticoagulant Trial: Applying All Methods
+
+**RCT:** New anticoagulant vs. standard of care in atrial fibrillation patients. Outcomes at 6 months: INR (continuous) and major bleeding events (binary).
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 15
+
+set.seed(42)
+n_treat <- 80; n_ctrl <- 78
+
+inr_treat   <- rnorm(n_treat, mean = 2.5, sd = 0.6)
+inr_ctrl    <- rnorm(n_ctrl,  mean = 2.1, sd = 0.9)
+bleed_treat <- rbinom(n_treat, 1, 0.06)
+bleed_ctrl  <- rbinom(n_ctrl,  1, 0.13)
+
+welch_res <- t.test(inr_treat, inr_ctrl) |> tidy()
+ftest_res <- var.test(inr_treat, inr_ctrl) |> tidy()
+prop_res  <- prop.test(c(sum(bleed_treat), sum(bleed_ctrl)),
+                        c(n_treat, n_ctrl), correct = FALSE) |> tidy()
+
+p1 <- tibble(
+  INR   = c(inr_treat, inr_ctrl),
+  Group = rep(c("Treatment", "Control"), c(n_treat, n_ctrl))
+) |>
+  ggplot(aes(x = Group, y = INR, fill = Group)) +
+  geom_violin(alpha = 0.5, trim = FALSE) +
+  geom_boxplot(width = 0.15, fill = "white", outlier.shape = 1) +
+  scale_fill_manual(values = c("Treatment"="#006a4e","Control"="#e74c3c")) +
+  labs(title = "INR at 6 Months", x = NULL, y = "INR") +
+  theme(legend.position = "none")
+
+bleed_summ <- tibble(
+  Group = c("Treatment","Control"),
+  rate  = c(mean(bleed_treat), mean(bleed_ctrl)),
+  n     = c(n_treat, n_ctrl)
+) |>
+  mutate(se = sqrt(rate*(1-rate)/n),
+         lo = pmax(0, rate - qnorm(0.975)*se),
+         hi = rate + qnorm(0.975)*se)
+
+p2 <- bleed_summ |>
+  ggplot(aes(x = Group, y = rate, color = Group)) +
+  geom_point(size = 6) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.08, linewidth = 1.3) +
+  scale_color_manual(values = c("Treatment"="#006a4e","Control"="#e74c3c")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.25)) +
+  labs(title = "Major Bleeding Rate", x = NULL, y = "Rate") +
+  theme(legend.position = "none")
+
+p1 + p2 +
+  plot_annotation(
+    title    = "Anticoagulant RCT: Two-Sample Analyses",
+    subtitle = "Left: continuous outcome (Welch t-test + F-test)   |   Right: binary outcome (z-test for proportions)"
+  )
+```
+
+## Reading All Results Together
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+cat("=== INR: Welch t-test ===\n")
+cat(sprintf("Treatment mean: %.2f | Control mean: %.2f\n",
+            mean(inr_treat), mean(inr_ctrl)))
+cat(sprintf("Difference: %.2f  (95%% CI: %.2f, %.2f)  p = %.4f\n",
+            welch_res$estimate, welch_res$conf.low,
+            welch_res$conf.high, welch_res$p.value))
+
+cat("\n=== INR: F-test for equal variances ===\n")
+cat(sprintf("S_treat = %.2f | S_ctrl = %.2f | F = %.3f | p = %.4f\n",
+            sd(inr_treat), sd(inr_ctrl),
+            ftest_res$statistic, ftest_res$p.value))
+
+cat("\n=== Bleeding Rate: Two-sample z-test ===\n")
+cat(sprintf("Treatment: %.1f%%  |  Control: %.1f%%\n",
+            100*mean(bleed_treat), 100*mean(bleed_ctrl)))
+cat(sprintf("Difference: %.1f%%  (95%% CI: %.1f%%, %.1f%%)  p = %.4f\n",
+            100*(prop_res$estimate1 - prop_res$estimate2),
+            100*prop_res$conf.low, 100*prop_res$conf.high,
+            prop_res$p.value))
+```
+
+# Key Takeaways {background-color="#2c3e50"}
+
+## Key Takeaways: Means (DBC 9.5)
+
+::: callout-important
+## Two-Sample Tests for Means
+
+1. **Point estimator** $\bar{X}_1 - \bar{X}_2$ is unbiased; approximately normal by CLT (both $n_i$ large) or exact normality of populations
+
+2. **Welch t-test** (default): $T_W \approx t_{\hat\nu}$; Satterthwaite df accounts for unequal variances; valid whether or not $\sigma_1^2 = \sigma_2^2$
+
+3. **Pooled t-test**: exact under normality + $\sigma_1^2 = \sigma_2^2$; requires strong prior justification — anti-conservative when variances differ and $n$'s are unequal
+
+4. **CI-test duality**: the $100(1-\alpha)\%$ CI for $\Delta$ contains exactly the $\Delta_0$ values for which the two-sided test fails to reject at level $\alpha$
+:::
+
+## Key Takeaways: Proportions and Variances (DBC 9.6)
+
+::: callout-important
+## Two-Sample Tests for Proportions and Variances
+
+1. **Proportions (CLT):** $\hat{p}_i$ is a sample mean of Bernoulli observations; CLT gives $\hat{p}_1 - \hat{p}_2 \dot\sim N(p_1-p_2, \text{SE}^2)$; requires $n_i\hat{p}_i \geq 5$ and $n_i(1-\hat{p}_i) \geq 5$
+
+2. **Pooled vs. unpooled SE:** Use **pooled** $\hat{p}$ for the test (exploits $H_0: p_1 = p_2$); use **unpooled** for the CI (no such assumption)
+
+3. **F-test:** $S_1^2/S_2^2 \sim F_{n_1-1,\,n_2-1}$ under normality and $H_0: \sigma_1^2 = \sigma_2^2$; the CI for $\sigma_1^2/\sigma_2^2$ is asymmetric
+
+4. **Sensitivity:** The F-test for variances is *extremely* sensitive to non-normality — prefer Levene's test in practice for most biomedical data
+
+5. **Always report** point estimates + CIs; choose the effect measure (RD, RR, OR) that is most interpretable in context
+:::
+
+## Looking Ahead
+
+**Next class: Analysis of Paired Data (DBC 10.3)**
+
+- When to use a paired design (pre/post, crossover trials, matched pairs)
+- Reduction to one-sample problem: $D_i = X_{1i} - X_{2i}$
+- Paired t-test, Wilcoxon signed-rank test, sign test
+
+. . .
+
+**Lesson 20:** Bootstrap and permutation methods for two samples; course review
+
+## References
+
+::: nonincremental
+- Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Sections 9.5–9.6.
+- Welch, B. L. (1947). The generalization of 'Student's' problem when several different population variances are involved. *Biometrika*, 34(1–2), 28–35.
+- Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 3.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+# For PDF export
+decktape reveal --fragments docs/lessons/18_TwoSampleTests/18_TwoSampleTests.html lessons/18_TwoSampleTests/18_TwoSampleTests.pdf
+```

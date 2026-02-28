@@ -1,0 +1,403 @@
+---
+title: "Homework 5 Solutions"
+subtitle: "BSTA 551"
+description: "Due: `r library(here); source(here('class_dates.R')); hw5 %>% format('%m/%d')` at 11pm"
+date-modified: "today"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: "setup"
+#| include: false
+library(tidyverse)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+---
+
+## Problem 1: Hypothesis Testing Framework
+
+### Part (a)
+
+Since clinicians specifically suspect the device reads **higher** than truth, a one-sided (upper-tailed) test is appropriate.
+
+$$H_0: \mu = 120 \quad \text{vs} \quad H_a: \mu > 120$$
+
+A two-sided test would be appropriate if deviations in either direction were of concern, but the clinical question is directional.
+
+### Part (b)
+
+Since the population is Normal with known $\sigma$, by properties of the normal distribution:
+
+$$\bar{X} \sim N\!\left(\mu_0,\, \frac{\sigma^2}{n}\right) = N\!\left(120,\, \frac{225}{36}\right) = N(120,\, 6.25)$$
+
+Under $H_0$, the standardized test statistic follows:
+
+$$Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}} \sim N(0, 1)$$
+
+The observed value is:
+
+$$z_{\text{obs}} = \frac{124.5 - 120}{15/\sqrt{36}} = \frac{4.5}{2.5} = 1.80$$
+
+```{r}
+#| label: prob1b
+xbar <- 124.5; mu0 <- 120; sigma <- 15; n <- 36
+se <- sigma / sqrt(n)
+z_obs <- (xbar - mu0) / se
+cat("Standard error:", se, "\n")
+cat("z_obs =", round(z_obs, 4))
+```
+
+### Part (c)
+
+For an upper-tailed test at $\alpha = 0.05$, the rejection region is $Z \geq z_{0.05} = 1.645$.
+
+```{r}
+#| label: prob1c
+z_crit <- qnorm(0.95)
+cat("Critical value z_0.05 =", round(z_crit, 4), "\n")
+cat("Observed z =", round(z_obs, 4), "\n")
+cat("Reject H0?", z_obs >= z_crit)
+```
+
+Since $z_{\text{obs}} = 1.80 > 1.645$, we **reject $H_0$** at $\alpha = 0.05$. There is statistically significant evidence that the device reads higher than the true mean of 120 mmHg.
+
+### Part (d)
+
+- **Type I error** in this context: Concluding that the device is systematically biased (reads too high) when in reality it is accurate. Consequence: the hospital discards or recalibrates a perfectly good device unnecessarily.
+
+- **Type II error** in this context: Failing to detect that the device is systematically biased when it actually does read too high. Consequence: the hospital continues using an inaccurate device, potentially leading to incorrect clinical decisions.
+
+The Type I error rate is $\alpha = 0.05$, meaning there is a 5% chance of falsely concluding the device is biased if it is actually unbiased.
+
+### Part (e)
+
+Since the consequence of a Type I error (discarding a good device at high cost) is severe, the hospital should prefer **$\alpha = 0.01$**. A smaller $\alpha$ makes it harder to reject $H_0$, requiring stronger evidence before concluding the device is biased. The trade-off is reduced power (higher $\beta$), meaning the test is less likely to detect a real bias — but in this context, that is the more acceptable risk.
+
+---
+
+## Problem 2: One-Sample t Test
+
+### Part (a)
+
+```{r}
+#| label: prob2-data
+glucose <- c(98, 103, 91, 107, 96, 88, 101, 95, 99, 102, 94, 97, 89, 100, 93)
+n <- length(glucose)
+xbar <- mean(glucose)
+s <- sd(glucose)
+mu0 <- 105
+alpha <- 0.05
+
+cat("n =", n, "\n")
+cat("x-bar =", round(xbar, 4), "\n")
+cat("s =", round(s, 4))
+```
+
+**Hypotheses:** The intervention aims to reduce fasting glucose, so this is a one-sided lower-tailed test.
+
+$$H_0: \mu = 105 \quad \text{vs} \quad H_a: \mu < 105$$
+
+**Test statistic:**
+
+$$T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}} = \frac{97.53 - 105}{5.30/\sqrt{15}}$$
+
+```{r}
+#| label: prob2a
+t_stat <- (xbar - mu0) / (s / sqrt(n))
+t_crit <- qt(alpha, df = n - 1)  # lower-tailed: negative critical value
+cat("t statistic:", round(t_stat, 4), "\n")
+cat("Critical value t_{0.05, 14} =", round(t_crit, 4), "\n")
+cat("Rejection region: T <=", round(t_crit, 4), "\n")
+cat("Reject H0?", t_stat <= t_crit)
+```
+
+Since $t_{\text{obs}} = `r round(t_stat, 3)`$ is less than $t_{0.05,14} = `r round(t_crit, 3)`$, we **reject $H_0$** at $\alpha = 0.05$. There is statistically significant evidence that the dietary intervention reduces mean fasting glucose below 105 mg/dL.
+
+### Part (b)
+
+For a lower-tailed test, the p-value is $P(T_{14} \leq t_{\text{obs}})$.
+
+```{r}
+#| label: prob2b
+pval <- pt(t_stat, df = n - 1)
+cat("p-value:", round(pval, 5))
+```
+
+**Interpretation:** If the true mean fasting glucose in this population were 105 mg/dL (i.e., if the intervention had no effect), there would be only a `r round(pval*100, 2)`% chance of observing a sample mean as low as or lower than 97.53 mg/dL just by chance with a sample of 15 patients. This constitutes strong evidence against $H_0$.
+
+### Part (c)
+
+A 95% one-sided lower confidence bound (the interval $(-\infty, \bar{x} + t_{\alpha, n-1} \cdot s/\sqrt{n})$) provides an upper bound on $\mu$:
+
+$$\left(-\infty,\; \bar{x} + t_{0.05,14} \cdot \frac{s}{\sqrt{n}}\right)$$
+
+Note: since $H_a: \mu < 105$, we report an **upper** confidence bound.
+
+```{r}
+#| label: prob2c
+t_crit_upper <- qt(1 - alpha, df = n - 1)  # +1.761
+upper_bound <- xbar + t_crit_upper * (s / sqrt(n))
+cat("95% upper confidence bound:", round(upper_bound, 4), "\n")
+cat("Interval: (-inf,", round(upper_bound, 4), ")\n")
+cat("Does the interval exclude mu0 = 105?", upper_bound < 105)
+```
+
+The 95% upper confidence bound is `r round(upper_bound, 3)` mg/dL. Since the entire interval $(-\infty,\; `r round(upper_bound, 3)`)$ lies below $\mu_0 = 105$, this is consistent with rejecting $H_0$ at $\alpha = 0.05$.
+
+### Part (d)
+
+```{r}
+#| label: prob2d
+t.test(glucose, mu = 105, alternative = "less")
+```
+
+The `t.test()` output confirms: $t = `r round(t_stat, 3)`$, $p = `r round(pval, 5)`$, 95% upper bound $= `r round(upper_bound, 3)`$.
+
+---
+
+## Problem 3: Test for a Proportion
+
+### Part (a)
+
+The hospital wants to detect a difference in either direction (the program could increase or decrease readmissions), so a **two-sided** test is appropriate.
+
+$$H_0: p = 0.22 \quad \text{vs} \quad H_a: p \neq 0.22$$
+
+### Part (b)
+
+```{r}
+#| label: prob3b
+n <- 180; x <- 31; p0 <- 0.22
+p_hat <- x / n
+se_null <- sqrt(p0 * (1 - p0) / n)
+z_obs <- (p_hat - p0) / se_null
+
+cat("p-hat =", round(p_hat, 4), "\n")
+cat("SE under H0 =", round(se_null, 5), "\n")
+cat("z =", round(z_obs, 4))
+```
+
+$$\hat{p} = \frac{31}{180} = `r round(p_hat, 4)`, \quad
+  Z = \frac{`r round(p_hat,4)` - 0.22}{\sqrt{0.22 \times 0.78 / 180}} = `r round(z_obs, 4)`$$
+
+### Part (c)
+
+```{r}
+#| label: prob3c
+pval <- 2 * pnorm(z_obs)  # lower tail (z_obs is negative)
+z_crit <- qnorm(0.975)
+cat("Two-sided p-value:", round(pval, 5), "\n")
+cat("Critical value z_{0.025} =", round(z_crit, 4), "\n")
+cat("Reject H0?", pval < 0.05)
+```
+
+The two-sided p-value is `r round(pval, 4)`. Since $p = `r round(pval,4)` < 0.05$, we **reject $H_0$** at $\alpha = 0.05$. There is statistically significant evidence that the readmission rate under the new program differs from 22%.
+
+*Note:* The direction of the effect is a reduction — $\hat{p} = `r round(p_hat,3)`$ (about 17.2%) is lower than $p_0 = 0.22$ — which is clinically encouraging.
+
+### Part (d)
+
+```{r}
+#| label: prob3d
+# Wilson score interval via prop.test()
+prop_result <- prop.test(x, n, p = p0, alternative = "two.sided", correct = FALSE)
+ci <- prop_result$conf.int
+cat("Wilson score 95% CI: (", round(ci[1], 4), ",", round(ci[2], 4), ")\n")
+cat("Does p0 = 0.22 fall inside the CI?", ci[1] <= p0 & p0 <= ci[2])
+```
+
+The 95% Wilson score confidence interval is approximately $(`r round(ci[1],3)`, `r round(ci[2],3)`)$. Since $p_0 = 0.22$ lies **outside** this interval, we reject $H_0$ — consistent with the hypothesis test conclusion. This illustrates **CI–test duality**: a $100(1-\alpha)\%$ CI excludes values that would be rejected at level $\alpha$.
+
+### Part (e)
+
+The standard rule of thumb for the large-sample z test for proportions is:
+
+$$n p_0 \geq 10 \quad \text{and} \quad n(1 - p_0) \geq 10$$
+
+```{r}
+#| label: prob3e
+cat("n*p0 =", n * p0, "\n")
+cat("n*(1-p0) =", n * (1 - p0), "\n")
+cat("Both >= 10?", (n * p0 >= 10) & (n * (1 - p0) >= 10))
+```
+
+Both conditions are satisfied ($np_0 = `r n*p0`$ and $n(1-p_0) = `r n*(1-p0)`$), so the Normal approximation is valid here.
+
+---
+
+## Problem 4: P-Values, Power, and Sample Size (ERAS Study)
+
+### Part (a)
+
+The ERAS protocol is intended to **reduce** LOS, so this is a one-sided lower-tailed test:
+
+$$H_0: \mu = 7 \quad \text{vs} \quad H_a: \mu < 7$$
+
+A two-sided test would be appropriate if we had no prior expectation of direction. Here, the clinical hypothesis is explicit: ERAS is expected to shorten (not lengthen) stay.
+
+### Part (b)
+
+For a lower-tailed z test, the power against $\mu_a = 5.5$ is:
+
+$$\text{Power} = \Phi\!\left(\frac{\mu_0 - \mu_a}{\sigma/\sqrt{n}} - z_\alpha\right)$$
+
+where $z_\alpha = z_{0.05} = 1.645$.
+
+```{r}
+#| label: prob4b
+mu0 <- 7; mu_a <- 5.5; sigma <- 2.5; n <- 40; alpha <- 0.05
+
+z_alpha <- qnorm(1 - alpha)
+effect_over_se <- (mu0 - mu_a) / (sigma / sqrt(n))
+power_n40 <- pnorm(effect_over_se - z_alpha)
+
+cat("z_alpha (z_0.05) =", round(z_alpha, 4), "\n")
+cat("(mu0 - mu_a) / (sigma/sqrt(n)) =", round(effect_over_se, 4), "\n")
+cat("Argument to Phi:", round(effect_over_se - z_alpha, 4), "\n")
+cat("Power at n = 40:", round(power_n40, 4))
+```
+
+$$\text{Power} = \Phi\!\left(\frac{7 - 5.5}{2.5/\sqrt{40}} - 1.645\right) = \Phi\!\left(`r round(effect_over_se, 3)` - 1.645\right) = \Phi(`r round(effect_over_se - z_alpha, 3)`) \approx `r round(power_n40, 3)`$$
+
+The power is approximately `r round(power_n40*100, 1)`% at $n = 40$, which is below the 85% target.
+
+### Part (c)
+
+```{r}
+#| label: prob4c
+result <- power.t.test(
+  delta = 1.5,
+  sd = 2.5,
+  sig.level = 0.05,
+  power = 0.85,
+  type = "one.sample",
+  alternative = "one.sided"
+)
+result
+n_required <- ceiling(result$n)
+cat("Required sample size (rounded up):", n_required)
+```
+
+`power.t.test()` gives $n \approx `r ceiling(result$n)`$ patients (rounding up to the nearest integer). Note this uses the t distribution rather than the normal approximation, so it is slightly more conservative than the z-based formula.
+
+### Part (d)
+
+```{r}
+#| label: prob4d
+#| fig-height: 5
+n_vals <- 5:120
+power_vals <- pnorm((mu0 - mu_a) / (sigma / sqrt(n_vals)) - qnorm(1 - alpha))
+
+tibble(n = n_vals, power = power_vals) |>
+  ggplot(aes(x = n, y = power)) +
+  geom_line(color = "steelblue", linewidth = 1.2) +
+  geom_hline(yintercept = 0.85, linetype = "dashed", color = "firebrick") +
+  geom_vline(xintercept = n_required, linetype = "dashed", color = "darkgreen") +
+  annotate("text", x = n_required + 2, y = 0.15, hjust = 0,
+           label = paste0("n = ", n_required), color = "darkgreen", size = 4.5) +
+  annotate("text", x = 10, y = 0.87, hjust = 0,
+           label = "85% power", color = "firebrick", size = 4.5) +
+  labs(
+    x = "Sample size (n)",
+    y = "Power",
+    title = bquote("Power curve: ERAS post-surgical LOS study"),
+    subtitle = bquote(H[a]*":"~mu == .(mu_a)~"days,"~sigma == .(sigma)~","~alpha == .(alpha))
+  ) +
+  scale_y_continuous(limits = c(0, 1), labels = scales::percent) +
+  theme_minimal(base_size = 14)
+```
+
+The power curve shows that power increases monotonically with $n$. The 85% target (red dashed line) is achieved at $n = `r n_required`$ (green dashed line).
+
+### Part (e)
+
+```{r}
+#| label: prob4e
+n_obs <- 55; xbar_obs <- 6.1
+
+se_obs <- sigma / sqrt(n_obs)
+z_obs <- (xbar_obs - mu0) / se_obs
+pval <- pnorm(z_obs)  # lower-tailed
+
+cat("Observed z:", round(z_obs, 4), "\n")
+cat("p-value (lower-tailed):", round(pval, 5), "\n")
+cat("Statistically significant at alpha = 0.05?", pval < 0.05)
+cat("\nObserved reduction (days):", mu0 - xbar_obs)
+cat("\nTarget reduction (days): 1.5")
+```
+
+**P-value:** $p \approx 0.004$.
+
+**Clinical interpretation:** If the true mean LOS under ERAS were the same as the standard protocol (7 days), there would be only about a 0.4% chance of observing a sample mean as low as 6.1 days or lower in a sample of 55 patients just by chance — strong evidence that ERAS does reduce LOS.
+
+**Statistical vs. clinical significance:** The result **is** statistically significant at $\alpha = 0.05$ ($p \approx 0.004 < 0.05$). However, the observed reduction is $7 - 6.1 = 0.9$ days, which is smaller than the clinically meaningful threshold of 1.5 days the team set out to detect. So the study detected a real effect, but one smaller than originally targeted. This illustrates an important distinction: statistical and clinical significance are not the same thing. With $n = 55$, the study has enough power to detect even modest departures from $\mu_0 = 7$, and a 0.9-day reduction, while real, may not justify the cost and workflow changes involved in implementing ERAS. Conversely, a study can also be statistically *non-significant* yet show a clinically important trend if it is underpowered. Researchers and clinicians must evaluate both the $p$-value and the magnitude of the estimated effect.
+
+---
+
+## Problem 5: Multiple Testing
+
+### Part (a)
+
+If all 500 null hypotheses are true and each test is conducted at $\alpha = 0.05$:
+
+$$E(\text{false positives}) = 500 \times 0.05 = 25$$
+
+This is called the **family-wise error rate (FWER)** problem (or multiple comparisons problem). When conducting many simultaneous tests, the probability of at least one false positive becomes very large even if every individual test is properly conducted. Declaring 37 genes "significant" when 25 of them might be false positives makes the findings unreliable.
+
+```{r}
+#| label: prob5a
+m <- 500; alpha <- 0.05
+expected_fp <- m * alpha
+cat("Expected false positives under global H0:", expected_fp)
+```
+
+### Part (b)
+
+The Bonferroni correction controls the FWER at level $\alpha_{\text{FWER}}$ by testing each hypothesis at:
+
+$$\alpha^* = \frac{\alpha_{\text{FWER}}}{m} = \frac{0.05}{500} = 0.0001$$
+
+```{r}
+#| label: prob5b
+alpha_bonf <- alpha / m
+cat("Bonferroni-adjusted threshold:", alpha_bonf)
+```
+
+### Part (c)
+
+```{r}
+#| label: prob5c
+set.seed(551)
+sig_pvals <- runif(37, min = 0, max = 0.05)
+
+# Apply Bonferroni: adjusted p-values = min(raw p-value * m, 1)
+adj_pvals_bonf <- p.adjust(sig_pvals, method = "bonferroni", n = m)
+
+n_sig_bonf <- sum(adj_pvals_bonf < 0.05)
+cat("Number of genes remaining significant after Bonferroni:", n_sig_bonf, "\n\n")
+
+tibble(
+  raw_p = round(sig_pvals, 5),
+  bonf_adj_p = round(adj_pvals_bonf, 5),
+  significant = adj_pvals_bonf < 0.05
+) |> arrange(raw_p) |> print(n = 10)
+```
+
+After Bonferroni correction, **`r n_sig_bonf` genes** remain significant. The correction is very stringent: since $\alpha^* = 0.0001$, a raw p-value must be less than $0.0001$ to survive, and none of the 37 simulated p-values (all generated uniformly on $[0, 0.05]$) fall that low.
+
+### Part (d)
+
+The Bonferroni procedure controls the **family-wise error rate** (FWER) — the probability of making *any* false discovery. This is very conservative: it virtually eliminates false positives but at the cost of very low power. In genomics, when screening thousands of genes, the biologically realistic expectation is that *some* genes truly are differentially expressed. Discarding all discoveries except those meeting a very stringent threshold means many true effects go undetected.
+
+The **Benjamini-Hochberg (BH) procedure** controls the **false discovery rate (FDR)** — the expected *proportion* of false positives among declared discoveries. This is a more lenient criterion that allows a small, controlled fraction of discoveries to be false. In exploratory genomics screens (where you expect hundreds of truly DE genes and can follow up with validation), tolerating 5% false discoveries to preserve power over truly DE genes is scientifically preferable to the near-zero power of Bonferroni.
+
+In short: Bonferroni asks "did I make even one mistake?"; BH asks "of the genes I flagged, roughly what fraction are wrong?" — and the latter question is more scientifically appropriate for large-scale discovery.
+
