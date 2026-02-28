@@ -225,8 +225,6 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#part-a-histogram-and-t-test" id="toc-part-a-histogram-and-t-test" class="nav-link" data-scroll-target="#part-a-histogram-and-t-test">Part (a) — Histogram and t-test</a></li>
   <li><a href="#part-b-correct-bootstrap-test" id="toc-part-b-correct-bootstrap-test" class="nav-link" data-scroll-target="#part-b-correct-bootstrap-test">Part (b) — Correct bootstrap test</a></li>
-  <li><a href="#part-c-naive-incorrect-bootstrap" id="toc-part-c-naive-incorrect-bootstrap" class="nav-link" data-scroll-target="#part-c-naive-incorrect-bootstrap">Part (c) — Naive (incorrect) bootstrap</a></li>
-  <li><a href="#part-d-side-by-side-histograms" id="toc-part-d-side-by-side-histograms" class="nav-link" data-scroll-target="#part-d-side-by-side-histograms">Part (d) — Side-by-side histograms</a></li>
   </ul></li>
   </ul>
 <div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_06_Solutions.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
@@ -479,11 +477,11 @@ window.Quarto = {
 <pre><code>Cohen's d: 0.0639 -- classified as: negligible (&lt; 0.2)</code></pre>
 </div>
 </div>
-<p>Cohen’s <span class="math inline">\(d = 0.064\)</span> is classified as <strong>negligible</strong>. The entire 95% CI <span class="math inline">\((-3.18,\ -0.42)\)</span> mg/dL lies far above the clinical threshold of <span class="math inline">\(-10\)</span> mg/dL. Even the lower bound of the CI (<span class="math inline">\(-3.18\)</span> mg/dL) falls well short of a meaningful reduction. There is <strong>no evidence of a clinically meaningful effect</strong>.</p>
+<p>Cohen’s <span class="math inline">\(d = 0.064\)</span> is classified as <strong>negligible</strong> or very small. The entire 95% CI <span class="math inline">\((-3.18,\ -0.42)\)</span> mg/dL lies far above the clinical threshold of <span class="math inline">\(-10\)</span> mg/dL. Even the lower bound of the CI (<span class="math inline">\(-3.18\)</span> mg/dL) falls short of a meaningful reduction. There is <strong>no evidence of a clinically meaningful effect</strong>.</p>
 </section>
 <section id="part-c-conceptual" class="level3">
 <h3 class="anchored" data-anchor-id="part-c-conceptual">Part (c) — Conceptual</h3>
-<p>With <span class="math inline">\(n = 3{,}200\)</span> per arm, even negligible differences produce tiny standard errors, making any non-zero effect statistically detectable. Statistical significance measures <em>detectability</em> given the sample size, not whether the effect is large enough to matter clinically. Reporting the CI rather than just the p-value reveals that the plausible effect range is 0.8–2.8 mg/dL — far below the 10 mg/dL threshold that justifies prescribing this drug.</p>
+<p>With <span class="math inline">\(n = 3{,}200\)</span> per arm, even negligible differences produce tiny standard errors, making any non-zero effect statistically detectable. Statistical significance measures <em>detectability</em> given the sample size, not whether the effect is large enough to matter clinically. Reporting the CI rather than just the p-value reveals that the plausible effect range is 0.8–2.8 mg/dL, quite a bit below the 10 mg/dL threshold that justifies prescribing this drug.</p>
 <hr>
 </section>
 </section>
@@ -533,7 +531,7 @@ window.Quarto = {
 <section id="part-c-one-sided-lower-bound" class="level3">
 <h3 class="anchored" data-anchor-id="part-c-one-sided-lower-bound">Part (c) — One-sided lower bound</h3>
 <p>By one-sided duality, the 95% lower bound dual to <span class="math inline">\(H_0: \lambda \leq \lambda_0\)</span> vs <span class="math inline">\(H_a: \lambda &gt; \lambda_0\)</span> is:</p>
-<p><span class="math display">\[\underline{\lambda} = \frac{\chi^2_{\alpha,\; 2T}}{2n}\]</span></p>
+<p><span class="math display">\[\lambda_L = \frac{\chi^2_{\alpha,\; 2T}}{2n}\]</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>lb <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(alpha_i, <span class="at">df =</span> <span class="dv">2</span> <span class="sc">*</span> T_inf) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> n_inf)</span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>t_gt <span class="ot">&lt;-</span> <span class="fu">poisson.test</span>(T_inf, <span class="at">T =</span> n_inf, <span class="at">r =</span> <span class="fl">3.5</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span>
@@ -550,7 +548,7 @@ window.Quarto = {
 <pre><code>One-sided p-value (Ha: lambda &gt; 3.5): 0.105 </code></pre>
 </div>
 </div>
-<p>The lower bound is <span class="math inline">\(\underline{\lambda} = 3.2812\)</span>. Since 3.2812 ≤ 3.5, we fail to reject <span class="math inline">\(H_0: \lambda \leq 3.5\)</span> at the 5% level — the hospital’s rate is significantly above the benchmark.</p>
+<p>The lower bound is <span class="math inline">\(lambda_L = 3.2812\)</span>. Since 3.2812 ≤ 3.5, we fail to reject <span class="math inline">\(H_0: \lambda \leq 3.5\)</span> at the 5% level — the hospital’s rate is significantly above the benchmark.</p>
 <hr>
 </section>
 </section>
@@ -723,71 +721,6 @@ window.Quarto = {
 </div>
 </div>
 <p>Both methods fail to reject <span class="math inline">\(H_0\)</span>. The p-values are close (<span class="math inline">\(0.175\)</span> vs <span class="math inline">\(0.1608\)</span>), consistent with Lesson 17’s simulation showing that t-test and bootstrap converge as <span class="math inline">\(n\)</span> increases toward 30.</p>
-</section>
-<section id="part-c-naive-incorrect-bootstrap" class="level3">
-<h3 class="anchored" data-anchor-id="part-c-naive-incorrect-bootstrap">Part (c) — Naive (incorrect) bootstrap</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>T_naive_f <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_f, <span class="fu">mean</span>(<span class="fu">sample</span>(ferritin, n_f, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>p_naive_f <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(T_naive_f <span class="sc">-</span> xbar_f) <span class="sc">&gt;=</span> <span class="fu">abs</span>(xbar_f <span class="sc">-</span> mu_0))</span>
-<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Naive p-value:"</span>, <span class="fu">round</span>(p_naive_f, <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Naive p-value: 0.1396 </code></pre>
-</div>
-</div>
-<p>The naive approach is invalid because resampling from the original data produces a distribution centered at <span class="math inline">\(\bar{x} = 47.7\)</span> ng/mL rather than at the null value <span class="math inline">\(\mu_0 = 40\)</span> ng/mL. A valid null distribution must represent how the test statistic behaves <em>when <span class="math inline">\(H_0\)</span> is true</em>; the naive distribution instead approximates sampling variability of <span class="math inline">\(\hat\mu\)</span> around the unknown true mean. Comparing <span class="math inline">\(|\bar{x}^{*b} - \bar{x}|\)</span> to <span class="math inline">\(|\bar{x} - \mu_0|\)</span> measures something conceptually different from what the test requires.</p>
-</section>
-<section id="part-d-side-by-side-histograms" class="level3">
-<h3 class="anchored" data-anchor-id="part-d-side-by-side-histograms">Part (d) — Side-by-side histograms</h3>
-<div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>p_nv <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_naive_f), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>,</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> xbar_f, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_0, <span class="at">color =</span> <span class="st">"#3498db"</span>,</span>
-<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>,</span>
-<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmin =</span> xbar_f <span class="sc">+</span> <span class="fu">abs</span>(xbar_f <span class="sc">-</span> mu_0), <span class="at">xmax =</span> <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>,</span>
-<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> xbar_f <span class="sc">-</span> <span class="fu">abs</span>(xbar_f <span class="sc">-</span> mu_0), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> xbar_f <span class="sc">+</span> <span class="fl">0.8</span>, <span class="at">y =</span> <span class="fl">0.22</span>,</span>
-<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"bar(x)"</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mu_0 <span class="sc">-</span> <span class="fl">0.8</span>, <span class="at">y =</span> <span class="fl">0.22</span>,</span>
-<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"mu[0]"</span>, <span class="at">parse =</span> <span class="cn">TRUE</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">hjust =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">bold</span>(<span class="st">"WRONG"</span>) <span class="sc">*</span> <span class="st">": Naive (original data)"</span>),</span>
-<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Centered at x-bar=%.1f, not mu0=%.1f  |  p = %.4f"</span>,</span>
-<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>                          xbar_f, mu_0, p_naive_f),</span>
-<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)<span class="sc">^</span><span class="st">"*"</span>), <span class="at">y =</span> <span class="st">"Density"</span>)</span>
-<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a>p_cr <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(<span class="fu">tibble</span>(<span class="at">T =</span> T_boot_f), <span class="fu">aes</span>(<span class="at">x =</span> T)) <span class="sc">+</span></span>
-<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>,</span>
-<span id="cb69-24"><a href="#cb69-24" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.8</span>) <span class="sc">+</span></span>
-<span id="cb69-25"><a href="#cb69-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(T_obs_f), <span class="fu">abs</span>(T_obs_f)),</span>
-<span id="cb69-26"><a href="#cb69-26" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
-<span id="cb69-27"><a href="#cb69-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span>  <span class="fu">abs</span>(T_obs_f), <span class="at">xmax =</span>  <span class="cn">Inf</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb69-28"><a href="#cb69-28" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb69-29"><a href="#cb69-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">xmax =</span> <span class="sc">-</span><span class="fu">abs</span>(T_obs_f), <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>,</span>
-<span id="cb69-30"><a href="#cb69-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb69-31"><a href="#cb69-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">abs</span>(T_obs_f) <span class="sc">+</span> <span class="fl">0.2</span>, <span class="at">y =</span> <span class="fl">0.32</span>,</span>
-<span id="cb69-32"><a href="#cb69-32" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">bquote</span>(T[obs] <span class="sc">==</span> .(<span class="fu">round</span>(T_obs_f, <span class="dv">2</span>))),</span>
-<span id="cb69-33"><a href="#cb69-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
-<span id="cb69-34"><a href="#cb69-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">bold</span>(<span class="st">"CORRECT"</span>) <span class="sc">*</span> <span class="st">": Bootstrap from shifted data"</span>),</span>
-<span id="cb69-35"><a href="#cb69-35" aria-hidden="true" tabindex="-1"></a>       <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Centered at mu0=%.1f  |  Bootstrap p=%.4f, t-test p=%.4f"</span>,</span>
-<span id="cb69-36"><a href="#cb69-36" aria-hidden="true" tabindex="-1"></a>                          mu_0, p_boot_f, p_ttest),</span>
-<span id="cb69-37"><a href="#cb69-37" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"t-statistic"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span>
-<span id="cb69-38"><a href="#cb69-38" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-39"><a href="#cb69-39" aria-hidden="true" tabindex="-1"></a>p_nv <span class="sc">+</span> p_cr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="HW_06_Solutions_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="1344"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>The left panel shows the naive distribution centered at <span class="math inline">\(\bar{x}\)</span> (not the null value), making it an invalid null reference distribution. The right panel shows the correct bootstrap null distribution centered at <span class="math inline">\(\mu_0\)</span>, with the observed statistic and p-value region clearly marked.</p>
 
 
 </section>

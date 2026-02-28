@@ -198,11 +198,11 @@ d_cohen <- abs(xbar_t - xbar_c) / sigma
 cat("Cohen's d:", round(d_cohen, 4), "-- classified as: negligible (< 0.2)\n")
 ```
 
-Cohen's $d = `r round(d_cohen,3)`$ is classified as **negligible**. The entire 95% CI $(`r round(ci_lo,2)`,\ `r round(ci_hi,2)`)$ mg/dL lies far above the clinical threshold of $-10$ mg/dL. Even the lower bound of the CI ($`r round(ci_lo,2)`$ mg/dL) falls well short of a meaningful reduction. There is **no evidence of a clinically meaningful effect**.
+Cohen's $d = `r round(d_cohen,3)`$ is classified as **negligible** or very small. The entire 95% CI $(`r round(ci_lo,2)`,\ `r round(ci_hi,2)`)$ mg/dL lies far above the clinical threshold of $-10$ mg/dL. Even the lower bound of the CI ($`r round(ci_lo,2)`$ mg/dL) falls short of a meaningful reduction. There is **no evidence of a clinically meaningful effect**.
 
 ### Part (c) — Conceptual
 
-With $n = 3{,}200$ per arm, even negligible differences produce tiny standard errors, making any non-zero effect statistically detectable. Statistical significance measures *detectability* given the sample size, not whether the effect is large enough to matter clinically. Reporting the CI rather than just the p-value reveals that the plausible effect range is 0.8–2.8 mg/dL — far below the 10 mg/dL threshold that justifies prescribing this drug.
+With $n = 3{,}200$ per arm, even negligible differences produce tiny standard errors, making any non-zero effect statistically detectable. Statistical significance measures *detectability* given the sample size, not whether the effect is large enough to matter clinically. Reporting the CI rather than just the p-value reveals that the plausible effect range is 0.8–2.8 mg/dL, quite a bit below the 10 mg/dL threshold that justifies prescribing this drug.
 
 ---
 
@@ -255,7 +255,7 @@ For $\lambda_0 = 4.5$: the test `r ifelse(t45$p.value < 0.05, "rejects", "fails 
 
 By one-sided duality, the 95% lower bound dual to $H_0: \lambda \leq \lambda_0$ vs $H_a: \lambda > \lambda_0$ is:
 
-$$\underline{\lambda} = \frac{\chi^2_{\alpha,\; 2T}}{2n}$$
+$$\lambda_L = \frac{\chi^2_{\alpha,\; 2T}}{2n}$$
 
 ```{r}
 lb <- qchisq(alpha_i, df = 2 * T_inf) / (2 * n_inf)
@@ -265,7 +265,7 @@ cat("Lower bound > 3.5?", lb > 3.5, "\n")
 cat("One-sided p-value (Ha: lambda > 3.5):", round(t_gt$p.value, 4), "\n")
 ```
 
-The lower bound is $\underline{\lambda} = `r round(lb, 4)`$. Since `r round(lb,4)` `r ifelse(lb > 3.5, ">", "≤")` 3.5, we `r ifelse(lb > 3.5, "**reject**", "fail to reject")` $H_0: \lambda \leq 3.5$ at the 5% level — the hospital's rate is significantly above the benchmark.
+The lower bound is $lambda_L = `r round(lb, 4)`$. Since `r round(lb,4)` `r ifelse(lb > 3.5, ">", "≤")` 3.5, we `r ifelse(lb > 3.5, "**reject**", "fail to reject")` $H_0: \lambda \leq 3.5$ at the 5% level — the hospital's rate is significantly above the benchmark.
 
 ---
 
@@ -412,62 +412,3 @@ cat("Decision:", ifelse(p_boot_f < 0.05, "Reject H0", "Fail to reject H0"), "\n"
 ```
 
 Both methods `r ifelse(p_boot_f < 0.05, "reject", "fail to reject")` $H_0$. The p-values are close ($`r round(p_boot_f,4)`$ vs $`r round(p_ttest,4)`$), consistent with Lesson 17's simulation showing that t-test and bootstrap converge as $n$ increases toward 30.
-
-### Part (c) — Naive (incorrect) bootstrap
-
-```{r}
-set.seed(551)
-T_naive_f <- replicate(B_f, mean(sample(ferritin, n_f, replace = TRUE)))
-p_naive_f <- mean(abs(T_naive_f - xbar_f) >= abs(xbar_f - mu_0))
-cat("Naive p-value:", round(p_naive_f, 4), "\n")
-```
-
-The naive approach is invalid because resampling from the original data produces a distribution centered at $\bar{x} = `r round(xbar_f,1)`$ ng/mL rather than at the null value $\mu_0 = 40$ ng/mL. A valid null distribution must represent how the test statistic behaves *when $H_0$ is true*; the naive distribution instead approximates sampling variability of $\hat\mu$ around the unknown true mean. Comparing $|\bar{x}^{*b} - \bar{x}|$ to $|\bar{x} - \mu_0|$ measures something conceptually different from what the test requires.
-
-### Part (d) — Side-by-side histograms
-
-```{r}
-#| fig-height: 6
-#| fig-width: 14
-p_nv <- ggplot(tibble(T = T_naive_f), aes(x = T)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 50,
-                 fill = "#e74c3c", color = "white", alpha = 0.8) +
-  geom_vline(xintercept = xbar_f, color = "black", linewidth = 1.2) +
-  geom_vline(xintercept = mu_0, color = "#3498db",
-             linewidth = 1.2, linetype = "dashed") +
-  annotate("rect",
-           xmin = xbar_f + abs(xbar_f - mu_0), xmax = Inf, ymin = 0, ymax = Inf,
-           fill = "#e74c3c", alpha = 0.2) +
-  annotate("rect",
-           xmin = -Inf, xmax = xbar_f - abs(xbar_f - mu_0), ymin = 0, ymax = Inf,
-           fill = "#e74c3c", alpha = 0.2) +
-  annotate("text", x = xbar_f + 0.8, y = 0.22,
-           label = "bar(x)", parse = TRUE, size = 5) +
-  annotate("text", x = mu_0 - 0.8, y = 0.22,
-           label = "mu[0]", parse = TRUE, size = 5, color = "#3498db", hjust = 1) +
-  labs(title = expression(bold("WRONG") * ": Naive (original data)"),
-       subtitle = sprintf("Centered at x-bar=%.1f, not mu0=%.1f  |  p = %.4f",
-                          xbar_f, mu_0, p_naive_f),
-       x = expression(bar(x)^"*"), y = "Density")
-
-p_cr <- ggplot(tibble(T = T_boot_f), aes(x = T)) +
-  geom_histogram(aes(y = after_stat(density)), bins = 50,
-                 fill = "#27ae60", color = "white", alpha = 0.8) +
-  geom_vline(xintercept = c(-abs(T_obs_f), abs(T_obs_f)),
-             color = "#e74c3c", linewidth = 1.2) +
-  annotate("rect", xmin =  abs(T_obs_f), xmax =  Inf, ymin = 0, ymax = Inf,
-           fill = "#e74c3c", alpha = 0.2) +
-  annotate("rect", xmin = -Inf, xmax = -abs(T_obs_f), ymin = 0, ymax = Inf,
-           fill = "#e74c3c", alpha = 0.2) +
-  annotate("text", x = abs(T_obs_f) + 0.2, y = 0.32,
-           label = bquote(T[obs] == .(round(T_obs_f, 2))),
-           color = "#e74c3c", size = 4.5) +
-  labs(title = expression(bold("CORRECT") * ": Bootstrap from shifted data"),
-       subtitle = sprintf("Centered at mu0=%.1f  |  Bootstrap p=%.4f, t-test p=%.4f",
-                          mu_0, p_boot_f, p_ttest),
-       x = "t-statistic", y = "Density")
-
-p_nv + p_cr
-```
-
-The left panel shows the naive distribution centered at $\bar{x}$ (not the null value), making it an invalid null reference distribution. The right panel shows the correct bootstrap null distribution centered at $\mu_0$, with the observed statistic and p-value region clearly marked.
