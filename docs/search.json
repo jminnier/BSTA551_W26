@@ -16847,5 +16847,131 @@
     "title": "Lesson 18: Two-Sample Confidence Intervals and Tests",
     "section": "Questions?",
     "text": "Questions?\nThank you!"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#review-lesson-18",
+    "href": "lessons/19_PairedData/19_PairedData.html#review-lesson-18",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Review: Lesson 18",
+    "text": "Review: Lesson 18\nTwo independent samples (Lesson 18):\n\nTwo-sample \\(z\\): \\(\\sigma_1^2, \\sigma_2^2\\) known \\(\\Rightarrow\\) pivot \\(Z \\sim N(0,1)\\)\nWelch \\(t\\)-test (default): \\(\\sigma_1^2, \\sigma_2^2\\) unknown \\(\\Rightarrow\\) \\(T_W \\approx t_{\\hat\\nu}\\)\nPooled \\(t\\)-test: equal variances assumed \\(\\Rightarrow\\) \\(T_P \\sim t_{n_1+n_2-2}\\) (exact)\n\\(z\\)-test for \\(p_1 - p_2\\); \\(F\\)-test for \\(\\sigma_1^2/\\sigma_2^2\\)\n\n\nToday’s Goals:\n\nRecognize when data are paired vs. independent and why it matters\nShow how pairing reduces variance when within-pair correlation is positive\nDerive and apply the paired \\(t\\)-test and paired CI for \\(\\mu_D\\) (DBC 10.3)\nUnderstand the link between paired analysis and one-sample inference\nApply to crossover trials, pre/post studies, and matched case-control designs"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#roadmap",
+    "href": "lessons/19_PairedData/19_PairedData.html#roadmap",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Roadmap",
+    "text": "Roadmap\n\n\n\n\n\n\n\n\n\nDesign\nKey Operation\nMethod\nReference\n\n\n\n\nPre/post (same subjects)\n\\(D_i = X_{1i} - X_{2i}\\)\nOne-sample \\(t\\) on \\(\\{D_i\\}\\)\nDBC 10.3\n\n\nCrossover trial\nSame\nPaired \\(t\\)\nDBC 10.3\n\n\nMatched case-control\nSame\nPaired \\(t\\)\nDBC 10.3\n\n\nBilateral measurements\nSame\nPaired \\(t\\)\nDBC 10.3\n\n\n\n\n\n\n\n\n\n\nMotivating Example\n\n\nCrossover trial: 20 hypertensive patients each receive an antihypertensive drug for 4 weeks, then (after washout) placebo for 4 weeks, in random order. Outcome: systolic blood pressure reduction (mmHg). Each patient is their own control so the two measurements are not independent; they are paired within each patient."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#when-are-data-paired",
+    "href": "lessons/19_PairedData/19_PairedData.html#when-are-data-paired",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "When Are Data Paired?",
+    "text": "When Are Data Paired?\nData are paired when each observation in group 1 is naturally linked to exactly one observation in group 2:\n\n\n\n\n\n\n\nDesign\nExample\n\n\n\n\nPre/post (same subject)\nSBP before vs. after 12 weeks of treatment\n\n\nCrossover trial\nSame patient receives drug and placebo in random order\n\n\nMatched case-control\nCases matched 1:1 to controls on age and sex\n\n\nRepeated measurement\nLab value at baseline and 6-month follow-up\n\n\nBilateral organs\nRight vs. left eye intraocular pressure\n\n\n\n\n\n\n\n\n\n\nThe Critical Distinction\n\n\nPaired: \\(n\\) pairs \\(\\to\\) \\(n\\) differences \\(\\to\\) one-sample problem on \\(D_i\\)\nIndependent: \\(n_1 + n_2\\) separate observations \\(\\to\\) two-sample problem\nApplying a two-sample test to paired data ignores within-pair correlation, discards information, and loses power — sometimes substantially."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#the-paired-reduction",
+    "href": "lessons/19_PairedData/19_PairedData.html#the-paired-reduction",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "The Paired Reduction",
+    "text": "The Paired Reduction\nSetup: \\((X_{1i}, X_{2i})\\), \\(i = 1, \\ldots, n\\) are \\(n\\) independent pairs (but within each pair, \\(X_{1i}\\) and \\(X_{2i}\\) are correlated).\nDefine the within-pair difference: \\(D_i = X_{1i} - X_{2i}\\)\nThen \\(D_1, \\ldots, D_n \\stackrel{iid}{\\sim}\\) some distribution with: \\[\\mu_D = E[D_i] = \\mu_1 - \\mu_2 \\qquad \\sigma_D^2 = \\text{Var}(D_i)\\]\nEverything reduces to one-sample inference on \\(D_1, \\ldots, D_n\\).\n\nWhy the variance is smaller: Let \\(\\rho = \\text{Cor}(X_{1i}, X_{2i})\\). Then: \\[\\sigma_D^2 = \\text{Var}(X_{1i} - X_{2i}) = \\sigma_1^2 + \\sigma_2^2 - 2\\rho\\sigma_1\\sigma_2\\]\nWhen \\(\\rho &gt; 0\\) (the typical case in biological paired designs): \\[\\sigma_D^2 = \\sigma_1^2 + \\sigma_2^2 - 2\\rho\\sigma_1\\sigma_2 \\;&lt;\\; \\sigma_1^2 + \\sigma_2^2\\]\nPairing removes between-subject noise by differencing within each pair."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#paired-t-test-dbc-10.3",
+    "href": "lessons/19_PairedData/19_PairedData.html#paired-t-test-dbc-10.3",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Paired \\(t\\)-Test (DBC 10.3)",
+    "text": "Paired \\(t\\)-Test (DBC 10.3)\nLet \\(\\bar{D} = \\frac{1}{n}\\sum_{i=1}^n D_i\\) and \\(S_D^2 = \\frac{1}{n-1}\\sum_{i=1}^n (D_i - \\bar{D})^2\\).\nPaired \\(t\\)-statistic for \\(H_0: \\mu_D = \\mu_0\\) (usually \\(\\mu_0 = 0\\)): \\[T = \\frac{\\bar{D} - \\mu_0}{S_D / \\sqrt{n}} \\sim t_{n-1}\\]\nExact under normality of \\(D_i\\); approximately valid by CLT for large \\(n\\).\nPaired \\(100(1-\\alpha)\\%\\) CI for \\(\\mu_D\\): \\[\\bar{D} \\;\\pm\\; t_{\\alpha/2,\\,n-1} \\cdot \\frac{S_D}{\\sqrt{n}}\\]\n\nIn R:\nt.test(x1, x2, paired = TRUE)   # from two measurement vectors\nt.test(d)                        # from pre-computed differences\n\n\n\n\n\n\nNote\n\n\nThe paired \\(t\\)-test is identical to the one-sample \\(t\\)-test on the differences — all the theory from Lessons 7–8 applies directly."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#variance-reduction-how-much-does-pairing-help",
+    "href": "lessons/19_PairedData/19_PairedData.html#variance-reduction-how-much-does-pairing-help",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Variance Reduction: How Much Does Pairing Help?",
+    "text": "Variance Reduction: How Much Does Pairing Help?\nWhen \\(\\sigma_1 = \\sigma_2 = \\sigma\\), the SE of \\(\\bar{D}\\) in the paired analysis is: \\[\\text{SE}_\\text{paired} = \\frac{\\sigma_D}{\\sqrt{n}} = \\frac{\\sigma\\sqrt{2(1-\\rho)}}{\\sqrt{n}}\\]\nThe SE from an unpaired analysis with the same total \\(n\\) subjects per group would be: \\[\\text{SE}_\\text{unpaired} = \\sigma\\sqrt{\\frac{2}{n}}\\]\nThe ratio of CI widths (paired to unpaired) is \\(\\sqrt{1 - \\rho}\\).\n\ntibble(rho = c(0, 0.3, 0.5, 0.7, 0.8, 0.9)) |&gt;\n  mutate(\n    width_ratio     = round(sqrt(1 - rho), 3),\n    pct_narrower    = scales::percent(1 - sqrt(1 - rho), accuracy = 1)\n  ) |&gt;\n  knitr::kable(\n    col.names = c(\"rho\", \"CI width ratio (paired / unpaired)\",\n                  \"% CI width reduction\"),\n    caption   = \"Benefit of pairing when sigma_1 = sigma_2\"\n  )\n\n\nBenefit of pairing when sigma_1 = sigma_2\n\n\nrho\nCI width ratio (paired / unpaired)\n% CI width reduction\n\n\n\n\n0.0\n1.000\n0%\n\n\n0.3\n0.837\n16%\n\n\n0.5\n0.707\n29%\n\n\n0.7\n0.548\n45%\n\n\n0.8\n0.447\n55%\n\n\n0.9\n0.316\n68%\n\n\n\n\n\nWhen \\(\\rho = 0.8\\): the paired CI is only \\(\\sqrt{0.2} \\approx 45\\%\\) as wide as the unpaired – a lot of precision gained!"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#visualizing-variance-reduction-by-simulation",
+    "href": "lessons/19_PairedData/19_PairedData.html#visualizing-variance-reduction-by-simulation",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Visualizing Variance Reduction by Simulation",
+    "text": "Visualizing Variance Reduction by Simulation\n\n\nCode\nset.seed(551)\n\nsim_ci_width &lt;- function(rho, n = 25, sigma = 10, B = 2000) {\n  map_dfr(seq_len(B), function(i) {\n    L  &lt;- chol(sigma^2 * matrix(c(1, rho, rho, 1), 2))\n    xy &lt;- matrix(rnorm(2 * n), n, 2) %*% L\n    d  &lt;- xy[, 1] - xy[, 2]\n    tibble(\n      paired   = 2 * qt(0.975, n - 1) * sd(d) / sqrt(n),\n      unpaired = diff(t.test(xy[, 1], xy[, 2])$conf.int)\n    )\n  }) |&gt;\n    summarise(across(everything(), \\(x) mean(x, na.rm = TRUE))) |&gt;\n    mutate(rho = rho)\n}\n\nwidths &lt;- map_dfr(c(0, 0.3, 0.5, 0.7, 0.8, 0.9), sim_ci_width)\n\nwidths |&gt;\n  pivot_longer(c(paired, unpaired), names_to = \"Method\", values_to = \"Width\") |&gt;\n  mutate(Method = str_to_title(Method)) |&gt;\n  ggplot(aes(x = factor(rho), y = Width, fill = Method)) +\n  geom_col(position = \"dodge\", width = 0.55) +\n  scale_fill_manual(values = c(\"Paired\" = \"#006a4e\", \"Unpaired\" = \"#e74c3c\")) +\n  labs(\n    title    = \"Mean 95% CI Width: Paired vs. Unpaired t-test\",\n    subtitle = bquote(\"Benefit grows with within-pair correlation\" ~ rho ~\n                      \" (n = 25,\" ~ sigma ~ \"= 10 per group, 2000 simulations)\"),\n    x        = expression(\"Within-pair correlation \" * rho),\n    y        = \"Mean 95% CI Width\",\n    fill     = NULL\n  ) +\n  theme(legend.position = \"bottom\")"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#crossover-trial-antihypertensive-drug-vs.-placebo",
+    "href": "lessons/19_PairedData/19_PairedData.html#crossover-trial-antihypertensive-drug-vs.-placebo",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Crossover Trial: Antihypertensive Drug vs. Placebo",
+    "text": "Crossover Trial: Antihypertensive Drug vs. Placebo\nStudy (DBC 10.3 style): 20 hypertensive patients complete a crossover trial. Each receives both an antihypertensive drug and placebo (random order, 4-week washout). Outcome: systolic BP reduction (mmHg). Test \\(H_0: \\mu_D = 0\\) vs. \\(H_a: \\mu_D &lt; 0\\) (drug lowers BP more than placebo) at \\(\\alpha = 0.05\\).\n\nset.seed(551)\nn   &lt;- 20\nrho &lt;- 0.75\nL   &lt;- chol(10^2 * matrix(c(1, rho, rho, 1), 2))\n# Drug arm lowers BP ~5 mmHg more than placebo\nxy  &lt;- matrix(rnorm(2 * n), n, 2) %*% L +\n       matrix(c(0, -5), n, 2, byrow = TRUE)\n\nsbp_placebo &lt;- xy[, 1]\nsbp_drug    &lt;- xy[, 2]\nd           &lt;- sbp_drug - sbp_placebo  # negative = drug better\n\ncat(sprintf(\"Mean D (drug - placebo):  %.2f mmHg\\n\", mean(d)))\n\nMean D (drug - placebo):  -6.22 mmHg\n\ncat(sprintf(\"SD(D):                    %.2f mmHg\\n\", sd(d)))\n\nSD(D):                    8.09 mmHg\n\nresult &lt;- t.test(sbp_drug, sbp_placebo, paired = TRUE, alternative = \"less\")\ntidy(result)\n\n# A tibble: 1 × 8\n  estimate statistic p.value parameter conf.low conf.high method     alternative\n     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      \n1    -6.22     -3.44 0.00137        19     -Inf     -3.10 Paired t-… less       \n\n\n\ncat(sprintf(\"95%% CI for mu_D:  (%.2f, Inf)\\n\", result$conf.int[2]))\n\n95% CI for mu_D:  (-3.10, Inf)\n\ncat(sprintf(\"p-value:            %.5f\\n\", result$p.value))\n\np-value:            0.00137"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#visualizing-the-paired-data",
+    "href": "lessons/19_PairedData/19_PairedData.html#visualizing-the-paired-data",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Visualizing the Paired Data",
+    "text": "Visualizing the Paired Data\n\n\nCode\np1 &lt;- tibble(\n  Patient = factor(seq_len(n)),\n  Placebo = sbp_placebo,\n  Drug    = sbp_drug\n) |&gt;\n  ggplot(aes(x = 1, xend = 2, y = Placebo, yend = Drug)) +\n  geom_segment(color = \"grey65\", linewidth = 0.7) +\n  geom_point(aes(x = 1, y = Placebo), color = \"#e74c3c\", size = 3) +\n  geom_point(aes(x = 2, y = Drug),    color = \"#006a4e\", size = 3) +\n  scale_x_continuous(breaks = c(1, 2), labels = c(\"Placebo\", \"Drug\"),\n                     limits = c(0.7, 2.3)) +\n  labs(title = \"SBP Reduction: Each Patient's Profile\",\n       x = NULL, y = \"SBP Reduction (mmHg)\")\n\np2 &lt;- tibble(d = d) |&gt;\n  ggplot(aes(x = d)) +\n  geom_histogram(aes(y = after_stat(density)), bins = 10,\n                 fill = \"#3498db\", color = \"white\", alpha = 0.7) +\n  geom_density(color = \"#2c3e50\", linewidth = 1.2) +\n  geom_vline(xintercept = 0,       linetype = \"dashed\",\n             color = \"grey40\", linewidth = 1.0) +\n  geom_vline(xintercept = mean(d), color = \"#e74c3c\", linewidth = 1.4) +\n  annotate(\"text\", x = mean(d) - 0.5, y = 0.045,\n           label = bquote(bar(D) == .(round(mean(d), 1))),\n           color = \"#e74c3c\", size = 5.5, hjust = 1) +\n  labs(title = \"Distribution of Differences  D = Drug \\u2212 Placebo\",\n       x = \"Difference (mmHg)\", y = \"Density\")\n\np1 + p2 +\n  plot_annotation(\n    title    = \"Crossover Trial: Antihypertensive Drug vs. Placebo  (n = 20 pairs)\",\n    subtitle = \"Left: spaghetti plot of individual patient profiles   |   Right: distribution of within-pair differences\"\n  )"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#what-if-we-incorrectly-used-a-two-sample-test",
+    "href": "lessons/19_PairedData/19_PairedData.html#what-if-we-incorrectly-used-a-two-sample-test",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "What If We Incorrectly Used a Two-Sample Test?",
+    "text": "What If We Incorrectly Used a Two-Sample Test?\n\npaired_res   &lt;- t.test(sbp_drug, sbp_placebo, paired = TRUE, alternative = \"less\")\nunpaired_res &lt;- t.test(sbp_drug, sbp_placebo, paired = FALSE, alternative = \"less\")\n\ncat(\"--- Paired t-test (CORRECT) ---\\n\")\n\n--- Paired t-test (CORRECT) ---\n\ncat(sprintf(\"  t = %.3f,  df = %d,  p = %.5f\\n\",\n            paired_res$statistic,\n            paired_res$parameter,\n            paired_res$p.value))\n\n  t = -3.440,  df = 19,  p = 0.00137\n\ncat(sprintf(\"  95%% CI: (%.2f, %.2f)\\n\\n\",\n            paired_res$conf.int[1], paired_res$conf.int[2]))\n\n  95% CI: (-Inf, -3.10)\n\ncat(\"--- Welch two-sample t-test (INCORRECT for paired data) ---\\n\")\n\n--- Welch two-sample t-test (INCORRECT for paired data) ---\n\ncat(sprintf(\"  t = %.3f,  df = %.1f,  p = %.5f\\n\",\n            unpaired_res$statistic,\n            unpaired_res$parameter,\n            unpaired_res$p.value))\n\n  t = -1.907,  df = 38.0,  p = 0.03207\n\ncat(sprintf(\"  95%% CI: (%.2f, %.2f)\\n\",\n            unpaired_res$conf.int[1], unpaired_res$conf.int[2]))\n\n  95% CI: (-Inf, -0.72)\n\n\n\nThe paired test has a much narrower CI and smaller p-value because it removes between-patient variability (\\(\\rho = 0.75\\)). The unpaired test wastes information by treating the two arms as unrelated samples."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#prepost-ferritin-after-iron-supplementation",
+    "href": "lessons/19_PairedData/19_PairedData.html#prepost-ferritin-after-iron-supplementation",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Pre/Post: Ferritin After Iron Supplementation",
+    "text": "Pre/Post: Ferritin After Iron Supplementation\nStudy (DBC 10.3): 12 iron-deficient patients have serum ferritin (ng/mL) measured before and after 8 weeks of oral iron supplementation. Test for a significant increase (\\(H_a: \\mu_D &gt; 0\\)).\n\nferritin_pre  &lt;- c( 8, 11,  9, 14,  7, 12,  6, 15, 10,  9, 13,  8)\nferritin_post &lt;- ferritin_pre + rnorm(length(ferritin_pre), 4, 3)\nd_iron        &lt;- ferritin_post - ferritin_pre\n\ncat(sprintf(\"Mean pre:   %.1f   |   Mean post:  %.1f\\n\",\n            mean(ferritin_pre), mean(ferritin_post)))\n\nMean pre:   10.2   |   Mean post:  15.8\n\ncat(sprintf(\"Mean D:     %.1f   |   SD(D):      %.1f   |   n = %d\\n\",\n            mean(d_iron), sd(d_iron), length(d_iron)))\n\nMean D:     5.6   |   SD(D):      2.3   |   n = 12\n\nres_iron &lt;- t.test(ferritin_post, ferritin_pre,\n                   paired = TRUE, alternative = \"greater\")\ntidy(res_iron)\n\n# A tibble: 1 × 8\n  estimate statistic    p.value parameter conf.low conf.high method  alternative\n     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      \n1     5.63      8.40 0.00000204        11     4.42       Inf Paired… greater    \n\n\n\ncat(sprintf(\"One-sided 95%% CI: (%.2f, Inf)\\n\", res_iron$conf.int[1]))\n\nOne-sided 95% CI: (4.42, Inf)\n\ncat(sprintf(\"p-value: %.2e\\n\", res_iron$p.value))\n\np-value: 2.04e-06"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#checking-the-normality-assumption-for-d_i",
+    "href": "lessons/19_PairedData/19_PairedData.html#checking-the-normality-assumption-for-d_i",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Checking the Normality Assumption for \\(D_i\\)",
+    "text": "Checking the Normality Assumption for \\(D_i\\)\n\n\nCode\np_hist &lt;- tibble(d = d_iron) |&gt;\n  ggplot(aes(x = d)) +\n  geom_histogram(bins = 8, fill = \"#006a4e\", color = \"white\", alpha = 0.75) +\n  geom_vline(xintercept = mean(d_iron), color = \"#e74c3c\",\n             linewidth = 1.3, linetype = \"dashed\") +\n  annotate(\"text\", x = mean(d_iron) + 0.4, y = 2.7,\n           label = bquote(bar(D) == .(round(mean(d_iron), 1))),\n           color = \"#e74c3c\", size = 5.5, hjust = 0) +\n  labs(title = \"Histogram of Differences\",\n       x = \"Ferritin increase (ng/mL)\", y = \"Count\")\n\np_qq &lt;- tibble(d = d_iron) |&gt;\n  ggplot(aes(sample = d)) +\n  stat_qq(color = \"#006a4e\", size = 3) +\n  stat_qq_line(color = \"#e74c3c\", linewidth = 1.1) +\n  labs(title = \"Normal Q-Q Plot of Differences\",\n       x = \"Theoretical quantiles\", y = \"Sample quantiles\")\n\np_hist + p_qq +\n  plot_annotation(\n    title    = \"Normality Check for Differences  (n = 12)\",\n    subtitle = \"The paired t-test requires approximate normality of D_i, not of the raw pre/post values\"\n  )\n\n\n\n\nWith \\(n = 12\\), normality of \\(D_i\\) matters. The Q-Q plot looks reasonable here. For small \\(n\\) with visibly non-normal differences, use the Wilcoxon signed-rank test or sign test (Lesson 21)."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#matched-pairs-smoking-and-lung-cancer",
+    "href": "lessons/19_PairedData/19_PairedData.html#matched-pairs-smoking-and-lung-cancer",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Matched Pairs: Smoking and Lung Cancer",
+    "text": "Matched Pairs: Smoking and Lung Cancer\nStudy: 15 lung cancer cases are each individually matched to a healthy control on age (\\(\\pm 2\\) yr) and sex. Exposure: pack-years of smoking. Within each matched pair, compute the case–control difference.\n\nset.seed(7)\ncases    &lt;- round(pmax(0, rnorm(15, mean = 35, sd = 15)))\ncontrols &lt;- round(pmax(0, cases - rnorm(15, mean = 20, sd = 12)))\nd_match  &lt;- cases - controls\n\ncat(\"Pack-years — Cases:   \", cases,    \"\\n\")\n\nPack-years — Cases:    69 17 25 29 20 21 46 33 37 68 40 76 69 40 63 \n\ncat(\"Pack-years — Controls:\", controls, \"\\n\")\n\nPack-years — Controls: 43 8 9 9 0 0 18 0 34 33 18 47 42 32 46 \n\ncat(sprintf(\"\\nMean difference (case - control): %.1f  |  SD: %.1f\\n\",\n            mean(d_match), sd(d_match)))\n\n\nMean difference (case - control): 20.9  |  SD: 9.2\n\nt.test(cases, controls, paired = TRUE) |&gt; tidy()\n\n# A tibble: 1 × 8\n  estimate statistic     p.value parameter conf.low conf.high method alternative\n     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      \n1     20.9      8.78 0.000000459        14     15.8      26.0 Paire… two.sided  \n\n\n\nt.test(cases, controls, paired = TRUE) is equivalent to t.test(d_match). The 1:1 matching creates the pairing structure, and the analysis must respect it — ignoring the matching (unpaired test) would discard the correlation induced by matching on age and sex."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#paired-analysis-checklist",
+    "href": "lessons/19_PairedData/19_PairedData.html#paired-analysis-checklist",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Paired Analysis Checklist",
+    "text": "Paired Analysis Checklist\nBefore choosing paired vs. two-sample analysis, confirm:\n\n1-to-1 link exists: same subject measured twice, or two subjects deliberately matched\nWithin-pair correlation is positive: almost always true for biological measurements on the same individual\n\\(n\\) = number of pairs, not total observations — paired \\(t\\)-test has \\(n - 1\\) df, not \\(2n - 2\\)\n\\(D_i\\) approximately normal (or \\(n\\) large enough for CLT)\n\n\n\n\n\n\n\n\nCommon Mistake\n\n\nReporting “\\(n_1 = n_2 = 20\\)” for a pre/post study and running t.test(pre, post) without paired = TRUE. This treats \\(2n = 40\\) observations as independent, underestimates the SE, and produces an invalid test. The correct \\(n\\) is 20 pairs, df = 19."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#key-takeaways-dbc-10.3",
+    "href": "lessons/19_PairedData/19_PairedData.html#key-takeaways-dbc-10.3",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Key Takeaways (DBC 10.3)",
+    "text": "Key Takeaways (DBC 10.3)\n\n\n\n\n\n\nPaired Data: Main Points\n\n\n\nPaired designs arise from pre/post measurements, crossover trials, bilateral organs, and matched studies; each pair yields one difference \\(D_i = X_{1i} - X_{2i}\\)\nVariance reduction: \\(\\text{Var}(D_i) = \\sigma_1^2 + \\sigma_2^2 - 2\\rho\\sigma_1\\sigma_2\\); with \\(\\sigma_1 = \\sigma_2 = \\sigma\\), the CI width ratio (paired/unpaired) is \\(\\sqrt{1 - \\rho}\\) — pairing eliminates between-subject noise when \\(\\rho &gt; 0\\)\nPaired \\(t\\)-test: \\(T = \\bar{D}/(S_D/\\sqrt{n}) \\sim t_{n-1}\\); identical to one-sample \\(t\\) on the \\(D_i\\); exact under normality of \\(D_i\\), approximately valid by CLT for moderate \\(n\\)\nAlways use paired = TRUE in R when the design is paired — omitting it ignores correlation, widens CIs, and reduces power\nCheck normality of \\(D_i\\) (not of \\(X_{1i}\\) or \\(X_{2i}\\)) with a histogram and Q-Q plot; for small \\(n\\) with non-normal \\(D_i\\), use nonparametric alternatives (Lesson 21)"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#looking-ahead",
+    "href": "lessons/19_PairedData/19_PairedData.html#looking-ahead",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Looking Ahead",
+    "text": "Looking Ahead\nNext class (Lesson 20): Bootstrap and Permutation Methods for Two Samples (C&H Ch. 3, 5; DBC 10.6)\n\nBootstrap CI for \\(\\mu_1 - \\mu_2\\): resample each group independently\nPermutation test: shuffle labels under \\(H_0: F_1 = F_2\\)\nPaired bootstrap: resample differences\nWhen do resampling methods outperform parametric tests?\n\n\nLesson 21: Nonparametric inference — sign test, Wilcoxon signed-rank, Wilcoxon rank-sum, asymptotic relative efficiency (DBC Ch. 14)\nLesson 22: Course Review"
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#references",
+    "href": "lessons/19_PairedData/19_PairedData.html#references",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "References",
+    "text": "References\n\nDevore, Berk, and Carlton. Modern Mathematical Statistics with Applications (Springer). Section 10.3.\nChihara, L. M. and Hesterberg, T. C. Mathematical Statistics with Resampling and R (Wiley). Chapter 3."
+  },
+  {
+    "objectID": "lessons/19_PairedData/19_PairedData.html#questions",
+    "href": "lessons/19_PairedData/19_PairedData.html#questions",
+    "title": "Lesson 19: Analysis of Paired Data",
+    "section": "Questions?",
+    "text": "Questions?\nThank you!"
   }
 ]

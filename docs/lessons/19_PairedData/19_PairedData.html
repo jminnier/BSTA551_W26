@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
+
+  <meta name="author" content="Jessica Minnier">
+  <meta name="dcterms.date" content="2026-03-09">
+  <title>Theory of Statistical Inference – Lesson 19: Analysis of Paired Data</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-color="#006a4e" class="quarto-title-block center">
+  <h1 class="title">Lesson 19: Analysis of Paired Data</h1>
+  <p class="subtitle">BSTA 551: Statistical Inference</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Jessica Minnier 
+</div>
+</div>
+</div>
+
+  <p class="date">2026-03-09</p>
+</section>
+<section>
+<section id="lesson-19-analysis-of-paired-data" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Lesson 19: Analysis of Paired Data</h1>
+
+</section>
+<section id="review-lesson-18" class="slide level2 scrollable">
+<h2>Review: Lesson 18</h2>
+<p><strong>Two independent samples (Lesson 18):</strong></p>
+<ul>
+<li>Two-sample <span class="math inline">\(z\)</span>: <span class="math inline">\(\sigma_1^2, \sigma_2^2\)</span> known <span class="math inline">\(\Rightarrow\)</span> pivot <span class="math inline">\(Z \sim N(0,1)\)</span></li>
+<li><strong>Welch <span class="math inline">\(t\)</span>-test</strong> (default): <span class="math inline">\(\sigma_1^2, \sigma_2^2\)</span> unknown <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(T_W \approx t_{\hat\nu}\)</span></li>
+<li><strong>Pooled <span class="math inline">\(t\)</span>-test</strong>: equal variances assumed <span class="math inline">\(\Rightarrow\)</span> <span class="math inline">\(T_P \sim t_{n_1+n_2-2}\)</span> (exact)</li>
+<li><span class="math inline">\(z\)</span>-test for <span class="math inline">\(p_1 - p_2\)</span>; <span class="math inline">\(F\)</span>-test for <span class="math inline">\(\sigma_1^2/\sigma_2^2\)</span></li>
+</ul>
+<div class="fragment">
+<p><strong>Today’s Goals:</strong></p>
+<ol type="1">
+<li>Recognize when data are <strong>paired</strong> vs.&nbsp;independent and why it matters</li>
+<li>Show how pairing <strong>reduces variance</strong> when within-pair correlation is positive</li>
+<li>Derive and apply the <strong>paired <span class="math inline">\(t\)</span>-test</strong> and <strong>paired CI</strong> for <span class="math inline">\(\mu_D\)</span> (DBC 10.3)</li>
+<li>Understand the link between paired analysis and one-sample inference</li>
+<li>Apply to crossover trials, pre/post studies, and matched case-control designs</li>
+</ol>
+</div>
+</section>
+<section id="roadmap" class="slide level2">
+<h2>Roadmap</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 19%">
+<col style="width: 34%">
+<col style="width: 19%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>Key Operation</th>
+<th>Method</th>
+<th>Reference</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pre/post (same subjects)</td>
+<td><span class="math inline">\(D_i = X_{1i} - X_{2i}\)</span></td>
+<td>One-sample <span class="math inline">\(t\)</span> on <span class="math inline">\(\{D_i\}\)</span></td>
+<td>DBC 10.3</td>
+</tr>
+<tr class="even">
+<td>Crossover trial</td>
+<td>Same</td>
+<td>Paired <span class="math inline">\(t\)</span></td>
+<td>DBC 10.3</td>
+</tr>
+<tr class="odd">
+<td>Matched case-control</td>
+<td>Same</td>
+<td>Paired <span class="math inline">\(t\)</span></td>
+<td>DBC 10.3</td>
+</tr>
+<tr class="even">
+<td>Bilateral measurements</td>
+<td>Same</td>
+<td>Paired <span class="math inline">\(t\)</span></td>
+<td>DBC 10.3</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Motivating Example</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Crossover trial:</strong> 20 hypertensive patients each receive an antihypertensive drug for 4 weeks, then (after washout) placebo for 4 weeks, in random order. Outcome: systolic blood pressure reduction (mmHg). Each patient is their own control so the two measurements are <strong>not independent</strong>; they are paired within each patient.</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="the-paired-design" class="title-slide slide level1 center" data-background-color="#3498db">
+<h1>The Paired Design</h1>
+
+</section>
+<section id="when-are-data-paired" class="slide level2">
+<h2>When Are Data Paired?</h2>
+<p>Data are paired when each observation in group 1 is <strong>naturally linked</strong> to exactly one observation in group 2:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 47%">
+<col style="width: 52%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Design</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Pre/post (same subject)</td>
+<td>SBP before vs.&nbsp;after 12 weeks of treatment</td>
+</tr>
+<tr class="even">
+<td>Crossover trial</td>
+<td>Same patient receives drug and placebo in random order</td>
+</tr>
+<tr class="odd">
+<td>Matched case-control</td>
+<td>Cases matched 1:1 to controls on age and sex</td>
+</tr>
+<tr class="even">
+<td>Repeated measurement</td>
+<td>Lab value at baseline and 6-month follow-up</td>
+</tr>
+<tr class="odd">
+<td>Bilateral organs</td>
+<td>Right vs.&nbsp;left eye intraocular pressure</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Critical Distinction</strong></p>
+</div>
+<div class="callout-content">
+<p><strong>Paired:</strong> <span class="math inline">\(n\)</span> pairs <span class="math inline">\(\to\)</span> <span class="math inline">\(n\)</span> differences <span class="math inline">\(\to\)</span> <strong>one-sample problem on</strong> <span class="math inline">\(D_i\)</span></p>
+<p><strong>Independent:</strong> <span class="math inline">\(n_1 + n_2\)</span> separate observations <span class="math inline">\(\to\)</span> <strong>two-sample problem</strong></p>
+<p>Applying a two-sample test to paired data <strong>ignores within-pair correlation</strong>, discards information, and loses power — sometimes substantially.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-paired-reduction" class="slide level2">
+<h2>The Paired Reduction</h2>
+<p><strong>Setup:</strong> <span class="math inline">\((X_{1i}, X_{2i})\)</span>, <span class="math inline">\(i = 1, \ldots, n\)</span> are <span class="math inline">\(n\)</span> independent pairs (but within each pair, <span class="math inline">\(X_{1i}\)</span> and <span class="math inline">\(X_{2i}\)</span> are correlated).</p>
+<p>Define the <strong>within-pair difference</strong>: <span class="math inline">\(D_i = X_{1i} - X_{2i}\)</span></p>
+<p>Then <span class="math inline">\(D_1, \ldots, D_n \stackrel{iid}{\sim}\)</span> some distribution with: <span class="math display">\[\mu_D = E[D_i] = \mu_1 - \mu_2 \qquad \sigma_D^2 = \text{Var}(D_i)\]</span></p>
+<p><strong>Everything reduces to one-sample inference on <span class="math inline">\(D_1, \ldots, D_n\)</span>.</strong></p>
+<div class="fragment">
+<p><strong>Why the variance is smaller:</strong> Let <span class="math inline">\(\rho = \text{Cor}(X_{1i}, X_{2i})\)</span>. Then: <span class="math display">\[\sigma_D^2 = \text{Var}(X_{1i} - X_{2i}) = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2\]</span></p>
+<p>When <span class="math inline">\(\rho &gt; 0\)</span> (the typical case in biological paired designs): <span class="math display">\[\sigma_D^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2 \;&lt;\; \sigma_1^2 + \sigma_2^2\]</span></p>
+<p>Pairing <strong>removes between-subject noise</strong> by differencing within each pair.</p>
+</div>
+</section>
+<section id="paired-t-test-dbc-10.3" class="slide level2">
+<h2>Paired <span class="math inline">\(t\)</span>-Test (DBC 10.3)</h2>
+<p>Let <span class="math inline">\(\bar{D} = \frac{1}{n}\sum_{i=1}^n D_i\)</span> and <span class="math inline">\(S_D^2 = \frac{1}{n-1}\sum_{i=1}^n (D_i - \bar{D})^2\)</span>.</p>
+<p><strong>Paired <span class="math inline">\(t\)</span>-statistic</strong> for <span class="math inline">\(H_0: \mu_D = \mu_0\)</span> (usually <span class="math inline">\(\mu_0 = 0\)</span>): <span class="math display">\[T = \frac{\bar{D} - \mu_0}{S_D / \sqrt{n}} \sim t_{n-1}\]</span></p>
+<p>Exact under normality of <span class="math inline">\(D_i\)</span>; approximately valid by CLT for large <span class="math inline">\(n\)</span>.</p>
+<p><strong>Paired <span class="math inline">\(100(1-\alpha)\%\)</span> CI for <span class="math inline">\(\mu_D\)</span>:</strong> <span class="math display">\[\bar{D} \;\pm\; t_{\alpha/2,\,n-1} \cdot \frac{S_D}{\sqrt{n}}\]</span></p>
+<div class="fragment">
+<p>In R:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">t.test</span>(x1, x2, <span class="at">paired =</span> <span class="cn">TRUE</span>)   <span class="co"># from two measurement vectors</span></span>
+<span id="cb1-2"><a></a><span class="fu">t.test</span>(d)                        <span class="co"># from pre-computed differences</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>The paired <span class="math inline">\(t\)</span>-test is <strong>identical</strong> to the one-sample <span class="math inline">\(t\)</span>-test on the differences — all the theory from Lessons 7–8 applies directly.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="variance-reduction-how-much-does-pairing-help" class="slide level2">
+<h2>Variance Reduction: How Much Does Pairing Help?</h2>
+<p>When <span class="math inline">\(\sigma_1 = \sigma_2 = \sigma\)</span>, the SE of <span class="math inline">\(\bar{D}\)</span> in the paired analysis is: <span class="math display">\[\text{SE}_\text{paired} = \frac{\sigma_D}{\sqrt{n}} = \frac{\sigma\sqrt{2(1-\rho)}}{\sqrt{n}}\]</span></p>
+<p>The SE from an unpaired analysis with the same total <span class="math inline">\(n\)</span> subjects per group would be: <span class="math display">\[\text{SE}_\text{unpaired} = \sigma\sqrt{\frac{2}{n}}\]</span></p>
+<p>The ratio of CI widths (paired to unpaired) is <span class="math inline">\(\sqrt{1 - \rho}\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="fu">tibble</span>(<span class="at">rho =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-2"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-3"><a></a>    <span class="at">width_ratio     =</span> <span class="fu">round</span>(<span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> rho), <span class="dv">3</span>),</span>
+<span id="cb2-4"><a></a>    <span class="at">pct_narrower    =</span> scales<span class="sc">::</span><span class="fu">percent</span>(<span class="dv">1</span> <span class="sc">-</span> <span class="fu">sqrt</span>(<span class="dv">1</span> <span class="sc">-</span> rho), <span class="at">accuracy =</span> <span class="dv">1</span>)</span>
+<span id="cb2-5"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-6"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb2-7"><a></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"rho"</span>, <span class="st">"CI width ratio (paired / unpaired)"</span>,</span>
+<span id="cb2-8"><a></a>                  <span class="st">"% CI width reduction"</span>),</span>
+<span id="cb2-9"><a></a>    <span class="at">caption   =</span> <span class="st">"Benefit of pairing when sigma_1 = sigma_2"</span></span>
+<span id="cb2-10"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<caption>Benefit of pairing when sigma_1 = sigma_2</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rho</th>
+<th style="text-align: right;">CI width ratio (paired / unpaired)</th>
+<th style="text-align: left;">% CI width reduction</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">0.0</td>
+<td style="text-align: right;">1.000</td>
+<td style="text-align: left;">0%</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.3</td>
+<td style="text-align: right;">0.837</td>
+<td style="text-align: left;">16%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.5</td>
+<td style="text-align: right;">0.707</td>
+<td style="text-align: left;">29%</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.7</td>
+<td style="text-align: right;">0.548</td>
+<td style="text-align: left;">45%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">0.8</td>
+<td style="text-align: right;">0.447</td>
+<td style="text-align: left;">55%</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">0.9</td>
+<td style="text-align: right;">0.316</td>
+<td style="text-align: left;">68%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>When <span class="math inline">\(\rho = 0.8\)</span>: the paired CI is only <span class="math inline">\(\sqrt{0.2} \approx 45\%\)</span> as wide as the unpaired – a lot of precision gained!</p>
+</section>
+<section id="visualizing-variance-reduction-by-simulation" class="slide level2">
+<h2>Visualizing Variance Reduction by Simulation</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb3-2"><a></a></span>
+<span id="cb3-3"><a></a>sim_ci_width <span class="ot">&lt;-</span> <span class="cf">function</span>(rho, <span class="at">n =</span> <span class="dv">25</span>, <span class="at">sigma =</span> <span class="dv">10</span>, <span class="at">B =</span> <span class="dv">2000</span>) {</span>
+<span id="cb3-4"><a></a>  <span class="fu">map_dfr</span>(<span class="fu">seq_len</span>(B), <span class="cf">function</span>(i) {</span>
+<span id="cb3-5"><a></a>    L  <span class="ot">&lt;-</span> <span class="fu">chol</span>(sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, rho, rho, <span class="dv">1</span>), <span class="dv">2</span>))</span>
+<span id="cb3-6"><a></a>    xy <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n), n, <span class="dv">2</span>) <span class="sc">%*%</span> L</span>
+<span id="cb3-7"><a></a>    d  <span class="ot">&lt;-</span> xy[, <span class="dv">1</span>] <span class="sc">-</span> xy[, <span class="dv">2</span>]</span>
+<span id="cb3-8"><a></a>    <span class="fu">tibble</span>(</span>
+<span id="cb3-9"><a></a>      <span class="at">paired   =</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sd</span>(d) <span class="sc">/</span> <span class="fu">sqrt</span>(n),</span>
+<span id="cb3-10"><a></a>      <span class="at">unpaired =</span> <span class="fu">diff</span>(<span class="fu">t.test</span>(xy[, <span class="dv">1</span>], xy[, <span class="dv">2</span>])<span class="sc">$</span>conf.int)</span>
+<span id="cb3-11"><a></a>    )</span>
+<span id="cb3-12"><a></a>  }) <span class="sc">|&gt;</span></span>
+<span id="cb3-13"><a></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(x) <span class="fu">mean</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a></a>    <span class="fu">mutate</span>(<span class="at">rho =</span> rho)</span>
+<span id="cb3-15"><a></a>}</span>
+<span id="cb3-16"><a></a></span>
+<span id="cb3-17"><a></a>widths <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">0.7</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>), sim_ci_width)</span>
+<span id="cb3-18"><a></a></span>
+<span id="cb3-19"><a></a>widths <span class="sc">|&gt;</span></span>
+<span id="cb3-20"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(paired, unpaired), <span class="at">names_to =</span> <span class="st">"Method"</span>, <span class="at">values_to =</span> <span class="st">"Width"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-21"><a></a>  <span class="fu">mutate</span>(<span class="at">Method =</span> <span class="fu">str_to_title</span>(Method)) <span class="sc">|&gt;</span></span>
+<span id="cb3-22"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(rho), <span class="at">y =</span> Width, <span class="at">fill =</span> Method)) <span class="sc">+</span></span>
+<span id="cb3-23"><a></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>, <span class="at">width =</span> <span class="fl">0.55</span>) <span class="sc">+</span></span>
+<span id="cb3-24"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Paired"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>, <span class="st">"Unpaired"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb3-25"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-26"><a></a>    <span class="at">title    =</span> <span class="st">"Mean 95% CI Width: Paired vs. Unpaired t-test"</span>,</span>
+<span id="cb3-27"><a></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Benefit grows with within-pair correlation"</span> <span class="sc">~</span> rho <span class="sc">~</span></span>
+<span id="cb3-28"><a></a>                      <span class="st">" (n = 25,"</span> <span class="sc">~</span> sigma <span class="sc">~</span> <span class="st">"= 10 per group, 2000 simulations)"</span>),</span>
+<span id="cb3-29"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="st">"Within-pair correlation "</span> <span class="sc">*</span> rho),</span>
+<span id="cb3-30"><a></a>    <span class="at">y        =</span> <span class="st">"Mean 95% CI Width"</span>,</span>
+<span id="cb3-31"><a></a>    <span class="at">fill     =</span> <span class="cn">NULL</span></span>
+<span id="cb3-32"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb3-33"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="19_PairedData_files/figure-revealjs/unnamed-chunk-2-1.png" width="1344" class="r-stretch"></section></section>
+<section>
+<section id="medical-example-crossover-trial" class="title-slide slide level1 center" data-background-color="#e74c3c">
+<h1>Medical Example: Crossover Trial</h1>
+
+</section>
+<section id="crossover-trial-antihypertensive-drug-vs.-placebo" class="slide level2">
+<h2>Crossover Trial: Antihypertensive Drug vs.&nbsp;Placebo</h2>
+<p><strong>Study (DBC 10.3 style):</strong> 20 hypertensive patients complete a crossover trial. Each receives both an antihypertensive drug and placebo (random order, 4-week washout). Outcome: systolic BP reduction (mmHg). Test <span class="math inline">\(H_0: \mu_D = 0\)</span> vs.&nbsp;<span class="math inline">\(H_a: \mu_D &lt; 0\)</span> (drug lowers BP more than placebo) at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb4-2"><a></a>n   <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb4-3"><a></a>rho <span class="ot">&lt;-</span> <span class="fl">0.75</span></span>
+<span id="cb4-4"><a></a>L   <span class="ot">&lt;-</span> <span class="fu">chol</span>(<span class="dv">10</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, rho, rho, <span class="dv">1</span>), <span class="dv">2</span>))</span>
+<span id="cb4-5"><a></a><span class="co"># Drug arm lowers BP ~5 mmHg more than placebo</span></span>
+<span id="cb4-6"><a></a>xy  <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n), n, <span class="dv">2</span>) <span class="sc">%*%</span> L <span class="sc">+</span></span>
+<span id="cb4-7"><a></a>       <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">5</span>), n, <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-8"><a></a></span>
+<span id="cb4-9"><a></a>sbp_placebo <span class="ot">&lt;-</span> xy[, <span class="dv">1</span>]</span>
+<span id="cb4-10"><a></a>sbp_drug    <span class="ot">&lt;-</span> xy[, <span class="dv">2</span>]</span>
+<span id="cb4-11"><a></a>d           <span class="ot">&lt;-</span> sbp_drug <span class="sc">-</span> sbp_placebo  <span class="co"># negative = drug better</span></span>
+<span id="cb4-12"><a></a></span>
+<span id="cb4-13"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean D (drug - placebo):  %.2f mmHg</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(d)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean D (drug - placebo):  -6.22 mmHg</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SD(D):                    %.2f mmHg</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(d)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SD(D):                    8.09 mmHg</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a>result <span class="ot">&lt;-</span> <span class="fu">t.test</span>(sbp_drug, sbp_placebo, <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">alternative =</span> <span class="st">"less"</span>)</span>
+<span id="cb8-2"><a></a><span class="fu">tidy</span>(result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  estimate statistic p.value parameter conf.low conf.high method     alternative
+     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
+1    -6.22     -3.44 0.00137        19     -Inf     -3.10 Paired t-… less       </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI for mu_D:  (%.2f, Inf)</span><span class="sc">\n</span><span class="st">"</span>, result<span class="sc">$</span>conf.int[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for mu_D:  (-3.10, Inf)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value:            %.5f</span><span class="sc">\n</span><span class="st">"</span>, result<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value:            0.00137</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-paired-data" class="slide level2">
+<h2>Visualizing the Paired Data</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a>p1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb14-2"><a></a>  <span class="at">Patient =</span> <span class="fu">factor</span>(<span class="fu">seq_len</span>(n)),</span>
+<span id="cb14-3"><a></a>  <span class="at">Placebo =</span> sbp_placebo,</span>
+<span id="cb14-4"><a></a>  <span class="at">Drug    =</span> sbp_drug</span>
+<span id="cb14-5"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb14-6"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">xend =</span> <span class="dv">2</span>, <span class="at">y =</span> Placebo, <span class="at">yend =</span> Drug)) <span class="sc">+</span></span>
+<span id="cb14-7"><a></a>  <span class="fu">geom_segment</span>(<span class="at">color =</span> <span class="st">"grey65"</span>, <span class="at">linewidth =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">y =</span> Placebo), <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb14-9"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">2</span>, <span class="at">y =</span> Drug),    <span class="at">color =</span> <span class="st">"#006a4e"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb14-10"><a></a>  <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Placebo"</span>, <span class="st">"Drug"</span>),</span>
+<span id="cb14-11"><a></a>                     <span class="at">limits =</span> <span class="fu">c</span>(<span class="fl">0.7</span>, <span class="fl">2.3</span>)) <span class="sc">+</span></span>
+<span id="cb14-12"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"SBP Reduction: Each Patient's Profile"</span>,</span>
+<span id="cb14-13"><a></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"SBP Reduction (mmHg)"</span>)</span>
+<span id="cb14-14"><a></a></span>
+<span id="cb14-15"><a></a>p2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">d =</span> d) <span class="sc">|&gt;</span></span>
+<span id="cb14-16"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> d)) <span class="sc">+</span></span>
+<span id="cb14-17"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">10</span>,</span>
+<span id="cb14-18"><a></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb14-19"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb14-20"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>,       <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb14-21"><a></a>             <span class="at">color =</span> <span class="st">"grey40"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>) <span class="sc">+</span></span>
+<span id="cb14-22"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(d), <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb14-23"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(d) <span class="sc">-</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.045</span>,</span>
+<span id="cb14-24"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">bar</span>(D) <span class="sc">==</span> .(<span class="fu">round</span>(<span class="fu">mean</span>(d), <span class="dv">1</span>))),</span>
+<span id="cb14-25"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb14-26"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Distribution of Differences  D = Drug \u2212 Placebo"</span>,</span>
+<span id="cb14-27"><a></a>       <span class="at">x =</span> <span class="st">"Difference (mmHg)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>)</span>
+<span id="cb14-28"><a></a></span>
+<span id="cb14-29"><a></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span></span>
+<span id="cb14-30"><a></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb14-31"><a></a>    <span class="at">title    =</span> <span class="st">"Crossover Trial: Antihypertensive Drug vs. Placebo  (n = 20 pairs)"</span>,</span>
+<span id="cb14-32"><a></a>    <span class="at">subtitle =</span> <span class="st">"Left: spaghetti plot of individual patient profiles   |   Right: distribution of within-pair differences"</span></span>
+<span id="cb14-33"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="19_PairedData_files/figure-revealjs/unnamed-chunk-5-1.png" width="1344" class="r-stretch"></section>
+<section id="what-if-we-incorrectly-used-a-two-sample-test" class="slide level2">
+<h2>What If We Incorrectly Used a Two-Sample Test?</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a>paired_res   <span class="ot">&lt;-</span> <span class="fu">t.test</span>(sbp_drug, sbp_placebo, <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">alternative =</span> <span class="st">"less"</span>)</span>
+<span id="cb15-2"><a></a>unpaired_res <span class="ot">&lt;-</span> <span class="fu">t.test</span>(sbp_drug, sbp_placebo, <span class="at">paired =</span> <span class="cn">FALSE</span>, <span class="at">alternative =</span> <span class="st">"less"</span>)</span>
+<span id="cb15-3"><a></a></span>
+<span id="cb15-4"><a></a><span class="fu">cat</span>(<span class="st">"--- Paired t-test (CORRECT) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Paired t-test (CORRECT) ---</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  t = %.3f,  df = %d,  p = %.5f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb17-2"><a></a>            paired_res<span class="sc">$</span>statistic,</span>
+<span id="cb17-3"><a></a>            paired_res<span class="sc">$</span>parameter,</span>
+<span id="cb17-4"><a></a>            paired_res<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  t = -3.440,  df = 19,  p = 0.00137</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  95%% CI: (%.2f, %.2f)</span><span class="sc">\n\n</span><span class="st">"</span>,</span>
+<span id="cb19-2"><a></a>            paired_res<span class="sc">$</span>conf.int[<span class="dv">1</span>], paired_res<span class="sc">$</span>conf.int[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  95% CI: (-Inf, -3.10)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">cat</span>(<span class="st">"--- Welch two-sample t-test (INCORRECT for paired data) ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>--- Welch two-sample t-test (INCORRECT for paired data) ---</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  t = %.3f,  df = %.1f,  p = %.5f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb23-2"><a></a>            unpaired_res<span class="sc">$</span>statistic,</span>
+<span id="cb23-3"><a></a>            unpaired_res<span class="sc">$</span>parameter,</span>
+<span id="cb23-4"><a></a>            unpaired_res<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  t = -1.907,  df = 38.0,  p = 0.03207</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  95%% CI: (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb25-2"><a></a>            unpaired_res<span class="sc">$</span>conf.int[<span class="dv">1</span>], unpaired_res<span class="sc">$</span>conf.int[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  95% CI: (-Inf, -0.72)</code></pre>
+</div>
+</div>
+<div class="fragment">
+<p>The paired test has a much narrower CI and smaller p-value because it removes between-patient variability (<span class="math inline">\(\rho = 0.75\)</span>). The unpaired test wastes information by treating the two arms as unrelated samples.</p>
+</div>
+</section></section>
+<section>
+<section id="prepost-study-example" class="title-slide slide level1 center" data-background-color="#27ae60">
+<h1>Pre/Post Study Example</h1>
+
+</section>
+<section id="prepost-ferritin-after-iron-supplementation" class="slide level2">
+<h2>Pre/Post: Ferritin After Iron Supplementation</h2>
+<p><strong>Study (DBC 10.3):</strong> 12 iron-deficient patients have serum ferritin (ng/mL) measured before and after 8 weeks of oral iron supplementation. Test for a significant increase (<span class="math inline">\(H_a: \mu_D &gt; 0\)</span>).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a>ferritin_pre  <span class="ot">&lt;-</span> <span class="fu">c</span>( <span class="dv">8</span>, <span class="dv">11</span>,  <span class="dv">9</span>, <span class="dv">14</span>,  <span class="dv">7</span>, <span class="dv">12</span>,  <span class="dv">6</span>, <span class="dv">15</span>, <span class="dv">10</span>,  <span class="dv">9</span>, <span class="dv">13</span>,  <span class="dv">8</span>)</span>
+<span id="cb27-2"><a></a>ferritin_post <span class="ot">&lt;-</span> ferritin_pre <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="fu">length</span>(ferritin_pre), <span class="dv">4</span>, <span class="dv">3</span>)</span>
+<span id="cb27-3"><a></a>d_iron        <span class="ot">&lt;-</span> ferritin_post <span class="sc">-</span> ferritin_pre</span>
+<span id="cb27-4"><a></a></span>
+<span id="cb27-5"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean pre:   %.1f   |   Mean post:  %.1f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb27-6"><a></a>            <span class="fu">mean</span>(ferritin_pre), <span class="fu">mean</span>(ferritin_post)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean pre:   10.2   |   Mean post:  15.8</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean D:     %.1f   |   SD(D):      %.1f   |   n = %d</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb29-2"><a></a>            <span class="fu">mean</span>(d_iron), <span class="fu">sd</span>(d_iron), <span class="fu">length</span>(d_iron)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean D:     5.6   |   SD(D):      2.3   |   n = 12</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a>res_iron <span class="ot">&lt;-</span> <span class="fu">t.test</span>(ferritin_post, ferritin_pre,</span>
+<span id="cb31-2"><a></a>                   <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span>
+<span id="cb31-3"><a></a><span class="fu">tidy</span>(res_iron)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  estimate statistic    p.value parameter conf.low conf.high method  alternative
+     &lt;dbl&gt;     &lt;dbl&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      
+1     5.63      8.40 0.00000204        11     4.42       Inf Paired… greater    </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"One-sided 95%% CI: (%.2f, Inf)</span><span class="sc">\n</span><span class="st">"</span>, res_iron<span class="sc">$</span>conf.int[<span class="dv">1</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>One-sided 95% CI: (4.42, Inf)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value: %.2e</span><span class="sc">\n</span><span class="st">"</span>, res_iron<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value: 2.04e-06</code></pre>
+</div>
+</div>
+</section>
+<section id="checking-the-normality-assumption-for-d_i" class="slide level2">
+<h2>Checking the Normality Assumption for <span class="math inline">\(D_i\)</span></h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a>p_hist <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">d =</span> d_iron) <span class="sc">|&gt;</span></span>
+<span id="cb37-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> d)) <span class="sc">+</span></span>
+<span id="cb37-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">8</span>, <span class="at">fill =</span> <span class="st">"#006a4e"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb37-4"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(d_iron), <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb37-5"><a></a>             <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb37-6"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(d_iron) <span class="sc">+</span> <span class="fl">0.4</span>, <span class="at">y =</span> <span class="fl">2.7</span>,</span>
+<span id="cb37-7"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">bar</span>(D) <span class="sc">==</span> .(<span class="fu">round</span>(<span class="fu">mean</span>(d_iron), <span class="dv">1</span>))),</span>
+<span id="cb37-8"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb37-9"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Histogram of Differences"</span>,</span>
+<span id="cb37-10"><a></a>       <span class="at">x =</span> <span class="st">"Ferritin increase (ng/mL)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>)</span>
+<span id="cb37-11"><a></a></span>
+<span id="cb37-12"><a></a>p_qq <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">d =</span> d_iron) <span class="sc">|&gt;</span></span>
+<span id="cb37-13"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">sample =</span> d)) <span class="sc">+</span></span>
+<span id="cb37-14"><a></a>  <span class="fu">stat_qq</span>(<span class="at">color =</span> <span class="st">"#006a4e"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb37-15"><a></a>  <span class="fu">stat_qq_line</span>(<span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb37-16"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Normal Q-Q Plot of Differences"</span>,</span>
+<span id="cb37-17"><a></a>       <span class="at">x =</span> <span class="st">"Theoretical quantiles"</span>, <span class="at">y =</span> <span class="st">"Sample quantiles"</span>)</span>
+<span id="cb37-18"><a></a></span>
+<span id="cb37-19"><a></a>p_hist <span class="sc">+</span> p_qq <span class="sc">+</span></span>
+<span id="cb37-20"><a></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb37-21"><a></a>    <span class="at">title    =</span> <span class="st">"Normality Check for Differences  (n = 12)"</span>,</span>
+<span id="cb37-22"><a></a>    <span class="at">subtitle =</span> <span class="st">"The paired t-test requires approximate normality of D_i, not of the raw pre/post values"</span></span>
+<span id="cb37-23"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="19_PairedData_files/figure-revealjs/unnamed-chunk-9-1.png" width="1248" class="r-stretch"><div class="fragment">
+<p>With <span class="math inline">\(n = 12\)</span>, normality of <span class="math inline">\(D_i\)</span> matters. The Q-Q plot looks reasonable here. For small <span class="math inline">\(n\)</span> with visibly non-normal differences, use the <strong>Wilcoxon signed-rank test</strong> or <strong>sign test</strong> (Lesson 21).</p>
+</div>
+</section></section>
+<section>
+<section id="matched-case-control-design" class="title-slide slide level1 center" data-background-color="#9b59b6">
+<h1>Matched Case-Control Design</h1>
+
+</section>
+<section id="matched-pairs-smoking-and-lung-cancer" class="slide level2">
+<h2>Matched Pairs: Smoking and Lung Cancer</h2>
+<p><strong>Study:</strong> 15 lung cancer cases are each individually matched to a healthy control on age (<span class="math inline">\(\pm 2\)</span> yr) and sex. Exposure: pack-years of smoking. Within each matched pair, compute the case–control difference.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="fu">set.seed</span>(<span class="dv">7</span>)</span>
+<span id="cb38-2"><a></a>cases    <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">pmax</span>(<span class="dv">0</span>, <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="dv">35</span>, <span class="at">sd =</span> <span class="dv">15</span>)))</span>
+<span id="cb38-3"><a></a>controls <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">pmax</span>(<span class="dv">0</span>, cases <span class="sc">-</span> <span class="fu">rnorm</span>(<span class="dv">15</span>, <span class="at">mean =</span> <span class="dv">20</span>, <span class="at">sd =</span> <span class="dv">12</span>)))</span>
+<span id="cb38-4"><a></a>d_match  <span class="ot">&lt;-</span> cases <span class="sc">-</span> controls</span>
+<span id="cb38-5"><a></a></span>
+<span id="cb38-6"><a></a><span class="fu">cat</span>(<span class="st">"Pack-years — Cases:   "</span>, cases,    <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pack-years — Cases:    69 17 25 29 20 21 46 33 37 68 40 76 69 40 63 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="fu">cat</span>(<span class="st">"Pack-years — Controls:"</span>, controls, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Pack-years — Controls: 43 8 9 9 0 0 18 0 34 33 18 47 42 32 46 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Mean difference (case - control): %.1f  |  SD: %.1f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb42-2"><a></a>            <span class="fu">mean</span>(d_match), <span class="fu">sd</span>(d_match)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Mean difference (case - control): 20.9  |  SD: 9.2</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">t.test</span>(cases, controls, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  estimate statistic     p.value parameter conf.low conf.high method alternative
+     &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+1     20.9      8.78 0.000000459        14     15.8      26.0 Paire… two.sided  </code></pre>
+</div>
+</div>
+<div class="fragment">
+<p><code>t.test(cases, controls, paired = TRUE)</code> is equivalent to <code>t.test(d_match)</code>. The 1:1 matching creates the pairing structure, and the analysis <strong>must</strong> respect it — ignoring the matching (unpaired test) would discard the correlation induced by matching on age and sex.</p>
+</div>
+</section>
+<section id="paired-analysis-checklist" class="slide level2 scrollable">
+<h2>Paired Analysis Checklist</h2>
+<p>Before choosing paired vs.&nbsp;two-sample analysis, confirm:</p>
+<ol type="1">
+<li><strong>1-to-1 link exists</strong>: same subject measured twice, or two subjects deliberately matched</li>
+<li><strong>Within-pair correlation is positive</strong>: almost always true for biological measurements on the same individual</li>
+<li><strong><span class="math inline">\(n\)</span> = number of pairs</strong>, not total observations — paired <span class="math inline">\(t\)</span>-test has <span class="math inline">\(n - 1\)</span> df, not <span class="math inline">\(2n - 2\)</span></li>
+<li><strong><span class="math inline">\(D_i\)</span> approximately normal</strong> (or <span class="math inline">\(n\)</span> large enough for CLT)</li>
+</ol>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Common Mistake</strong></p>
+</div>
+<div class="callout-content">
+<p>Reporting “<span class="math inline">\(n_1 = n_2 = 20\)</span>” for a pre/post study and running <code>t.test(pre, post)</code> without <code>paired = TRUE</code>. This treats <span class="math inline">\(2n = 40\)</span> observations as independent, underestimates the SE, and produces an invalid test. The correct <span class="math inline">\(n\)</span> is 20 pairs, df = 19.</p>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="key-takeaways" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Key Takeaways</h1>
+
+</section>
+<section id="key-takeaways-dbc-10.3" class="slide level2 scrollable">
+<h2>Key Takeaways (DBC 10.3)</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Paired Data: Main Points</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><p><strong>Paired designs</strong> arise from pre/post measurements, crossover trials, bilateral organs, and matched studies; each pair yields one difference <span class="math inline">\(D_i = X_{1i} - X_{2i}\)</span></p></li>
+<li><p><strong>Variance reduction:</strong> <span class="math inline">\(\text{Var}(D_i) = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2\)</span>; with <span class="math inline">\(\sigma_1 = \sigma_2 = \sigma\)</span>, the CI width ratio (paired/unpaired) is <span class="math inline">\(\sqrt{1 - \rho}\)</span> — pairing eliminates between-subject noise when <span class="math inline">\(\rho &gt; 0\)</span></p></li>
+<li><p><strong>Paired <span class="math inline">\(t\)</span>-test:</strong> <span class="math inline">\(T = \bar{D}/(S_D/\sqrt{n}) \sim t_{n-1}\)</span>; identical to one-sample <span class="math inline">\(t\)</span> on the <span class="math inline">\(D_i\)</span>; exact under normality of <span class="math inline">\(D_i\)</span>, approximately valid by CLT for moderate <span class="math inline">\(n\)</span></p></li>
+<li><p><strong>Always use <code>paired = TRUE</code></strong> in R when the design is paired — omitting it ignores correlation, widens CIs, and reduces power</p></li>
+<li><p><strong>Check normality of <span class="math inline">\(D_i\)</span></strong> (not of <span class="math inline">\(X_{1i}\)</span> or <span class="math inline">\(X_{2i}\)</span>) with a histogram and Q-Q plot; for small <span class="math inline">\(n\)</span> with non-normal <span class="math inline">\(D_i\)</span>, use nonparametric alternatives (Lesson 21)</p></li>
+</ol>
+</div>
+</div>
+</div>
+</section>
+<section id="looking-ahead" class="slide level2">
+<h2>Looking Ahead</h2>
+<p><strong>Next class (Lesson 20): Bootstrap and Permutation Methods for Two Samples (C&amp;H Ch. 3, 5; DBC 10.6)</strong></p>
+<ul>
+<li>Bootstrap CI for <span class="math inline">\(\mu_1 - \mu_2\)</span>: resample each group independently</li>
+<li>Permutation test: shuffle labels under <span class="math inline">\(H_0: F_1 = F_2\)</span></li>
+<li>Paired bootstrap: resample differences</li>
+<li>When do resampling methods outperform parametric tests?</li>
+</ul>
+<div class="fragment">
+<p><strong>Lesson 21:</strong> Nonparametric inference — sign test, Wilcoxon signed-rank, Wilcoxon rank-sum, asymptotic relative efficiency (DBC Ch. 14)</p>
+<p><strong>Lesson 22:</strong> Course Review</p>
+</div>
+</section>
+<section id="references" class="slide level2">
+<h2>References</h2>
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Section 10.3.</li>
+<li>Chihara, L. M. and Hesterberg, T. C. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapter 3.</li>
+</ul>
+</section>
+<section id="questions" class="slide level2 center" data-background-color="#3498db">
+<h2>Questions?</h2>
+<p>Thank you!</p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Lesson 19 - Analysis of Paired Data</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1955,
+
+        height: 1100,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
