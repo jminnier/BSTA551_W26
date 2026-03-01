@@ -1,0 +1,1120 @@
+---
+title: "Lesson 21: Nonparametric Inference"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w10d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 21 - Nonparametric Inference
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+library(DiagrammeR)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 21: Nonparametric Inference {background-color="#2c3e50"}
+
+## Review: Lessons 18–20
+
+- **Lesson 18:** Parametric two-sample tests — Welch $t$, pooled $t$, $z$-test for proportions, $F$-test
+- **Lesson 19:** Paired $t$-test — reduces to one-sample inference on $D_i = X_{1i} - X_{2i}$
+- **Lesson 20:** Bootstrap CIs (resample separately) and permutation tests (relabel pooled data)
+
+. . .
+
+**Today's Goals:**
+
+1. Understand what "nonparametric" means and when it is preferred over parametric tests
+2. Derive and apply the **sign test** for paired data (DBC 14.1)
+3. Derive and apply the **Wilcoxon signed-rank test** for paired data (DBC 14.2)
+4. Derive and apply the **Wilcoxon rank-sum test** for two independent samples (DBC 14.3)
+5. Understand **asymptotic relative efficiency (ARE)** and the power trade-offs it quantifies
+6. Apply all three tests to medical examples and compare conclusions
+
+## What Does "Nonparametric" Mean?
+
+A **parametric** test specifies a distributional family (e.g., $D_i \sim N(\mu, \sigma^2)$) and makes inference about the **parameters** of that family. Validity depends on the assumed family being correct.
+
+. . .
+
+A **nonparametric** test makes inference about features of the distribution (median, location, equality of distributions) **without specifying a parametric family**. Validity holds over a broad class of distributions.
+
+. . .
+
+::: callout-note
+## What "Nonparametric" Is NOT
+
+Nonparametric $\neq$ assumption-free. These tests still require:
+
+- **Independence** of observations (or independence of pairs)
+- **Continuity** of the underlying distribution (for rank-based tests — ties deflate test power)
+- **Symmetry** of $D_i$ about 0 (for the Wilcoxon signed-rank test)
+
+The key relaxation is normality — not all assumptions.
+:::
+
+. . .
+
+**Why does it matter in biomedical research?**
+
+- **Biomarkers** (CRP, troponin, ALT) are right-skewed with occasional extreme values
+- **Ordinal scales** (pain VAS, Likert, disability scores) — arithmetic means may be misleading
+- **Small $n$** — CLT convergence too slow to trust normality-based tests
+
+## Roadmap for Today
+
+| Test | Data Structure | $H_0$ | Key Assumption | Reference |
+|------|---------------|--------|---------------|-----------|
+| Sign test | Paired / one-sample | Median $D = 0$ | None beyond independence | DBC 14.1 |
+| Wilcoxon signed-rank | Paired / one-sample | Median $D = 0$ | Symmetric, continuous $D_i$ | DBC 14.2 |
+| Wilcoxon rank-sum | Two independent samples | $F_1 = F_2$ | Continuous distributions | DBC 14.3 |
+
+. . .
+
+**Information used by each test:**
+
+| Test | Uses direction of $D_i$? | Uses magnitude of $D_i$? |
+|------|:---:|:---:|
+| Sign test | ✓ | ✗ |
+| Wilcoxon signed-rank | ✓ | ✓ (via ranks) |
+| Paired $t$-test | ✓ | ✓ (exact values) |
+
+Each test makes a different assumption about the data in exchange for the information it extracts.
+
+# The Sign Test (DBC 14.1) {background-color="#3498db"}
+
+## Sign Test: Setup and Motivation
+
+**Setting:** Paired differences $D_i = X_{1i} - X_{2i}$, $i = 1, \ldots, n$.
+
+**Goal:** Test whether the **population median** of the $D_i$ equals zero, without assuming any particular shape.
+
+**Key insight:** If the true median of $D_i$ is zero, then $P(D_i > 0) = P(D_i < 0) = 1/2$ (for continuous distributions).
+
+. . .
+
+**Test statistic:** Count the positive differences.
+
+$$S^+ = \#\{i : D_i > 0\}$$
+
+Ties ($D_i = 0$): excluded. Let $n^* = \#\{i : D_i \neq 0\}$.
+
+**Null distribution:** Under $H_0: P(D_i > 0) = 1/2$,
+
+$$\boxed{S^+ \sim \text{Binomial}(n^*, 1/2)}$$
+
+This follows because each non-zero $D_i$ is independently positive or negative with equal probability under $H_0$.
+
+## Sign Test: Null Distribution Derivation
+
+Why exactly $\text{Binomial}(n^*, 1/2)$?
+
+Define $Z_i = \mathbf{1}(D_i > 0)$ for each $i$ with $D_i \neq 0$. Under $H_0$:
+
+- $P(Z_i = 1) = P(D_i > 0) = 1/2$ (median is 0, distribution continuous)
+- $P(Z_i = 0) = P(D_i < 0) = 1/2$
+- $Z_1, \ldots, Z_{n^*}$ are **independent** (pairs are independent)
+
+Therefore $Z_i \stackrel{iid}{\sim} \text{Bernoulli}(1/2)$ and
+
+$$S^+ = \sum_{i=1}^{n^*} Z_i \sim \text{Binomial}(n^*, 1/2)$$
+
+. . .
+
+This is exact — no asymptotic approximation needed. The binomial distribution is completely tractable.
+
+**Large-sample approximation:** For large $n^*$, by the CLT:
+
+$$Z_S = \frac{S^+ - n^*/2}{\sqrt{n^*/4}} \;\dot{\sim}\; N(0,1)$$
+
+Use the **continuity correction**: replace $S^+$ with $S^+ \pm 0.5$ to improve approximation to the discrete binomial.
+
+## Sign Test: P-values
+
+| Alternative | Exact p-value | Interpretation |
+|-------------|---------|---|
+| $H_a$: $\tilde{\mu}_D > 0$ | $P(S^+ \geq s^+)$ | More positives than expected |
+| $H_a$: $\tilde{\mu}_D < 0$ | $P(S^+ \leq s^+)$ | Fewer positives than expected |
+| $H_a$: $\tilde{\mu}_D \neq 0$ | $2\min\bigl(P(S^+ \geq s^+),\; P(S^+ \leq s^+)\bigr)$ | Either tail |
+
+All probabilities from $\text{Bin}(n^*, 1/2)$ — exact, no normality required.
+
+. . .
+
+::: callout-tip
+## Confidence Interval for the Median (Sign Test)
+
+An exact CI for the **population median** is based on order statistics. The $100(1-\alpha)\%$ CI for the median is $(D_{(j)}, D_{(n^*-j+1)})$ where $j$ is chosen so $P(\text{Bin}(n^*, 1/2) \leq j - 1) \leq \alpha/2$.
+
+In R: `wilcox.test(d, conf.int = TRUE)` gives the Wilcoxon CI (preferred when symmetry holds). For the sign-based CI: use `SignifReg::sign.ci()` or compute directly from the binomial.
+:::
+
+## Sign Test: Medical Example (Pain and Physical Therapy)
+
+**Study:** 15 patients rate pain on a 0–10 VAS scale **before** and **after** a 4-week physical therapy program.
+
+**Hypotheses:** $H_0$: median change $= 0$ vs. $H_a$: median change $< 0$ (pain **decreases**; $D_i = \text{after} - \text{before}$).
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+pain_before <- c(8, 7, 9, 6, 8, 7, 9, 5, 8, 7, 6, 9, 8, 7, 6)
+pain_after  <- c(5, 6, 6, 4, 5, 3, 7, 3, 5, 4, 4, 6, 5, 4, 3)
+d_pain      <- pain_after - pain_before
+
+cat("D = after - before:\n", d_pain, "\n\n")
+
+n_star  <- sum(d_pain != 0)
+s_plus  <- sum(d_pain > 0)
+
+cat(sprintf("Non-zero differences: n* = %d\n", n_star))
+cat(sprintf("Positive differences: S+ = %d\n", s_plus))
+cat(sprintf("Negative differences: %d\n\n", sum(d_pain < 0)))
+
+# One-sided p-value: H_a is median < 0 → few positives supports H_a
+p_sign_one <- pbinom(s_plus, size = n_star, prob = 0.5)
+p_sign_two <- 2 * min(pbinom(s_plus, n_star, 0.5),
+                      pbinom(s_plus - 1, n_star, 0.5, lower.tail = FALSE))
+
+cat(sprintf("One-sided p-value = %.5f\n", p_sign_one))
+cat(sprintf("Two-sided p-value = %.5f\n", p_sign_two))
+```
+
+. . .
+
+$S^+ = `r sum(d_pain > 0)`$ out of $n^* = `r sum(d_pain != 0)`$ non-zero differences.
+
+Under $H_0$: $S^+ \sim \text{Bin}(14, 0.5)$, so $E[S^+] = 7$.
+
+Observing only $S^+ = `r sum(d_pain > 0)`$ positive differences is very unlikely if the median were zero.
+
+## Sign Test: Visualizing the Evidence
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 5.5
+#| fig-width: 14
+
+# Panel 1: Dot chart of differences
+p1 <- tibble(Patient = 1:15, D = d_pain,
+             Direction = ifelse(d_pain > 0, "Positive", ifelse(d_pain < 0, "Negative", "Zero"))) |>
+  ggplot(aes(x = Patient, y = D, color = Direction)) +
+  geom_hline(yintercept = 0, linetype = "dashed", linewidth = 0.8, color = "grey40") +
+  geom_point(size = 5) +
+  geom_segment(aes(xend = Patient, yend = 0), linewidth = 1) +
+  scale_color_manual(values = c("Positive" = "#e74c3c",
+                                 "Negative" = "#006a4e",
+                                 "Zero"     = "grey60")) +
+  labs(title = "Signed Differences (Pain After \u2212 Before)",
+       x = "Patient", y = "D = After \u2212 Before", color = "Direction") +
+  theme(legend.position = "bottom")
+
+# Panel 2: Binomial null distribution
+binom_df <- tibble(
+  k    = 0:14,
+  prob = dbinom(0:14, size = 14, prob = 0.5),
+  tail = k <= s_plus
+)
+p2 <- binom_df |>
+  ggplot(aes(x = k, y = prob, fill = tail)) +
+  geom_col(width = 0.7) +
+  geom_vline(xintercept = s_plus, color = "#e74c3c", linetype = "dashed", linewidth = 1.2) +
+  scale_fill_manual(values = c("TRUE" = "#3498db", "FALSE" = "grey70"),
+                    labels = c("TRUE" = "p-value region", "FALSE" = "Not in tail")) +
+  annotate("text", x = s_plus + 0.5, y = 0.17,
+           label = paste0("S+ = ", s_plus), color = "#e74c3c", size = 5, hjust = 0) +
+  labs(title = expression("Null Distribution: " * S^"+" * " ~ Bin(14, 0.5)"),
+       x = expression(S^"+"), y = "P(X = k)", fill = NULL) +
+  theme(legend.position = "bottom")
+
+p1 + p2
+```
+
+## Sign Test: Strengths and Limitations
+
+**Strengths:**
+
+- **No distributional assumptions** beyond independence — valid for any continuous or ordinal $D_i$
+- Works when differences are measured on an **ordinal scale** (e.g., pain VAS, Likert), where arithmetic means are questionable
+- The simplest nonparametric test to derive, compute, and explain
+
+**Limitations:**
+
+- Only uses the **sign** (direction) of each difference — discards all magnitude information
+- **Lowest power** among the three paired tests when differences are continuous and symmetric
+- Wide confidence intervals for the median, especially at small $n$
+
+. . .
+
+::: callout-note
+## When to Prefer the Sign Test
+
+- Data are **ordinal**: arithmetic differences aren't on an interval scale
+- Differences are **highly asymmetric** with extreme outliers: sign is reliable, magnitude is not
+- You need the most **assumption-free** result and are willing to sacrifice power
+- Only the **direction** of each difference is observable (e.g., preferences without magnitudes)
+:::
+
+# Wilcoxon Signed-Rank Test (DBC 14.2) {background-color="#e74c3c"}
+
+## Wilcoxon Signed-Rank: Motivation
+
+The sign test throws away the **size** of each difference. Can we do better while still avoiding normality?
+
+. . .
+
+**Key idea:** Replace the raw differences with their **ranks** by absolute value.
+
+- Ranks preserve the *relative ordering* of the magnitudes
+- They are less sensitive to extreme outliers than raw values
+- If the distribution is symmetric about 0, the ranks of positive and negative differences should look "balanced" under $H_0$
+
+. . .
+
+**Key assumption added over sign test:** The distribution of $D_i$ is **symmetric** about its median.
+
+- Under $H_0$, symmetric about 0
+- Under $H_a$, symmetric about $\theta \neq 0$ (a location shift)
+
+This rules out heavily skewed $D_i$ — but covers most bell-shaped and even uniform-like distributions.
+
+## Wilcoxon Signed-Rank: Algorithm
+
+**Setup:** $D_1, \ldots, D_n \stackrel{iid}{\sim}$ a continuous, symmetric distribution. $H_0$: median $= 0$.
+
+**Step-by-step:**
+
+::: incremental
+1. **Remove zeros**: drop any $D_i = 0$. Let $n^* = $ number remaining.
+2. **Rank absolute values**: rank $|D_1|, \ldots, |D_{n^*}|$ from smallest (rank 1) to largest (rank $n^*$). Average ranks for ties.
+3. **Compute $W^+$**: sum of ranks for observations with **positive** $D_i$:
+$$W^+ = \sum_{\{i:\,D_i > 0\}} R_i$$
+4. **Also define**: $W^- = \sum_{\{i:\,D_i < 0\}} R_i = \frac{n^*(n^*+1)}{2} - W^+$
+:::
+
+. . .
+
+Under $H_0$ (symmetric about 0):
+
+$$E[W^+] = \frac{n^*(n^*+1)}{4}, \qquad \text{Var}(W^+) = \frac{n^*(n^*+1)(2n^*+1)}{24}$$
+
+Large $n^*$: $\quad Z = \dfrac{W^+ - E[W^+]}{\sqrt{\text{Var}(W^+)}} \;\dot{\sim}\; N(0,1)$
+
+## Why Does $E[W^+] = \frac{n^*(n^*+1)}{4}$?
+
+Under $H_0$ and symmetry, each rank $R_i$ is equally likely to be assigned to a positive or negative difference. Formally, let $\phi_i = \mathbf{1}(D_i > 0)$. Under $H_0$:
+
+- $\phi_i \stackrel{iid}{\sim} \text{Bernoulli}(1/2)$, independent of the ranks $R_i$
+- $W^+ = \sum_{i=1}^{n^*} \phi_i \cdot R_i$
+
+Then:
+
+$$E[W^+] = \sum_{i=1}^{n^*} E[\phi_i] \cdot R_i = \frac{1}{2} \sum_{i=1}^{n^*} R_i = \frac{1}{2} \cdot \frac{n^*(n^*+1)}{2} = \frac{n^*(n^*+1)}{4}$$
+
+The variance follows from $\text{Var}(\phi_i) = 1/4$ and independence:
+
+$$\text{Var}(W^+) = \sum_{i=1}^{n^*} R_i^2 \cdot \text{Var}(\phi_i) = \frac{1}{4} \sum_{i=1}^{n^*} i^2 = \frac{1}{4} \cdot \frac{n^*(n^*+1)(2n^*+1)}{6} = \frac{n^*(n^*+1)(2n^*+1)}{24}$$
+
+## Wilcoxon Signed-Rank: Continuity Correction and Ties
+
+**Continuity correction** for the normal approximation:
+
+$$Z = \frac{W^+ - E[W^+] \pm 0.5}{\sqrt{\text{Var}(W^+)}}$$
+
+Use $-0.5$ when $W^+ > E[W^+]$ (upper-tail test), $+0.5$ when $W^+ < E[W^+]$ (lower-tail test). R does this automatically.
+
+. . .
+
+**Correction for ties in ranking:**
+
+When there are many ties among the $|D_i|$, the variance formula understates the true variance. The corrected formula is:
+
+$$\text{Var}_{\text{ties}}(W^+) = \frac{1}{24}\left[n^*(n^*+1)(2n^*+1) - \frac{1}{2}\sum_{j} t_j(t_j-1)(t_j+1)\right]$$
+
+where $t_j$ is the size of the $j$-th group of tied absolute differences.
+
+- When there are no ties, this reduces to the standard formula
+- Many ties $\Rightarrow$ reduced variance $\Rightarrow$ more conservative test  
+- `wilcox.test()` in R applies this correction automatically when `exact = FALSE`
+
+::: callout-important
+## Practical Implication of Ties
+Integer-valued outcomes (VAS pain, Likert scales) have many ties. The **exact** distribution is affected but R handles it. For data with many ties, the **sign test** or a permutation test may be preferred since rank-based tests assume continuous distributions.
+:::
+
+## Wilcoxon Signed-Rank: Medical Example
+
+**Study:** 16 patients with Stage 1 hypertension. Systolic blood pressure (SBP, mmHg) measured before and 8 weeks after starting a new antihypertensive drug.
+
+**Hypotheses:** $H_0$: median SBP change $= 0$ vs. $H_a$: median SBP change $< 0$ (drug lowers BP; $D_i = \text{after} - \text{before}$).
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+sbp_before <- c(158, 142, 168, 135, 172, 145, 163, 138, 155, 149, 167, 141, 160, 153, 144, 170)
+sbp_after  <- c(145, 148, 152, 131, 158, 139, 170, 135, 142, 143, 151, 150, 148, 140, 149, 155)
+d_sbp      <- sbp_after - sbp_before
+
+cat("D = after - before (mmHg):\n")
+cat(d_sbp, "\n\n")
+cat(sprintf("n = %d pairs | Positive (BP increased): %d | Negative (BP decreased): %d | Zero: %d\n",
+            length(d_sbp), sum(d_sbp > 0), sum(d_sbp < 0), sum(d_sbp == 0)))
+cat(sprintf("Mean change: %.1f mmHg | Median change: %.1f mmHg\n",
+            mean(d_sbp), median(d_sbp)))
+```
+
+. . .
+
+Most patients improved (SBP decreased), but **4 patients had higher SBP** after treatment — the kind of individual variability that makes nonparametric inference useful.
+
+## Wilcoxon Signed-Rank: Step-by-Step Calculation
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Step 1: Remove zeros (none here)
+d_nz   <- d_sbp[d_sbp != 0]
+n_star <- length(d_nz)
+
+# Step 2: Rank absolute values (ties averaged automatically)
+abs_ranks <- rank(abs(d_nz))
+
+# Step 3: Compute W+
+W_plus  <- sum(abs_ranks[d_nz > 0])
+W_minus <- sum(abs_ranks[d_nz < 0])
+
+cat(sprintf("n* = %d\n", n_star))
+cat(sprintf("W+ = %.1f   (sum of ranks for %d positive differences)\n",
+            W_plus, sum(d_nz > 0)))
+cat(sprintf("W- = %.1f   (sum of ranks for %d negative differences)\n",
+            W_minus, sum(d_nz < 0)))
+cat(sprintf("Check: W+ + W- = %.1f  (should equal n*(n*+1)/2 = %.1f)\n\n",
+            W_plus + W_minus, n_star*(n_star+1)/2))
+
+# Normal approximation
+mu_W  <- n_star * (n_star + 1) / 4
+var_W <- n_star * (n_star + 1) * (2*n_star + 1) / 24
+sd_W  <- sqrt(var_W)
+z_W   <- (W_plus - mu_W) / sd_W  # one-sided: small W+ supports Ha
+
+cat(sprintf("E[W+] = %.2f   Var(W+) = %.2f   SD(W+) = %.2f\n", mu_W, var_W, sd_W))
+cat(sprintf("Z = (%.1f - %.2f) / %.2f = %.3f\n", W_plus, mu_W, sd_W, z_W))
+cat(sprintf("One-sided p-value (normal approx): %.5f\n", pnorm(z_W)))
+```
+
+## Wilcoxon Signed-Rank: R Output and Hodges-Lehmann Estimate
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# R uses exact distribution for small n, Hodges-Lehmann estimate
+wsr_result <- wilcox.test(sbp_after, sbp_before,
+                           paired      = TRUE,
+                           alternative = "less",
+                           conf.int    = TRUE)
+wsr_result |> tidy() |>
+  select(statistic, p.value, conf.low, conf.high, method, alternative) |>
+  print()
+```
+
+. . .
+
+::: callout-note
+## The Hodges-Lehmann Estimator
+
+The **Hodges-Lehmann (HL) estimator** of location shift associated with the signed-rank test is:
+
+$$\hat{\theta}_{HL} = \text{median}\left\{\frac{D_i + D_j}{2} : 1 \leq i \leq j \leq n^*\right\}$$
+
+the median of all **Walsh averages** (pairwise averages of differences, including self-averages).
+
+- This is a natural point estimate when using the signed-rank test
+- The confidence interval from `wilcox.test(..., conf.int = TRUE)` is the **Hodges-Lehmann CI**
+- More robust to outliers than the sample mean, but still uses magnitude information
+:::
+
+## Visualizing the Rankings for the SBP Data
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 15
+
+sbp_df <- tibble(
+  Patient = seq_along(d_sbp),
+  Diff    = d_sbp,
+  AbsDiff = abs(d_sbp),
+  Sign    = ifelse(d_sbp > 0, "Positive: BP increased (D > 0)",
+                              "Negative: BP decreased (D < 0)"),
+  Rank    = rank(abs(d_sbp))
+) |>
+  filter(Diff != 0)
+
+p_rank <- sbp_df |>
+  ggplot(aes(x = reorder(factor(Patient), AbsDiff),
+             y = AbsDiff,
+             fill = Sign)) +
+  geom_col(width = 0.65, color = "white", linewidth = 0.3) +
+  geom_text(aes(label = sprintf("R = %g", Rank), y = AbsDiff + 0.4),
+            size = 4.5, vjust = 0, fontface = "bold") +
+  scale_fill_manual(values = c(
+    "Positive: BP increased (D > 0)" = "#e74c3c",
+    "Negative: BP decreased (D < 0)" = "#006a4e"
+  )) +
+  labs(
+    title    = "Wilcoxon Signed-Rank: Absolute SBP Changes with Ranks",
+    subtitle = expression(W^"+" * " = sum of ranks for red bars (BP increased); small " *
+                          W^"+" * " relative to E[" * W^"+" * "] = 68 supports H"[a]),
+    x        = "Patient (ordered by |D|)",
+    y        = "|SBP change| (mmHg)",
+    fill     = "Direction of change"
+  ) +
+  theme(legend.position = "bottom",
+        legend.text = element_text(size = 13))
+
+p_rank
+```
+
+. . .
+
+$W^+ = `r sum(rank(abs(d_sbp[d_sbp!=0]))[d_sbp[d_sbp!=0]>0])` \ll E[W^+] = `r 16*17/4`$ — the positive-difference ranks are concentrated at low values, indicating the drug tends to reduce SBP.
+
+## Wilcoxon Signed-Rank: Visualizing the Paired Data
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 15
+
+sbp_long <- tibble(
+  Patient   = rep(1:16, 2),
+  SBP       = c(sbp_before, sbp_after),
+  Timepoint = rep(c("Before", "After"), each = 16),
+  Direction = rep(ifelse(d_sbp < 0, "Decreased", "Increased"), 2)
+) |>
+  mutate(Timepoint = factor(Timepoint, levels = c("Before", "After")))
+
+p_paired <- sbp_long |>
+  ggplot(aes(x = Timepoint, y = SBP)) +
+  geom_line(aes(group = Patient, color = Direction),
+            linewidth = 0.8, alpha = 0.7) +
+  geom_point(aes(color = Direction), size = 3, alpha = 0.9) +
+  scale_color_manual(values = c("Decreased" = "#006a4e", "Increased" = "#e74c3c"),
+                     labels = c("BP decreased", "BP increased")) +
+  labs(title = "Systolic Blood Pressure Before and After Antihypertensive Treatment",
+       subtitle = "Each line = one patient. Green = improved (BP decreased); Red = worsened (BP increased).",
+       x = NULL, y = "SBP (mmHg)", color = "Change direction") +
+  theme(legend.position = "bottom")
+
+p_diff <- tibble(D = d_sbp, Patient = 1:16,
+                 Direction = ifelse(d_sbp > 0, "Increased", "Decreased")) |>
+  ggplot(aes(x = reorder(factor(Patient), D), y = D, fill = Direction)) +
+  geom_col(width = 0.7, color = "white") +
+  geom_hline(yintercept = 0, linewidth = 0.9) +
+  geom_hline(yintercept = median(d_sbp), linetype = "dashed",
+             color = "#3498db", linewidth = 1.2) +
+  annotate("text", x = 1, y = median(d_sbp) - 1.5, hjust = 0,
+           label = paste0("HL estimate = ", median(d_sbp), " mmHg"),
+           color = "#3498db", size = 5) +
+  scale_fill_manual(values = c("Increased" = "#e74c3c", "Decreased" = "#006a4e")) +
+  labs(title = "Differences D = After \u2212 Before (mmHg)",
+       x = "Patient (ordered by D)", y = "D (mmHg)", fill = "Direction") +
+  theme(legend.position = "bottom")
+
+p_paired + p_diff
+```
+
+## Comparing Sign Test, Wilcoxon Signed-Rank, and Paired *t* on SBP Data
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+cat("=== SIGN TEST ===\n")
+n_s  <- sum(d_sbp != 0)
+sp   <- sum(d_sbp > 0)
+p_sign <- pbinom(sp, n_s, 0.5)
+cat(sprintf("S+ = %d   n* = %d   one-sided p = %.5f\n\n", sp, n_s, p_sign))
+
+cat("=== WILCOXON SIGNED-RANK ===\n")
+wilcox.test(sbp_after, sbp_before, paired = TRUE,
+            alternative = "less", conf.int = TRUE) |>
+  tidy() |>
+  select(statistic, p.value, conf.low, conf.high) |>
+  print()
+cat("\n")
+
+cat("=== PAIRED t-TEST ===\n")
+t.test(sbp_after, sbp_before, paired = TRUE,
+       alternative = "less") |>
+  tidy() |>
+  select(statistic, parameter, p.value, conf.low) |>
+  print()
+```
+
+. . .
+
+All three agree: strong evidence the drug reduces SBP. The paired $t$-test uses exact magnitudes; the Wilcoxon uses ranks; the sign test uses only directions.
+
+# Wilcoxon Rank-Sum Test (DBC 14.3) {background-color="#27ae60"}
+
+## Rank-Sum Test: Two Independent Samples
+
+**Setting:** $X_{11}, \ldots, X_{1n_1} \stackrel{iid}{\sim} F_1$ and $X_{21}, \ldots, X_{2n_2} \stackrel{iid}{\sim} F_2$, independent samples.
+
+**$H_0$:** $F_1 = F_2$ — the two samples come from the **same distribution**.
+
+Under a **location-shift model** ($F_2(x) = F_1(x - \Delta)$), this is equivalent to $H_0: \Delta = 0$.
+
+. . .
+
+**Algorithm:**
+
+1. Pool all $N = n_1 + n_2$ observations together; rank from 1 to $N$ (average ties)
+2. Compute $W = \displaystyle\sum_{\text{group 1}} R_i$ = sum of ranks for group 1 observations
+3. Under $H_0$: **every allocation of ranks to groups is equally likely**
+
+$$E[W] = \frac{n_1(N+1)}{2}, \qquad \text{Var}(W) = \frac{n_1 n_2(N+1)}{12}$$
+
+For large samples: $Z = \dfrac{W - E[W]}{\sqrt{\text{Var}(W)}} \;\dot{\sim}\; N(0,1)$
+
+. . .
+
+The exact null distribution of $W$ is computed by R for small $n_1, n_2$ (`wilcox.test` with `exact = TRUE`).
+
+## Rank-Sum Test: Why This Null Distribution?
+
+Under $H_0: F_1 = F_2$, the $N$ pooled observations are exchangeable. The group labels (group 1 or group 2) are equally likely to be assigned to any set of $n_1$ positions out of $N$.
+
+There are $\binom{N}{n_1}$ equally-likely allocations.
+
+$W$ = sum of group-1 ranks ranges from $\frac{n_1(n_1+1)}{2}$ (smallest $n_1$ ranks) to $\frac{n_1(2n_2+n_1+1)}{2}$ (largest $n_1$ ranks).
+
+. . .
+
+**Expected value:**
+
+$$E[W] = n_1 \cdot E[\text{rank of a single obs.}] = n_1 \cdot \frac{N+1}{2}$$
+
+since under $H_0$, each rank from 1 to $N$ is equally likely for any observation.
+
+**Variance:**
+
+$$\text{Var}(W) = \frac{n_1 n_2 (N+1)}{12}$$
+
+derived from the variance of sampling without replacement from $\{1, \ldots, N\}$.
+
+## The Mann–Whitney $U$ Statistic
+
+The **Mann-Whitney $U$** is equivalent to $W$ and has a useful probabilistic interpretation:
+
+$$U = W - \frac{n_1(n_1+1)}{2}$$
+
+**$U$ counts the number of concordant pairs:**
+
+$$U = \#\{(i,j) : X_{1i} > X_{2j}\}$$
+
+out of all $n_1 \times n_2$ pairs. Under $H_0$: $E[U] = n_1 n_2 / 2$.
+
+. . .
+
+$U / (n_1 n_2)$ is a consistent estimator of $P(X_1 > X_2)$:
+
+- $P(X_1 > X_2) = 1/2$ under $H_0$
+- $P(X_1 > X_2) > 1/2$ when group 1 tends to be larger
+- This is the **area under the ROC curve (AUC)** — a key measure in diagnostic medicine
+
+::: callout-tip
+## Mann-Whitney U and the ROC Curve
+If you use group membership as a "predictor" and a continuous biomarker as the "score," the Mann-Whitney $U$ statistic normalized by $n_1 n_2$ equals the AUC of the ROC curve. This connects nonparametric testing directly to classification performance.
+:::
+
+## Rank-Sum Test: Ties Correction
+
+When there are ties among the pooled observations, the variance is corrected:
+
+$$\text{Var}_{\text{ties}}(W) = \frac{n_1 n_2}{12} \left[ N + 1 - \frac{\sum_j t_j(t_j^2-1)}{N(N-1)} \right]$$
+
+where $t_j$ = size of the $j$-th tied group in the combined sample.
+
+- Ties reduce the variance (less information in the ranks)
+- The correction makes the $Z$-statistic slightly larger in absolute value
+- R applies this automatically in `wilcox.test()`
+
+. . .
+
+**Hodges-Lehmann Estimator for Two Samples:**
+
+$$\hat{\Delta}_{HL} = \text{median}\{X_{1i} - X_{2j} : i = 1,\ldots,n_1;\ j = 1,\ldots,n_2\}$$
+
+The median of all $n_1 \times n_2$ pairwise differences. This is the natural point estimate of the location shift $\Delta$ under the rank-sum framework.
+
+## Rank-Sum Test: Medical Example (Serum CRP)
+
+**Study:** Compare serum CRP (mg/L), a right-skewed inflammatory biomarker, between patients **with** and **without** post-operative infections.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+crp_infect  <- rgamma(18, shape = 2.0, rate = 0.08)  # mean ~25 mg/L
+crp_control <- rgamma(20, shape = 1.2, rate = 0.12)  # mean ~10 mg/L
+
+cat(sprintf("Infection:  n = %d   mean = %.1f   median = %.1f   sd = %.1f   range = [%.1f, %.1f]\n",
+            length(crp_infect),  mean(crp_infect),
+            median(crp_infect),  sd(crp_infect),
+            min(crp_infect), max(crp_infect)))
+cat(sprintf("Control:    n = %d   mean = %.1f   median = %.1f   sd = %.1f   range = [%.1f, %.1f]\n",
+            length(crp_control), mean(crp_control),
+            median(crp_control), sd(crp_control),
+            min(crp_control), max(crp_control)))
+```
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+N  <- length(crp_infect) + length(crp_control)
+n1 <- length(crp_infect)
+n2 <- length(crp_control)
+
+W_obs  <- sum(rank(c(crp_infect, crp_control))[1:n1])
+E_W    <- n1 * (N + 1) / 2
+Var_W  <- n1 * n2 * (N + 1) / 12
+Z_W    <- (W_obs - E_W) / sqrt(Var_W)
+
+cat(sprintf("N = %d   n1 = %d   n2 = %d\n", N, n1, n2))
+cat(sprintf("W = %.1f   E[W] = %.1f   SD(W) = %.2f\n", W_obs, E_W, sqrt(Var_W)))
+cat(sprintf("Z = %.3f   one-sided p (approx) = %.5f\n\n", Z_W, pnorm(Z_W, lower.tail = FALSE)))
+
+cat("--- wilcox.test (exact + Hodges-Lehmann CI) ---\n")
+wilcox.test(crp_infect, crp_control,
+            alternative = "greater", conf.int = TRUE) |> tidy() |>
+  select(statistic, p.value, conf.low, conf.high, method) |> print()
+```
+
+## Rank-Sum Test: Comparison with Welch *t*
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+cat("--- Welch t-test ---\n")
+t.test(crp_infect, crp_control, alternative = "greater") |>
+  tidy() |>
+  select(statistic, parameter, p.value, conf.low, method) |>
+  print()
+```
+
+. . .
+
+Both tests reject $H_0$, but note:
+
+- CRP is strongly **right-skewed** with outliers → $t$-test p-value is less reliable
+- Wilcoxon rank-sum p-value is based on a **distribution-free** null
+- Hodges-Lehmann estimate of location shift: `conf.low` from `wilcox.test`
+- With small $n$ and skewed biomarkers, the rank-sum test is the **preferred primary analysis**
+
+## Visualizing the CRP Data
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6.5
+#| fig-width: 15
+
+p_vio <- tibble(
+  CRP   = c(crp_infect, crp_control),
+  Group = rep(c("Infection", "Control"),
+              c(length(crp_infect), length(crp_control)))
+) |>
+  ggplot(aes(x = Group, y = CRP, fill = Group)) +
+  geom_violin(alpha = 0.4, trim = FALSE) +
+  geom_boxplot(width = 0.18, fill = "white",
+               outlier.shape = 1, outlier.size = 2.5) +
+  stat_summary(fun = median, geom = "point",
+               shape = 18, size = 4, color = "black") +
+  scale_fill_manual(values = c("Infection" = "#e74c3c",
+                                "Control"   = "#006a4e")) +
+  labs(
+    title    = "Serum CRP by Post-Operative Infection Status",
+    subtitle = "Right-skewed biomarker: Wilcoxon rank-sum preferred. Diamond = median.",
+    x = NULL, y = "CRP (mg/L)"
+  ) +
+  theme(legend.position = "none")
+
+# Show ranks
+all_crp   <- c(crp_infect, crp_control)
+all_group <- rep(c("Infection", "Control"), c(n1, n2))
+p_ranks <- tibble(CRP = all_crp, Group = all_group,
+                   Rank = rank(all_crp)) |>
+  ggplot(aes(x = Rank, y = CRP, color = Group)) +
+  geom_point(size = 3, alpha = 0.8) +
+  scale_color_manual(values = c("Infection" = "#e74c3c", "Control" = "#006a4e")) +
+  geom_hline(yintercept = 0, linewidth = 0.2) +
+  labs(title = "CRP Values vs. Pooled Ranks",
+       subtitle = "Infection group tends to hold the higher ranks (rightward)",
+       x = "Pooled rank", y = "CRP (mg/L)", color = NULL) +
+  theme(legend.position = "bottom")
+
+p_vio + p_ranks
+```
+
+# Asymptotic Relative Efficiency {background-color="#9b59b6"}
+
+## What Is Asymptotic Relative Efficiency?
+
+**Definition:** The ARE of test $T_1$ relative to test $T_2$ is:
+
+$$\text{ARE}(T_1, T_2) = \lim_{n \to \infty} \frac{n_2^*}{n_1^*}$$
+
+where $n_i^*$ = sample size needed by test $T_i$ to achieve the **same power** at the same significance level $\alpha$ and the same effect size.
+
+. . .
+
+**Interpretation:**
+
+- $\text{ARE}(T_1, T_2) = 0.95$: $T_1$ needs $n_2 / 0.95 \approx 1.05 n_2$ observations — 5% more
+- $\text{ARE}(T_1, T_2) = 1.50$: $T_1$ needs only $n_2 / 1.50 \approx 0.67 n_2$ — 33% fewer!
+- $\text{ARE}(T_1, T_2) = 0.50$: $T_1$ needs twice as many observations
+
+. . .
+
+ARE is computed under a specific distributional family (the **Pitman local alternatives** framework) and tells us about asymptotic power, not finite-sample behavior — but it is a reliable guide in practice.
+
+## ARE: Pitman Efficiency Results
+
+The Pitman ARE for location-shift alternatives $H_a: \theta = \theta_n = c/\sqrt{n}$ (DBC 14.5, DBC p. 681):
+
+| Distribution of $D_i$ | ARE(sign / $t$) | ARE(signed-rank / $t$) |
+|-----------------------|:---:|:---:|
+| Normal | $2/\pi \approx 0.637$ | $3/\pi \approx 0.955$ |
+| Logistic | $\pi^2/12 \approx 0.822$ | $\pi^2/9 \approx 1.097$ |
+| Double exponential (Laplace) | $2.000$ | $3/2 = 1.500$ |
+| Uniform | $1/3 \approx 0.333$ | $1.000$ |
+| Cauchy (very heavy tails) | $\infty$ | $\infty$ |
+| $t_\nu$ ($\nu$ small) | $> 1$ | $> 1$ |
+
+. . .
+
+::: callout-important
+## The Remarkable Result for the Signed-Rank Test
+
+- At **normality**: ARE(signed-rank, $t$) = $3/\pi \approx 0.955$ — only **4.5% efficiency loss**
+- The signed-rank test is **never catastrophically bad** — for all symmetric distributions, ARE $\geq 0.864$ (Hodges-Lehmann lower bound)
+- For heavy-tailed or non-normal distributions, the signed-rank test can be **substantially more powerful**
+
+This makes it an excellent "default" for small $n$ when normality is uncertain.
+:::
+
+## Where Do the ARE Formulas Come From?
+
+For the **signed-rank test** vs. the $t$-test under the normal distribution:
+
+The ARE can be computed using the **Pitman formula**:
+
+$$\text{ARE}(W^+, t) = \frac{\left[E\left\{f(D)\right\}\right]^2 \cdot \text{Var}(D)}{\left[\frac{1}{2}f(0)\right]^2}$$
+
+where $f$ is the density of $D_i$.
+
+For $D_i \sim N(0, \sigma^2)$:
+
+- $f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-x^2/(2\sigma^2)}$, so $f(0) = \frac{1}{\sigma\sqrt{2\pi}}$
+- $E\{f(D)\} = \int_{-\infty}^{\infty} f(x)^2 \, dx = \frac{1}{2\sigma\sqrt{\pi}}$
+
+This gives $\text{ARE} = \frac{3}{\pi} \approx 0.955$.
+
+The analogous result for the sign test is $\text{ARE}(\text{sign}, t) = 4\sigma^2 f(0)^2 = 2/\pi$ under normality.
+
+## ARE: Power Simulation Across Distributions
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 16
+
+set.seed(551)
+B_are <- 2000
+
+sim_power <- function(n, effect, dist_fn) {
+  replicate(B_are, {
+    d <- dist_fn(n) + effect
+    nt <- sum(d != 0)
+    sp <- sum(d > 0)
+    c(
+      t_test   = t.test(d)$p.value,
+      sign_p   = 2 * min(pbinom(sp, nt, 0.5),
+                         pbinom(sp - 1, nt, 0.5, lower.tail = FALSE)),
+      wilcoxon = wilcox.test(d, exact = FALSE)$p.value
+    )
+  }) |> t() |> as_tibble() |>
+    summarise(across(everything(), \(x) mean(x < 0.05)))
+}
+
+dists <- list(
+  list(fn = function(n) rnorm(n),                    label = "Normal"),
+  list(fn = function(n) rt(n, df = 3),               label = expression(t[3] ~ "(heavy tails)")),
+  list(fn = function(n) rexp(n) - log(2),            label = "Exponential\n(shifted, skewed)"),
+  list(fn = function(n) rnorm(n, sd = 1) +
+         (runif(n) < 0.2) * rnorm(n, mean = 4, sd = 2), label = "Contaminated Normal\n(outlier-prone)")
+)
+
+results_are <- map_dfr(dists, function(dd) {
+  map_dfr(c(10, 20, 30, 50), function(n) {
+    sim_power(n, effect = 0.5, dist_fn = dd$fn) |>
+      mutate(n = n, Distribution = as.character(dd$label))
+  })
+})
+
+results_are |>
+  pivot_longer(c(t_test, sign_p, wilcoxon),
+               names_to = "Test", values_to = "Power") |>
+  mutate(Test = recode(Test,
+                       t_test   = "Paired t-test",
+                       sign_p   = "Sign test",
+                       wilcoxon = "Wilcoxon signed-rank")) |>
+  ggplot(aes(x = n, y = Power, color = Test, linetype = Test)) +
+  geom_line(linewidth = 1.3) +
+  geom_point(size = 3.5) +
+  geom_hline(yintercept = 0.05, linetype = "dotted", color = "grey50") +
+  scale_color_manual(values = c("Paired t-test"        = "#006a4e",
+                                 "Sign test"            = "#e74c3c",
+                                 "Wilcoxon signed-rank" = "#3498db")) +
+  scale_linetype_manual(values = c("Paired t-test"        = "solid",
+                                    "Sign test"            = "dashed",
+                                    "Wilcoxon signed-rank" = "solid")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  facet_wrap(~Distribution, scales = "free_x") +
+  labs(
+    title    = "Power vs. Sample Size: Sign Test, Wilcoxon Signed-Rank, Paired t-test",
+    subtitle = "Effect size = 0.5. Signed-rank matches t-test at normality; both tests excel for heavy tails; sign test strongest for very skewed data",
+    x = "Sample size n (pairs)", y = "Power",
+    color = NULL, linetype = NULL
+  ) +
+  theme(legend.position = "bottom",
+        strip.text = element_text(size = 12, face = "bold"))
+```
+
+## ARE: Interpreting the Simulation
+
+The simulation confirms the Pitman ARE theory:
+
+- **Normal distribution**: Signed-rank ≈ $t$-test power (ARE $\approx 0.955$). Sign test noticeably weaker (ARE $\approx 0.637$).
+- **$t_3$ distribution (heavy tails)**: Both nonparametric tests **outperform** the $t$-test. Signed-rank especially strong.
+- **Exponential (skewed)**: Signed-rank invalid in principle (asymmetric $D_i$), but often still competitive in practice. Sign test surprisingly strong.
+- **Contaminated normal**: Even modest outlier contamination makes nonparametric tests superior.
+
+. . .
+
+::: callout-note
+## Practical Takeaway for Biomedical Research
+
+Many biomarkers (CRP, troponin, liver enzymes) follow right-skewed, heavy-tailed distributions.
+
+For such data with small $n$:
+
+- **Sign test**: if ordinal data or very extreme outliers
+- **Wilcoxon signed-rank**: best default for continuous paired data with uncertain normality
+- **Wilcoxon rank-sum**: best default for independent two-group comparisons
+:::
+
+# Comparing All Three Tests {background-color="#2c3e50"}
+
+## Decision Flowchart: Which Test?
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 14
+
+grViz("
+digraph test_selection {
+
+  graph [layout = dot, rankdir = TB, fontname = 'Helvetica', nodesep = 0.6]
+
+  node [shape = diamond, style = filled, fillcolor = '#f0f0f0',
+        fontsize = 14, margin = '0.2,0.1', fontname = 'Helvetica']
+  Q1 [label = 'Paired data or\\none-sample?']
+  Q2 [label = 'Data ordinal or\\nhighly asymmetric?']
+  Q3 [label = 'n large or\\nnormality plausible?']
+  Q4 [label = 'n large or\\nnormality plausible?']
+
+  node [shape = box, style = filled, fontsize = 14,
+        margin = '0.2,0.1', fontname = 'Helvetica']
+  T1 [label = 'Sign Test\\n(Binomial)', fillcolor = '#3498db', fontcolor = white]
+  T2 [label = 'Wilcoxon\\nSigned-Rank', fillcolor = '#e74c3c', fontcolor = white]
+  T3 [label = 'Paired t-test', fillcolor = '#006a4e', fontcolor = white]
+  T4 [label = 'Wilcoxon\\nRank-Sum', fillcolor = '#27ae60', fontcolor = white]
+  T5 [label = 'Welch t-test\\n(two independent)', fillcolor = '#9b59b6', fontcolor = white]
+
+  Q1 -> Q2 [label = 'Yes']
+  Q1 -> Q4 [label = 'No (two independent)']
+  Q2 -> T1 [label = 'Yes / Ordinal']
+  Q2 -> Q3 [label = 'No (continuous, symmetric)']
+  Q3 -> T3 [label = 'Yes']
+  Q3 -> T2 [label = 'No (small n, non-normal)']
+  Q4 -> T5 [label = 'Yes']
+  Q4 -> T4 [label = 'No (small n, non-normal)']
+}
+")
+```
+
+## Side-by-Side on the Pain Score Data (Sign Test Example)
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+cat("=== SIGN TEST ===\n")
+n_s <- sum(d_pain != 0); sp <- sum(d_pain > 0)
+cat(sprintf("S+ = %d   n* = %d   one-sided p = %.5f\n\n",
+            sp, n_s, pbinom(sp, n_s, 0.5)))
+
+cat("=== WILCOXON SIGNED-RANK ===\n")
+wilcox.test(pain_after, pain_before, paired = TRUE,
+            alternative = "less", conf.int = TRUE) |>
+  tidy() |>
+  select(statistic, p.value, conf.low, conf.high, method) |>
+  print()
+cat("\n")
+
+cat("=== PAIRED t-TEST ===\n")
+t.test(pain_after, pain_before, paired = TRUE,
+       alternative = "less") |>
+  tidy() |>
+  select(statistic, parameter, p.value, conf.low, method) |>
+  print()
+```
+
+. . .
+
+All three strongly reject $H_0$. The differences in $p$-values reflect what information each test uses.
+
+## Summary Table: When to Use Each Test
+
+| Test | Use When | Caution |
+|------|----------|---------|
+| **Sign test** | Ordinal data; only sign matters; extreme asymmetry of $D_i$ | Wastes magnitude information; lowest power |
+| **Wilcoxon signed-rank** | Continuous paired data; small $n$; uncertain normality | Requires **symmetric** $D_i$; not for ordinal-only data |
+| **Wilcoxon rank-sum** | Two independent continuous groups; small $n$; skewed | Requires **continuous** distributions; exact p-value affected by ties |
+| **Paired $t$-test** | Paired; approximately normal $D_i$ or $n \geq 30$ | Sensitive to heavy tails and outliers for small $n$ |
+| **Welch $t$-test** | Two independent groups; approximately normal or $n_i \geq 30$ | Heavy tails inflate Type I error for small $n$ |
+
+. . .
+
+::: callout-note
+## Default Recommendation for Biomedical Research
+
+For **paired** continuous $D_i$ with $n < 30$ and uncertain normality: use **Wilcoxon signed-rank**.
+For **two independent** groups with small $n$ and skewed biomarkers: use **Wilcoxon rank-sum**.
+
+If assumptions are met, the parametric test gains only ~5% efficiency — a small price for robustness.
+:::
+
+# Key Takeaways {background-color="#2c3e50"}
+
+## Key Takeaways (DBC 14.1–14.3)
+
+::: callout-important
+## Nonparametric Inference: Main Points
+
+1. **Sign test:** $S^+ \sim \text{Bin}(n^*, 1/2)$ under $H_0$; uses only direction of $D_i$; valid for ordinal data; no symmetry assumption; lowest power of the three
+
+2. **Wilcoxon signed-rank:** ranks $|D_i|$, sums ranks of positive differences; requires symmetric (not necessarily normal) continuous $D_i$; ARE vs. $t$-test $= 3/\pi \approx 0.955$ at normality — minimal efficiency loss, with gains for non-normal data; Hodges-Lehmann estimator is the associated point estimate
+
+3. **Wilcoxon rank-sum (Mann–Whitney $U$):** pools and ranks all $N$ observations; sums group-1 ranks; tests $H_0: F_1 = F_2$; $U/(n_1 n_2)$ estimates $P(X_1 > X_2)$ = AUC; Hodges-Lehmann estimate = median of all $n_1 \times n_2$ pairwise differences
+
+4. **ARE quantifies the asymptotic power trade-off:** signed-rank ARE $\geq 0.864$ vs. $t$-test for all symmetric distributions (Hodges-Lehmann lower bound) — never much worse at normality, potentially much better for heavy tails
+
+5. **Nonparametric $\neq$ assumption-free:** signed-rank requires **symmetric** $D_i$; rank-sum requires **continuous** distributions; both require **independent** observations; ties require variance corrections
+
+6. **Variance corrections for ties:** both tests have modified variance formulas; R applies them automatically; heavy ties (e.g., ordinal data) reduce precision of rank-based tests — consider the sign test or permutation tests
+:::
+
+## Looking Ahead
+
+**Next class (Lesson 22): Course Review**
+
+- Complete roadmap: from point estimation to nonparametric inference
+- Key theorems, formulas, and connections
+- Method selection guide
+- R function reference and practice problems
+
+## Homework Problems
+
+**From Devore, Berk, and Carlton (Chapter 14):**
+
+::: callout-note
+## Problems
+
+1. **(DBC 14.1 / Sign Test)** A clinical trial measured resting heart rate (bpm) in 12 patients before and after beta-blocker therapy. The differences (after − before) were: $−8, −14, +3, −6, −11, −5, +2, −9, −7, −4, −12, −6$. 
+   - (a) Carry out the sign test with $H_a$: median $< 0$ at $\alpha = 0.05$. Compute the exact p-value.
+   - (b) What is $S^+$ and what is its null distribution? Why is this distribution exact?
+
+2. **(DBC 14.2 / Wilcoxon Signed-Rank)** Using the heart rate data from Problem 1:
+   - (a) Compute ranks of the absolute differences, noting any ties.
+   - (b) Compute $W^+$, $E[W^+]$, and $\text{Var}(W^+)$. 
+   - (c) Compute the large-sample $Z$ statistic and p-value. Apply the continuity correction.
+   - (d) Verify with `wilcox.test()` in R. Why might the exact and asymptotic p-values differ?
+
+3. **(DBC 14.3 / Rank-Sum)** Serum albumin levels (g/dL) were measured in critically ill patients with (Group 1, $n_1 = 10$) and without (Group 2, $n_2 = 12$) acute kidney injury. Use R to:
+   - (a) Conduct the Wilcoxon rank-sum test ($H_a$: Group 1 median $<$ Group 2 median).
+   - (b) Report the Hodges-Lehmann estimate and 95\% CI for the location shift.
+   - (c) Compare conclusions to a Welch $t$-test. Which test is more appropriate here, and why?
+
+4. **(ARE / Conceptual)** Suppose you have $n = 25$ paired differences known to follow a logistic distribution.
+   - (a) The ARE of the Wilcoxon signed-rank test relative to the paired $t$-test is $\pi^2/9 \approx 1.097$. Interpret this: how many pairs would the $t$-test need to match the signed-rank test's power?
+   - (b) Give an intuitive explanation for why the rank-based test outperforms the $t$-test for logistic data.
+:::
+
+## References
+
+::: nonincremental
+- Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Sections 14.1, 14.2, 14.3, 14.5.
+- Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 3.
+- Hodges, J. L. and Lehmann, E. L. (1963). Estimates of location based on rank tests. *Annals of Mathematical Statistics*, 34(2), 598–611.
+- Wilcoxon, F. (1945). Individual comparisons by ranking methods. *Biometrics Bulletin*, 1(6), 80–83.
+- Mann, H. B. and Whitney, D. R. (1947). On a test of whether one of two random variables is stochastically larger than the other. *Annals of Mathematical Statistics*, 18(1), 50–60.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/21_NonparametricInference/21_NonparametricInference.html lessons/21_NonparametricInference/21_NonparametricInference.pdf
+```
