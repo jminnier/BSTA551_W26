@@ -4,7 +4,7 @@ subtitle: "BSTA 551: Statistical Inference"
 author: "Jessica Minnier"
 title-slide-attributes:
     data-background-color: "#006a4e"
-date: "`r library(here); source(here('class_dates.R')); w10d2`"
+date: "`r library(here); source(here('class_dates.R')); w10d1`"
 format: 
   revealjs:
     theme: "../simple_NW.scss"
@@ -72,7 +72,7 @@ Nonparametric $\neq$ assumption-free. These tests still require:
 - **Continuity** of the underlying distribution (for rank-based tests — ties deflate test power)
 - **Symmetry** of $D_i$ about 0 (for the Wilcoxon signed-rank test)
 
-The key relaxation is normality — not all assumptions.
+The important relaxation is normality (not all assumptions).
 :::
 
 . . .
@@ -309,7 +309,8 @@ This rules out heavily skewed $D_i$ — but covers most bell-shaped and even uni
 **Step-by-step:**
 
 ::: incremental
-1. **Remove zeros**: drop any $D_i = 0$. Let $n^* = $ number remaining.
+
+1. **Remove zeros**: drop any $D_i = 0$. Let $n^* =$ number remaining.
 2. **Rank absolute values**: rank $|D_1|, \ldots, |D_{n^*}|$ from smallest (rank 1) to largest (rank $n^*$). Average ranks for ties.
 3. **Compute $W^+$**: sum of ranks for observations with **positive** $D_i$:
 $$W^+ = \sum_{\{i:\,D_i > 0\}} R_i$$
@@ -530,7 +531,7 @@ p_paired <- sbp_long |>
   geom_point(aes(color = Direction), size = 3, alpha = 0.9) +
   scale_color_manual(values = c("Decreased" = "#006a4e", "Increased" = "#e74c3c"),
                      labels = c("BP decreased", "BP increased")) +
-  labs(title = "Systolic Blood Pressure Before and After Antihypertensive Treatment",
+  labs(title = "Systolic Blood Pressure Before \nand After Antihypertensive Treatment",
        subtitle = "Each line = one patient. Green = improved (BP decreased); Red = worsened (BP increased).",
        x = NULL, y = "SBP (mmHg)", color = "Change direction") +
   theme(legend.position = "bottom")
@@ -768,7 +769,7 @@ p_vio <- tibble(
                                 "Control"   = "#006a4e")) +
   labs(
     title    = "Serum CRP by Post-Operative Infection Status",
-    subtitle = "Right-skewed biomarker: Wilcoxon rank-sum preferred. Diamond = median.",
+    subtitle = "Right-skewed biomarker: Wilcoxon rank-sum preferred.\nDiamond = median.",
     x = NULL, y = "CRP (mg/L)"
   ) +
   theme(legend.position = "none")
@@ -783,7 +784,7 @@ p_ranks <- tibble(CRP = all_crp, Group = all_group,
   scale_color_manual(values = c("Infection" = "#e74c3c", "Control" = "#006a4e")) +
   geom_hline(yintercept = 0, linewidth = 0.2) +
   labs(title = "CRP Values vs. Pooled Ranks",
-       subtitle = "Infection group tends to hold the higher ranks (rightward)",
+       subtitle = "Infection group tends to hold the higher ranks",
        x = "Pooled rank", y = "CRP (mg/L)", color = NULL) +
   theme(legend.position = "bottom")
 
@@ -1063,41 +1064,6 @@ If assumptions are met, the parametric test gains only ~5% efficiency — a smal
 6. **Variance corrections for ties:** both tests have modified variance formulas; R applies them automatically; heavy ties (e.g., ordinal data) reduce precision of rank-based tests — consider the sign test or permutation tests
 :::
 
-## Looking Ahead
-
-**Next class (Lesson 22): Course Review**
-
-- Complete roadmap: from point estimation to nonparametric inference
-- Key theorems, formulas, and connections
-- Method selection guide
-- R function reference and practice problems
-
-## Homework Problems
-
-**From Devore, Berk, and Carlton (Chapter 14):**
-
-::: callout-note
-## Problems
-
-1. **(DBC 14.1 / Sign Test)** A clinical trial measured resting heart rate (bpm) in 12 patients before and after beta-blocker therapy. The differences (after − before) were: $−8, −14, +3, −6, −11, −5, +2, −9, −7, −4, −12, −6$. 
-   - (a) Carry out the sign test with $H_a$: median $< 0$ at $\alpha = 0.05$. Compute the exact p-value.
-   - (b) What is $S^+$ and what is its null distribution? Why is this distribution exact?
-
-2. **(DBC 14.2 / Wilcoxon Signed-Rank)** Using the heart rate data from Problem 1:
-   - (a) Compute ranks of the absolute differences, noting any ties.
-   - (b) Compute $W^+$, $E[W^+]$, and $\text{Var}(W^+)$. 
-   - (c) Compute the large-sample $Z$ statistic and p-value. Apply the continuity correction.
-   - (d) Verify with `wilcox.test()` in R. Why might the exact and asymptotic p-values differ?
-
-3. **(DBC 14.3 / Rank-Sum)** Serum albumin levels (g/dL) were measured in critically ill patients with (Group 1, $n_1 = 10$) and without (Group 2, $n_2 = 12$) acute kidney injury. Use R to:
-   - (a) Conduct the Wilcoxon rank-sum test ($H_a$: Group 1 median $<$ Group 2 median).
-   - (b) Report the Hodges-Lehmann estimate and 95\% CI for the location shift.
-   - (c) Compare conclusions to a Welch $t$-test. Which test is more appropriate here, and why?
-
-4. **(ARE / Conceptual)** Suppose you have $n = 25$ paired differences known to follow a logistic distribution.
-   - (a) The ARE of the Wilcoxon signed-rank test relative to the paired $t$-test is $\pi^2/9 \approx 1.097$. Interpret this: how many pairs would the $t$-test need to match the signed-rank test's power?
-   - (b) Give an intuitive explanation for why the rank-based test outperforms the $t$-test for logistic data.
-:::
 
 ## References
 

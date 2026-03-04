@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Jessica Minnier">
-  <meta name="dcterms.date" content="2026-03-11">
+  <meta name="dcterms.date" content="2026-03-09">
   <title>Theory of Statistical Inference – Lesson 21: Nonparametric Inference</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -213,7 +213,7 @@ Jessica Minnier
 </div>
 </div>
 
-  <p class="date">2026-03-11</p>
+  <p class="date">2026-03-09</p>
 </section>
 <section>
 <section id="lesson-21-nonparametric-inference" class="title-slide slide level1 center" data-background-color="#2c3e50">
@@ -261,7 +261,7 @@ Jessica Minnier
 <li><strong>Continuity</strong> of the underlying distribution (for rank-based tests — ties deflate test power)</li>
 <li><strong>Symmetry</strong> of <span class="math inline">\(D_i\)</span> about 0 (for the Wilcoxon signed-rank test)</li>
 </ul>
-<p>The key relaxation is normality — not all assumptions.</p>
+<p>The important relaxation is normality (not all assumptions).</p>
 </div>
 </div>
 </div>
@@ -593,7 +593,7 @@ Jessica Minnier
 <p><strong>Setup:</strong> <span class="math inline">\(D_1, \ldots, D_n \stackrel{iid}{\sim}\)</span> a continuous, symmetric distribution. <span class="math inline">\(H_0\)</span>: median <span class="math inline">\(= 0\)</span>.</p>
 <p><strong>Step-by-step:</strong></p>
 <ol type="1">
-<li class="fragment"><strong>Remove zeros</strong>: drop any <span class="math inline">\(D_i = 0\)</span>. Let $n^* = $ number remaining.</li>
+<li class="fragment"><strong>Remove zeros</strong>: drop any <span class="math inline">\(D_i = 0\)</span>. Let <span class="math inline">\(n^* =\)</span> number remaining.</li>
 <li class="fragment"><strong>Rank absolute values</strong>: rank <span class="math inline">\(|D_1|, \ldots, |D_{n^*}|\)</span> from smallest (rank 1) to largest (rank <span class="math inline">\(n^*\)</span>). Average ranks for ties.</li>
 <li class="fragment"><strong>Compute <span class="math inline">\(W^+\)</span></strong>: sum of ranks for observations with <strong>positive</strong> <span class="math inline">\(D_i\)</span>: <span class="math display">\[W^+ = \sum_{\{i:\,D_i &gt; 0\}} R_i\]</span></li>
 <li class="fragment"><strong>Also define</strong>: <span class="math inline">\(W^- = \sum_{\{i:\,D_i &lt; 0\}} R_i = \frac{n^*(n^*+1)}{2} - W^+\)</span></li>
@@ -838,7 +838,7 @@ Jessica Minnier
 <span id="cb39-13"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Direction), <span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.9</span>) <span class="sc">+</span></span>
 <span id="cb39-14"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Decreased"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>, <span class="st">"Increased"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>),</span>
 <span id="cb39-15"><a></a>                     <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"BP decreased"</span>, <span class="st">"BP increased"</span>)) <span class="sc">+</span></span>
-<span id="cb39-16"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Systolic Blood Pressure Before and After Antihypertensive Treatment"</span>,</span>
+<span id="cb39-16"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Systolic Blood Pressure Before </span><span class="sc">\n</span><span class="st">and After Antihypertensive Treatment"</span>,</span>
 <span id="cb39-17"><a></a>       <span class="at">subtitle =</span> <span class="st">"Each line = one patient. Green = improved (BP decreased); Red = worsened (BP increased)."</span>,</span>
 <span id="cb39-18"><a></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"SBP (mmHg)"</span>, <span class="at">color =</span> <span class="st">"Change direction"</span>) <span class="sc">+</span></span>
 <span id="cb39-19"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
@@ -1104,7 +1104,7 @@ Jessica Minnier
 <span id="cb71-13"><a></a>                                <span class="st">"Control"</span>   <span class="ot">=</span> <span class="st">"#006a4e"</span>)) <span class="sc">+</span></span>
 <span id="cb71-14"><a></a>  <span class="fu">labs</span>(</span>
 <span id="cb71-15"><a></a>    <span class="at">title    =</span> <span class="st">"Serum CRP by Post-Operative Infection Status"</span>,</span>
-<span id="cb71-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Right-skewed biomarker: Wilcoxon rank-sum preferred. Diamond = median."</span>,</span>
+<span id="cb71-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Right-skewed biomarker: Wilcoxon rank-sum preferred.</span><span class="sc">\n</span><span class="st">Diamond = median."</span>,</span>
 <span id="cb71-17"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"CRP (mg/L)"</span></span>
 <span id="cb71-18"><a></a>  ) <span class="sc">+</span></span>
 <span id="cb71-19"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
@@ -1119,7 +1119,7 @@ Jessica Minnier
 <span id="cb71-28"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Infection"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"Control"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>)) <span class="sc">+</span></span>
 <span id="cb71-29"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="dv">0</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
 <span id="cb71-30"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"CRP Values vs. Pooled Ranks"</span>,</span>
-<span id="cb71-31"><a></a>       <span class="at">subtitle =</span> <span class="st">"Infection group tends to hold the higher ranks (rightward)"</span>,</span>
+<span id="cb71-31"><a></a>       <span class="at">subtitle =</span> <span class="st">"Infection group tends to hold the higher ranks"</span>,</span>
 <span id="cb71-32"><a></a>       <span class="at">x =</span> <span class="st">"Pooled rank"</span>, <span class="at">y =</span> <span class="st">"CRP (mg/L)"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
 <span id="cb71-33"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
 <span id="cb71-34"><a></a></span>
@@ -1508,79 +1508,6 @@ Jessica Minnier
 <li><p><strong>ARE quantifies the asymptotic power trade-off:</strong> signed-rank ARE <span class="math inline">\(\geq 0.864\)</span> vs.&nbsp;<span class="math inline">\(t\)</span>-test for all symmetric distributions (Hodges-Lehmann lower bound) — never much worse at normality, potentially much better for heavy tails</p></li>
 <li><p><strong>Nonparametric <span class="math inline">\(\neq\)</span> assumption-free:</strong> signed-rank requires <strong>symmetric</strong> <span class="math inline">\(D_i\)</span>; rank-sum requires <strong>continuous</strong> distributions; both require <strong>independent</strong> observations; ties require variance corrections</p></li>
 <li><p><strong>Variance corrections for ties:</strong> both tests have modified variance formulas; R applies them automatically; heavy ties (e.g., ordinal data) reduce precision of rank-based tests — consider the sign test or permutation tests</p></li>
-</ol>
-</div>
-</div>
-</div>
-</section>
-<section id="looking-ahead" class="slide level2">
-<h2>Looking Ahead</h2>
-<p><strong>Next class (Lesson 22): Course Review</strong></p>
-<ul>
-<li>Complete roadmap: from point estimation to nonparametric inference</li>
-<li>Key theorems, formulas, and connections</li>
-<li>Method selection guide</li>
-<li>R function reference and practice problems</li>
-</ul>
-</section>
-<section id="homework-problems" class="slide level2 scrollable">
-<h2>Homework Problems</h2>
-<p><strong>From Devore, Berk, and Carlton (Chapter 14):</strong></p>
-<div class="callout callout-note callout-titled callout-style-default">
-<div class="callout-body">
-<div class="callout-title">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<p><strong>Problems</strong></p>
-</div>
-<div class="callout-content">
-<ol type="1">
-<li><strong>(DBC 14.1 / Sign Test)</strong> A clinical trial measured resting heart rate (bpm) in 12 patients before and after beta-blocker therapy. The differences (after − before) were: <span class="math inline">\(−8, −14, +3, −6, −11, −5, +2, −9, −7, −4, −12, −6\)</span>.
-<ul>
-<li><ol type="a">
-<li>Carry out the sign test with <span class="math inline">\(H_a\)</span>: median <span class="math inline">\(&lt; 0\)</span> at <span class="math inline">\(\alpha = 0.05\)</span>. Compute the exact p-value.</li>
-</ol></li>
-<li><ol start="2" type="a">
-<li>What is <span class="math inline">\(S^+\)</span> and what is its null distribution? Why is this distribution exact?</li>
-</ol></li>
-</ul></li>
-<li><strong>(DBC 14.2 / Wilcoxon Signed-Rank)</strong> Using the heart rate data from Problem 1:
-<ul>
-<li><ol type="a">
-<li>Compute ranks of the absolute differences, noting any ties.</li>
-</ol></li>
-<li><ol start="2" type="a">
-<li>Compute <span class="math inline">\(W^+\)</span>, <span class="math inline">\(E[W^+]\)</span>, and <span class="math inline">\(\text{Var}(W^+)\)</span>.</li>
-</ol></li>
-<li><ol start="3" type="a">
-<li>Compute the large-sample <span class="math inline">\(Z\)</span> statistic and p-value. Apply the continuity correction.</li>
-</ol></li>
-<li><ol start="4" type="a">
-<li>Verify with <code>wilcox.test()</code> in R. Why might the exact and asymptotic p-values differ?</li>
-</ol></li>
-</ul></li>
-<li><strong>(DBC 14.3 / Rank-Sum)</strong> Serum albumin levels (g/dL) were measured in critically ill patients with (Group 1, <span class="math inline">\(n_1 = 10\)</span>) and without (Group 2, <span class="math inline">\(n_2 = 12\)</span>) acute kidney injury. Use R to:
-<ul>
-<li><ol type="a">
-<li>Conduct the Wilcoxon rank-sum test (<span class="math inline">\(H_a\)</span>: Group 1 median <span class="math inline">\(&lt;\)</span> Group 2 median).</li>
-</ol></li>
-<li><ol start="2" type="a">
-<li>Report the Hodges-Lehmann estimate and 95% CI for the location shift.</li>
-</ol></li>
-<li><ol start="3" type="a">
-<li>Compare conclusions to a Welch <span class="math inline">\(t\)</span>-test. Which test is more appropriate here, and why?</li>
-</ol></li>
-</ul></li>
-<li><strong>(ARE / Conceptual)</strong> Suppose you have <span class="math inline">\(n = 25\)</span> paired differences known to follow a logistic distribution.
-<ul>
-<li><ol type="a">
-<li>The ARE of the Wilcoxon signed-rank test relative to the paired <span class="math inline">\(t\)</span>-test is <span class="math inline">\(\pi^2/9 \approx 1.097\)</span>. Interpret this: how many pairs would the <span class="math inline">\(t\)</span>-test need to match the signed-rank test’s power?</li>
-</ol></li>
-<li><ol start="2" type="a">
-<li>Give an intuitive explanation for why the rank-based test outperforms the <span class="math inline">\(t\)</span>-test for logistic data.</li>
-</ol></li>
-</ul></li>
 </ol>
 </div>
 </div>
