@@ -191,6 +191,8 @@
       margin-right: 0; 
     }
   </style>
+  <script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+  <link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
 </head>
 <body class="quarto-light">
   <div class="reveal">
@@ -232,10 +234,10 @@ Jessica Minnier
 <p><strong>Today’s Goals:</strong></p>
 <ol type="1">
 <li>Construct <strong>two-sample bootstrap CIs</strong> by resampling each group independently (C&amp;H Ch. 3; DBC 10.6)</li>
-<li>Implement the <strong>two-sample permutation test</strong> by permuting group labels (C&amp;H Ch. 5)</li>
-<li>Apply bootstrap to <strong>paired data</strong> by resampling whole pairs</li>
-<li>Articulate the precise conceptual difference between bootstrap and permutation</li>
-<li>Compare resampling to parametric methods through simulation</li>
+<li>Perform <strong>two-sample bootstrap hypothesis tests</strong> by shifting to satisfy <span class="math inline">\(H_0\)</span> (C&amp;H Ch. 8)</li>
+<li>Implement the <strong>two-sample permutation test</strong> and understand exactly when it is valid (C&amp;H Ch. 5)</li>
+<li>Apply bootstrap CI and bootstrap test to <strong>paired data</strong></li>
+<li>Use the <strong><code>infer</code> package</strong> for tidy, pipeline-based resampling inference</li>
 </ol>
 </div>
 </section>
@@ -243,10 +245,10 @@ Jessica Minnier
 <h2>Roadmap</h2>
 <table class="caption-top">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 23%">
-<col style="width: 30%">
-<col style="width: 23%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -264,16 +266,34 @@ Jessica Minnier
 <td>C&amp;H Ch. 3; DBC 10.6</td>
 </tr>
 <tr class="even">
+<td>Two-sample bootstrap test</td>
+<td>p-value for <span class="math inline">\(H_0:\theta_1=\theta_2\)</span></td>
+<td>Shifted/centred samples</td>
+<td>C&amp;H Ch. 8</td>
+</tr>
+<tr class="odd">
 <td>Two-sample permutation test</td>
 <td>Test <span class="math inline">\(H_0: F_1 = F_2\)</span></td>
 <td>Pooled, relabeling</td>
 <td>C&amp;H Ch. 5</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>Paired bootstrap CI</td>
 <td>CI for <span class="math inline">\(\mu_D\)</span></td>
 <td>Pairs with replacement</td>
 <td>C&amp;H Ch. 3</td>
+</tr>
+<tr class="odd">
+<td>Paired bootstrap test</td>
+<td>p-value for <span class="math inline">\(H_0:\mu_D=0\)</span></td>
+<td>Shifted differences</td>
+<td>C&amp;H Ch. 8</td>
+</tr>
+<tr class="even">
+<td><code>infer</code> package</td>
+<td>Tidy pipeline for all of the above</td>
+<td>—</td>
+<td>infer vignettes</td>
 </tr>
 </tbody>
 </table>
@@ -310,6 +330,7 @@ Jessica Minnier
 </ol>
 <p><strong>Percentile CI:</strong> <span class="math inline">\(\bigl(\hat\theta^*_{(\alpha/2)},\; \hat\theta^*_{(1-\alpha/2)}\bigr)\)</span></p>
 <p><strong>Basic (reflection) CI:</strong> <span class="math inline">\(\bigl(2\hat\theta - \hat\theta^*_{(1-\alpha/2)},\; 2\hat\theta - \hat\theta^*_{(\alpha/2)}\bigr)\)</span></p>
+<p><strong>Bootstrap SE CI:</strong> <span class="math inline">\(\hat\theta \;\pm\; z_{\alpha/2} \cdot \widehat{\text{SE}}_{\text{boot}}\)</span>, where <span class="math inline">\(\widehat{\text{SE}}_{\text{boot}} = \text{sd}(\hat\theta^{*1}, \ldots, \hat\theta^{*B})\)</span></p>
 <div class="fragment">
 <div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
@@ -320,7 +341,7 @@ Jessica Minnier
 <p><strong>Key Point</strong></p>
 </div>
 <div class="callout-content">
-<p>Resample each group <strong>separately and independently</strong> — this preserves the two-group structure and approximates the sampling distribution of <span class="math inline">\(\hat\theta_1 - \hat\theta_2\)</span>. Pooling before resampling would impose <span class="math inline">\(H_0\)</span> (that is permutation, not bootstrap).</p>
+<p>Resample each group <strong>separately and independently</strong> — this preserves the two-group structure and approximates the sampling distribution of <span class="math inline">\(\hat\theta_1 - \hat\theta_2\)</span>. Pooling before resampling would impose <span class="math inline">\(H_0\)</span>: that is permutation, not bootstrap.</p>
 </div>
 </div>
 </div>
@@ -331,16 +352,17 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb1-2"><a></a>los_blunt <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">40</span>, <span class="at">shape =</span> <span class="fl">2.0</span>, <span class="at">rate =</span> <span class="fl">0.28</span>)  <span class="co"># mean ~ 7.1 days</span></span>
-<span id="cb1-3"><a></a>los_penet <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">30</span>, <span class="at">shape =</span> <span class="fl">1.4</span>, <span class="at">rate =</span> <span class="fl">0.22</span>)  <span class="co"># mean ~ 6.4 days</span></span>
-<span id="cb1-4"><a></a></span>
-<span id="cb1-5"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Blunt:       n = %d   mean = %.2f   median = %.2f   sd = %.2f</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb1-6"><a></a>            <span class="fu">length</span>(los_blunt), <span class="fu">mean</span>(los_blunt),</span>
-<span id="cb1-7"><a></a>            <span class="fu">median</span>(los_blunt), <span class="fu">sd</span>(los_blunt)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># (shape/rate = mean; sqrt(shape)/rate = SD)</span></span>
+<span id="cb1-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb1-3"><a></a>los_blunt <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">40</span>, <span class="at">shape =</span> <span class="fl">2.8</span>, <span class="at">rate =</span> <span class="fl">0.33</span>)  <span class="co"># mean ~ 8.5 days, SD ~ 5.1</span></span>
+<span id="cb1-4"><a></a>los_penet <span class="ot">&lt;-</span> <span class="fu">rgamma</span>(<span class="dv">30</span>, <span class="at">shape =</span> <span class="fl">2.0</span>, <span class="at">rate =</span> <span class="fl">0.38</span>)  <span class="co"># mean ~ 5.3 days, SD ~ 3.7</span></span>
+<span id="cb1-5"><a></a></span>
+<span id="cb1-6"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Blunt:       n = %d   mean = %.2f   median = %.2f   sd = %.2f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb1-7"><a></a>            <span class="fu">length</span>(los_blunt), <span class="fu">mean</span>(los_blunt),</span>
+<span id="cb1-8"><a></a>            <span class="fu">median</span>(los_blunt), <span class="fu">sd</span>(los_blunt)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Blunt:       n = 40   mean = 7.46   median = 6.29   sd = 5.26</code></pre>
+<pre><code>Blunt:       n = 40   mean = 7.86   median = 6.97   sd = 5.00</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -349,7 +371,7 @@ Jessica Minnier
 <span id="cb3-3"><a></a>            <span class="fu">median</span>(los_penet), <span class="fu">sd</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>Penetrating: n = 30   mean = 6.39   median = 4.28   sd = 6.76</code></pre>
+<pre><code>Penetrating: n = 30   mean = 5.62   median = 3.81   sd = 5.00</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -370,15 +392,15 @@ Jessica Minnier
 <span id="cb5-13"><a></a>                                 <span class="st">"Penetrating"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
 <span id="cb5-14"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Group) <span class="sc">+</span></span>
 <span id="cb5-15"><a></a>  <span class="fu">labs</span>(<span class="at">title    =</span> <span class="st">"Hospital Length of Stay by Trauma Type"</span>,</span>
-<span id="cb5-16"><a></a>       <span class="at">subtitle =</span> <span class="st">"Right-skewed distributions — parametric CIs may be unreliable for moderate n"</span>,</span>
+<span id="cb5-16"><a></a>       <span class="at">subtitle =</span> <span class="st">"Right-skewed distributions — blunt trauma stays appear longer; evidence is borderline significant"</span>,</span>
 <span id="cb5-17"><a></a>       <span class="at">x =</span> <span class="st">"LOS (days)"</span>, <span class="at">y =</span> <span class="st">"Density"</span>) <span class="sc">+</span></span>
 <span id="cb5-18"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
 <img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-2-1.png" width="1152" class="r-stretch"></section>
-<section id="computing-the-bootstrap-ci" class="slide level2">
-<h2>Computing the Bootstrap CI</h2>
+<section id="computing-the-bootstrap-ci-difference-in-means" class="slide level2">
+<h2>Computing the Bootstrap CI: Difference in Means</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
 <span id="cb6-2"><a></a>B        <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
@@ -393,27 +415,32 @@ Jessica Minnier
 <span id="cb6-11"><a></a></span>
 <span id="cb6-12"><a></a>ci_pct   <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_diffs, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
 <span id="cb6-13"><a></a>ci_basic <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> obs_diff <span class="sc">-</span> <span class="fu">quantile</span>(boot_diffs, <span class="fu">c</span>(<span class="fl">0.975</span>, <span class="fl">0.025</span>))</span>
-<span id="cb6-14"><a></a>ci_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(los_blunt, los_penet)<span class="sc">$</span>conf.int</span>
-<span id="cb6-15"><a></a></span>
-<span id="cb6-16"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed difference (Blunt - Penet):  %.3f days</span><span class="sc">\n</span><span class="st">"</span>, obs_diff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb6-14"><a></a>ci_se    <span class="ot">&lt;-</span> obs_diff <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> <span class="fu">sd</span>(boot_diffs)</span>
+<span id="cb6-15"><a></a>ci_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(los_blunt, los_penet)<span class="sc">$</span>conf.int</span>
+<span id="cb6-16"><a></a></span>
+<span id="cb6-17"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed difference (Blunt - Penet):  %.3f days</span><span class="sc">\n</span><span class="st">"</span>, obs_diff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Observed difference (Blunt - Penet):  1.070 days</code></pre>
+<pre><code>Observed difference (Blunt - Penet):  2.235 days</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE:                         %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(boot_diffs)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bootstrap SE:                         1.491</code></pre>
+<pre><code>Bootstrap SE:                         1.191</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Percentile 95%% CI:  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pct[<span class="dv">1</span>],   ci_pct[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE  95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_se[<span class="dv">1</span>],    ci_se[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Percentile 95% CI:  (-1.979, 3.868)</code></pre>
+<pre><code>Bootstrap SE  95% CI: (-0.099, 4.569)</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Basic     95%% CI:  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_basic[<span class="dv">1</span>], ci_basic[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Percentile    95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pct[<span class="dv">1</span>],   ci_pct[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Basic     95% CI:  (-1.727, 4.120)</code></pre>
+<pre><code>Percentile    95% CI: (-0.079, 4.561)</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t   95%% CI:  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_welch[<span class="dv">1</span>], ci_welch[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Basic         95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_basic[<span class="dv">1</span>], ci_basic[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Welch t   95% CI:  (-1.913, 4.054)</code></pre>
+<pre><code>Basic         95% CI: (-0.091, 4.549)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t       95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>, ci_welch[<span class="dv">1</span>], ci_welch[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Welch t       95% CI: (-0.178, 4.647)</code></pre>
 </div>
 </div>
 </section>
@@ -422,32 +449,32 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="fu">tibble</span>(<span class="at">boot_diff =</span> boot_diffs) <span class="sc">|&gt;</span></span>
-<span id="cb16-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> boot_diff)) <span class="sc">+</span></span>
-<span id="cb16-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">55</span>,</span>
-<span id="cb16-4"><a></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
-<span id="cb16-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
-<span id="cb16-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> obs_diff,</span>
-<span id="cb16-7"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb16-8"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_pct,</span>
-<span id="cb16-9"><a></a>             <span class="at">color =</span> <span class="st">"#006a4e"</span>, <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
-<span id="cb16-10"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_welch,</span>
-<span id="cb16-11"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
-<span id="cb16-12"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> obs_diff <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.52</span>,</span>
-<span id="cb16-13"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">hat</span>(Delta) <span class="sc">==</span> .(<span class="fu">round</span>(obs_diff, <span class="dv">2</span>))),</span>
-<span id="cb16-14"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb16-15"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ci_pct[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.45</span>,</span>
-<span id="cb16-16"><a></a>           <span class="at">label =</span> <span class="st">"Bootstrap</span><span class="sc">\n</span><span class="st">percentile CI"</span>, <span class="at">color =</span> <span class="st">"#006a4e"</span>,</span>
-<span id="cb16-17"><a></a>           <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb16-18"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ci_welch[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.35</span>,</span>
-<span id="cb16-19"><a></a>           <span class="at">label =</span> <span class="st">"Welch t CI"</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
-<span id="cb16-20"><a></a>           <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb16-21"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb16-22"><a></a>    <span class="at">title    =</span> <span class="st">"Bootstrap Distribution: Mean LOS Difference (Blunt \u2212 Penetrating)"</span>,</span>
-<span id="cb16-23"><a></a>    <span class="at">subtitle =</span> <span class="st">"Green dashed = 95% bootstrap percentile CI   |   Red dotted = Welch t CI"</span>,</span>
-<span id="cb16-24"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[Blunt]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(x)[Penet]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(days)"</span>),</span>
-<span id="cb16-25"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
-<span id="cb16-26"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">tibble</span>(<span class="at">boot_diff =</span> boot_diffs) <span class="sc">|&gt;</span></span>
+<span id="cb18-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> boot_diff)) <span class="sc">+</span></span>
+<span id="cb18-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">55</span>,</span>
+<span id="cb18-4"><a></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb18-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb18-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> obs_diff,</span>
+<span id="cb18-7"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb18-8"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_pct,</span>
+<span id="cb18-9"><a></a>             <span class="at">color =</span> <span class="st">"#006a4e"</span>, <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb18-10"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_welch,</span>
+<span id="cb18-11"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb18-12"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> obs_diff <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.52</span>,</span>
+<span id="cb18-13"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">hat</span>(Delta) <span class="sc">==</span> .(<span class="fu">round</span>(obs_diff, <span class="dv">2</span>))),</span>
+<span id="cb18-14"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb18-15"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ci_pct[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.45</span>,</span>
+<span id="cb18-16"><a></a>           <span class="at">label =</span> <span class="st">"Bootstrap</span><span class="sc">\n</span><span class="st">percentile CI"</span>, <span class="at">color =</span> <span class="st">"#006a4e"</span>,</span>
+<span id="cb18-17"><a></a>           <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb18-18"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ci_welch[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.1</span>, <span class="at">y =</span> <span class="fl">0.35</span>,</span>
+<span id="cb18-19"><a></a>           <span class="at">label =</span> <span class="st">"Welch t CI"</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb18-20"><a></a>           <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb18-21"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb18-22"><a></a>    <span class="at">title    =</span> <span class="st">"Bootstrap Distribution: Mean LOS Difference (Blunt \u2212 Penetrating)"</span>,</span>
+<span id="cb18-23"><a></a>    <span class="at">subtitle =</span> <span class="st">"Green dashed = 95% bootstrap percentile CI   |   Red dotted = Welch t CI"</span>,</span>
+<span id="cb18-24"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[Blunt]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(x)[Penet]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(days)"</span>),</span>
+<span id="cb18-25"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
+<span id="cb18-26"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
@@ -456,46 +483,216 @@ Jessica Minnier
 <h2>Bootstrap CI for Any Statistic</h2>
 <p>A key advantage over parametric methods: the same algorithm works for <strong>any statistic</strong>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb17-2"><a></a></span>
-<span id="cb17-3"><a></a><span class="co"># Difference in medians (no closed-form parametric CI exists)</span></span>
-<span id="cb17-4"><a></a>boot_med <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
-<span id="cb17-5"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(los_blunt, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
-<span id="cb17-6"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(los_penet, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb17-7"><a></a>})</span>
-<span id="cb17-8"><a></a></span>
-<span id="cb17-9"><a></a><span class="co"># Ratio of standard deviations</span></span>
-<span id="cb17-10"><a></a>boot_sdr <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
-<span id="cb17-11"><a></a>  <span class="fu">sd</span>(<span class="fu">sample</span>(los_blunt, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span></span>
-<span id="cb17-12"><a></a>  <span class="fu">sd</span>(<span class="fu">sample</span>(los_penet, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb17-13"><a></a>})</span>
-<span id="cb17-14"><a></a></span>
-<span id="cb17-15"><a></a><span class="fu">cat</span>(<span class="st">"--- Difference in MEDIANS ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb19-2"><a></a></span>
+<span id="cb19-3"><a></a><span class="co"># Difference in medians (no closed-form parametric CI exists)</span></span>
+<span id="cb19-4"><a></a>boot_med <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb19-5"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(los_blunt, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb19-6"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(los_penet, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb19-7"><a></a>})</span>
+<span id="cb19-8"><a></a></span>
+<span id="cb19-9"><a></a><span class="co"># Ratio of standard deviations</span></span>
+<span id="cb19-10"><a></a>boot_sdr <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb19-11"><a></a>  <span class="fu">sd</span>(<span class="fu">sample</span>(los_blunt, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">/</span></span>
+<span id="cb19-12"><a></a>  <span class="fu">sd</span>(<span class="fu">sample</span>(los_penet, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb19-13"><a></a>})</span>
+<span id="cb19-14"><a></a></span>
+<span id="cb19-15"><a></a><span class="fu">cat</span>(<span class="st">"--- Difference in MEDIANS ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--- Difference in MEDIANS ---</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Observed: %.3f days</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb19-2"><a></a>            <span class="fu">median</span>(los_blunt) <span class="sc">-</span> <span class="fu">median</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Observed: %.3f days</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb21-2"><a></a>            <span class="fu">median</span>(los_blunt) <span class="sc">-</span> <span class="fu">median</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Observed: 2.003 days</code></pre>
+<pre><code>  Observed: 3.158 days</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Bootstrap 95%% CI: (%.3f, %.3f)</span><span class="sc">\n\n</span><span class="st">"</span>,</span>
-<span id="cb21-2"><a></a>            <span class="fu">quantile</span>(boot_med, <span class="fl">0.025</span>), <span class="fu">quantile</span>(boot_med, <span class="fl">0.975</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Bootstrap 95%% CI: (%.3f, %.3f)</span><span class="sc">\n\n</span><span class="st">"</span>,</span>
+<span id="cb23-2"><a></a>            <span class="fu">quantile</span>(boot_med, <span class="fl">0.025</span>), <span class="fu">quantile</span>(boot_med, <span class="fl">0.975</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Bootstrap 95% CI: (-1.495, 4.502)</code></pre>
+<pre><code>  Bootstrap 95% CI: (0.367, 5.525)</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a><span class="fu">cat</span>(<span class="st">"--- Ratio of SDs ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">cat</span>(<span class="st">"--- Ratio of SDs ---</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--- Ratio of SDs ---</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Observed: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(los_blunt) <span class="sc">/</span> <span class="fu">sd</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Observed: %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(los_blunt) <span class="sc">/</span> <span class="fu">sd</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Observed: 0.778</code></pre>
+<pre><code>  Observed: 0.999</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Bootstrap 95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb27-2"><a></a>            <span class="fu">quantile</span>(boot_sdr, <span class="fl">0.025</span>), <span class="fu">quantile</span>(boot_sdr, <span class="fl">0.975</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  Bootstrap 95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb29-2"><a></a>            <span class="fu">quantile</span>(boot_sdr, <span class="fl">0.025</span>), <span class="fu">quantile</span>(boot_sdr, <span class="fl">0.975</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  Bootstrap 95% CI: (0.513, 1.391)</code></pre>
+<pre><code>  Bootstrap 95% CI: (0.661, 1.606)</code></pre>
+</div>
+</div>
+</section></section>
+<section>
+<section id="two-sample-bootstrap-hypothesis-test" class="title-slide slide level1 center" data-background-color="#8e44ad">
+<h1>Two-Sample Bootstrap Hypothesis Test</h1>
+
+</section>
+<section id="bootstrap-testing-the-core-challenge" class="slide level2">
+<h2>Bootstrap Testing: The Core Challenge</h2>
+<p>Recall from Lesson 17: for a <strong>one-sample</strong> bootstrap test of <span class="math inline">\(H_0: \mu = \mu_0\)</span>, we <strong>shift</strong> the sample to satisfy <span class="math inline">\(H_0\)</span> before resampling, then compare the observed statistic to the shifted null distribution.</p>
+<p>For <strong>two samples</strong>, we test <span class="math inline">\(H_0: \theta_1 = \theta_2\)</span> (e.g., <span class="math inline">\(\mu_1 = \mu_2\)</span>). The same logic applies: we must resample in a way that <strong>imposes <span class="math inline">\(H_0\)</span></strong>.</p>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why Not Just Use the Bootstrap Distribution?</strong></p>
+</div>
+<div class="callout-content">
+<p>If we simply computed the distribution of <span class="math inline">\(\hat\theta^* = \hat\mu_1^* - \hat\mu_2^*\)</span> by resampling each group, we would get the <strong>sampling distribution</strong> centered at the <strong>observed</strong> <span class="math inline">\(\hat\Delta = \hat\mu_1 - \hat\mu_2\)</span>.</p>
+<p>This gives us a confidence interval — but <strong>not a p-value under <span class="math inline">\(H_0\)</span></strong>. The null distribution must be centered at <span class="math inline">\(0\)</span>.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="two-sample-bootstrap-test-the-shift-method-ch-8.2" class="slide level2 scrollable">
+<h2>Two-Sample Bootstrap Test: The Shift Method (C&amp;H 8.2)</h2>
+<p><strong>Setup:</strong> Test <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> vs <span class="math inline">\(H_a: \mu_1 \neq \mu_2\)</span>.</p>
+<p><strong>Step 1: Impose <span class="math inline">\(H_0\)</span></strong> by centering both samples at the same mean:</p>
+<p><span class="math display">\[\tilde{x}_i = x_i - \bar{x} + \bar{X}_{\text{pool}}, \qquad \tilde{y}_j = y_j - \bar{y} + \bar{X}_{\text{pool}}\]</span></p>
+<p>where <span class="math inline">\(\bar{X}_{\text{pool}} = \frac{n_1 \bar{x} + n_2 \bar{y}}{n_1 + n_2}\)</span> is the pooled mean.</p>
+<p>Now <span class="math inline">\(\tilde{x}\)</span> and <span class="math inline">\(\tilde{y}\)</span> have the <strong>same mean</strong> — <span class="math inline">\(H_0\)</span> is satisfied.</p>
+<div class="fragment">
+<p><strong>Step 2: Generate the null distribution</strong> by resampling from the shifted samples:</p>
+<p>for <span class="math inline">\(b = 1, \ldots, B\)</span>:</p>
+<ol type="1">
+<li>Draw <span class="math inline">\(\tilde{x}^{*b}\)</span> (size <span class="math inline">\(n_1\)</span>) from <span class="math inline">\(\{\tilde{x}_i\}\)</span> with replacement</li>
+<li>Draw <span class="math inline">\(\tilde{y}^{*b}\)</span> (size <span class="math inline">\(n_2\)</span>) from <span class="math inline">\(\{\tilde{y}_j\}\)</span> with replacement</li>
+<li>Compute <span class="math inline">\(T^{*b} = \bar{\tilde{x}}^{*b} - \bar{\tilde{y}}^{*b}\)</span></li>
+</ol>
+<p><strong>p-value:</strong> <span class="math inline">\(\hat{p} = \frac{1}{B}\sum_{b=1}^{B} \mathbf{1}\bigl(|T^{*b}| \geq |T_\text{obs}|\bigr)\)</span></p>
+<p>where <span class="math inline">\(T_\text{obs} = \bar{x} - \bar{y}\)</span>.</p>
+</div>
+</section>
+<section id="two-sample-bootstrap-test-implementation" class="slide level2">
+<h2>Two-Sample Bootstrap Test: Implementation</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb31-2"><a></a>B_test <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
+<span id="cb31-3"><a></a></span>
+<span id="cb31-4"><a></a><span class="co"># Observed test statistic</span></span>
+<span id="cb31-5"><a></a>t_obs <span class="ot">&lt;-</span> <span class="fu">mean</span>(los_blunt) <span class="sc">-</span> <span class="fu">mean</span>(los_penet)</span>
+<span id="cb31-6"><a></a></span>
+<span id="cb31-7"><a></a><span class="co"># Step 1: Shift samples to satisfy H0 (equal means)</span></span>
+<span id="cb31-8"><a></a>grand_mean <span class="ot">&lt;-</span> (<span class="fu">sum</span>(los_blunt) <span class="sc">+</span> <span class="fu">sum</span>(los_penet)) <span class="sc">/</span> (n1 <span class="sc">+</span> n2)</span>
+<span id="cb31-9"><a></a>x_shift    <span class="ot">&lt;-</span> los_blunt <span class="sc">-</span> <span class="fu">mean</span>(los_blunt) <span class="sc">+</span> grand_mean</span>
+<span id="cb31-10"><a></a>y_shift    <span class="ot">&lt;-</span> los_penet <span class="sc">-</span> <span class="fu">mean</span>(los_penet) <span class="sc">+</span> grand_mean</span>
+<span id="cb31-11"><a></a></span>
+<span id="cb31-12"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Before shifting:  mean(blunt) = %.3f, mean(penet) = %.3f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb31-13"><a></a>            <span class="fu">mean</span>(los_blunt), <span class="fu">mean</span>(los_penet)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Before shifting:  mean(blunt) = 7.859, mean(penet) = 5.624</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"After  shifting:  mean(x_shift)= %.3f, mean(y_shift)= %.3f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb33-2"><a></a>            <span class="fu">mean</span>(x_shift), <span class="fu">mean</span>(y_shift)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>After  shifting:  mean(x_shift)= 6.901, mean(y_shift)= 6.901</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="co"># Step 2: Resample from shifted samples</span></span>
+<span id="cb35-2"><a></a>boot_null <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_test, {</span>
+<span id="cb35-3"><a></a>  <span class="fu">mean</span>(<span class="fu">sample</span>(x_shift, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb35-4"><a></a>  <span class="fu">mean</span>(<span class="fu">sample</span>(y_shift, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb35-5"><a></a>})</span>
+<span id="cb35-6"><a></a></span>
+<span id="cb35-7"><a></a>p_boot  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(boot_null) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs))</span>
+<span id="cb35-8"><a></a>p_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(los_blunt, los_penet)<span class="sc">$</span>p.value</span>
+<span id="cb35-9"><a></a></span>
+<span id="cb35-10"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Observed difference:         %.3f days</span><span class="sc">\n</span><span class="st">"</span>, t_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Observed difference:         2.235 days</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap test p-value:      %.4f</span><span class="sc">\n</span><span class="st">"</span>, p_boot))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap test p-value:      0.0606</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t-test p-value:        %.4f</span><span class="sc">\n</span><span class="st">"</span>, p_welch))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Welch t-test p-value:        0.0688</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-bootstrap-null-distribution" class="slide level2">
+<h2>Visualizing the Bootstrap Null Distribution</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a></a><span class="fu">tibble</span>(<span class="at">null_diff =</span> boot_null) <span class="sc">|&gt;</span></span>
+<span id="cb41-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> null_diff)) <span class="sc">+</span></span>
+<span id="cb41-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
+<span id="cb41-4"><a></a>                 <span class="at">fill =</span> <span class="st">"#8e44ad"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
+<span id="cb41-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb41-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(t_obs), <span class="fu">abs</span>(t_obs)),</span>
+<span id="cb41-7"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb41-8"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">abs</span>(t_obs) <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">0.6</span>,</span>
+<span id="cb41-9"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="st">"|"</span> <span class="sc">*</span> T[obs] <span class="sc">*</span> <span class="st">"| ="</span> <span class="sc">~</span> .(<span class="fu">round</span>(<span class="fu">abs</span>(t_obs), <span class="dv">2</span>))),</span>
+<span id="cb41-10"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb41-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="fl">0.7</span>,</span>
+<span id="cb41-12"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"Bootstrap p = %.4f"</span>, p_boot),</span>
+<span id="cb41-13"><a></a>           <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb41-14"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb41-15"><a></a>    <span class="at">title    =</span> <span class="st">"Bootstrap Null Distribution: Difference in Mean LOS (Shift Method)"</span>,</span>
+<span id="cb41-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Null distribution centered at 0 by shifting both samples to grand mean"</span>,</span>
+<span id="cb41-17"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[shift]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(y)[shift]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(days)"</span>),</span>
+<span id="cb41-18"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
+<span id="cb41-19"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-7-1.png" width="1248" class="r-stretch"></section>
+<section id="bootstrap-test-for-any-statistic-e.g.-median" class="slide level2">
+<h2>Bootstrap Test for Any Statistic (e.g., Median)</h2>
+<p>The shift method generalizes to <strong>any location statistic</strong> — shift both samples to equal medians (or equal means) and resample.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb42-2"><a></a></span>
+<span id="cb42-3"><a></a><span class="co"># Bootstrap test for MEDIAN difference</span></span>
+<span id="cb42-4"><a></a>t_obs_med <span class="ot">&lt;-</span> <span class="fu">median</span>(los_blunt) <span class="sc">-</span> <span class="fu">median</span>(los_penet)</span>
+<span id="cb42-5"><a></a></span>
+<span id="cb42-6"><a></a><span class="co"># Shift both samples to have equal medians (use grand median or grand mean)</span></span>
+<span id="cb42-7"><a></a>x_shift_med <span class="ot">&lt;-</span> los_blunt <span class="sc">-</span> <span class="fu">median</span>(los_blunt) <span class="sc">+</span> grand_mean</span>
+<span id="cb42-8"><a></a>y_shift_med <span class="ot">&lt;-</span> los_penet <span class="sc">-</span> <span class="fu">median</span>(los_penet) <span class="sc">+</span> grand_mean</span>
+<span id="cb42-9"><a></a></span>
+<span id="cb42-10"><a></a>boot_null_med <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_test, {</span>
+<span id="cb42-11"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(x_shift_med, n1, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb42-12"><a></a>  <span class="fu">median</span>(<span class="fu">sample</span>(y_shift_med, n2, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb42-13"><a></a>})</span>
+<span id="cb42-14"><a></a></span>
+<span id="cb42-15"><a></a>p_boot_med <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(boot_null_med) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs_med))</span>
+<span id="cb42-16"><a></a></span>
+<span id="cb42-17"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Median difference: %.3f days</span><span class="sc">\n</span><span class="st">"</span>, t_obs_med))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Median difference: 3.158 days</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap test p (median):  %.4f</span><span class="sc">\n</span><span class="st">"</span>, p_boot_med))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap test p (median):  0.0203</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a></a><span class="fu">cat</span>(<span class="st">"(No standard parametric test for medians exists for this skewed setting)</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(No standard parametric test for medians exists for this skewed setting)</code></pre>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Practical Note</strong></p>
+</div>
+<div class="callout-content">
+<p>For testing mean differences specifically, the <strong>permutation test</strong> (next section) is often preferred over the shift-bootstrap — it is simpler, exact under exchangeability, and avoids the need to carefully define “imposing <span class="math inline">\(H_0\)</span>.” The bootstrap test shines for non-location statistics where permutation is not straightforwardly applicable.</p>
+</div>
+</div>
 </div>
 </div>
 </section></section>
@@ -529,15 +726,17 @@ Jessica Minnier
 <div class="callout-content">
 <table class="caption-top">
 <colgroup>
-<col style="width: 23%">
-<col style="width: 31%">
-<col style="width: 44%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
 </colgroup>
 <thead>
 <tr class="header">
 <th></th>
 <th>Bootstrap CI</th>
-<th>Permutation test</th>
+<th>Bootstrap Test</th>
+<th>Permutation Test</th>
 </tr>
 </thead>
 <tbody>
@@ -545,21 +744,31 @@ Jessica Minnier
 <td><strong>Purpose</strong></td>
 <td>Estimate variability</td>
 <td>Test <span class="math inline">\(H_0\)</span></td>
+<td>Test <span class="math inline">\(H_0\)</span></td>
 </tr>
 <tr class="even">
 <td><strong>Resamples from</strong></td>
 <td>Each group separately</td>
-<td>Pooled data (relabeling)</td>
+<td>Shifted samples</td>
+<td>Pooled (relabeling)</td>
 </tr>
 <tr class="odd">
 <td><strong>Approximates</strong></td>
-<td>Sampling distribution of <span class="math inline">\(\hat\theta\)</span></td>
-<td>Null distribution of <span class="math inline">\(T\)</span></td>
+<td>Sampling dist. of <span class="math inline">\(\hat\theta\)</span></td>
+<td>Null dist. of <span class="math inline">\(T\)</span></td>
+<td>Null dist. of <span class="math inline">\(T\)</span></td>
 </tr>
 <tr class="even">
-<td><span class="math inline">\(H_0\)</span> imposed?</td>
+<td><strong><span class="math inline">\(H_0\)</span> imposed?</strong></td>
 <td>No</td>
+<td>Yes (via shift)</td>
 <td>Yes (<span class="math inline">\(F_1 = F_2\)</span>)</td>
+</tr>
+<tr class="odd">
+<td><strong>Assumption</strong></td>
+<td>Independence</td>
+<td>Independence</td>
+<td><strong>Exchangeability</strong></td>
 </tr>
 </tbody>
 </table>
@@ -568,34 +777,145 @@ Jessica Minnier
 </div>
 </div>
 </section>
+<section id="when-is-the-permutation-test-valid" class="slide level2">
+<h2>When Is the Permutation Test Valid?</h2>
+<p>The permutation test is valid (exact Type I error control) when the observations are <strong>exchangeable</strong> under <span class="math inline">\(H_0\)</span>.</p>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Exchangeability: What It Means</strong></p>
+</div>
+<div class="callout-content">
+<p>Observations <span class="math inline">\(X_1, \ldots, X_{n_1}, Y_1, \ldots, Y_{n_2}\)</span> are <strong>exchangeable</strong> under <span class="math inline">\(H_0\)</span> if permuting group labels does not change the joint distribution. This holds when:</p>
+<p><span class="math display">\[H_0: F_1 = F_2 \quad \text{(identical distributions)}\]</span></p>
+<p>If <span class="math inline">\(H_0\)</span> is true, any relabeling of the pooled data is just as likely as any other — permuting is valid.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>When exchangeability holds:</strong></p>
+<ul>
+<li>Randomized experiments: treatment assigned at random, so under <span class="math inline">\(H_0\)</span> labels are arbitrary</li>
+<li>Observational data: valid if groups differ <strong>only</strong> in the parameter of interest (strong assumption)</li>
+<li>Testing <span class="math inline">\(H_0: F_1 = F_2\)</span> exactly (not just equal means)</li>
+</ul>
+<p><strong>When exchangeability fails (permutation test is invalid):</strong></p>
+<ul>
+<li>Groups differ in <strong>variance or shape</strong> but not in means: permuting is not valid for a test of means because <span class="math inline">\(F_1 \neq F_2\)</span> even under the mean-equality <span class="math inline">\(H_0\)</span></li>
+<li>Paired or clustered data: pairing creates dependence — don’t ignore the structure</li>
+<li>Confounding: if groups also differ on covariates, labels are not exchangeable</li>
+</ul>
+</div>
+</section>
+<section id="exchangeability-in-practice-what-hypothesis-are-we-testing" class="slide level2">
+<h2>Exchangeability in Practice: What Hypothesis Are We Testing?</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>A Subtle Point</strong></p>
+</div>
+<div class="callout-content">
+<p>The permutation test is an <strong>exact test</strong> of <span class="math inline">\(H_0: F_1 = F_2\)</span>. When used with the mean difference as the test statistic, it <strong>also</strong> has good power to detect <span class="math inline">\(\mu_1 \neq \mu_2\)</span>.</p>
+<p>However, if the groups differ in <strong>variance</strong> but not in mean, the permutation test (using the mean difference as the statistic) can have <strong>inflated Type I error</strong> because the null <span class="math inline">\(F_1 = F_2\)</span> includes equal variances. Rejecting <span class="math inline">\(H_0: F_1 = F_2\)</span> does not tell us <em>why</em> it was rejected.</p>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>If you care only about means: use the Welch <span class="math inline">\(t\)</span>-test (robust to unequal variances) or the bootstrap test (shift method)</li>
+<li>If you want a permutation test for means when variances may differ: use a standardized test statistic (Welch-type) but permute — this has approximately valid Type I error</li>
+<li>Reserve permutation tests for settings where <span class="math inline">\(F_1 = F_2\)</span> is a plausible and scientifically meaningful null</li>
+</ul>
+</div>
+</div>
+</div>
+</section>
+<section id="exchangeability-randomized-vs.-observational-studies" class="slide level2">
+<h2>Exchangeability: Randomized vs.&nbsp;Observational Studies</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a></a>scenarios <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb48-2"><a></a>  <span class="at">Setting =</span> <span class="fu">c</span>(</span>
+<span id="cb48-3"><a></a>    <span class="st">"RCT: treatment vs. placebo</span><span class="sc">\n</span><span class="st">(randomized assignment)"</span>,</span>
+<span id="cb48-4"><a></a>    <span class="st">"Observational: blunt vs.</span><span class="sc">\n</span><span class="st">penetrating trauma"</span>,</span>
+<span id="cb48-5"><a></a>    <span class="st">"Groups differ in variance</span><span class="sc">\n</span><span class="st">but not in mean"</span>,</span>
+<span id="cb48-6"><a></a>    <span class="st">"Paired data treated as</span><span class="sc">\n</span><span class="st">independent (wrong!)"</span></span>
+<span id="cb48-7"><a></a>  ),</span>
+<span id="cb48-8"><a></a>  <span class="at">Exchangeable =</span> <span class="fu">c</span>(<span class="st">"Yes"</span>, <span class="st">"Approximately"</span>, <span class="st">"No"</span>, <span class="st">"No"</span>),</span>
+<span id="cb48-9"><a></a>  <span class="st">`</span><span class="at">Permutation Valid?</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="st">"Yes (exact)"</span>, <span class="st">"Approximately"</span>, <span class="st">"No (inflated Type I)"</span>, <span class="st">"No (ignores structure)"</span>),</span>
+<span id="cb48-10"><a></a>  <span class="at">Recommendation =</span> <span class="fu">c</span>(</span>
+<span id="cb48-11"><a></a>    <span class="st">"Permutation valid"</span>,</span>
+<span id="cb48-12"><a></a>    <span class="st">"Permutation OK;</span><span class="sc">\n</span><span class="st">Welch t also reasonable"</span>,</span>
+<span id="cb48-13"><a></a>    <span class="st">"Bootstrap test or Welch t"</span>,</span>
+<span id="cb48-14"><a></a>    <span class="st">"Pair the data; use paired</span><span class="sc">\n</span><span class="st">bootstrap or paired t-test"</span></span>
+<span id="cb48-15"><a></a>  )</span>
+<span id="cb48-16"><a></a>)</span>
+<span id="cb48-17"><a></a></span>
+<span id="cb48-18"><a></a>scenarios <span class="sc">|&gt;</span></span>
+<span id="cb48-19"><a></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb48-20"><a></a>  <span class="fu">theme_void</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span></span>
+<span id="cb48-21"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.97</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="dv">6</span>,</span>
+<span id="cb48-22"><a></a>           <span class="at">label =</span> <span class="st">"Permutation Test: Validity by Setting"</span>) <span class="sc">+</span></span>
+<span id="cb48-23"><a></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> <span class="dv">0</span>, <span class="at">xmax =</span> <span class="dv">1</span>, <span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> <span class="fl">0.93</span>,</span>
+<span id="cb48-24"><a></a>           <span class="at">fill =</span> <span class="st">"grey97"</span>, <span class="at">color =</span> <span class="st">"grey60"</span>) <span class="sc">+</span></span>
+<span id="cb48-25"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">c</span>(<span class="fl">0.1</span>, <span class="fl">0.36</span>, <span class="fl">0.6</span>, <span class="fl">0.88</span>), <span class="at">y =</span> <span class="fl">0.90</span>,</span>
+<span id="cb48-26"><a></a>           <span class="at">label =</span> <span class="fu">c</span>(<span class="st">"Setting"</span>, <span class="st">"Exchangeable?"</span>, <span class="st">"Valid?"</span>, <span class="st">"Recommendation"</span>),</span>
+<span id="cb48-27"><a></a>           <span class="at">fontface =</span> <span class="st">"bold"</span>, <span class="at">size =</span> <span class="fl">4.8</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb48-28"><a></a>  {</span>
+<span id="cb48-29"><a></a>    ys <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.75</span>, <span class="fl">0.56</span>, <span class="fl">0.37</span>, <span class="fl">0.18</span>)</span>
+<span id="cb48-30"><a></a>    cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#27ae60"</span>, <span class="st">"#f39c12"</span>, <span class="st">"#e74c3c"</span>, <span class="st">"#e74c3c"</span>)</span>
+<span id="cb48-31"><a></a>    <span class="fu">pmap</span>(<span class="fu">list</span>(scenarios<span class="sc">$</span>Setting, scenarios<span class="sc">$</span>Exchangeable,</span>
+<span id="cb48-32"><a></a>              scenarios<span class="sc">$</span><span class="st">`</span><span class="at">Permutation Valid?</span><span class="st">`</span>, scenarios<span class="sc">$</span>Recommendation,</span>
+<span id="cb48-33"><a></a>              ys, cols), <span class="cf">function</span>(s, e, v, r, y, co) {</span>
+<span id="cb48-34"><a></a>      <span class="fu">list</span>(</span>
+<span id="cb48-35"><a></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.1</span>, <span class="at">y =</span> y, <span class="at">label =</span> s, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey20"</span>),</span>
+<span id="cb48-36"><a></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.36</span>, <span class="at">y =</span> y, <span class="at">label =</span> e, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> co, <span class="at">fontface =</span> <span class="st">"bold"</span>),</span>
+<span id="cb48-37"><a></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.60</span>, <span class="at">y =</span> y, <span class="at">label =</span> v, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> co),</span>
+<span id="cb48-38"><a></a>        <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.88</span>, <span class="at">y =</span> y, <span class="at">label =</span> r, <span class="at">size =</span> <span class="dv">4</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"grey30"</span>)</span>
+<span id="cb48-39"><a></a>      )</span>
+<span id="cb48-40"><a></a>    })</span>
+<span id="cb48-41"><a></a>  } <span class="sc">+</span></span>
+<span id="cb48-42"><a></a>  <span class="fu">xlim</span>(<span class="dv">0</span>, <span class="dv">1</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-9-1.png" width="1344" class="r-stretch"></section>
 <section id="permutation-test-implementation" class="slide level2">
 <h2>Permutation Test: Implementation</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb29-2"><a></a>B_perm  <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
-<span id="cb29-3"><a></a>all_los <span class="ot">&lt;-</span> <span class="fu">c</span>(los_blunt, los_penet)</span>
-<span id="cb29-4"><a></a>N       <span class="ot">&lt;-</span> <span class="fu">length</span>(all_los)</span>
-<span id="cb29-5"><a></a>t_obs   <span class="ot">&lt;-</span> <span class="fu">mean</span>(los_blunt) <span class="sc">-</span> <span class="fu">mean</span>(los_penet)</span>
-<span id="cb29-6"><a></a></span>
-<span id="cb29-7"><a></a>perm_diffs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_perm, {</span>
-<span id="cb29-8"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
-<span id="cb29-9"><a></a>  <span class="fu">mean</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">-</span> <span class="fu">mean</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
-<span id="cb29-10"><a></a>})</span>
-<span id="cb29-11"><a></a></span>
-<span id="cb29-12"><a></a>p_perm  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm_diffs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs))</span>
-<span id="cb29-13"><a></a>p_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(los_blunt, los_penet)<span class="sc">$</span>p.value</span>
-<span id="cb29-14"><a></a></span>
-<span id="cb29-15"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed mean difference:   %.3f days</span><span class="sc">\n</span><span class="st">"</span>, t_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb49-2"><a></a>B_perm  <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
+<span id="cb49-3"><a></a>all_los <span class="ot">&lt;-</span> <span class="fu">c</span>(los_blunt, los_penet)</span>
+<span id="cb49-4"><a></a>N       <span class="ot">&lt;-</span> <span class="fu">length</span>(all_los)</span>
+<span id="cb49-5"><a></a>t_obs   <span class="ot">&lt;-</span> <span class="fu">mean</span>(los_blunt) <span class="sc">-</span> <span class="fu">mean</span>(los_penet)</span>
+<span id="cb49-6"><a></a></span>
+<span id="cb49-7"><a></a>perm_diffs <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_perm, {</span>
+<span id="cb49-8"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
+<span id="cb49-9"><a></a>  <span class="fu">mean</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">-</span> <span class="fu">mean</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
+<span id="cb49-10"><a></a>})</span>
+<span id="cb49-11"><a></a></span>
+<span id="cb49-12"><a></a>p_perm  <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm_diffs) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs))</span>
+<span id="cb49-13"><a></a>p_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(los_blunt, los_penet)<span class="sc">$</span>p.value</span>
+<span id="cb49-14"><a></a></span>
+<span id="cb49-15"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed mean difference:   %.3f days</span><span class="sc">\n</span><span class="st">"</span>, t_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Observed mean difference:   1.070 days</code></pre>
+<pre><code>Observed mean difference:   2.235 days</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Permutation p-value:        %.4f</span><span class="sc">\n</span><span class="st">"</span>,      p_perm))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Permutation p-value:        %.4f</span><span class="sc">\n</span><span class="st">"</span>,      p_perm))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Permutation p-value:        0.4551</code></pre>
+<pre><code>Permutation p-value:        0.0702</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t-test p-value:       %.4f</span><span class="sc">\n</span><span class="st">"</span>,      p_welch))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t-test p-value:       %.4f</span><span class="sc">\n</span><span class="st">"</span>,      p_welch))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Welch t-test p-value:       0.4749</code></pre>
+<pre><code>Welch t-test p-value:       0.0688</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap test p-value:     %.4f</span><span class="sc">\n</span><span class="st">"</span>,      p_boot))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap test p-value:     0.0606</code></pre>
 </div>
 </div>
 </section>
@@ -604,60 +924,60 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a></a><span class="fu">tibble</span>(<span class="at">perm_diff =</span> perm_diffs) <span class="sc">|&gt;</span></span>
-<span id="cb35-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> perm_diff)) <span class="sc">+</span></span>
-<span id="cb35-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
-<span id="cb35-4"><a></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
-<span id="cb35-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
-<span id="cb35-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(t_obs), <span class="fu">abs</span>(t_obs)),</span>
-<span id="cb35-7"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
-<span id="cb35-8"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">abs</span>(t_obs) <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">0.65</span>,</span>
-<span id="cb35-9"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="st">"|"</span> <span class="sc">*</span> T[obs] <span class="sc">*</span> <span class="st">"| ="</span> <span class="sc">~</span> .(<span class="fu">round</span>(<span class="fu">abs</span>(t_obs), <span class="dv">2</span>))),</span>
-<span id="cb35-10"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
-<span id="cb35-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="fl">0.72</span>,</span>
-<span id="cb35-12"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p = %.4f"</span>, p_perm),</span>
-<span id="cb35-13"><a></a>           <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
-<span id="cb35-14"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb35-15"><a></a>    <span class="at">title    =</span> <span class="st">"Permutation Null Distribution: Difference in Mean LOS"</span>,</span>
-<span id="cb35-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Red lines mark \u00b1|T_obs|. Fraction of permuted statistics beyond = p-value."</span>,</span>
-<span id="cb35-17"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[<span class="dv">1</span>]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(x)[<span class="dv">2</span>]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(days)"</span>),</span>
-<span id="cb35-18"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
-<span id="cb35-19"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a></a><span class="fu">tibble</span>(<span class="at">perm_diff =</span> perm_diffs) <span class="sc">|&gt;</span></span>
+<span id="cb57-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> perm_diff)) <span class="sc">+</span></span>
+<span id="cb57-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
+<span id="cb57-4"><a></a>                 <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.65</span>) <span class="sc">+</span></span>
+<span id="cb57-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb57-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fu">abs</span>(t_obs), <span class="fu">abs</span>(t_obs)),</span>
+<span id="cb57-7"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb57-8"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">abs</span>(t_obs) <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="fl">0.65</span>,</span>
+<span id="cb57-9"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="st">"|"</span> <span class="sc">*</span> T[obs] <span class="sc">*</span> <span class="st">"| ="</span> <span class="sc">~</span> .(<span class="fu">round</span>(<span class="fu">abs</span>(t_obs), <span class="dv">2</span>))),</span>
+<span id="cb57-10"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb57-11"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">0</span>, <span class="at">y =</span> <span class="fl">0.72</span>,</span>
+<span id="cb57-12"><a></a>           <span class="at">label =</span> <span class="fu">sprintf</span>(<span class="st">"p = %.4f"</span>, p_perm),</span>
+<span id="cb57-13"><a></a>           <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb57-14"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb57-15"><a></a>    <span class="at">title    =</span> <span class="st">"Permutation Null Distribution: Difference in Mean LOS"</span>,</span>
+<span id="cb57-16"><a></a>    <span class="at">subtitle =</span> <span class="st">"Red lines mark \u00b1|T_obs|. Fraction of permuted statistics beyond red = p-value."</span>,</span>
+<span id="cb57-17"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[<span class="dv">1</span>]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(x)[<span class="dv">2</span>]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(days)"</span>),</span>
+<span id="cb57-18"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
+<span id="cb57-19"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
-<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-7-1.png" width="1248" class="r-stretch"></section>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-11-1.png" width="1248" class="r-stretch"></section>
 <section id="permutation-tests-work-with-any-statistic" class="slide level2">
 <h2>Permutation Tests Work with Any Statistic</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb36-2"><a></a></span>
-<span id="cb36-3"><a></a><span class="co"># Permutation test for difference in MEDIANS</span></span>
-<span id="cb36-4"><a></a>t_obs_med <span class="ot">&lt;-</span> <span class="fu">median</span>(los_blunt) <span class="sc">-</span> <span class="fu">median</span>(los_penet)</span>
-<span id="cb36-5"><a></a>perm_med  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">9999</span>, {</span>
-<span id="cb36-6"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
-<span id="cb36-7"><a></a>  <span class="fu">median</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">-</span> <span class="fu">median</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
-<span id="cb36-8"><a></a>})</span>
-<span id="cb36-9"><a></a>p_perm_med <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm_med) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs_med))</span>
-<span id="cb36-10"><a></a></span>
-<span id="cb36-11"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Median difference: %.3f   permutation p = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb36-12"><a></a>            t_obs_med, p_perm_med))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb58-2"><a></a></span>
+<span id="cb58-3"><a></a><span class="co"># Permutation test for difference in MEDIANS</span></span>
+<span id="cb58-4"><a></a>t_obs_med <span class="ot">&lt;-</span> <span class="fu">median</span>(los_blunt) <span class="sc">-</span> <span class="fu">median</span>(los_penet)</span>
+<span id="cb58-5"><a></a>perm_med  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">9999</span>, {</span>
+<span id="cb58-6"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
+<span id="cb58-7"><a></a>  <span class="fu">median</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">-</span> <span class="fu">median</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
+<span id="cb58-8"><a></a>})</span>
+<span id="cb58-9"><a></a>p_perm_med <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm_med) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t_obs_med))</span>
+<span id="cb58-10"><a></a></span>
+<span id="cb58-11"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Median difference: %.3f   permutation p = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb58-12"><a></a>            t_obs_med, p_perm_med))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Median difference: 2.003   permutation p = 0.2916</code></pre>
+<pre><code>Median difference: 3.158   permutation p = 0.0184</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a></a><span class="co"># Permutation test for VARIANCE RATIO (vs F-test)</span></span>
-<span id="cb38-2"><a></a>t_obs_var <span class="ot">&lt;-</span> <span class="fu">var</span>(los_blunt) <span class="sc">/</span> <span class="fu">var</span>(los_penet)</span>
-<span id="cb38-3"><a></a>perm_var  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">9999</span>, {</span>
-<span id="cb38-4"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
-<span id="cb38-5"><a></a>  <span class="fu">var</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">/</span> <span class="fu">var</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
-<span id="cb38-6"><a></a>})</span>
-<span id="cb38-7"><a></a>p_perm_var <span class="ot">&lt;-</span> <span class="fu">mean</span>(perm_var <span class="sc">&gt;=</span> t_obs_var <span class="sc">|</span> perm_var <span class="sc">&lt;=</span> <span class="dv">1</span> <span class="sc">/</span> t_obs_var)</span>
-<span id="cb38-8"><a></a>p_ftest    <span class="ot">&lt;-</span> <span class="fu">var.test</span>(los_blunt, los_penet)<span class="sc">$</span>p.value</span>
-<span id="cb38-9"><a></a></span>
-<span id="cb38-10"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Variance ratio:    %.3f   permutation p = %.4f   F-test p = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb38-11"><a></a>            t_obs_var, p_perm_var, p_ftest))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a></a><span class="co"># Permutation test for VARIANCE RATIO (vs F-test)</span></span>
+<span id="cb60-2"><a></a>t_obs_var <span class="ot">&lt;-</span> <span class="fu">var</span>(los_blunt) <span class="sc">/</span> <span class="fu">var</span>(los_penet)</span>
+<span id="cb60-3"><a></a>perm_var  <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">9999</span>, {</span>
+<span id="cb60-4"><a></a>  idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(N)</span>
+<span id="cb60-5"><a></a>  <span class="fu">var</span>(all_los[idx[<span class="fu">seq_len</span>(n1)]]) <span class="sc">/</span> <span class="fu">var</span>(all_los[idx[(n1 <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>N]])</span>
+<span id="cb60-6"><a></a>})</span>
+<span id="cb60-7"><a></a>p_perm_var <span class="ot">&lt;-</span> <span class="fu">mean</span>(perm_var <span class="sc">&gt;=</span> t_obs_var <span class="sc">|</span> perm_var <span class="sc">&lt;=</span> <span class="dv">1</span> <span class="sc">/</span> t_obs_var)</span>
+<span id="cb60-8"><a></a>p_ftest    <span class="ot">&lt;-</span> <span class="fu">var.test</span>(los_blunt, los_penet)<span class="sc">$</span>p.value</span>
+<span id="cb60-9"><a></a></span>
+<span id="cb60-10"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Variance ratio:    %.3f   permutation p = %.4f   F-test p = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb60-11"><a></a>            t_obs_var, p_perm_var, p_ftest))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Variance ratio:    0.605   permutation p = 1.0000   F-test p = 0.1426</code></pre>
+<pre><code>Variance ratio:    0.998   permutation p = 1.0000   F-test p = 0.9827</code></pre>
 </div>
 </div>
 <div class="fragment">
@@ -669,9 +989,57 @@ Jessica Minnier
 <h1>Bootstrap for Paired Data</h1>
 
 </section>
+<section id="paired-data-setup-and-the-crossover-trial-example" class="slide level2">
+<h2>Paired Data: Setup and the Crossover Trial Example</h2>
+<p><strong>Paired data</strong> arises when each subject provides two measurements:</p>
+<ul>
+<li>Crossover trials: same patient receives both treatments (in random order)</li>
+<li>Before-after studies: same patient measured at two time points</li>
+<li>Matched cohort studies: pairs matched on confounders</li>
+</ul>
+<p>The natural estimand is <span class="math inline">\(\mu_D = E[D_i]\)</span> where <span class="math inline">\(D_i = X_{i,\text{post}} - X_{i,\text{pre}}\)</span> (or Treatment <span class="math inline">\(-\)</span> Control).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a></a><span class="co"># True mean difference = -3 mmHg; SD of differences ≈ 10.5; n = 25</span></span>
+<span id="cb62-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb62-3"><a></a>n_pair <span class="ot">&lt;-</span> <span class="dv">25</span>; rho_p <span class="ot">&lt;-</span> <span class="fl">0.45</span></span>
+<span id="cb62-4"><a></a>L_p    <span class="ot">&lt;-</span> <span class="fu">chol</span>(<span class="dv">5</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, rho_p, rho_p, <span class="dv">1</span>), <span class="dv">2</span>))</span>
+<span id="cb62-5"><a></a>xy_p   <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n_pair), n_pair, <span class="dv">2</span>) <span class="sc">%*%</span> L_p <span class="sc">+</span></span>
+<span id="cb62-6"><a></a>          <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">3</span>), n_pair, <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb62-7"><a></a></span>
+<span id="cb62-8"><a></a>bp_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb62-9"><a></a>  <span class="at">patient   =</span> <span class="dv">1</span><span class="sc">:</span>n_pair,</span>
+<span id="cb62-10"><a></a>  <span class="at">placebo   =</span> xy_p[, <span class="dv">1</span>],</span>
+<span id="cb62-11"><a></a>  <span class="at">drug_A    =</span> xy_p[, <span class="dv">2</span>],</span>
+<span id="cb62-12"><a></a>  <span class="at">diff      =</span> drug_A <span class="sc">-</span> placebo   <span class="co"># D_i = Drug - Placebo</span></span>
+<span id="cb62-13"><a></a>)</span>
+<span id="cb62-14"><a></a></span>
+<span id="cb62-15"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Mean difference (Drug - Placebo): %.2f mmHg</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(bp_data<span class="sc">$</span>diff)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean difference (Drug - Placebo): -2.92 mmHg</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SD of differences:                %.2f mmHg</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(bp_data<span class="sc">$</span>diff)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SD of differences:                6.27 mmHg</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Paired t-test p-value:            %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb66-2"><a></a>            <span class="fu">t.test</span>(bp_data<span class="sc">$</span>drug_A, bp_data<span class="sc">$</span>placebo, <span class="at">paired =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Paired t-test p-value:            0.0286</code></pre>
+</div>
+</div>
+</section>
 <section id="paired-bootstrap-ci" class="slide level2 scrollable">
 <h2>Paired Bootstrap CI</h2>
-<p>For paired data, the bootstrap resamples <strong>entire pairs</strong> <span class="math inline">\((D_i)\)</span> with replacement which preserves the pairing structure.</p>
+<p>For paired data, the bootstrap resamples <strong>entire pairs</strong> <span class="math inline">\((D_i)\)</span> with replacement, which preserves the pairing structure.</p>
 <p><strong>Algorithm:</strong> for <span class="math inline">\(b = 1, \ldots, B\)</span>:</p>
 <ol type="1">
 <li>Draw <span class="math inline">\(D_1^{*b}, \ldots, D_n^{*b}\)</span> <strong>with replacement</strong> from <span class="math inline">\(\{D_1, \ldots, D_n\}\)</span></li>
@@ -680,31 +1048,565 @@ Jessica Minnier
 <p><strong>Percentile CI:</strong> <span class="math inline">\(\bigl(\bar{D}^*_{(\alpha/2)},\; \bar{D}^*_{(1-\alpha/2)}\bigr)\)</span></p>
 <p>No normality assumption on <span class="math inline">\(D_i\)</span>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a></a><span class="co"># Crossover trial differences from Lesson 19</span></span>
-<span id="cb40-2"><a></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb40-3"><a></a>n_pair <span class="ot">&lt;-</span> <span class="dv">20</span>; rho_p <span class="ot">&lt;-</span> <span class="fl">0.75</span></span>
-<span id="cb40-4"><a></a>L_p    <span class="ot">&lt;-</span> <span class="fu">chol</span>(<span class="dv">10</span><span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">1</span>, rho_p, rho_p, <span class="dv">1</span>), <span class="dv">2</span>))</span>
-<span id="cb40-5"><a></a>xy_p   <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(<span class="dv">2</span> <span class="sc">*</span> n_pair), n_pair, <span class="dv">2</span>) <span class="sc">%*%</span> L_p <span class="sc">+</span></span>
-<span id="cb40-6"><a></a>          <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">0</span>, <span class="sc">-</span><span class="dv">10</span>), n_pair, <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb40-7"><a></a>d_cross <span class="ot">&lt;-</span> xy_p[, <span class="dv">2</span>] <span class="sc">-</span> xy_p[, <span class="dv">1</span>]</span>
-<span id="cb40-8"><a></a></span>
-<span id="cb40-9"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb40-10"><a></a>boot_D         <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, <span class="fu">mean</span>(<span class="fu">sample</span>(d_cross, n_pair, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
-<span id="cb40-11"><a></a>ci_boot_paired <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_D, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
-<span id="cb40-12"><a></a>ci_t_paired    <span class="ot">&lt;-</span> <span class="fu">t.test</span>(d_cross)<span class="sc">$</span>conf.int</span>
-<span id="cb40-13"><a></a></span>
-<span id="cb40-14"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Paired t-test 95%% CI:  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb40-15"><a></a>            ci_t_paired[<span class="dv">1</span>], ci_t_paired[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a></a>d_cross <span class="ot">&lt;-</span> bp_data<span class="sc">$</span>diff</span>
+<span id="cb68-2"><a></a></span>
+<span id="cb68-3"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb68-4"><a></a>boot_D         <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, <span class="fu">mean</span>(<span class="fu">sample</span>(d_cross, n_pair, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb68-5"><a></a>ci_boot_paired <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_D, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb68-6"><a></a>ci_t_paired    <span class="ot">&lt;-</span> <span class="fu">t.test</span>(d_cross)<span class="sc">$</span>conf.int</span>
+<span id="cb68-7"><a></a></span>
+<span id="cb68-8"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed mean difference:    %.3f mmHg</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(d_cross)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Paired t-test 95% CI:  (-15.362, -9.182)</code></pre>
+<pre><code>Observed mean difference:    -2.921 mmHg</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap    95%% CI:  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb42-2"><a></a>            ci_boot_paired[<span class="dv">1</span>], ci_boot_paired[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE:                %.3f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">sd</span>(boot_D)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Bootstrap    95% CI:  (-15.012, -9.408)</code></pre>
+<pre><code>Bootstrap SE:                1.207</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Paired t-test  95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb72-2"><a></a>            ci_t_paired[<span class="dv">1</span>], ci_t_paired[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Paired t-test  95% CI: (-5.508, -0.333)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap      95%% CI: (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb74-2"><a></a>            ci_boot_paired[<span class="dv">1</span>], ci_boot_paired[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap      95% CI: (-5.260, -0.555)</code></pre>
 </div>
 </div>
 <p>With approximately normal differences and moderate <span class="math inline">\(n\)</span>, the two CIs are very similar. The bootstrap shines when <span class="math inline">\(D_i\)</span> are clearly non-normal or <span class="math inline">\(n\)</span> is very small.</p>
+</section>
+<section id="visualizing-the-paired-bootstrap-distribution" class="slide level2">
+<h2>Visualizing the Paired Bootstrap Distribution</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a></a>p_ci <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">boot_mean_D =</span> boot_D) <span class="sc">|&gt;</span></span>
+<span id="cb76-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> boot_mean_D)) <span class="sc">+</span></span>
+<span id="cb76-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">50</span>,</span>
+<span id="cb76-4"><a></a>                 <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb76-5"><a></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb76-6"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(d_cross), <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb76-7"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_boot_paired, <span class="at">color =</span> <span class="st">"#006a4e"</span>,</span>
+<span id="cb76-8"><a></a>             <span class="at">linewidth =</span> <span class="fl">1.3</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb76-9"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ci_t_paired, <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb76-10"><a></a>             <span class="at">linewidth =</span> <span class="fl">1.0</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb76-11"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb76-12"><a></a>    <span class="at">title    =</span> <span class="st">"Paired Bootstrap Distribution: Mean BP Reduction"</span>,</span>
+<span id="cb76-13"><a></a>    <span class="at">subtitle =</span> <span class="st">"Green dashed = bootstrap percentile CI</span><span class="sc">\n</span><span class="st">Red dotted = paired t CI"</span>,</span>
+<span id="cb76-14"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(D)<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(mmHg)"</span>),</span>
+<span id="cb76-15"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
+<span id="cb76-16"><a></a>  )</span>
+<span id="cb76-17"><a></a></span>
+<span id="cb76-18"><a></a>p_pairs <span class="ot">&lt;-</span> bp_data <span class="sc">|&gt;</span></span>
+<span id="cb76-19"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(placebo, drug_A), <span class="at">names_to =</span> <span class="st">"Treatment"</span>, <span class="at">values_to =</span> <span class="st">"BP_reduction"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb76-20"><a></a>  <span class="fu">mutate</span>(<span class="at">Treatment =</span> <span class="fu">factor</span>(Treatment, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"placebo"</span>, <span class="st">"drug_A"</span>),</span>
+<span id="cb76-21"><a></a>                            <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"Placebo"</span>, <span class="st">"Drug A"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb76-22"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Treatment, <span class="at">y =</span> BP_reduction, <span class="at">group =</span> patient)) <span class="sc">+</span></span>
+<span id="cb76-23"><a></a>  <span class="fu">geom_line</span>(<span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"grey50"</span>) <span class="sc">+</span></span>
+<span id="cb76-24"><a></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Treatment), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb76-25"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Placebo"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"Drug A"</span> <span class="ot">=</span> <span class="st">"#27ae60"</span>)) <span class="sc">+</span></span>
+<span id="cb76-26"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Crossover Trial: BP Reduction per Patient"</span>,</span>
+<span id="cb76-27"><a></a>       <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"BP Reduction (mmHg)"</span>) <span class="sc">+</span></span>
+<span id="cb76-28"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb76-29"><a></a></span>
+<span id="cb76-30"><a></a>p_pairs <span class="sc">+</span> p_ci</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-15-1.png" width="1440" class="r-stretch"></section>
+<section id="paired-bootstrap-test" class="slide level2 scrollable">
+<h2>Paired Bootstrap Test</h2>
+<p>To <strong>test</strong> <span class="math inline">\(H_0: \mu_D = 0\)</span>, we must shift the differences to satisfy <span class="math inline">\(H_0\)</span>:</p>
+<p><span class="math display">\[\tilde{D}_i = D_i - \bar{D}\]</span></p>
+<p>Now <span class="math inline">\(\{\tilde{D}_i\}\)</span> have mean exactly 0 — <span class="math inline">\(H_0\)</span> is imposed. We then resample from the shifted differences.</p>
+<p><strong>Algorithm:</strong> for <span class="math inline">\(b = 1, \ldots, B\)</span>:</p>
+<ol type="1">
+<li>Draw <span class="math inline">\(\tilde{D}_1^{*b}, \ldots, \tilde{D}_n^{*b}\)</span> with replacement from <span class="math inline">\(\{\tilde{D}_i\}\)</span></li>
+<li>Compute <span class="math inline">\(T^{*b} = \bar{\tilde{D}}^{*b}\)</span></li>
+</ol>
+<p><strong>p-value:</strong> <span class="math inline">\(\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}\bigl(|T^{*b}| \geq |\bar{D}_\text{obs}|\bigr)\)</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb77-2"><a></a>B_paired <span class="ot">&lt;-</span> <span class="dv">9999</span></span>
+<span id="cb77-3"><a></a>D_obs    <span class="ot">&lt;-</span> <span class="fu">mean</span>(d_cross)</span>
+<span id="cb77-4"><a></a></span>
+<span id="cb77-5"><a></a><span class="co"># Shift differences to mean 0 (imposing H0)</span></span>
+<span id="cb77-6"><a></a>d_shifted <span class="ot">&lt;-</span> d_cross <span class="sc">-</span> <span class="fu">mean</span>(d_cross)</span>
+<span id="cb77-7"><a></a></span>
+<span id="cb77-8"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Before shifting: mean(D) = %.4f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(d_cross)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Before shifting: mean(D) = -2.9206</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"After  shifting: mean(D_shift) = %.6f</span><span class="sc">\n</span><span class="st">"</span>, <span class="fu">mean</span>(d_shifted)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>After  shifting: mean(D_shift) = 0.000000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a></a><span class="co"># Resample from shifted differences</span></span>
+<span id="cb81-2"><a></a>boot_null_D <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_paired,</span>
+<span id="cb81-3"><a></a>                         <span class="fu">mean</span>(<span class="fu">sample</span>(d_shifted, n_pair, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb81-4"><a></a></span>
+<span id="cb81-5"><a></a>p_boot_paired <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(boot_null_D) <span class="sc">&gt;=</span> <span class="fu">abs</span>(D_obs))</span>
+<span id="cb81-6"><a></a>p_t_paired    <span class="ot">&lt;-</span> <span class="fu">t.test</span>(d_cross)<span class="sc">$</span>p.value</span>
+<span id="cb81-7"><a></a></span>
+<span id="cb81-8"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">Observed mean difference:       %.3f mmHg</span><span class="sc">\n</span><span class="st">"</span>, D_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Observed mean difference:       -2.921 mmHg</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap test p-value:         %.4f</span><span class="sc">\n</span><span class="st">"</span>,       p_boot_paired))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap test p-value:         0.0154</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Paired t-test p-value:          %.4f</span><span class="sc">\n</span><span class="st">"</span>,       p_t_paired))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Paired t-test p-value:          0.0286</code></pre>
+</div>
+</div>
+</section>
+<section id="paired-bootstrap-null-vs.-sampling-distribution" class="slide level2">
+<h2>Paired Bootstrap Null vs.&nbsp;Sampling Distribution</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a></a><span class="fu">tibble</span>(</span>
+<span id="cb87-2"><a></a>  <span class="at">value =</span> <span class="fu">c</span>(boot_null_D, boot_D),</span>
+<span id="cb87-3"><a></a>  <span class="at">type  =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Null distribution (shifted, for testing)"</span>,</span>
+<span id="cb87-4"><a></a>                <span class="st">"Sampling distribution (for CI)"</span>),</span>
+<span id="cb87-5"><a></a>              <span class="at">times =</span> <span class="fu">c</span>(<span class="fu">length</span>(boot_null_D), <span class="fu">length</span>(boot_D)))</span>
+<span id="cb87-6"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb87-7"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> value, <span class="at">fill =</span> type)) <span class="sc">+</span></span>
+<span id="cb87-8"><a></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">60</span>,</span>
+<span id="cb87-9"><a></a>                 <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb87-10"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> D_obs, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb87-11"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span><span class="fu">abs</span>(D_obs), <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb87-12"><a></a>             <span class="at">linewidth =</span> <span class="fl">1.5</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb87-13"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb87-14"><a></a>    <span class="st">"Null distribution (shifted, for testing)"</span>  <span class="ot">=</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb87-15"><a></a>    <span class="st">"Sampling distribution (for CI)"</span>            <span class="ot">=</span> <span class="st">"#27ae60"</span></span>
+<span id="cb87-16"><a></a>  )) <span class="sc">+</span></span>
+<span id="cb87-17"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> D_obs <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="fl">0.28</span>,</span>
+<span id="cb87-18"><a></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">bar</span>(D)[obs] <span class="sc">==</span> .(<span class="fu">round</span>(D_obs, <span class="dv">2</span>))),</span>
+<span id="cb87-19"><a></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb87-20"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb87-21"><a></a>    <span class="at">title    =</span> <span class="st">"Paired Bootstrap: Null Distribution vs. Sampling Distribution"</span>,</span>
+<span id="cb87-22"><a></a>    <span class="at">subtitle =</span> <span class="st">"Red = shifted to H0 (for p-value)  |  Green = resampled as-is (for CI)"</span>,</span>
+<span id="cb87-23"><a></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(D)<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span> <span class="st">"(mmHg)"</span>),</span>
+<span id="cb87-24"><a></a>    <span class="at">y        =</span> <span class="st">"Density"</span>,</span>
+<span id="cb87-25"><a></a>    <span class="at">fill     =</span> <span class="cn">NULL</span></span>
+<span id="cb87-26"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb87-27"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-17-1.png" width="1344" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Note</strong></p>
+</div>
+<div class="callout-content">
+<p>The null distribution (red) is centered at <span class="math inline">\(0\)</span> — it was shifted to impose <span class="math inline">\(H_0: \mu_D = 0\)</span>. The sampling distribution (green) is centered at <span class="math inline">\(\bar{D}_\text{obs}\)</span> and is used for the CI, not the test. Because the true effect is modest (~<span class="math inline">\(-3\)</span> mmHg with substantial within-subject variability), the two distributions overlap considerably, mirroring the borderline p-value.</p>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="the-infer-package" class="title-slide slide level1 center" data-background-color="#1a5276">
+<h1>The <code>infer</code> Package</h1>
+
+</section>
+<section id="the-infer-package-tidy-resampling-inference" class="slide level2">
+<h2>The <code>infer</code> Package: Tidy Resampling Inference</h2>
+<p>The <code>infer</code> package (part of the <code>tidymodels</code> ecosystem) provides a <strong>unified, pipe-friendly framework</strong> for hypothesis testing and interval estimation via simulation.</p>
+<p>The workflow follows four consistent verbs:</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Step</th>
+<th>Verb</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td><code>specify()</code></td>
+<td>Declare the response (and optional explanatory) variable</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td><code>hypothesize()</code></td>
+<td>State the null hypothesis (for tests only)</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td><code>generate()</code></td>
+<td>Generate bootstrap samples or permutations</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td><code>calculate()</code></td>
+<td>Compute the statistic of interest</td>
+</tr>
+</tbody>
+</table>
+<p>Then use <code>get_p_value()</code>, <code>get_confidence_interval()</code>, or <code>visualize()</code> to summarize.</p>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Why Use <code>infer</code>?</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li>Consistent syntax across one-sample, two-sample, and paired settings</li>
+<li>Integrates naturally with <code>dplyr</code> pipelines and tidy data</li>
+<li>Makes the conceptual steps explicit: specify → hypothesize → generate → calculate</li>
+<li>Excellent for teaching and reproducible research workflows</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="setting-up-the-data-for-infer" class="slide level2">
+<h2>Setting Up the Data for <code>infer</code></h2>
+<p>The <code>infer</code> package requires <strong>tidy (long) data</strong> — one row per observation.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a></a><span class="co"># Two-sample LOS data in tidy format</span></span>
+<span id="cb88-2"><a></a>los_tidy <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb88-3"><a></a>  <span class="at">LOS   =</span> <span class="fu">c</span>(los_blunt, los_penet),</span>
+<span id="cb88-4"><a></a>  <span class="at">Group =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Blunt"</span>, <span class="st">"Penetrating"</span>),</span>
+<span id="cb88-5"><a></a>              <span class="fu">c</span>(<span class="fu">length</span>(los_blunt), <span class="fu">length</span>(los_penet)))</span>
+<span id="cb88-6"><a></a>)</span>
+<span id="cb88-7"><a></a></span>
+<span id="cb88-8"><a></a>los_tidy <span class="sc">|&gt;</span> <span class="fu">slice_sample</span>(<span class="at">n =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+    LOS Group      
+  &lt;dbl&gt; &lt;chr&gt;      
+1 12.3  Blunt      
+2  5.03 Blunt      
+3  2.09 Penetrating
+4  8.52 Blunt      
+5  2.63 Penetrating
+6  2.87 Blunt      </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a></a><span class="co"># Paired blood pressure data in tidy format</span></span>
+<span id="cb90-2"><a></a>bp_tidy <span class="ot">&lt;-</span> bp_data <span class="sc">|&gt;</span></span>
+<span id="cb90-3"><a></a>  <span class="fu">select</span>(patient, diff)   <span class="co"># use the already-computed differences</span></span>
+<span id="cb90-4"><a></a></span>
+<span id="cb90-5"><a></a>bp_tidy <span class="sc">|&gt;</span> <span class="fu">slice_head</span>(<span class="at">n =</span> <span class="dv">6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  patient   diff
+    &lt;int&gt;  &lt;dbl&gt;
+1       1 -8.96 
+2       2 -7.12 
+3       3 -9.53 
+4       4  5.72 
+5       5 -0.314
+6       6  5.99 </code></pre>
+</div>
+</div>
+</section>
+<section id="two-sample-permutation-test-with-infer" class="slide level2">
+<h2>Two-Sample Permutation Test with <code>infer</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb92-2"><a></a></span>
+<span id="cb92-3"><a></a><span class="co"># Step 1-2: Specify and hypothesize</span></span>
+<span id="cb92-4"><a></a><span class="co"># Step 3: Generate permutation null distribution</span></span>
+<span id="cb92-5"><a></a>null_dist_perm <span class="ot">&lt;-</span> los_tidy <span class="sc">|&gt;</span></span>
+<span id="cb92-6"><a></a>  <span class="fu">specify</span>(LOS <span class="sc">~</span> Group) <span class="sc">|&gt;</span></span>
+<span id="cb92-7"><a></a>  <span class="fu">hypothesize</span>(<span class="at">null =</span> <span class="st">"independence"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb92-8"><a></a>  <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">9999</span>, <span class="at">type =</span> <span class="st">"permute"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb92-9"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in means"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"Blunt"</span>, <span class="st">"Penetrating"</span>))</span>
+<span id="cb92-10"><a></a></span>
+<span id="cb92-11"><a></a><span class="co"># Observed statistic</span></span>
+<span id="cb92-12"><a></a>obs_stat <span class="ot">&lt;-</span> los_tidy <span class="sc">|&gt;</span></span>
+<span id="cb92-13"><a></a>  <span class="fu">specify</span>(LOS <span class="sc">~</span> Group) <span class="sc">|&gt;</span></span>
+<span id="cb92-14"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in means"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"Blunt"</span>, <span class="st">"Penetrating"</span>))</span>
+<span id="cb92-15"><a></a></span>
+<span id="cb92-16"><a></a>obs_stat</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Response: LOS (numeric)
+Explanatory: Group (factor)
+# A tibble: 1 × 1
+   stat
+  &lt;dbl&gt;
+1  2.23</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a></a><span class="co"># p-value</span></span>
+<span id="cb94-2"><a></a>pval_perm <span class="ot">&lt;-</span> <span class="fu">get_p_value</span>(null_dist_perm, obs_stat, <span class="at">direction =</span> <span class="st">"two-sided"</span>)</span>
+<span id="cb94-3"><a></a>pval_perm</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  p_value
+    &lt;dbl&gt;
+1  0.0636</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-infer-permutation-distribution" class="slide level2">
+<h2>Visualizing the <code>infer</code> Permutation Distribution</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a></a><span class="fu">visualize</span>(null_dist_perm) <span class="sc">+</span></span>
+<span id="cb96-2"><a></a>  <span class="fu">shade_p_value</span>(obs_stat, <span class="at">direction =</span> <span class="st">"two-sided"</span>) <span class="sc">+</span></span>
+<span id="cb96-3"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb96-4"><a></a>    <span class="at">title    =</span> <span class="st">"Permutation Null Distribution (via infer)"</span>,</span>
+<span id="cb96-5"><a></a>    <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"p-value = %.4f  |  Observed difference = %.3f days"</span>,</span>
+<span id="cb96-6"><a></a>                       pval_perm<span class="sc">$</span>p_value, obs_stat<span class="sc">$</span>stat),</span>
+<span id="cb96-7"><a></a>    <span class="at">x        =</span> <span class="st">"Difference in Mean LOS (Blunt - Penetrating, days)"</span>,</span>
+<span id="cb96-8"><a></a>    <span class="at">y        =</span> <span class="st">"Count"</span></span>
+<span id="cb96-9"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-20-1.png" width="1152" class="r-stretch"></section>
+<section id="two-sample-bootstrap-ci-with-infer" class="slide level2">
+<h2>Two-Sample Bootstrap CI with <code>infer</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb97-2"><a></a></span>
+<span id="cb97-3"><a></a><span class="co"># Bootstrap sampling distribution (no hypothesize step)</span></span>
+<span id="cb97-4"><a></a>boot_dist_ci <span class="ot">&lt;-</span> los_tidy <span class="sc">|&gt;</span></span>
+<span id="cb97-5"><a></a>  <span class="fu">specify</span>(LOS <span class="sc">~</span> Group) <span class="sc">|&gt;</span></span>
+<span id="cb97-6"><a></a>  <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">5000</span>, <span class="at">type =</span> <span class="st">"bootstrap"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb97-7"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in means"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"Blunt"</span>, <span class="st">"Penetrating"</span>))</span>
+<span id="cb97-8"><a></a></span>
+<span id="cb97-9"><a></a><span class="co"># Percentile confidence interval</span></span>
+<span id="cb97-10"><a></a>ci_infer <span class="ot">&lt;-</span> <span class="fu">get_confidence_interval</span>(boot_dist_ci,</span>
+<span id="cb97-11"><a></a>                                    <span class="at">level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb97-12"><a></a>                                    <span class="at">type  =</span> <span class="st">"percentile"</span>)</span>
+<span id="cb97-13"><a></a>ci_infer</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  lower_ci upper_ci
+     &lt;dbl&gt;    &lt;dbl&gt;
+1   -0.142     4.50</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a></a><span class="co"># SE-based CI</span></span>
+<span id="cb99-2"><a></a>ci_infer_se <span class="ot">&lt;-</span> <span class="fu">get_confidence_interval</span>(boot_dist_ci,</span>
+<span id="cb99-3"><a></a>                                       <span class="at">level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb99-4"><a></a>                                       <span class="at">type  =</span> <span class="st">"se"</span>,</span>
+<span id="cb99-5"><a></a>                                       <span class="at">point_estimate =</span> obs_stat)</span>
+<span id="cb99-6"><a></a>ci_infer_se</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  lower_ci upper_ci
+     &lt;dbl&gt;    &lt;dbl&gt;
+1  -0.0982     4.57</code></pre>
+</div>
+</div>
+</section>
+<section id="visualizing-the-infer-bootstrap-ci" class="slide level2">
+<h2>Visualizing the <code>infer</code> Bootstrap CI</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a></a><span class="fu">visualize</span>(boot_dist_ci) <span class="sc">+</span></span>
+<span id="cb101-2"><a></a>  <span class="fu">shade_confidence_interval</span>(ci_infer) <span class="sc">+</span></span>
+<span id="cb101-3"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> obs_stat<span class="sc">$</span>stat,</span>
+<span id="cb101-4"><a></a>             <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb101-5"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb101-6"><a></a>    <span class="at">title    =</span> <span class="st">"Bootstrap Sampling Distribution with 95% CI (via infer)"</span>,</span>
+<span id="cb101-7"><a></a>    <span class="at">subtitle =</span> <span class="fu">sprintf</span>(<span class="st">"Percentile CI: (%.3f, %.3f)  |  Observed = %.3f"</span>,</span>
+<span id="cb101-8"><a></a>                       ci_infer<span class="sc">$</span>lower_ci, ci_infer<span class="sc">$</span>upper_ci, obs_stat<span class="sc">$</span>stat),</span>
+<span id="cb101-9"><a></a>    <span class="at">x        =</span> <span class="st">"Difference in Mean LOS (Blunt - Penetrating, days)"</span>,</span>
+<span id="cb101-10"><a></a>    <span class="at">y        =</span> <span class="st">"Count"</span></span>
+<span id="cb101-11"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+</div>
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-22-1.png" width="1152" class="r-stretch"></section>
+<section id="two-sample-bootstrap-test-with-infer-a-limitation" class="slide level2">
+<h2>Two-Sample Bootstrap Test with <code>infer</code>: A Limitation</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong><code>infer</code> does NOT implement the shift-bootstrap for two-sample tests</strong></p>
+</div>
+<div class="callout-content">
+<p><code>generate(type = "bootstrap")</code> with <code>hypothesize(null = "independence")</code> resamples each group <strong>separately with replacement</strong> — exactly the same as the CI bootstrap. The null distribution is centered at the <strong>observed difference</strong>, not at 0. Calling <code>get_p_value()</code> on this distribution is essentially asking “what fraction of bootstrap samples are at least as extreme as the observed value?” — against a distribution centered <em>at</em> the observed value — which returns a meaningless p-value near 0.5 or higher.</p>
+<p>The <strong>shift-bootstrap</strong> (C&amp;H Ch. 8) must be implemented manually (as shown earlier in these slides). For two-sample hypothesis testing in <code>infer</code>, always use <code>type = "permute"</code>.</p>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a></a><span class="co"># Demonstrate the issue: bootstrap + hypothesize gives wrong null distribution</span></span>
+<span id="cb102-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb102-3"><a></a>null_dist_boot_wrong <span class="ot">&lt;-</span> los_tidy <span class="sc">|&gt;</span></span>
+<span id="cb102-4"><a></a>  <span class="fu">specify</span>(LOS <span class="sc">~</span> Group) <span class="sc">|&gt;</span></span>
+<span id="cb102-5"><a></a>  <span class="fu">hypothesize</span>(<span class="at">null =</span> <span class="st">"independence"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb102-6"><a></a>  <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">9999</span>, <span class="at">type =</span> <span class="st">"bootstrap"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb102-7"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"diff in means"</span>, <span class="at">order =</span> <span class="fu">c</span>(<span class="st">"Blunt"</span>, <span class="st">"Penetrating"</span>))</span>
+<span id="cb102-8"><a></a></span>
+<span id="cb102-9"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Center of bootstrap 'null' distribution: %.3f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb102-10"><a></a>            <span class="fu">mean</span>(null_dist_boot_wrong<span class="sc">$</span>stat)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Center of bootstrap 'null' distribution: 2.243</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"  (should be ~0 under H0; instead equals observed diff)</span><span class="sc">\n</span><span class="st">"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  (should be ~0 under H0; instead equals observed diff)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed difference:                     %.3f</span><span class="sc">\n</span><span class="st">"</span>, obs_stat<span class="sc">$</span>stat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed difference:                     2.235</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"'p-value' from this (invalid):           %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb108-2"><a></a>            <span class="fu">get_p_value</span>(null_dist_boot_wrong, obs_stat,</span>
+<span id="cb108-3"><a></a>                        <span class="at">direction =</span> <span class="st">"two-sided"</span>)<span class="sc">$</span>p_value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'p-value' from this (invalid):           0.9801</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Permutation p-value (correct):           %.4f</span><span class="sc">\n</span><span class="st">"</span>, pval_perm<span class="sc">$</span>p_value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation p-value (correct):           0.0636</code></pre>
+</div>
+</div>
+</section>
+<section id="paired-bootstrap-with-infer" class="slide level2">
+<h2>Paired Bootstrap with <code>infer</code></h2>
+<p>For paired data, work directly with the <strong>differences</strong> as a one-sample problem:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb112-2"><a></a></span>
+<span id="cb112-3"><a></a><span class="co"># Bootstrap CI for mean difference (one-sample on differences)</span></span>
+<span id="cb112-4"><a></a>boot_paired_infer <span class="ot">&lt;-</span> bp_tidy <span class="sc">|&gt;</span></span>
+<span id="cb112-5"><a></a>  <span class="fu">specify</span>(<span class="at">response =</span> diff) <span class="sc">|&gt;</span></span>
+<span id="cb112-6"><a></a>  <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">5000</span>, <span class="at">type =</span> <span class="st">"bootstrap"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb112-7"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"mean"</span>)</span>
+<span id="cb112-8"><a></a></span>
+<span id="cb112-9"><a></a>ci_paired_infer <span class="ot">&lt;-</span> <span class="fu">get_confidence_interval</span>(boot_paired_infer,</span>
+<span id="cb112-10"><a></a>                                           <span class="at">level =</span> <span class="fl">0.95</span>,</span>
+<span id="cb112-11"><a></a>                                           <span class="at">type  =</span> <span class="st">"percentile"</span>)</span>
+<span id="cb112-12"><a></a></span>
+<span id="cb112-13"><a></a><span class="co"># Bootstrap test: H0: mu_D = 0</span></span>
+<span id="cb112-14"><a></a>obs_mean_D <span class="ot">&lt;-</span> bp_tidy <span class="sc">|&gt;</span></span>
+<span id="cb112-15"><a></a>  <span class="fu">specify</span>(<span class="at">response =</span> diff) <span class="sc">|&gt;</span></span>
+<span id="cb112-16"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"mean"</span>)</span>
+<span id="cb112-17"><a></a></span>
+<span id="cb112-18"><a></a>null_paired_infer <span class="ot">&lt;-</span> bp_tidy <span class="sc">|&gt;</span></span>
+<span id="cb112-19"><a></a>  <span class="fu">specify</span>(<span class="at">response =</span> diff) <span class="sc">|&gt;</span></span>
+<span id="cb112-20"><a></a>  <span class="fu">hypothesize</span>(<span class="at">null =</span> <span class="st">"point"</span>, <span class="at">mu =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb112-21"><a></a>  <span class="fu">generate</span>(<span class="at">reps =</span> <span class="dv">9999</span>, <span class="at">type =</span> <span class="st">"bootstrap"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb112-22"><a></a>  <span class="fu">calculate</span>(<span class="at">stat =</span> <span class="st">"mean"</span>)</span>
+<span id="cb112-23"><a></a></span>
+<span id="cb112-24"><a></a>pval_paired_infer <span class="ot">&lt;-</span> <span class="fu">get_p_value</span>(null_paired_infer, obs_mean_D, <span class="at">direction =</span> <span class="st">"two-sided"</span>)</span>
+<span id="cb112-25"><a></a></span>
+<span id="cb112-26"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed mean difference:   %.3f mmHg</span><span class="sc">\n</span><span class="st">"</span>, obs_mean_D<span class="sc">$</span>stat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed mean difference:   -2.921 mmHg</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap CI (percentile):  (%.3f, %.3f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb114-2"><a></a>            ci_paired_infer<span class="sc">$</span>lower_ci, ci_paired_infer<span class="sc">$</span>upper_ci))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap CI (percentile):  (-5.260, -0.555)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap test p-value:     %.4f</span><span class="sc">\n</span><span class="st">"</span>, pval_paired_infer<span class="sc">$</span>p_value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap test p-value:     0.0178</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Paired t-test p-value:      %.4f</span><span class="sc">\n</span><span class="st">"</span>, p_t_paired))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Paired t-test p-value:      0.0286</code></pre>
+</div>
+</div>
+</section>
+<section id="infer-workflow-summary" class="slide level2">
+<h2><code>infer</code> Workflow Summary</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a></a>summary_tbl <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb120-2"><a></a>  <span class="sc">~</span>Goal,                        <span class="sc">~</span><span class="st">`</span><span class="at">specify()</span><span class="st">`</span>,          <span class="sc">~</span><span class="st">`</span><span class="at">hypothesize()</span><span class="st">`</span>,             <span class="sc">~</span><span class="st">`</span><span class="at">generate()</span><span class="st">`</span>,             <span class="sc">~</span><span class="st">`</span><span class="at">calculate()</span><span class="st">`</span>,</span>
+<span id="cb120-3"><a></a>  <span class="st">"Two-sample CI"</span>,              <span class="st">"Y ~ Group"</span>,           <span class="st">"(none)"</span>,                     <span class="st">"bootstrap"</span>,               <span class="st">"diff in means/medians"</span>,</span>
+<span id="cb120-4"><a></a>  <span class="st">"Two-sample perm. test"</span>,      <span class="st">"Y ~ Group"</span>,           <span class="st">"independence"</span>,               <span class="st">"permute"</span>,                 <span class="st">"diff in means/medians"</span>,</span>
+<span id="cb120-5"><a></a>  <span class="st">"Paired CI"</span>,                  <span class="st">"response = diff"</span>,     <span class="st">"(none)"</span>,                     <span class="st">"bootstrap"</span>,               <span class="st">"mean"</span>,</span>
+<span id="cb120-6"><a></a>  <span class="st">"Paired boot. test"</span>,          <span class="st">"response = diff"</span>,     <span class="st">"point, mu = 0"</span>,              <span class="st">"bootstrap"</span>,               <span class="st">"mean"</span></span>
+<span id="cb120-7"><a></a>)</span>
+<span id="cb120-8"><a></a></span>
+<span id="cb120-9"><a></a>summary_tbl <span class="sc">|&gt;</span></span>
+<span id="cb120-10"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">format =</span> <span class="st">"html"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb120-11"><a></a>  kableExtra<span class="sc">::</span><span class="fu">kable_styling</span>(<span class="at">font_size =</span> <span class="dv">18</span>, <span class="at">full_width =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb120-12"><a></a>                            <span class="at">bootstrap_options =</span> <span class="fu">c</span>(<span class="st">"striped"</span>, <span class="st">"hover"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top" style="font-size: 18px; margin-left: auto; margin-right: auto;">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Goal</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">specify()</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">hypothesize()</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">generate()</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">calculate()</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Two-sample CI</td>
+<td style="text-align: left;">Y ~ Group</td>
+<td style="text-align: left;">(none)</td>
+<td style="text-align: left;">bootstrap</td>
+<td style="text-align: left;">diff in means/medians</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Two-sample perm. test</td>
+<td style="text-align: left;">Y ~ Group</td>
+<td style="text-align: left;">independence</td>
+<td style="text-align: left;">permute</td>
+<td style="text-align: left;">diff in means/medians</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Paired CI</td>
+<td style="text-align: left;">response = diff</td>
+<td style="text-align: left;">(none)</td>
+<td style="text-align: left;">bootstrap</td>
+<td style="text-align: left;">mean</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Paired boot. test</td>
+<td style="text-align: left;">response = diff</td>
+<td style="text-align: left;">point, mu = 0</td>
+<td style="text-align: left;">bootstrap</td>
+<td style="text-align: left;">mean</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>When to Choose What</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><strong><code>type = "permute"</code>:</strong> Two-sample hypothesis testing. Generates the null distribution by relabeling groups — the only correct <code>infer</code> approach for two-sample tests.</li>
+<li><strong><code>type = "bootstrap"</code> without <code>hypothesize()</code>:</strong> Constructing CIs (sampling distribution centered at observed statistic).</li>
+<li><strong><code>type = "bootstrap"</code> with <code>hypothesize(null = "point")</code>:</strong> One-sample bootstrap tests (shifts distribution to <span class="math inline">\(H_0\)</span> value). Works correctly for one-sample settings only.</li>
+<li><strong>Two-sample shift-bootstrap test:</strong> Must be coded manually (see earlier section) — <code>infer</code> does not support it.</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
 </section></section>
 <section>
 <section id="comparing-methods-simulation" class="title-slide slide level1 center" data-background-color="#9b59b6">
@@ -717,84 +1619,81 @@ Jessica Minnier
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
-<span id="cb44-2"><a></a>B_sim  <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
-<span id="cb44-3"><a></a>B_perm <span class="ot">&lt;-</span> <span class="dv">499</span></span>
-<span id="cb44-4"><a></a></span>
-<span id="cb44-5"><a></a><span class="co"># chi-squared(2): mean = 2, heavily right-skewed (skewness = 2*sqrt(2) ~ 2.8)</span></span>
-<span id="cb44-6"><a></a><span class="co"># shifted to mean 0 for fair comparison</span></span>
-<span id="cb44-7"><a></a>sim_scenario <span class="ot">&lt;-</span> <span class="cf">function</span>(dist_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="dv">0</span>) {</span>
-<span id="cb44-8"><a></a>  <span class="fu">replicate</span>(B_sim, {</span>
-<span id="cb44-9"><a></a>    x1  <span class="ot">&lt;-</span> <span class="fu">dist_fn</span>(n)</span>
-<span id="cb44-10"><a></a>    x2  <span class="ot">&lt;-</span> <span class="fu">dist_fn</span>(n) <span class="sc">+</span> effect</span>
-<span id="cb44-11"><a></a>    Ns  <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> n</span>
-<span id="cb44-12"><a></a>    all <span class="ot">&lt;-</span> <span class="fu">c</span>(x1, x2)</span>
-<span id="cb44-13"><a></a>    t0  <span class="ot">&lt;-</span> <span class="fu">mean</span>(x1) <span class="sc">-</span> <span class="fu">mean</span>(x2)</span>
-<span id="cb44-14"><a></a>    p_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x1, x2)<span class="sc">$</span>p.value</span>
-<span id="cb44-15"><a></a>    p_perm  <span class="ot">&lt;-</span> {</span>
-<span id="cb44-16"><a></a>      perms <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_perm, {</span>
-<span id="cb44-17"><a></a>        idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(Ns)</span>
-<span id="cb44-18"><a></a>        <span class="fu">mean</span>(all[idx[<span class="fu">seq_len</span>(n)]]) <span class="sc">-</span> <span class="fu">mean</span>(all[idx[(n <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>Ns]])</span>
-<span id="cb44-19"><a></a>      })</span>
-<span id="cb44-20"><a></a>      <span class="fu">mean</span>(<span class="fu">abs</span>(perms) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t0))</span>
-<span id="cb44-21"><a></a>    }</span>
-<span id="cb44-22"><a></a>    <span class="fu">c</span>(<span class="at">Welch =</span> p_welch, <span class="at">Permutation =</span> p_perm)</span>
-<span id="cb44-23"><a></a>  }) <span class="sc">|&gt;</span> <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
-<span id="cb44-24"><a></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(x) <span class="fu">mean</span>(x <span class="sc">&lt;</span> <span class="fl">0.05</span>)))</span>
-<span id="cb44-25"><a></a>}</span>
-<span id="cb44-26"><a></a></span>
-<span id="cb44-27"><a></a>norm_fn <span class="ot">&lt;-</span> \(n) <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>)</span>
-<span id="cb44-28"><a></a>skew_fn <span class="ot">&lt;-</span> \(n) <span class="fu">rchisq</span>(n, <span class="at">df =</span> <span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span>   <span class="co"># shifted chi-sq(2), mean = 0</span></span>
-<span id="cb44-29"><a></a></span>
-<span id="cb44-30"><a></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
-<span id="cb44-31"><a></a>  <span class="fu">bind_rows</span>(</span>
-<span id="cb44-32"><a></a>    <span class="fu">sim_scenario</span>(norm_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">0.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Type I Error (effect = 0)"</span>),</span>
-<span id="cb44-33"><a></a>    <span class="fu">sim_scenario</span>(norm_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">1.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Power (effect = 1 SD)"</span>)</span>
-<span id="cb44-34"><a></a>  ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="st">"Normal(0,1) — symmetric"</span>),</span>
-<span id="cb44-35"><a></a>  <span class="fu">bind_rows</span>(</span>
-<span id="cb44-36"><a></a>    <span class="fu">sim_scenario</span>(skew_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">0.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Type I Error (effect = 0)"</span>),</span>
-<span id="cb44-37"><a></a>    <span class="fu">sim_scenario</span>(skew_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">1.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Power (effect = 1 SD)"</span>)</span>
-<span id="cb44-38"><a></a>  ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="st">"chi-sq(2) shifted — heavily right-skewed"</span>)</span>
-<span id="cb44-39"><a></a>)</span>
-<span id="cb44-40"><a></a></span>
-<span id="cb44-41"><a></a>results <span class="sc">|&gt;</span></span>
-<span id="cb44-42"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Welch, Permutation),</span>
-<span id="cb44-43"><a></a>               <span class="at">names_to =</span> <span class="st">"Method"</span>, <span class="at">values_to =</span> <span class="st">"Rate"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb44-44"><a></a>  <span class="fu">mutate</span>(</span>
-<span id="cb44-45"><a></a>    <span class="at">Scenario     =</span> <span class="fu">factor</span>(Scenario,</span>
-<span id="cb44-46"><a></a>                          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Type I Error (effect = 0)"</span>,</span>
-<span id="cb44-47"><a></a>                                     <span class="st">"Power (effect = 1 SD)"</span>)),</span>
-<span id="cb44-48"><a></a>    <span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution,</span>
-<span id="cb44-49"><a></a>                          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Normal(0,1) — symmetric"</span>,</span>
-<span id="cb44-50"><a></a>                                     <span class="st">"chi-sq(2) shifted — heavily right-skewed"</span>))</span>
-<span id="cb44-51"><a></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb44-52"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Method, <span class="at">y =</span> Rate, <span class="at">fill =</span> Method)) <span class="sc">+</span></span>
-<span id="cb44-53"><a></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb44-54"><a></a>  <span class="fu">geom_hline</span>(</span>
-<span id="cb44-55"><a></a>    <span class="at">data =</span> <span class="fu">tibble</span>(</span>
-<span id="cb44-56"><a></a>      <span class="at">Scenario =</span> <span class="fu">factor</span>(<span class="st">"Type I Error (effect = 0)"</span>,</span>
-<span id="cb44-57"><a></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Type I Error (effect = 0)"</span>, <span class="st">"Power (effect = 1 SD)"</span>)),</span>
-<span id="cb44-58"><a></a>      <span class="at">y =</span> <span class="fl">0.05</span></span>
-<span id="cb44-59"><a></a>    ),</span>
-<span id="cb44-60"><a></a>    <span class="fu">aes</span>(<span class="at">yintercept =</span> y),</span>
-<span id="cb44-61"><a></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"black"</span></span>
-<span id="cb44-62"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb44-63"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(Rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)),</span>
-<span id="cb44-64"><a></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
-<span id="cb44-65"><a></a>  <span class="fu">facet_grid</span>(Distribution <span class="sc">~</span> Scenario) <span class="sc">+</span></span>
-<span id="cb44-66"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Welch"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>, <span class="st">"Permutation"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
-<span id="cb44-67"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.95</span>)) <span class="sc">+</span></span>
-<span id="cb44-68"><a></a>  <span class="fu">labs</span>(</span>
-<span id="cb44-69"><a></a>    <span class="at">title    =</span> <span class="st">"Welch t-test vs. Permutation Test  (n = 10 per group, 3000 simulations)"</span>,</span>
-<span id="cb44-70"><a></a>    <span class="at">subtitle =</span> <span class="st">"Both methods control Type I error near 5% and have similar power — permutation's advantage is flexibility."</span>,</span>
-<span id="cb44-71"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Rejection Rate"</span>, <span class="at">fill =</span> <span class="cn">NULL</span></span>
-<span id="cb44-72"><a></a>  ) <span class="sc">+</span></span>
-<span id="cb44-73"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
-<span id="cb44-74"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb121-2"><a></a>B_sim  <span class="ot">&lt;-</span> <span class="dv">3000</span></span>
+<span id="cb121-3"><a></a>B_perm <span class="ot">&lt;-</span> <span class="dv">499</span></span>
+<span id="cb121-4"><a></a></span>
+<span id="cb121-5"><a></a>sim_scenario <span class="ot">&lt;-</span> <span class="cf">function</span>(dist_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="dv">0</span>) {</span>
+<span id="cb121-6"><a></a>  <span class="fu">replicate</span>(B_sim, {</span>
+<span id="cb121-7"><a></a>    x1  <span class="ot">&lt;-</span> <span class="fu">dist_fn</span>(n)</span>
+<span id="cb121-8"><a></a>    x2  <span class="ot">&lt;-</span> <span class="fu">dist_fn</span>(n) <span class="sc">+</span> effect</span>
+<span id="cb121-9"><a></a>    Ns  <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> n</span>
+<span id="cb121-10"><a></a>    all <span class="ot">&lt;-</span> <span class="fu">c</span>(x1, x2)</span>
+<span id="cb121-11"><a></a>    t0  <span class="ot">&lt;-</span> <span class="fu">mean</span>(x1) <span class="sc">-</span> <span class="fu">mean</span>(x2)</span>
+<span id="cb121-12"><a></a>    p_welch <span class="ot">&lt;-</span> <span class="fu">t.test</span>(x1, x2)<span class="sc">$</span>p.value</span>
+<span id="cb121-13"><a></a>    p_perm  <span class="ot">&lt;-</span> {</span>
+<span id="cb121-14"><a></a>      perms <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B_perm, {</span>
+<span id="cb121-15"><a></a>        idx <span class="ot">&lt;-</span> <span class="fu">sample</span>(Ns)</span>
+<span id="cb121-16"><a></a>        <span class="fu">mean</span>(all[idx[<span class="fu">seq_len</span>(n)]]) <span class="sc">-</span> <span class="fu">mean</span>(all[idx[(n <span class="sc">+</span> <span class="dv">1</span>)<span class="sc">:</span>Ns]])</span>
+<span id="cb121-17"><a></a>      })</span>
+<span id="cb121-18"><a></a>      <span class="fu">mean</span>(<span class="fu">abs</span>(perms) <span class="sc">&gt;=</span> <span class="fu">abs</span>(t0))</span>
+<span id="cb121-19"><a></a>    }</span>
+<span id="cb121-20"><a></a>    <span class="fu">c</span>(<span class="at">Welch =</span> p_welch, <span class="at">Permutation =</span> p_perm)</span>
+<span id="cb121-21"><a></a>  }) <span class="sc">|&gt;</span> <span class="fu">t</span>() <span class="sc">|&gt;</span> <span class="fu">as_tibble</span>() <span class="sc">|&gt;</span></span>
+<span id="cb121-22"><a></a>    <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), \(x) <span class="fu">mean</span>(x <span class="sc">&lt;</span> <span class="fl">0.05</span>)))</span>
+<span id="cb121-23"><a></a>}</span>
+<span id="cb121-24"><a></a></span>
+<span id="cb121-25"><a></a>norm_fn <span class="ot">&lt;-</span> \(n) <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">1</span>)</span>
+<span id="cb121-26"><a></a>skew_fn <span class="ot">&lt;-</span> \(n) <span class="fu">rchisq</span>(n, <span class="at">df =</span> <span class="dv">2</span>) <span class="sc">-</span> <span class="dv">2</span></span>
+<span id="cb121-27"><a></a></span>
+<span id="cb121-28"><a></a>results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(</span>
+<span id="cb121-29"><a></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb121-30"><a></a>    <span class="fu">sim_scenario</span>(norm_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">0.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Type I Error (effect = 0)"</span>),</span>
+<span id="cb121-31"><a></a>    <span class="fu">sim_scenario</span>(norm_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">1.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Power (effect = 1 SD)"</span>)</span>
+<span id="cb121-32"><a></a>  ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="st">"Normal(0,1) \u2014 symmetric"</span>),</span>
+<span id="cb121-33"><a></a>  <span class="fu">bind_rows</span>(</span>
+<span id="cb121-34"><a></a>    <span class="fu">sim_scenario</span>(skew_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">0.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Type I Error (effect = 0)"</span>),</span>
+<span id="cb121-35"><a></a>    <span class="fu">sim_scenario</span>(skew_fn, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">effect =</span> <span class="fl">1.0</span>) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Scenario =</span> <span class="st">"Power (effect = 1 SD)"</span>)</span>
+<span id="cb121-36"><a></a>  ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="st">"chi-sq(2) shifted \u2014 heavily right-skewed"</span>)</span>
+<span id="cb121-37"><a></a>)</span>
+<span id="cb121-38"><a></a></span>
+<span id="cb121-39"><a></a>results <span class="sc">|&gt;</span></span>
+<span id="cb121-40"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Welch, Permutation),</span>
+<span id="cb121-41"><a></a>               <span class="at">names_to =</span> <span class="st">"Method"</span>, <span class="at">values_to =</span> <span class="st">"Rate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb121-42"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb121-43"><a></a>    <span class="at">Scenario     =</span> <span class="fu">factor</span>(Scenario,</span>
+<span id="cb121-44"><a></a>                          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Type I Error (effect = 0)"</span>, <span class="st">"Power (effect = 1 SD)"</span>)),</span>
+<span id="cb121-45"><a></a>    <span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution,</span>
+<span id="cb121-46"><a></a>                          <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Normal(0,1) \u2014 symmetric"</span>,</span>
+<span id="cb121-47"><a></a>                                     <span class="st">"chi-sq(2) shifted \u2014 heavily right-skewed"</span>))</span>
+<span id="cb121-48"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb121-49"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Method, <span class="at">y =</span> Rate, <span class="at">fill =</span> Method)) <span class="sc">+</span></span>
+<span id="cb121-50"><a></a>  <span class="fu">geom_col</span>(<span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb121-51"><a></a>  <span class="fu">geom_hline</span>(</span>
+<span id="cb121-52"><a></a>    <span class="at">data =</span> <span class="fu">tibble</span>(</span>
+<span id="cb121-53"><a></a>      <span class="at">Scenario =</span> <span class="fu">factor</span>(<span class="st">"Type I Error (effect = 0)"</span>,</span>
+<span id="cb121-54"><a></a>                        <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Type I Error (effect = 0)"</span>, <span class="st">"Power (effect = 1 SD)"</span>)),</span>
+<span id="cb121-55"><a></a>      <span class="at">y =</span> <span class="fl">0.05</span></span>
+<span id="cb121-56"><a></a>    ),</span>
+<span id="cb121-57"><a></a>    <span class="fu">aes</span>(<span class="at">yintercept =</span> y),</span>
+<span id="cb121-58"><a></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"black"</span></span>
+<span id="cb121-59"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb121-60"><a></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> scales<span class="sc">::</span><span class="fu">percent</span>(Rate, <span class="at">accuracy =</span> <span class="fl">0.1</span>)),</span>
+<span id="cb121-61"><a></a>            <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.4</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">fontface =</span> <span class="st">"bold"</span>) <span class="sc">+</span></span>
+<span id="cb121-62"><a></a>  <span class="fu">facet_grid</span>(Distribution <span class="sc">~</span> Scenario) <span class="sc">+</span></span>
+<span id="cb121-63"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Welch"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>, <span class="st">"Permutation"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb121-64"><a></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.95</span>)) <span class="sc">+</span></span>
+<span id="cb121-65"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb121-66"><a></a>    <span class="at">title    =</span> <span class="st">"Welch t-test vs. Permutation Test  (n = 10 per group, 3000 simulations)"</span>,</span>
+<span id="cb121-67"><a></a>    <span class="at">subtitle =</span> <span class="st">"Both methods control Type I error near 5% and have similar power \u2014 permutation's advantage is flexibility."</span>,</span>
+<span id="cb121-68"><a></a>    <span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"Rejection Rate"</span>, <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb121-69"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb121-70"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>,</span>
+<span id="cb121-71"><a></a>        <span class="at">strip.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">12</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 
 </div>
-<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-10-1.png" width="1440" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-26-1.png" width="1440" class="r-stretch"><div class="callout callout-note callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
 <div class="callout-icon-container">
@@ -803,7 +1702,7 @@ Jessica Minnier
 <p><strong>Note</strong></p>
 </div>
 <div class="callout-content">
-<p>The two-sided Welch <span class="math inline">\(t\)</span>-test is <strong>robust to skewness for Type I error</strong> even at small <span class="math inline">\(n\)</span>: skewness makes each tail individually wrong, but in a two-sided test the errors in the two tails largely cancel. The simulation below confirms this — the two methods agree closely. Permutation’s advantage is <strong>generality</strong>: it works with <em>any</em> test statistic, not just means.</p>
+<p>The two-sided Welch <span class="math inline">\(t\)</span>-test is <strong>robust to skewness for Type I error</strong> even at small <span class="math inline">\(n\)</span>: skewness makes each tail individually wrong, but in a two-sided test the errors largely cancel. Permutation’s advantage is <strong>generality</strong>: it works with <em>any</em> test statistic, not just means.</p>
 </div>
 </div>
 </div>
@@ -813,8 +1712,8 @@ Jessica Minnier
 <h1>Key Takeaways</h1>
 
 </section>
-<section id="key-takeaways-ch-ch.-3-5-dbc-10.6" class="slide level2 scrollable">
-<h2>Key Takeaways (C&amp;H Ch. 3, 5; DBC 10.6)</h2>
+<section id="key-takeaways-ch-ch.-3-5-8-dbc-10.6" class="slide level2 scrollable">
+<h2>Key Takeaways (C&amp;H Ch. 3, 5, 8; DBC 10.6)</h2>
 <div class="callout callout-important callout-titled callout-style-default">
 <div class="callout-body">
 <div class="callout-title">
@@ -825,16 +1724,22 @@ Jessica Minnier
 </div>
 <div class="callout-content">
 <ol type="1">
-<li><p><strong>Two-sample bootstrap CI:</strong> Resample each group <strong>independently</strong> with replacement; construct percentile or basic CI. Works for any statistic — means, medians, SD ratios, etc. No distributional assumption</p></li>
-<li><p><strong>Permutation test:</strong> Pool all <span class="math inline">\(N\)</span> observations, <strong>relabel</strong> groups at random; fraction of permuted statistics <span class="math inline">\(\geq |T_\text{obs}|\)</span> gives a valid p-value under <span class="math inline">\(H_0: F_1 = F_2\)</span> (exchangeability)</p></li>
-<li><p><strong>Bootstrap</strong> <span class="math inline">\(\neq\)</span> permutation: Bootstrap approximates the <strong>sampling distribution</strong> of <span class="math inline">\(\hat\theta\)</span> (for CIs); permutation approximates the <strong>null distribution</strong> of <span class="math inline">\(T\)</span> (for testing); they solve different problems and use data differently</p></li>
-<li><p><strong>Paired bootstrap:</strong> Resample <strong>whole pairs</strong> <span class="math inline">\((D_i)\)</span> to preserve the pairing structure; produces CI for <span class="math inline">\(\mu_D\)</span> without normality assumption</p></li>
-<li><p><strong>When to prefer resampling:</strong> Small <span class="math inline">\(n\)</span> with non-normal data; non-standard statistics with no closed-form SE; any setting where parametric assumptions are doubtful</p></li>
+<li><p><strong>Two-sample bootstrap CI:</strong> Resample each group <strong>independently</strong> with replacement; construct percentile, basic, or SE CI. Works for any statistic. No distributional assumption.</p></li>
+<li><p><strong>Two-sample bootstrap test:</strong> Shift both samples to satisfy <span class="math inline">\(H_0\)</span> (equal grand mean), then resample to generate null distribution. Use when permutation assumptions are not met.</p></li>
+<li><p><strong>Permutation test:</strong> Pool all <span class="math inline">\(N\)</span> observations, <strong>relabel</strong> groups at random; fraction of permuted statistics <span class="math inline">\(\geq |T_\text{obs}|\)</span> gives a valid p-value under <span class="math inline">\(H_0: F_1 = F_2\)</span> (<strong>exchangeability</strong>). Most natural for randomized experiments.</p></li>
+<li><p><strong>Permutation validity:</strong> Requires <strong>exchangeability</strong> — groups can only differ in label, not in variance or shape, under <span class="math inline">\(H_0\)</span>. Fails for paired/clustered data and when groups differ on nuisance parameters.</p></li>
+<li><p><strong>Paired bootstrap CI:</strong> Resample <strong>whole pairs/differences</strong> to preserve pairing; CI for <span class="math inline">\(\mu_D\)</span> with no normality assumption.</p></li>
+<li><p><strong>Paired bootstrap test:</strong> Shift differences to mean 0 (imposing <span class="math inline">\(H_0: \mu_D = 0\)</span>), then resample; gives valid p-value without normality.</p></li>
+<li><p><strong><code>infer</code> package:</strong> Unified specify → hypothesize → generate → calculate pipeline. Use <code>type = "permute"</code> for two-sample tests and <code>type = "bootstrap"</code> for CIs and one-sample tests. The shift-bootstrap for two-sample testing must be coded manually.</p></li>
 </ol>
 </div>
 </div>
 </div>
 </section>
+<section id="method-decision-guide" class="slide level2">
+<h2>Method Decision Guide</h2>
+
+<img data-src="20_BootstrapPermutation_files/figure-revealjs/unnamed-chunk-27-1.png" width="1344" class="r-stretch"></section>
 <section id="looking-ahead" class="slide level2">
 <h2>Looking Ahead</h2>
 <p><strong>Next class (Lesson 21): Nonparametric Inference (DBC Ch. 14)</strong></p>
@@ -848,14 +1753,14 @@ Jessica Minnier
 <section id="references" class="slide level2">
 <h2>References</h2>
 <ul>
-<li>Chihara, L. M. and Hesterberg, T. C. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapters 3 and 5.</li>
+<li>Chihara, L. M. and Hesterberg, T. C. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapters 3, 5, and 8.</li>
 <li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Section 10.6.</li>
+<li>Couch, S., Bray, A., et al.&nbsp;<em>infer: An R package for tidyverse-friendly statistical inference</em>. JOSS, 2021. <a href="https://infer.tidymodels.org" class="uri">https://infer.tidymodels.org</a></li>
 </ul>
 </section>
 <section id="questions" class="slide level2 center" data-background-color="#3498db">
 <h2>Questions?</h2>
 <p>Thank you!</p>
-<p>::::::::</p>
 
 
 </section></section>

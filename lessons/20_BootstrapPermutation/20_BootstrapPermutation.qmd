@@ -29,6 +29,7 @@ execute:
 library(tidyverse)
 library(broom)
 library(patchwork)
+library(infer)
 set.seed(551)
 theme_set(theme_minimal(base_size = 18))
 ```
@@ -53,18 +54,21 @@ All require **normality** (exact) or rely on the **CLT** (approximate). What if:
 **Today's Goals:**
 
 1.  Construct **two-sample bootstrap CIs** by resampling each group independently (C&H Ch. 3; DBC 10.6)
-2.  Implement the **two-sample permutation test** by permuting group labels (C&H Ch. 5)
-3.  Apply bootstrap to **paired data** by resampling whole pairs
-4.  Articulate the precise conceptual difference between bootstrap and permutation
-5.  Compare resampling to parametric methods through simulation
+2.  Perform **two-sample bootstrap hypothesis tests** by shifting to satisfy $H_0$ (C&H Ch. 8)
+3.  Implement the **two-sample permutation test** and understand exactly when it is valid (C&H Ch. 5)
+4.  Apply bootstrap CI and bootstrap test to **paired data**
+5.  Use the **`infer` package** for tidy, pipeline-based resampling inference
 
 ## Roadmap
 
 | Method | Goal | Resamples From | Reference |
-|-----------------|-----------------|----------------------|-----------------|
+|---|---|---|---|
 | Two-sample bootstrap CI | CI for $\theta_1 - \theta_2$ | Each group separately | C&H Ch. 3; DBC 10.6 |
+| Two-sample bootstrap test | p-value for $H_0:\theta_1=\theta_2$ | Shifted/centred samples | C&H Ch. 8 |
 | Two-sample permutation test | Test $H_0: F_1 = F_2$ | Pooled, relabeling | C&H Ch. 5 |
 | Paired bootstrap CI | CI for $\mu_D$ | Pairs with replacement | C&H Ch. 3 |
+| Paired bootstrap test | p-value for $H_0:\mu_D=0$ | Shifted differences | C&H Ch. 8 |
+| `infer` package | Tidy pipeline for all of the above | — | infer vignettes |
 
 . . .
 
@@ -92,23 +96,27 @@ All require **normality** (exact) or rely on the **CLT** (approximate). What if:
 
 **Basic (reflection) CI:** $\bigl(2\hat\theta - \hat\theta^*_{(1-\alpha/2)},\; 2\hat\theta - \hat\theta^*_{(\alpha/2)}\bigr)$
 
+**Bootstrap SE CI:** $\hat\theta \;\pm\; z_{\alpha/2} \cdot \widehat{\text{SE}}_{\text{boot}}$, where $\widehat{\text{SE}}_{\text{boot}} = \text{sd}(\hat\theta^{*1}, \ldots, \hat\theta^{*B})$
+
 . . .
 
 ::: callout-important
 ## Key Point
 
-Resample each group **separately and independently** — this preserves the two-group structure and approximates the sampling distribution of $\hat\theta_1 - \hat\theta_2$. Pooling before resampling would impose $H_0$ (that is permutation, not bootstrap).
+Resample each group **separately and independently** — this preserves the two-group structure and approximates the sampling distribution of $\hat\theta_1 - \hat\theta_2$. Pooling before resampling would impose $H_0$: that is permutation, not bootstrap.
 :::
 
 ## Medical Example: Trauma Length of Stay
+
 
 ```{r}
 #| echo: true
 #| code-fold: true
 
+# (shape/rate = mean; sqrt(shape)/rate = SD)
 set.seed(551)
-los_blunt <- rgamma(40, shape = 2.0, rate = 0.28)  # mean ~ 7.1 days
-los_penet <- rgamma(30, shape = 1.4, rate = 0.22)  # mean ~ 6.4 days
+los_blunt <- rgamma(40, shape = 2.8, rate = 0.33)  # mean ~ 8.5 days, SD ~ 5.1
+los_penet <- rgamma(30, shape = 2.0, rate = 0.38)  # mean ~ 5.3 days, SD ~ 3.7
 
 cat(sprintf("Blunt:       n = %d   mean = %.2f   median = %.2f   sd = %.2f\n",
             length(los_blunt), mean(los_blunt),
@@ -139,12 +147,12 @@ tibble(
                                  "Penetrating" = "#e74c3c")) +
   facet_wrap(~Group) +
   labs(title    = "Hospital Length of Stay by Trauma Type",
-       subtitle = "Right-skewed distributions — parametric CIs may be unreliable for moderate n",
+       subtitle = "Right-skewed distributions — blunt trauma stays appear longer; evidence is borderline significant",
        x = "LOS (days)", y = "Density") +
   theme(legend.position = "none")
 ```
 
-## Computing the Bootstrap CI
+## Computing the Bootstrap CI: Difference in Means
 
 ```{r}
 #| echo: true
@@ -163,13 +171,15 @@ boot_diffs <- replicate(B, {
 
 ci_pct   <- quantile(boot_diffs, c(0.025, 0.975))
 ci_basic <- 2 * obs_diff - quantile(boot_diffs, c(0.975, 0.025))
+ci_se    <- obs_diff + c(-1, 1) * qnorm(0.975) * sd(boot_diffs)
 ci_welch <- t.test(los_blunt, los_penet)$conf.int
 
 cat(sprintf("Observed difference (Blunt - Penet):  %.3f days\n", obs_diff))
 cat(sprintf("Bootstrap SE:                         %.3f\n", sd(boot_diffs)))
-cat(sprintf("Percentile 95%% CI:  (%.3f, %.3f)\n", ci_pct[1],   ci_pct[2]))
-cat(sprintf("Basic     95%% CI:  (%.3f, %.3f)\n", ci_basic[1], ci_basic[2]))
-cat(sprintf("Welch t   95%% CI:  (%.3f, %.3f)\n", ci_welch[1], ci_welch[2]))
+cat(sprintf("Bootstrap SE  95%% CI: (%.3f, %.3f)\n", ci_se[1],    ci_se[2]))
+cat(sprintf("Percentile    95%% CI: (%.3f, %.3f)\n", ci_pct[1],   ci_pct[2]))
+cat(sprintf("Basic         95%% CI: (%.3f, %.3f)\n", ci_basic[1], ci_basic[2]))
+cat(sprintf("Welch t       95%% CI: (%.3f, %.3f)\n", ci_welch[1], ci_welch[2]))
 ```
 
 ## Visualizing the Bootstrap Distribution
@@ -242,6 +252,152 @@ cat(sprintf("  Bootstrap 95%% CI: (%.3f, %.3f)\n",
             quantile(boot_sdr, 0.025), quantile(boot_sdr, 0.975)))
 ```
 
+# Two-Sample Bootstrap Hypothesis Test {background-color="#8e44ad"}
+
+## Bootstrap Testing: The Core Challenge
+
+Recall from Lesson 17: for a **one-sample** bootstrap test of $H_0: \mu = \mu_0$, we **shift** the sample to satisfy $H_0$ before resampling, then compare the observed statistic to the shifted null distribution.
+
+For **two samples**, we test $H_0: \theta_1 = \theta_2$ (e.g., $\mu_1 = \mu_2$). The same logic applies: we must resample in a way that **imposes $H_0$**.
+
+. . .
+
+::: callout-warning
+## Why Not Just Use the Bootstrap Distribution?
+
+If we simply computed the distribution of $\hat\theta^* = \hat\mu_1^* - \hat\mu_2^*$ by resampling each group, we would get the **sampling distribution** centered at the **observed** $\hat\Delta = \hat\mu_1 - \hat\mu_2$.
+
+This gives us a confidence interval — but **not a p-value under $H_0$**. The null distribution must be centered at $0$.
+:::
+
+## Two-Sample Bootstrap Test: The Shift Method (C&H 8.2)
+
+**Setup:** Test $H_0: \mu_1 = \mu_2$ vs $H_a: \mu_1 \neq \mu_2$.
+
+**Step 1: Impose $H_0$** by centering both samples at the same mean:
+
+$$\tilde{x}_i = x_i - \bar{x} + \bar{X}_{\text{pool}}, \qquad \tilde{y}_j = y_j - \bar{y} + \bar{X}_{\text{pool}}$$
+
+where $\bar{X}_{\text{pool}} = \frac{n_1 \bar{x} + n_2 \bar{y}}{n_1 + n_2}$ is the pooled mean.
+
+Now $\tilde{x}$ and $\tilde{y}$ have the **same mean** — $H_0$ is satisfied.
+
+. . .
+
+**Step 2: Generate the null distribution** by resampling from the shifted samples:
+
+for $b = 1, \ldots, B$:
+
+1. Draw $\tilde{x}^{*b}$ (size $n_1$) from $\{\tilde{x}_i\}$ with replacement
+2. Draw $\tilde{y}^{*b}$ (size $n_2$) from $\{\tilde{y}_j\}$ with replacement
+3. Compute $T^{*b} = \bar{\tilde{x}}^{*b} - \bar{\tilde{y}}^{*b}$
+
+**p-value:** $\hat{p} = \frac{1}{B}\sum_{b=1}^{B} \mathbf{1}\bigl(|T^{*b}| \geq |T_\text{obs}|\bigr)$
+
+where $T_\text{obs} = \bar{x} - \bar{y}$.
+
+## Two-Sample Bootstrap Test: Implementation
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+B_test <- 9999
+
+# Observed test statistic
+t_obs <- mean(los_blunt) - mean(los_penet)
+
+# Step 1: Shift samples to satisfy H0 (equal means)
+grand_mean <- (sum(los_blunt) + sum(los_penet)) / (n1 + n2)
+x_shift    <- los_blunt - mean(los_blunt) + grand_mean
+y_shift    <- los_penet - mean(los_penet) + grand_mean
+
+cat(sprintf("Before shifting:  mean(blunt) = %.3f, mean(penet) = %.3f\n",
+            mean(los_blunt), mean(los_penet)))
+cat(sprintf("After  shifting:  mean(x_shift)= %.3f, mean(y_shift)= %.3f\n",
+            mean(x_shift), mean(y_shift)))
+
+# Step 2: Resample from shifted samples
+boot_null <- replicate(B_test, {
+  mean(sample(x_shift, n1, replace = TRUE)) -
+  mean(sample(y_shift, n2, replace = TRUE))
+})
+
+p_boot  <- mean(abs(boot_null) >= abs(t_obs))
+p_welch <- t.test(los_blunt, los_penet)$p.value
+
+cat(sprintf("\nObserved difference:         %.3f days\n", t_obs))
+cat(sprintf("Bootstrap test p-value:      %.4f\n", p_boot))
+cat(sprintf("Welch t-test p-value:        %.4f\n", p_welch))
+```
+
+## Visualizing the Bootstrap Null Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 13
+
+tibble(null_diff = boot_null) |>
+  ggplot(aes(x = null_diff)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 fill = "#8e44ad", color = "white", alpha = 0.65) +
+  geom_density(color = "#2c3e50", linewidth = 1.1) +
+  geom_vline(xintercept = c(-abs(t_obs), abs(t_obs)),
+             color = "#e74c3c", linewidth = 1.5) +
+  annotate("text", x = abs(t_obs) + 0.05, y = 0.6,
+           label = bquote("|" * T[obs] * "| =" ~ .(round(abs(t_obs), 2))),
+           color = "#e74c3c", size = 5.5, hjust = 0) +
+  annotate("text", x = 0, y = 0.7,
+           label = sprintf("Bootstrap p = %.4f", p_boot),
+           size = 5.5, color = "#2c3e50") +
+  labs(
+    title    = "Bootstrap Null Distribution: Difference in Mean LOS (Shift Method)",
+    subtitle = "Null distribution centered at 0 by shifting both samples to grand mean",
+    x        = expression(bar(x)[shift]^"*" - bar(y)[shift]^"*" ~ "(days)"),
+    y        = "Density"
+  )
+```
+
+## Bootstrap Test for Any Statistic (e.g., Median)
+
+The shift method generalizes to **any location statistic** — shift both samples to equal medians (or equal means) and resample.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+
+# Bootstrap test for MEDIAN difference
+t_obs_med <- median(los_blunt) - median(los_penet)
+
+# Shift both samples to have equal medians (use grand median or grand mean)
+x_shift_med <- los_blunt - median(los_blunt) + grand_mean
+y_shift_med <- los_penet - median(los_penet) + grand_mean
+
+boot_null_med <- replicate(B_test, {
+  median(sample(x_shift_med, n1, replace = TRUE)) -
+  median(sample(y_shift_med, n2, replace = TRUE))
+})
+
+p_boot_med <- mean(abs(boot_null_med) >= abs(t_obs_med))
+
+cat(sprintf("Median difference: %.3f days\n", t_obs_med))
+cat(sprintf("Bootstrap test p (median):  %.4f\n", p_boot_med))
+cat("(No standard parametric test for medians exists for this skewed setting)\n")
+```
+
+. . .
+
+::: callout-tip
+## Practical Note
+
+For testing mean differences specifically, the **permutation test** (next section) is often preferred over the shift-bootstrap — it is simpler, exact under exchangeability, and avoids the need to carefully define "imposing $H_0$." The bootstrap test shines for non-location statistics where permutation is not straightforwardly applicable.
+:::
+
 # Two-Sample Permutation Test {background-color="#e74c3c"}
 
 ## The Permutation Test: Core Idea (C&H Ch. 5)
@@ -265,13 +421,110 @@ Under $H_0$, the group label on each observation is **arbitrary** (exchangeable)
 ::: callout-important
 ## Bootstrap vs. Permutation — The Essential Distinction
 
-|   | Bootstrap CI | Permutation test |
-|-----------------|-----------------------|--------------------------------|
-| **Purpose** | Estimate variability | Test $H_0$ |
-| **Resamples from** | Each group separately | Pooled data (relabeling) |
-| **Approximates** | Sampling distribution of $\hat\theta$ | Null distribution of $T$ |
-| $H_0$ imposed? | No | Yes ($F_1 = F_2$) |
+|   | Bootstrap CI | Bootstrap Test | Permutation Test |
+|---|---|---|---|
+| **Purpose** | Estimate variability | Test $H_0$ | Test $H_0$ |
+| **Resamples from** | Each group separately | Shifted samples | Pooled (relabeling) |
+| **Approximates** | Sampling dist. of $\hat\theta$ | Null dist. of $T$ | Null dist. of $T$ |
+| **$H_0$ imposed?** | No | Yes (via shift) | Yes ($F_1 = F_2$) |
+| **Assumption** | Independence | Independence | **Exchangeability** |
 :::
+
+## When Is the Permutation Test Valid?
+
+The permutation test is valid (exact Type I error control) when the observations are **exchangeable** under $H_0$.
+
+::: callout-important
+## Exchangeability: What It Means
+
+Observations $X_1, \ldots, X_{n_1}, Y_1, \ldots, Y_{n_2}$ are **exchangeable** under $H_0$ if permuting group labels does not change the joint distribution. This holds when:
+
+$$H_0: F_1 = F_2 \quad \text{(identical distributions)}$$
+
+If $H_0$ is true, any relabeling of the pooled data is just as likely as any other — permuting is valid.
+:::
+
+. . .
+
+**When exchangeability holds:**
+
+- Randomized experiments: treatment assigned at random, so under $H_0$ labels are arbitrary
+- Observational data: valid if groups differ **only** in the parameter of interest (strong assumption)
+- Testing $H_0: F_1 = F_2$ exactly (not just equal means)
+
+**When exchangeability fails (permutation test is invalid):**
+
+- Groups differ in **variance or shape** but not in means: permuting is not valid for a test of means because $F_1 \neq F_2$ even under the mean-equality $H_0$
+- Paired or clustered data: pairing creates dependence — don't ignore the structure
+- Confounding: if groups also differ on covariates, labels are not exchangeable
+
+## Exchangeability in Practice: What Hypothesis Are We Testing?
+
+::: callout-warning
+## A Subtle Point
+
+The permutation test is an **exact test** of $H_0: F_1 = F_2$. When used with the mean difference as the test statistic, it **also** has good power to detect $\mu_1 \neq \mu_2$.
+
+However, if the groups differ in **variance** but not in mean, the permutation test (using the mean difference as the statistic) can have **inflated Type I error** because the null $F_1 = F_2$ includes equal variances. Rejecting $H_0: F_1 = F_2$ does not tell us *why* it was rejected.
+
+**Solutions:**
+
+- If you care only about means: use the Welch $t$-test (robust to unequal variances) or the bootstrap test (shift method)
+- If you want a permutation test for means when variances may differ: use a standardized test statistic (Welch-type) but permute — this has approximately valid Type I error
+- Reserve permutation tests for settings where $F_1 = F_2$ is a plausible and scientifically meaningful null
+:::
+
+## Exchangeability: Randomized vs. Observational Studies
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 5.5
+#| fig-width: 14
+
+scenarios <- tibble(
+  Setting = c(
+    "RCT: treatment vs. placebo\n(randomized assignment)",
+    "Observational: blunt vs.\npenetrating trauma",
+    "Groups differ in variance\nbut not in mean",
+    "Paired data treated as\nindependent (wrong!)"
+  ),
+  Exchangeable = c("Yes", "Approximately", "No", "No"),
+  `Permutation Valid?` = c("Yes (exact)", "Approximately", "No (inflated Type I)", "No (ignores structure)"),
+  Recommendation = c(
+    "Permutation valid",
+    "Permutation OK;\nWelch t also reasonable",
+    "Bootstrap test or Welch t",
+    "Pair the data; use paired\nbootstrap or paired t-test"
+  )
+)
+
+scenarios |>
+  ggplot() +
+  theme_void(base_size = 14) +
+  annotate("text", x = 0.5, y = 0.97, fontface = "bold", size = 6,
+           label = "Permutation Test: Validity by Setting") +
+  annotate("rect", xmin = 0, xmax = 1, ymin = 0, ymax = 0.93,
+           fill = "grey97", color = "grey60") +
+  annotate("text", x = c(0.1, 0.36, 0.6, 0.88), y = 0.90,
+           label = c("Setting", "Exchangeable?", "Valid?", "Recommendation"),
+           fontface = "bold", size = 4.8, hjust = 0.5) +
+  {
+    ys <- c(0.75, 0.56, 0.37, 0.18)
+    cols <- c("#27ae60", "#f39c12", "#e74c3c", "#e74c3c")
+    pmap(list(scenarios$Setting, scenarios$Exchangeable,
+              scenarios$`Permutation Valid?`, scenarios$Recommendation,
+              ys, cols), function(s, e, v, r, y, co) {
+      list(
+        annotate("text", x = 0.1, y = y, label = s, size = 4, hjust = 0.5, color = "grey20"),
+        annotate("text", x = 0.36, y = y, label = e, size = 4, hjust = 0.5, color = co, fontface = "bold"),
+        annotate("text", x = 0.60, y = y, label = v, size = 4, hjust = 0.5, color = co),
+        annotate("text", x = 0.88, y = y, label = r, size = 4, hjust = 0.5, color = "grey30")
+      )
+    })
+  } +
+  xlim(0, 1) + ylim(0, 1)
+```
 
 ## Permutation Test: Implementation
 
@@ -296,6 +549,7 @@ p_welch <- t.test(los_blunt, los_penet)$p.value
 cat(sprintf("Observed mean difference:   %.3f days\n", t_obs))
 cat(sprintf("Permutation p-value:        %.4f\n",      p_perm))
 cat(sprintf("Welch t-test p-value:       %.4f\n",      p_welch))
+cat(sprintf("Bootstrap test p-value:     %.4f\n",      p_boot))
 ```
 
 ## Visualizing the Permutation Null Distribution
@@ -321,7 +575,7 @@ tibble(perm_diff = perm_diffs) |>
            size = 5.5, color = "#2c3e50") +
   labs(
     title    = "Permutation Null Distribution: Difference in Mean LOS",
-    subtitle = "Red lines mark \u00b1|T_obs|. Fraction of permuted statistics beyond = p-value.",
+    subtitle = "Red lines mark \u00b1|T_obs|. Fraction of permuted statistics beyond red = p-value.",
     x        = expression(bar(x)[1]^"*" - bar(x)[2]^"*" ~ "(days)"),
     y        = "Density"
   )
@@ -365,9 +619,44 @@ The permutation test for the variance ratio is valid regardless of distribution 
 
 # Bootstrap for Paired Data {background-color="#27ae60"}
 
+## Paired Data: Setup and the Crossover Trial Example
+
+**Paired data** arises when each subject provides two measurements:
+
+-   Crossover trials: same patient receives both treatments (in random order)
+-   Before-after studies: same patient measured at two time points
+-   Matched cohort studies: pairs matched on confounders
+
+The natural estimand is $\mu_D = E[D_i]$ where $D_i = X_{i,\text{post}} - X_{i,\text{pre}}$ (or Treatment $-$ Control).
+
+
+```{r}
+#| echo: true
+#| code-fold: true
+
+# True mean difference = -3 mmHg; SD of differences ≈ 10.5; n = 25
+set.seed(551)
+n_pair <- 25; rho_p <- 0.45
+L_p    <- chol(5^2 * matrix(c(1, rho_p, rho_p, 1), 2))
+xy_p   <- matrix(rnorm(2 * n_pair), n_pair, 2) %*% L_p +
+          matrix(c(0, -3), n_pair, 2, byrow = TRUE)
+
+bp_data <- tibble(
+  patient   = 1:n_pair,
+  placebo   = xy_p[, 1],
+  drug_A    = xy_p[, 2],
+  diff      = drug_A - placebo   # D_i = Drug - Placebo
+)
+
+cat(sprintf("Mean difference (Drug - Placebo): %.2f mmHg\n", mean(bp_data$diff)))
+cat(sprintf("SD of differences:                %.2f mmHg\n", sd(bp_data$diff)))
+cat(sprintf("Paired t-test p-value:            %.4f\n",
+            t.test(bp_data$drug_A, bp_data$placebo, paired = TRUE)$p.value))
+```
+
 ## Paired Bootstrap CI
 
-For paired data, the bootstrap resamples **entire pairs** $(D_i)$ with replacement which preserves the pairing structure.
+For paired data, the bootstrap resamples **entire pairs** $(D_i)$ with replacement, which preserves the pairing structure.
 
 **Algorithm:** for $b = 1, \ldots, B$:
 
@@ -382,26 +671,396 @@ No normality assumption on $D_i$.
 #| echo: true
 #| code-fold: false
 
-# Crossover trial differences from Lesson 19
-set.seed(42)
-n_pair <- 20; rho_p <- 0.75
-L_p    <- chol(10^2 * matrix(c(1, rho_p, rho_p, 1), 2))
-xy_p   <- matrix(rnorm(2 * n_pair), n_pair, 2) %*% L_p +
-          matrix(c(0, -10), n_pair, 2, byrow = TRUE)
-d_cross <- xy_p[, 2] - xy_p[, 1]
+d_cross <- bp_data$diff
 
 set.seed(551)
 boot_D         <- replicate(5000, mean(sample(d_cross, n_pair, replace = TRUE)))
 ci_boot_paired <- quantile(boot_D, c(0.025, 0.975))
 ci_t_paired    <- t.test(d_cross)$conf.int
 
-cat(sprintf("Paired t-test 95%% CI:  (%.3f, %.3f)\n",
+cat(sprintf("Observed mean difference:    %.3f mmHg\n", mean(d_cross)))
+cat(sprintf("Bootstrap SE:                %.3f\n", sd(boot_D)))
+cat(sprintf("Paired t-test  95%% CI: (%.3f, %.3f)\n",
             ci_t_paired[1], ci_t_paired[2]))
-cat(sprintf("Bootstrap    95%% CI:  (%.3f, %.3f)\n",
+cat(sprintf("Bootstrap      95%% CI: (%.3f, %.3f)\n",
             ci_boot_paired[1], ci_boot_paired[2]))
 ```
 
 With approximately normal differences and moderate $n$, the two CIs are very similar. The bootstrap shines when $D_i$ are clearly non-normal or $n$ is very small.
+
+## Visualizing the Paired Bootstrap Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 7
+#| fig-width: 15
+
+p_ci <- tibble(boot_mean_D = boot_D) |>
+  ggplot(aes(x = boot_mean_D)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 50,
+                 fill = "#27ae60", color = "white", alpha = 0.7) +
+  geom_density(color = "#2c3e50", linewidth = 1.1) +
+  geom_vline(xintercept = mean(d_cross), color = "#e74c3c", linewidth = 1.5) +
+  geom_vline(xintercept = ci_boot_paired, color = "#006a4e",
+             linewidth = 1.3, linetype = "dashed") +
+  geom_vline(xintercept = ci_t_paired, color = "#e74c3c",
+             linewidth = 1.0, linetype = "dotted") +
+  labs(
+    title    = "Paired Bootstrap Distribution: Mean BP Reduction",
+    subtitle = "Green dashed = bootstrap percentile CI\nRed dotted = paired t CI",
+    x        = expression(bar(D)^"*" ~ "(mmHg)"),
+    y        = "Density"
+  )
+
+p_pairs <- bp_data |>
+  pivot_longer(c(placebo, drug_A), names_to = "Treatment", values_to = "BP_reduction") |>
+  mutate(Treatment = factor(Treatment, levels = c("placebo", "drug_A"),
+                            labels = c("Placebo", "Drug A"))) |>
+  ggplot(aes(x = Treatment, y = BP_reduction, group = patient)) +
+  geom_line(alpha = 0.3, color = "grey50") +
+  geom_point(aes(color = Treatment), size = 3) +
+  scale_color_manual(values = c("Placebo" = "#e74c3c", "Drug A" = "#27ae60")) +
+  labs(title = "Crossover Trial: BP Reduction per Patient",
+       x = NULL, y = "BP Reduction (mmHg)") +
+  theme(legend.position = "none")
+
+p_pairs + p_ci
+```
+
+## Paired Bootstrap Test
+
+To **test** $H_0: \mu_D = 0$, we must shift the differences to satisfy $H_0$:
+
+$$\tilde{D}_i = D_i - \bar{D}$$
+
+Now $\{\tilde{D}_i\}$ have mean exactly 0 — $H_0$ is imposed. We then resample from the shifted differences.
+
+**Algorithm:** for $b = 1, \ldots, B$:
+
+1.  Draw $\tilde{D}_1^{*b}, \ldots, \tilde{D}_n^{*b}$ with replacement from $\{\tilde{D}_i\}$
+2.  Compute $T^{*b} = \bar{\tilde{D}}^{*b}$
+
+**p-value:** $\hat{p} = \frac{1}{B}\sum_{b=1}^B \mathbf{1}\bigl(|T^{*b}| \geq |\bar{D}_\text{obs}|\bigr)$
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+B_paired <- 9999
+D_obs    <- mean(d_cross)
+
+# Shift differences to mean 0 (imposing H0)
+d_shifted <- d_cross - mean(d_cross)
+
+cat(sprintf("Before shifting: mean(D) = %.4f\n", mean(d_cross)))
+cat(sprintf("After  shifting: mean(D_shift) = %.6f\n", mean(d_shifted)))
+
+# Resample from shifted differences
+boot_null_D <- replicate(B_paired,
+                         mean(sample(d_shifted, n_pair, replace = TRUE)))
+
+p_boot_paired <- mean(abs(boot_null_D) >= abs(D_obs))
+p_t_paired    <- t.test(d_cross)$p.value
+
+cat(sprintf("\nObserved mean difference:       %.3f mmHg\n", D_obs))
+cat(sprintf("Bootstrap test p-value:         %.4f\n",       p_boot_paired))
+cat(sprintf("Paired t-test p-value:          %.4f\n",       p_t_paired))
+```
+
+## Paired Bootstrap Null vs. Sampling Distribution
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+
+tibble(
+  value = c(boot_null_D, boot_D),
+  type  = rep(c("Null distribution (shifted, for testing)",
+                "Sampling distribution (for CI)"),
+              times = c(length(boot_null_D), length(boot_D)))
+) |>
+  ggplot(aes(x = value, fill = type)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 60,
+                 color = "white", alpha = 0.7, position = "identity") +
+  geom_vline(xintercept = D_obs, color = "#e74c3c", linewidth = 1.5) +
+  geom_vline(xintercept = -abs(D_obs), color = "#e74c3c",
+             linewidth = 1.5, linetype = "dashed") +
+  scale_fill_manual(values = c(
+    "Null distribution (shifted, for testing)"  = "#e74c3c",
+    "Sampling distribution (for CI)"            = "#27ae60"
+  )) +
+  annotate("text", x = D_obs + 0.3, y = 0.28,
+           label = bquote(bar(D)[obs] == .(round(D_obs, 2))),
+           color = "#e74c3c", size = 5.5, hjust = 0) +
+  labs(
+    title    = "Paired Bootstrap: Null Distribution vs. Sampling Distribution",
+    subtitle = "Red = shifted to H0 (for p-value)  |  Green = resampled as-is (for CI)",
+    x        = expression(bar(D)^"*" ~ "(mmHg)"),
+    y        = "Density",
+    fill     = NULL
+  ) +
+  theme(legend.position = "bottom")
+```
+
+::: callout-note
+The null distribution (red) is centered at $0$ — it was shifted to impose $H_0: \mu_D = 0$. The sampling distribution (green) is centered at $\bar{D}_\text{obs}$ and is used for the CI, not the test. Because the true effect is modest (~$-3$ mmHg with substantial within-subject variability), the two distributions overlap considerably, mirroring the borderline p-value.
+:::
+
+# The `infer` Package {background-color="#1a5276"}
+
+## The `infer` Package: Tidy Resampling Inference
+
+The `infer` package (part of the `tidymodels` ecosystem) provides a **unified, pipe-friendly framework** for hypothesis testing and interval estimation via simulation.
+
+The workflow follows four consistent verbs:
+
+| Step | Verb | What it does |
+|---|---|---|
+| 1 | `specify()` | Declare the response (and optional explanatory) variable |
+| 2 | `hypothesize()` | State the null hypothesis (for tests only) |
+| 3 | `generate()` | Generate bootstrap samples or permutations |
+| 4 | `calculate()` | Compute the statistic of interest |
+
+Then use `get_p_value()`, `get_confidence_interval()`, or `visualize()` to summarize.
+
+. . .
+
+::: callout-note
+## Why Use `infer`?
+- Consistent syntax across one-sample, two-sample, and paired settings
+- Integrates naturally with `dplyr` pipelines and tidy data
+- Makes the conceptual steps explicit: specify → hypothesize → generate → calculate
+- Excellent for teaching and reproducible research workflows
+:::
+
+## Setting Up the Data for `infer`
+
+The `infer` package requires **tidy (long) data** — one row per observation.
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Two-sample LOS data in tidy format
+los_tidy <- tibble(
+  LOS   = c(los_blunt, los_penet),
+  Group = rep(c("Blunt", "Penetrating"),
+              c(length(los_blunt), length(los_penet)))
+)
+
+los_tidy |> slice_sample(n = 6)
+
+# Paired blood pressure data in tidy format
+bp_tidy <- bp_data |>
+  select(patient, diff)   # use the already-computed differences
+
+bp_tidy |> slice_head(n = 6)
+```
+
+## Two-Sample Permutation Test with `infer`
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+
+# Step 1-2: Specify and hypothesize
+# Step 3: Generate permutation null distribution
+null_dist_perm <- los_tidy |>
+  specify(LOS ~ Group) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 9999, type = "permute") |>
+  calculate(stat = "diff in means", order = c("Blunt", "Penetrating"))
+
+# Observed statistic
+obs_stat <- los_tidy |>
+  specify(LOS ~ Group) |>
+  calculate(stat = "diff in means", order = c("Blunt", "Penetrating"))
+
+obs_stat
+
+# p-value
+pval_perm <- get_p_value(null_dist_perm, obs_stat, direction = "two-sided")
+pval_perm
+```
+
+## Visualizing the `infer` Permutation Distribution
+
+```{r}
+#| echo: true
+#| code-fold: false
+#| fig-height: 5.5
+#| fig-width: 12
+
+visualize(null_dist_perm) +
+  shade_p_value(obs_stat, direction = "two-sided") +
+  labs(
+    title    = "Permutation Null Distribution (via infer)",
+    subtitle = sprintf("p-value = %.4f  |  Observed difference = %.3f days",
+                       pval_perm$p_value, obs_stat$stat),
+    x        = "Difference in Mean LOS (Blunt - Penetrating, days)",
+    y        = "Count"
+  )
+```
+
+## Two-Sample Bootstrap CI with `infer`
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+
+# Bootstrap sampling distribution (no hypothesize step)
+boot_dist_ci <- los_tidy |>
+  specify(LOS ~ Group) |>
+  generate(reps = 5000, type = "bootstrap") |>
+  calculate(stat = "diff in means", order = c("Blunt", "Penetrating"))
+
+# Percentile confidence interval
+ci_infer <- get_confidence_interval(boot_dist_ci,
+                                    level = 0.95,
+                                    type  = "percentile")
+ci_infer
+
+# SE-based CI
+ci_infer_se <- get_confidence_interval(boot_dist_ci,
+                                       level = 0.95,
+                                       type  = "se",
+                                       point_estimate = obs_stat)
+ci_infer_se
+```
+
+## Visualizing the `infer` Bootstrap CI
+
+```{r}
+#| echo: true
+#| code-fold: false
+#| fig-height: 5.5
+#| fig-width: 12
+
+visualize(boot_dist_ci) +
+  shade_confidence_interval(ci_infer) +
+  geom_vline(xintercept = obs_stat$stat,
+             color = "#e74c3c", linewidth = 1.5) +
+  labs(
+    title    = "Bootstrap Sampling Distribution with 95% CI (via infer)",
+    subtitle = sprintf("Percentile CI: (%.3f, %.3f)  |  Observed = %.3f",
+                       ci_infer$lower_ci, ci_infer$upper_ci, obs_stat$stat),
+    x        = "Difference in Mean LOS (Blunt - Penetrating, days)",
+    y        = "Count"
+  )
+```
+
+## Two-Sample Bootstrap Test with `infer`: A Limitation
+
+::: callout-warning
+## `infer` does NOT implement the shift-bootstrap for two-sample tests
+
+`generate(type = "bootstrap")` with `hypothesize(null = "independence")` resamples each group **separately with replacement** — exactly the same as the CI bootstrap. The null distribution is centered at the **observed difference**, not at 0. Calling `get_p_value()` on this distribution is essentially asking "what fraction of bootstrap samples are at least as extreme as the observed value?" — against a distribution centered *at* the observed value — which returns a meaningless p-value near 0.5 or higher.
+
+The **shift-bootstrap** (C&H Ch. 8) must be implemented manually (as shown earlier in these slides). For two-sample hypothesis testing in `infer`, always use `type = "permute"`.
+:::
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Demonstrate the issue: bootstrap + hypothesize gives wrong null distribution
+set.seed(551)
+null_dist_boot_wrong <- los_tidy |>
+  specify(LOS ~ Group) |>
+  hypothesize(null = "independence") |>
+  generate(reps = 9999, type = "bootstrap") |>
+  calculate(stat = "diff in means", order = c("Blunt", "Penetrating"))
+
+cat(sprintf("Center of bootstrap 'null' distribution: %.3f\n",
+            mean(null_dist_boot_wrong$stat)))
+cat(sprintf("  (should be ~0 under H0; instead equals observed diff)\n"))
+cat(sprintf("Observed difference:                     %.3f\n", obs_stat$stat))
+cat(sprintf("'p-value' from this (invalid):           %.4f\n",
+            get_p_value(null_dist_boot_wrong, obs_stat,
+                        direction = "two-sided")$p_value))
+cat(sprintf("Permutation p-value (correct):           %.4f\n", pval_perm$p_value))
+```
+
+## Paired Bootstrap with `infer`
+
+For paired data, work directly with the **differences** as a one-sample problem:
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+
+# Bootstrap CI for mean difference (one-sample on differences)
+boot_paired_infer <- bp_tidy |>
+  specify(response = diff) |>
+  generate(reps = 5000, type = "bootstrap") |>
+  calculate(stat = "mean")
+
+ci_paired_infer <- get_confidence_interval(boot_paired_infer,
+                                           level = 0.95,
+                                           type  = "percentile")
+
+# Bootstrap test: H0: mu_D = 0
+obs_mean_D <- bp_tidy |>
+  specify(response = diff) |>
+  calculate(stat = "mean")
+
+null_paired_infer <- bp_tidy |>
+  specify(response = diff) |>
+  hypothesize(null = "point", mu = 0) |>
+  generate(reps = 9999, type = "bootstrap") |>
+  calculate(stat = "mean")
+
+pval_paired_infer <- get_p_value(null_paired_infer, obs_mean_D, direction = "two-sided")
+
+cat(sprintf("Observed mean difference:   %.3f mmHg\n", obs_mean_D$stat))
+cat(sprintf("Bootstrap CI (percentile):  (%.3f, %.3f)\n",
+            ci_paired_infer$lower_ci, ci_paired_infer$upper_ci))
+cat(sprintf("Bootstrap test p-value:     %.4f\n", pval_paired_infer$p_value))
+cat(sprintf("Paired t-test p-value:      %.4f\n", p_t_paired))
+```
+
+## `infer` Workflow Summary
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 5.5
+#| fig-width: 14
+
+summary_tbl <- tribble(
+  ~Goal,                        ~`specify()`,          ~`hypothesize()`,             ~`generate()`,             ~`calculate()`,
+  "Two-sample CI",              "Y ~ Group",           "(none)",                     "bootstrap",               "diff in means/medians",
+  "Two-sample perm. test",      "Y ~ Group",           "independence",               "permute",                 "diff in means/medians",
+  "Paired CI",                  "response = diff",     "(none)",                     "bootstrap",               "mean",
+  "Paired boot. test",          "response = diff",     "point, mu = 0",              "bootstrap",               "mean"
+)
+
+summary_tbl |>
+  knitr::kable(format = "html") |>
+  kableExtra::kable_styling(font_size = 18, full_width = TRUE,
+                            bootstrap_options = c("striped", "hover"))
+```
+
+. . .
+
+::: callout-tip
+## When to Choose What
+
+- **`type = "permute"`:** Two-sample hypothesis testing. Generates the null distribution by relabeling groups — the only correct `infer` approach for two-sample tests.
+- **`type = "bootstrap"` without `hypothesize()`:** Constructing CIs (sampling distribution centered at observed statistic).
+- **`type = "bootstrap"` with `hypothesize(null = "point")`:** One-sample bootstrap tests (shifts distribution to $H_0$ value). Works correctly for one-sample settings only.
+- **Two-sample shift-bootstrap test:** Must be coded manually (see earlier section) — `infer` does not support it.
+:::
 
 # Comparing Methods: Simulation {background-color="#9b59b6"}
 
@@ -419,8 +1078,6 @@ set.seed(551)
 B_sim  <- 3000
 B_perm <- 499
 
-# chi-squared(2): mean = 2, heavily right-skewed (skewness = 2*sqrt(2) ~ 2.8)
-# shifted to mean 0 for fair comparison
 sim_scenario <- function(dist_fn, n = 10, effect = 0) {
   replicate(B_sim, {
     x1  <- dist_fn(n)
@@ -442,17 +1099,17 @@ sim_scenario <- function(dist_fn, n = 10, effect = 0) {
 }
 
 norm_fn <- \(n) rnorm(n, 0, 1)
-skew_fn <- \(n) rchisq(n, df = 2) - 2   # shifted chi-sq(2), mean = 0
+skew_fn <- \(n) rchisq(n, df = 2) - 2
 
 results <- bind_rows(
   bind_rows(
     sim_scenario(norm_fn, n = 10, effect = 0.0) |> mutate(Scenario = "Type I Error (effect = 0)"),
     sim_scenario(norm_fn, n = 10, effect = 1.0) |> mutate(Scenario = "Power (effect = 1 SD)")
-  ) |> mutate(Distribution = "Normal(0,1) — symmetric"),
+  ) |> mutate(Distribution = "Normal(0,1) \u2014 symmetric"),
   bind_rows(
     sim_scenario(skew_fn, n = 10, effect = 0.0) |> mutate(Scenario = "Type I Error (effect = 0)"),
     sim_scenario(skew_fn, n = 10, effect = 1.0) |> mutate(Scenario = "Power (effect = 1 SD)")
-  ) |> mutate(Distribution = "chi-sq(2) shifted — heavily right-skewed")
+  ) |> mutate(Distribution = "chi-sq(2) shifted \u2014 heavily right-skewed")
 )
 
 results |>
@@ -460,11 +1117,10 @@ results |>
                names_to = "Method", values_to = "Rate") |>
   mutate(
     Scenario     = factor(Scenario,
-                          levels = c("Type I Error (effect = 0)",
-                                     "Power (effect = 1 SD)")),
+                          levels = c("Type I Error (effect = 0)", "Power (effect = 1 SD)")),
     Distribution = factor(Distribution,
-                          levels = c("Normal(0,1) — symmetric",
-                                     "chi-sq(2) shifted — heavily right-skewed"))
+                          levels = c("Normal(0,1) \u2014 symmetric",
+                                     "chi-sq(2) shifted \u2014 heavily right-skewed"))
   ) |>
   ggplot(aes(x = Method, y = Rate, fill = Method)) +
   geom_col(width = 0.5) +
@@ -484,7 +1140,7 @@ results |>
   scale_y_continuous(labels = scales::percent, limits = c(0, 0.95)) +
   labs(
     title    = "Welch t-test vs. Permutation Test  (n = 10 per group, 3000 simulations)",
-    subtitle = "Both methods control Type I error near 5% and have similar power — permutation's advantage is flexibility.",
+    subtitle = "Both methods control Type I error near 5% and have similar power \u2014 permutation's advantage is flexibility.",
     x = NULL, y = "Rejection Rate", fill = NULL
   ) +
   theme(legend.position = "bottom",
@@ -492,27 +1148,85 @@ results |>
 ```
 
 ::: callout-note
-The two-sided Welch $t$-test is **robust to skewness for Type I error** even at small $n$: skewness makes each tail individually wrong, but in a two-sided test the errors in the two tails largely cancel. The simulation below confirms this — the two methods agree closely. Permutation's advantage is **generality**: it works with *any* test statistic, not just means.
+The two-sided Welch $t$-test is **robust to skewness for Type I error** even at small $n$: skewness makes each tail individually wrong, but in a two-sided test the errors largely cancel. Permutation's advantage is **generality**: it works with *any* test statistic, not just means.
 :::
-
 
 # Key Takeaways {background-color="#2c3e50"}
 
-## Key Takeaways (C&H Ch. 3, 5; DBC 10.6)
+## Key Takeaways (C&H Ch. 3, 5, 8; DBC 10.6)
 
 ::: callout-important
 ## Bootstrap and Permutation for Two Samples
 
-1.  **Two-sample bootstrap CI:** Resample each group **independently** with replacement; construct percentile or basic CI. Works for any statistic — means, medians, SD ratios, etc. No distributional assumption
+1.  **Two-sample bootstrap CI:** Resample each group **independently** with replacement; construct percentile, basic, or SE CI. Works for any statistic. No distributional assumption.
 
-2.  **Permutation test:** Pool all $N$ observations, **relabel** groups at random; fraction of permuted statistics $\geq |T_\text{obs}|$ gives a valid p-value under $H_0: F_1 = F_2$ (exchangeability)
+2.  **Two-sample bootstrap test:** Shift both samples to satisfy $H_0$ (equal grand mean), then resample to generate null distribution. Use when permutation assumptions are not met.
 
-3.  **Bootstrap** $\neq$ permutation: Bootstrap approximates the **sampling distribution** of $\hat\theta$ (for CIs); permutation approximates the **null distribution** of $T$ (for testing); they solve different problems and use data differently
+3.  **Permutation test:** Pool all $N$ observations, **relabel** groups at random; fraction of permuted statistics $\geq |T_\text{obs}|$ gives a valid p-value under $H_0: F_1 = F_2$ (**exchangeability**). Most natural for randomized experiments.
 
-4.  **Paired bootstrap:** Resample **whole pairs** $(D_i)$ to preserve the pairing structure; produces CI for $\mu_D$ without normality assumption
+4.  **Permutation validity:** Requires **exchangeability** — groups can only differ in label, not in variance or shape, under $H_0$. Fails for paired/clustered data and when groups differ on nuisance parameters.
 
-5.  **When to prefer resampling:** Small $n$ with non-normal data; non-standard statistics with no closed-form SE; any setting where parametric assumptions are doubtful
+5.  **Paired bootstrap CI:** Resample **whole pairs/differences** to preserve pairing; CI for $\mu_D$ with no normality assumption.
+
+6.  **Paired bootstrap test:** Shift differences to mean 0 (imposing $H_0: \mu_D = 0$), then resample; gives valid p-value without normality.
+
+7.  **`infer` package:** Unified specify → hypothesize → generate → calculate pipeline. Use `type = "permute"` for two-sample tests and `type = "bootstrap"` for CIs and one-sample tests. The shift-bootstrap for two-sample testing must be coded manually.
 :::
+
+## Method Decision Guide
+
+```{r}
+#| echo: false
+#| fig-height: 6
+#| fig-width: 14
+
+decision_tbl <- tribble(
+  ~Setting,              ~Estimand,        ~CI_Method,            ~Test_Method,
+  "Two independent\nsamples (any stat)", "Any\n(mean, median, SD ratio)", "Two-sample\nbootstrap", "Permutation (if\nexchangeable)\nor bootstrap test",
+  "Two independent\nsamples (mean only)", expression(mu[1]-mu[2]),    "Welch t or\nbootstrap",     "Welch t or\npermutation",
+  "Paired / matched\ndata",              expression(mu[D]),           "Paired t or\npaired bootstrap", "Paired t or\npaired bootstrap test",
+  "Non-normal,\nsmall n",               "Any",                    "Bootstrap\n(percentile)", "Bootstrap\ntest"
+)
+
+tibble(
+  x     = c(1, 2, 3, 4),
+  label = c("Two independent\nsamples\n(any statistic)",
+            "Two independent\nsamples\n(mean only)",
+            "Paired /\nmatched data",
+            "Non-normal\nor small n"),
+  ci    = c("Two-sample\nbootstrap CI",
+            "Welch t CI or\nbootstrap CI",
+            "Paired t CI or\npaired bootstrap CI",
+            "Bootstrap CI\n(percentile)"),
+  test  = c("Permutation test\n(if exchangeable)\nor bootstrap test",
+            "Welch t-test or\npermutation test",
+            "Paired t-test or\npaired bootstrap test",
+            "Bootstrap test")
+) |>
+  ggplot() +
+  theme_void(base_size = 15) +
+  # Setting boxes
+  geom_tile(aes(x = x, y = 3), width = 0.85, height = 0.75,
+            fill = "#2c3e50", color = "white") +
+  geom_text(aes(x = x, y = 3, label = label), color = "white",
+            size = 4.2, lineheight = 1.1) +
+  # CI row
+  geom_tile(aes(x = x, y = 1.8), width = 0.85, height = 0.75,
+            fill = "#3498db", color = "white") +
+  geom_text(aes(x = x, y = 1.8, label = ci), color = "white",
+            size = 4, lineheight = 1.1) +
+  # Test row
+  geom_tile(aes(x = x, y = 0.6), width = 0.85, height = 0.75,
+            fill = "#e74c3c", color = "white") +
+  geom_text(aes(x = x, y = 0.6, label = test), color = "white",
+            size = 4, lineheight = 1.1) +
+  # Row labels
+  annotate("text", x = -0.05, y = 3,   label = "Setting",     fontface = "bold", size = 5, color = "#2c3e50", hjust = 1) +
+  annotate("text", x = -0.05, y = 1.8, label = "CI Method",   fontface = "bold", size = 5, color = "#3498db", hjust = 1) +
+  annotate("text", x = -0.05, y = 0.6, label = "Test Method", fontface = "bold", size = 5, color = "#e74c3c", hjust = 1) +
+  xlim(-1.1, 4.5) + ylim(0, 3.5) +
+  labs(title = "Method Decision Guide for Two-Sample Inference")
+```
 
 ## Looking Ahead
 
@@ -526,8 +1240,9 @@ The two-sided Welch $t$-test is **robust to skewness for Type I error** even at 
 ## References
 
 ::: nonincremental
--   Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapters 3 and 5.
+-   Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapters 3, 5, and 8.
 -   Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Section 10.6.
+-   Couch, S., Bray, A., et al. *infer: An R package for tidyverse-friendly statistical inference*. JOSS, 2021. <https://infer.tidymodels.org>
 :::
 
 ## Questions? {.center background-color="#3498db"}
@@ -539,5 +1254,3 @@ Thank you!
 #| include: false
 decktape reveal --fragments docs/lessons/20_BootstrapPermutation/20_BootstrapPermutation.html lessons/20_BootstrapPermutation/20_BootstrapPermutation.pdf
 ```
-
-::::::::
