@@ -1,0 +1,210 @@
+---
+title: "BSTA 551: Theory of Statistical Inference"
+subtitle: "Final Exam"
+author: ""
+date-modified: "2026-03-06"
+description: "Take-home exam covering Lessons 1-21; Due: `r library(here); source(here('class_dates.R')); final_close %>% format('%m/%d')` at 11pm"
+format:
+  html:
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    html-math-method: mathjax
+    theme: cosmo
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+---
+
+> **Instructions:**  
+> This is a take-home exam. You may use your notes, textbooks, and R. You may **not** collaborate with other students or seek help from any person other than the instructor or TA.  
+> Show all work for full credit. Partial credit is awarded for correct reasoning even if the final answer contains an error.  
+> Submit a single knitted PDF or HTML file along with qmd file via Sakai.  
+> **Total: 100 points + 5 bonus points**
+
+
+The qmd file can be found [here](https://github.com/jminnier/BSTA551_W26/blob/main/homework/Final_Exam.qmd) or on Sakai.
+
+Include the self-contained option in your yaml so that the knitted html is one file not multiple files:
+
+```yaml
+format:
+  html:
+    embed-resources: true
+```
+
+---
+
+# Problem 1 — Confidence Intervals and the CI–Test Duality (20 points)
+
+Researchers studying blood pressure reduction in hypertensive patients record systolic blood pressure changes (post $-$ pre, in mmHg) for $n = 16$ patients after a new antihypertensive drug. They observe $\bar{x} = -8.4$ mmHg and $s = 6.2$ mmHg. Assume the changes are normally distributed.
+
+**(a)** (4 pts) Construct a 95% two-sided confidence interval for the true mean reduction $\mu$. State clearly which distribution you use and why.
+
+**(b)** (3 pts) Without performing any new calculations, use the interval from (a) to conduct a two-sided test of $H_0: \mu = 0$ versus $H_a: \mu \neq 0$ at the $\alpha = 0.05$ level. State your conclusion and explain the duality principle you are using.
+
+**(c)** (4 pts) A second research group reports a 90% confidence interval for a similar mean: $(-11.2,\; -3.0)$ based on $n = 25$ patients. Explain conceptually (without a formula) why this interval is narrower at 90% confidence despite having a larger sample.
+
+**(d)** (4 pts) The researchers want to report a bootstrap percentile interval instead. Describe, in precise mathematical steps, how you would construct a 95% bootstrap percentile confidence interval for $\mu$ given the original sample of $n = 16$ observations. Under what conditions is the bootstrap percentile interval preferred over the classical $t$-interval, and when might the studentized bootstrap $t$-interval be preferable?
+
+**(e)** (5 pts) In a follow-up analysis of the same trial, the researchers report that 10 out of 16 patients achieved a clinically meaningful reduction of more than 5 mmHg. Let $p$ denote the true probability of achieving this threshold.
+
+Using R, compute and report:
+
+- The **Wald** 95% confidence interval for $p$
+- The **Wilson (Score)** 95% confidence interval for $p$
+- The **Agresti-Coull** 95% confidence interval for $p$
+
+Compare the three intervals numerically. Which would you recommend reporting, and why? Your answer should reference the coverage properties discussed in class and comment on whether the sample size and observed proportion raise any concerns for the Wald interval in particular.
+
+```{r}
+n_prop <- 16
+x_prop <- 10
+```
+
+---
+
+# Problem 2 — Hypothesis Testing: Framework, Power, and Sample Size (20 points)
+
+A pharmaceutical company claims that fewer than 10% of patients experience a serious adverse event (SAE) with their new drug. A regulatory agency conducts an independent trial. Let $p$ denote the true SAE probability. The agency tests:
+
+$$H_0: p = 0.10 \qquad \text{vs.} \qquad H_a: p < 0.10$$
+
+using $n = 200$ patients, with rejection region $\hat{p} < c$ for some cutoff $c$, where $\hat{p} = X/n$ and $X \sim \text{Binomial}(n, p)$.
+
+**(a)** (4 pts) Define Type I error and Type II error in the context of this problem. What are the practical consequences of each error type for patients and for drug regulation?
+
+**(b)** (5 pts) Using a normal approximation, determine the cutoff $c$ such that the test has level $\alpha = 0.05$. Express your answer in terms of $n$ and state the numerical value.
+
+**(c)** (5 pts) Compute the power of the test at $p_a = 0.06$ (the true SAE rate). That is, calculate $P(\hat{p} < c \mid p = 0.06)$ using the cutoff found in (b).
+
+**(d)** (3 pts) Suppose the agency instead wants power of at least 0.90 at $p_a = 0.06$, with $\alpha = 0.05$. Write down the sample size formula for a one-sided test of proportions and determine the required $n$.
+
+**(e)** (3 pts) A researcher argues: "Because our p-value was 0.03, there is a 3% chance the drug is harmful." Identify the error in this statement and provide a correct interpretation of a p-value of 0.03 in this context.
+
+---
+
+# Problem 3 — Neyman-Pearson Lemma and Likelihood Ratio Tests (20 points)
+
+Let $X_1, \ldots, X_n$ be a random sample from an exponential distribution with mean $\theta > 0$:
+
+$$f(x \mid \theta) = \frac{1}{\theta} e^{-x/\theta}, \quad x > 0.$$
+
+This model arises in survival analysis, where $X_i$ represents the time-to-event (e.g., days to hospital readmission) for patient $i$.
+
+**(a)** (5 pts) Consider testing $H_0: \theta = \theta_0$ versus $H_a: \theta = \theta_1$ where $\theta_1 > \theta_0$. Apply the **Neyman-Pearson Lemma** to derive the form of the most powerful (MP) test. Show that the MP test rejects $H_0$ when $\bar{X} > c$ for some constant $c$, and explain why this direction makes intuitive sense.
+
+**(b)** (4 pts) Derive the **likelihood ratio test (LRT)** statistic $\Lambda$ for testing:
+
+$$H_0: \theta = \theta_0 \qquad \text{vs.} \qquad H_a: \theta \neq \theta_0.$$
+
+You do not need to simplify the ratio, just report the rejection region in terms of $\Lambda$ and a cut-off $c$.
+
+**(c)** (3 pts) Describe how we would we choose $c$ in the above LRT if we want a type I error of 0.05. You don't need to do the calculation, just explain what information we need to choose this value and what equation we need to solve based on type I error.
+
+**(d)** (4 pts) Under $H_0$, what is the asymptotic distribution of $-2\log\Lambda$? State the relevant theorem and the degrees of freedom. How would you use this result to find the critical value for a level $\alpha = 0.05$ test?
+
+**(e)** (4 pts) In survival data, times to readmission for $n = 30$ patients give $\sum x_i = 1{,}350$ days. The claimed average readmission time is $\theta_0 = 50$ days. Compute $\bar{x}$, evaluate $-2\log\Lambda$, and state your conclusion at the 5% level.
+
+---
+
+# Problem 4 — Two-Sample Inference (20 points)
+
+A randomized controlled trial (RCT) compares two antidepressants. The primary endpoint is change in Hamilton Depression Rating Scale (HDRS) score after 8 weeks (lower is better). Results:
+
+| Group | $n$ | $\bar{x}$ | $s$ |
+|-------|-----|-----------|-----|
+| Drug A | 45 | $-9.2$ | $4.8$ |
+| Drug B | 42 | $-7.1$ | $6.3$ |
+
+Let $\mu_1$ and $\mu_2$ denote the true mean HDRS changes for Drug A and Drug B, respectively.
+
+**(a)** (4 pts) State the hypotheses for testing whether Drug A produces a greater mean reduction than Drug B. Write the Welch two-sample $t$-test statistic and explain why Welch's procedure is preferred over the pooled-variance $t$-test here.
+
+**(b)** (5 pts) Compute the Welch test statistic numerically. Use the Satterthwaite approximation to find the degrees of freedom (you may round to the nearest integer). State your conclusion at $\alpha = 0.05$ using either a critical value or p-value comparison.
+
+**(c)** (4 pts) Construct a 95% confidence interval for $\mu_1 - \mu_2$ using the Welch procedure. Interpret this interval in the context of the clinical trial.
+
+**(d)** (3 pts) A colleague suggests using an $F$-test to first check whether $\sigma_1^2 = \sigma_2^2$, and only then deciding whether to use pooled or Welch $t$. Discuss one theoretical argument against this sequential testing strategy.
+
+**(e)** (4 pts) Describe how you would use a **permutation test** to test $H_0: \mu_1 = \mu_2$ without any distributional assumptions. What statistic would you permute, and how would you obtain a p-value?
+
+---
+
+# Problem 5 — Paired Data and Nonparametric Inference (20 points)
+
+In a crossover study of pain management, 12 patients each received both treatments (opioid vs. non-opioid analgesic) in random order, separated by a washout period. The pain scores (0–10 scale) after each treatment are below.
+
+| Patient | Opioid ($X$) | Non-opioid ($Y$) | Difference $D = X - Y$ |
+|---------|------------|-----------------|------------------------|
+| 1 | 2 | 5 | −3 |
+| 2 | 4 | 4 | 0 |
+| 3 | 1 | 3 | −2 |
+| 4 | 3 | 6 | −3 |
+| 5 | 5 | 5 | 0 |
+| 6 | 2 | 7 | −5 |
+| 7 | 4 | 4 | 0 |
+| 8 | 3 | 6 | −3 |
+| 9 | 1 | 4 | −3 |
+| 10 | 5 | 8 | −3 |
+| 11 | 2 | 3 | −1 |
+| 12 | 4 | 5 | −1 |
+
+```{r}
+d <- c(-3, 0, -2, -3, 0, -5, 0, -3, -3, -3, -1, -1)
+```
+
+
+**(a)** (3 pts) Explain why a paired analysis is more appropriate than a two-sample test for this study design. What assumption does the paired $t$-test require that may be questionable here?
+
+**(b)** (4 pts) Conduct a paired $t$-test for $H_0: \mu_D = 0$ vs. $H_a: \mu_D \neq 0$. Compute $\bar{d}$, $s_D$, the test statistic using the equation in the slides (not output from `t.test()` but by hand), and state your conclusion at $\alpha = 0.05$.
+
+**(c)** (5 pts) Perform the **sign test** for $H_0: M_D = 0$ vs. $H_a: M_D \neq 0$, where $M_D$ is the median difference.  Identify the test statistic, compute its exact p-value (compute the test statistic and p-value by hand using `pbinom()`), and state your conclusion. 
+
+**(d)** (5 pts) Describe the **Wilcoxon signed-rank test** for this scenario. What additional assumption does it make compared to the sign test? List the steps you would take to compute the test statistic $W^+$ (you do not need to compute it numerically for this problem, but if you want to, describe the steps as well either in text or in code comments).
+
+**(e)** (3 pts) The paired $t$-test and Wilcoxon signed-rank test lead to the same directional conclusion here. Explain the general conditions under which a nonparametric test is preferred over a parametric one, and when the parametric test retains an advantage despite non-normality.
+
+---
+
+# Bonus Problem — MLE, Fisher Information, and Proportion Intervals (5 points, optional)
+
+A clinical trial evaluates a new treatment for antibiotic-resistant urinary tract infections. Each patient is independently classified as cured or not cured; let $p \in (0,1)$ be the true probability of cure. Suppose $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \text{Bernoulli}(p)$.
+
+**(a)** (1 pt) Derive the MLE $\hat{p}$ of $p$ by maximizing the log-likelihood. Show your work.
+
+**(b)** (2 pts) Derive the Fisher information $I(p)$ for a single Bernoulli$(p)$ observation using the second-derivative formula:
+
+$$I(p) = -E\!\left[\frac{\partial^2}{\partial p^2} \log f(X \mid p)\right].$$
+
+State the Cramér–Rao Lower Bound for any unbiased estimator of $p$ based on $n$ observations, and show whether $\hat{p}$ achieves it.
+
+**(c)** (2 pts) In a trial of $n = 50$ patients, $x = 34$ are cured. Using R, compute and report:
+
+- The **Wald** 95% confidence interval for $p$
+- The **Wilson (Score)** 95% confidence interval for $p$
+
+Briefly comment on which interval you would prefer to report and why, referencing the coverage properties discussed in class.
+
+```{r}
+# Your R code here
+n_bonus <- 50
+x_bonus <- 34
+```
+
+---
+
+*Good luck!*

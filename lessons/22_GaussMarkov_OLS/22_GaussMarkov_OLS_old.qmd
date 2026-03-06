@@ -1,0 +1,1032 @@
+---
+title: "Lesson 22: Gauss-Markov Theorem and OLS Theory"
+subtitle: "BSTA 551: Statistical Inference: Bridging Estimation Theory to Linear Regression"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w10d1`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 22 - Gauss-Markov Theorem and OLS Theory
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 22: Gauss-Markov and OLS Theory {background-color="#2c3e50"}
+
+## Where We've Been, and Where We're Going
+
+**Lessons 1–6: Point Estimation Theory**
+
+- Bias, variance, MSE
+- MVUE: minimum variance among **all** unbiased estimators
+- Cramér-Rao Lower Bound, Fisher Information
+- Rao-Blackwell, Lehmann-Scheffé
+
+. . .
+
+**Lessons 7–21:** Confidence intervals, hypothesis testing, bootstrap, nonparametric methods
+
+. . .
+
+**Today:** How does all of that theory connect to **linear regression**, the crux of applied statistics?
+
+::: callout-note
+## Why This Matters
+Your applied courses (regression, GLMs, mixed models) rely fundamentally on the optimality theory we have built. Today we make that connection explicit.
+:::
+
+## Today's Goals
+
+1. Define the **simple linear regression (SLR) model** and the Gauss-Markov assumptions
+2. Derive the **OLS estimators** from the principle of least squares
+3. Prove OLS estimators are **linear** and **unbiased**
+4. Derive their **exact variances**
+5. State and prove the **Gauss-Markov Theorem**: OLS is BLUE
+6. Connect BLUE → **MVUE** under the additional assumption of normality
+7. Simulate to see the theorem in action with a **medical research example**
+
+## Textbook References
+
+| Topic | DBC | Notes |
+|-------|-----|-------|
+| SLR model and OLS derivation | §12.1 | Normal equations, $\hat\beta_0$, $\hat\beta_1$ |
+| Unbiasedness, $\text{Var}(\hat\beta_1)$ | §12.2 | Properties under GM assumptions |
+| Gauss-Markov Theorem (BLUE) | §12.2 | Stated in DBC, proof here |
+| OLS = MLE under normality | §12.2 | Connects to inference (t-tests) |
+| Weighted least squares | §12.9 | When homoscedasticity fails |
+
+. . .
+
+::: callout-tip
+## Notation
+DBC uses $\beta_0, \beta_1$ for the **true** parameters and $\hat\beta_0, \hat\beta_1$ for the **OLS estimates**.
+We will use this convention throughout.
+:::
+
+# Part 1: The Simple Linear Regression Model {background-color="#8e44ad"}
+
+## Motivating Example: Gestational Age and Birth Weight
+
+A neonatologist wants to predict **birth weight** (grams) from **gestational age** (weeks) in premature infants.
+
+```{r}
+#| code-fold: true
+#| fig-height: 4.8
+set.seed(551)
+n <- 60
+gest_age   <- runif(n, min = 26, max = 36)
+birth_wt   <- -3200 + 170 * gest_age + rnorm(n, 0, 120)
+
+preterm <- tibble(gestational_age = gest_age, birth_weight = birth_wt)
+
+ggplot(preterm, aes(x = gestational_age, y = birth_weight)) +
+  geom_point(color = "#2c3e50", alpha = 0.7, size = 2.5) +
+  geom_smooth(method = "lm", se = TRUE, color = "#e74c3c", linewidth = 1.3) +
+  labs(
+    title = "Birth Weight vs. Gestational Age in Premature Infants",
+    x = "Gestational Age (weeks)",
+    y = "Birth Weight (grams)"
+  ) +
+  theme(plot.title = element_text(size = 16))
+```
+
+**Question:** What is the "best" line through these data, and in what sense is it best?
+
+## The Simple Linear Regression Model
+
+::: callout-important
+## Model (DBC §12.1)
+
+$$Y_i = \beta_0 + \beta_1 x_i + \varepsilon_i, \quad i = 1, \ldots, n$$
+
+where:
+
+- $Y_i$ = response (random variable) for the $i$-th observation
+- $x_i$ = predictor value (fixed, non-random), in a **fixed-design** setup
+- $\beta_0$ = true intercept (unknown parameter)
+- $\beta_1$ = true slope (unknown parameter)
+- $\varepsilon_i$ = random error term
+:::
+
+. . .
+
+**Notice:** The $x_i$'s are **not random**; we treat them as known constants.
+
+This is different from our earlier iid setup! The $Y_i$'s are **independent but not identically distributed**: each has a different mean $\beta_0 + \beta_1 x_i$.
+
+## The Gauss-Markov Theorem: Our Destination
+
+Before examining the assumptions, let's state the theorem we are building toward.
+
+::: callout-important
+## Gauss-Markov Theorem (preview)
+
+Under four conditions on the error terms $\varepsilon_i$, the OLS estimators $\hat\beta_0$ and $\hat\beta_1$ are the **Best Linear Unbiased Estimators** (BLUE) of $\beta_0$ and $\beta_1$.
+
+That is, among all estimators that are (1) linear functions of $Y_1, \ldots, Y_n$ and (2) unbiased, OLS has the **smallest variance**.
+
+$$\text{Var}(\hat\beta_1^{\text{OLS}}) \leq \text{Var}(\tilde\beta_1) \quad \text{for every linear unbiased } \tilde\beta_1$$
+:::
+
+. . .
+
+**Why does this matter?** This is the regression analog of everything we built in Lessons 1–6: MVUE, CRLB, sufficiency. The four conditions (the **Gauss-Markov assumptions**) are exactly what makes OLS optimal. Understanding them tells you when OLS is trustworthy, and what to do when it is not.
+
+## The Gauss-Markov Assumptions
+
+::: callout-important
+## Gauss-Markov (GM) Assumptions
+
+1. **Linearity:** $E[Y_i] = \beta_0 + \beta_1 x_i$ (the mean follows a line)
+2. **Independence:** $\varepsilon_1, \ldots, \varepsilon_n$ are independent
+3. **Zero mean:** $E[\varepsilon_i] = 0$ for all $i$
+4. **Homoscedasticity:** $\text{Var}(\varepsilon_i) = \sigma^2$ for all $i$ (same variance; **no normality required!**)
+:::
+
+. . .
+
+**Key point:** The Gauss-Markov theorem does **not** require normality.
+
+Under these four assumptions alone, OLS is BLUE.
+
+Under the additional assumption $\varepsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$, OLS is even stronger: it equals the MLE and is the MVUE, not just BLUE.
+
+## Checking the GM Assumptions in Our Example
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.0
+fit <- lm(birth_weight ~ gestational_age, data = preterm)
+aug <- augment(fit)
+
+p1 <- ggplot(aug, aes(x = .fitted, y = .resid)) +
+  geom_point(alpha = 0.6, color = "#2c3e50") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(
+    title = "Residuals vs. Fitted",
+    x = expression(hat(Y)[i]),
+    y = expression(hat(epsilon)[i])
+  )
+
+p2 <- ggplot(aug, aes(sample = .resid)) +
+  stat_qq(color = "#2c3e50", alpha = 0.7) +
+  stat_qq_line(color = "red", linetype = "dashed") +
+  labs(title = "Normal Q-Q Plot of Residuals",
+       x = "Theoretical Quantiles", y = "Sample Quantiles")
+
+p1 + p2 +
+  plot_annotation(title = "Regression Diagnostics: Birth Weight vs. Gestational Age")
+```
+
+. . .
+
+Residuals look scattered around zero with roughly constant spread; the GM assumptions appear reasonable here.
+
+# Part 2: The OLS Estimators: Derivation {background-color="#2980b9"}
+
+## The Principle of Least Squares
+
+**Question:** Given data $(x_1, Y_1), \ldots, (x_n, Y_n)$, how do we choose $\hat\beta_0$ and $\hat\beta_1$?
+
+. . .
+
+::: callout-important
+## Principle of Least Squares (DBC §12.1)
+
+Choose $\hat\beta_0$ and $\hat\beta_1$ to minimize the **residual sum of squares**:
+
+$$\text{RSS}(\beta_0, \beta_1) = \sum_{i=1}^n \left(Y_i - \beta_0 - \beta_1 x_i\right)^2$$
+:::
+
+. . .
+
+This minimizes the total squared vertical distance from each data point to the line.
+
+**Why squares?** Calculus works cleanly; squared deviations penalize large errors more than small ones; connects to maximum likelihood under normality (see later).
+
+## Deriving the OLS Estimates: Normal Equations
+
+Take partial derivatives and set to zero:
+
+$$\frac{\partial \text{RSS}}{\partial \beta_0} = -2\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i) = 0$$
+
+$$\frac{\partial \text{RSS}}{\partial \beta_1} = -2\sum_{i=1}^n x_i(Y_i - \beta_0 - \beta_1 x_i) = 0$$
+
+. . .
+
+These simplify to the **normal equations** (DBC §12.1):
+
+$$n\hat\beta_0 + \hat\beta_1 \sum x_i = \sum Y_i$$
+
+$$\hat\beta_0 \sum x_i + \hat\beta_1 \sum x_i^2 = \sum x_i Y_i$$
+
+## Solving the Normal Equations
+
+**From the first equation:** $\hat\beta_0 = \bar{Y} - \hat\beta_1 \bar{x}$
+
+**Substituting into the second and simplifying:**
+
+$$\hat\beta_1 = \frac{\sum_{i=1}^n (x_i - \bar{x})(Y_i - \bar{Y})}{\sum_{i=1}^n (x_i - \bar{x})^2} = \frac{S_{xy}}{S_{xx}}$$
+
+. . .
+
+::: callout-important
+## OLS Estimators (DBC §12.1)
+
+$$\hat\beta_1 = \frac{S_{xy}}{S_{xx}} = \frac{\sum_{i=1}^n (x_i - \bar{x})(Y_i - \bar{Y})}{\sum_{i=1}^n (x_i - \bar{x})^2}$$
+
+$$\hat\beta_0 = \bar{Y} - \hat\beta_1 \bar{x}$$
+
+where $S_{xx} = \sum(x_i - \bar x)^2$ and $S_{xy} = \sum(x_i - \bar x)(Y_i - \bar Y)$.
+:::
+
+## Computing OLS in Our Example
+
+```{r}
+# Manual computation of OLS estimators
+x <- preterm$gestational_age
+Y <- preterm$birth_weight
+
+x_bar <- mean(x)
+Y_bar <- mean(Y)
+
+Sxx <- sum((x - x_bar)^2)
+Sxy <- sum((x - x_bar) * (Y - Y_bar))
+
+beta1_hat <- Sxy / Sxx
+beta0_hat <- Y_bar - beta1_hat * x_bar
+
+cat("Manual OLS:\n")
+cat("  beta0_hat =", round(beta0_hat, 2), "\n")
+cat("  beta1_hat =", round(beta1_hat, 2), "\n\n")
+
+# Confirm with lm()
+fit <- lm(birth_weight ~ gestational_age, data = preterm)
+tidy(fit) |> select(term, estimate) |> print()
+```
+
+. . .
+
+**Interpretation:** Each additional week of gestational age is associated with approximately `r round(beta1_hat, 1)` grams of additional birth weight, on average.
+
+## The RSS Surface: A Geometric View
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+# Create a grid of (beta0, beta1) values and compute RSS at each
+b0_seq <- seq(beta0_hat - 800, beta0_hat + 800, length.out = 60)
+b1_seq <- seq(beta1_hat - 60,  beta1_hat + 60,  length.out = 60)
+
+rss_grid <- expand_grid(b0 = b0_seq, b1 = b1_seq) |>
+  mutate(
+    rss = map2_dbl(b0, b1, \(b0, b1) sum((Y - b0 - b1 * x)^2))
+  )
+
+ggplot(rss_grid, aes(x = b0, y = b1, z = rss)) +
+  geom_contour_filled(bins = 18, alpha = 0.85) +
+  geom_point(
+    aes(x = beta0_hat, y = beta1_hat),
+    inherit.aes = FALSE,
+    color = "red", size = 4, shape = 8, stroke = 2
+  ) +
+  labs(
+    title = expression("RSS Surface: " * hat(beta)[0] * " and " * hat(beta)[1] * " minimize RSS"),
+    x = expression(beta[0]),
+    y = expression(beta[1]),
+    fill = "RSS"
+  ) +
+  scale_fill_viridis_d(option = "plasma") +
+  annotate("text", x = beta0_hat + 300, y = beta1_hat + 20,
+           label = "OLS minimum", color = "red", size = 5)
+```
+
+The OLS solution is at the **unique global minimum** of the convex RSS surface.
+
+# Part 3: Properties of OLS Estimators {background-color="#16a085"}
+
+## Step 1: OLS Estimators Are Linear in $Y$
+
+**Key rewrite:** The slope estimator can be written as a linear combination of the $Y_i$'s:
+
+$$\hat\beta_1 = \frac{S_{xy}}{S_{xx}} = \frac{\sum(x_i - \bar x)(Y_i - \bar Y)}{S_{xx}} = \sum_{i=1}^n c_i Y_i$$
+
+where $c_i = \dfrac{x_i - \bar x}{S_{xx}}$ are **fixed constants** (they depend only on the $x_i$'s, not on the $Y_i$'s).
+
+. . .
+
+Similarly, $\hat\beta_0 = \bar{Y} - \hat\beta_1 \bar{x} = \sum_{i=1}^n d_i Y_i$ where $d_i = \frac{1}{n} - c_i \bar x$.
+
+. . .
+
+::: callout-note
+## Definition: Linear Estimator
+An estimator $\tilde\beta$ is **linear** if it can be written as $\tilde\beta = \sum_{i=1}^n a_i Y_i$ for some constants $a_i$ that depend only on the $x_i$'s.
+
+OLS estimators satisfy this definition; they are **linear estimators**.
+:::
+
+## Step 2: OLS Estimators Are Unbiased
+
+Both $\hat\beta_0$ and $\hat\beta_1$ are **unbiased estimators** of $\beta_0$ and $\beta_1$, respectively, under the GM assumptions.
+
+**For $\hat\beta_1$:** Since $\hat\beta_1 = \sum c_i Y_i$ and $E[Y_i] = \beta_0 + \beta_1 x_i$:
+
+$$E[\hat\beta_1] = E\left[\sum c_i Y_i\right] = \sum c_i E[Y_i] = \sum c_i (\beta_0 + \beta_1 x_i)$$
+
+$$= \beta_0 \underbrace{\sum c_i}_{=0} + \beta_1 \underbrace{\sum c_i x_i}_{=1} = \beta_1 \checkmark$$
+
+. . .
+
+The two facts that make this work, for $c_i = (x_i - \bar x)/S_{xx}$:
+
+$$\sum_{i=1}^n c_i = \frac{\sum(x_i - \bar x)}{S_{xx}} = \frac{0}{S_{xx}} = 0$$
+
+because deviations from the mean always sum to zero.
+
+$$\sum_{i=1}^n c_i x_i = \frac{\sum(x_i - \bar x)x_i}{S_{xx}} = \frac{\sum(x_i - \bar x)(x_i - \bar x) + \bar x \sum(x_i - \bar x)}{S_{xx}} = \frac{S_{xx} + 0}{S_{xx}} = 1$$
+
+because $\sum(x_i - \bar x)x_i = \sum(x_i - \bar x)^2 = S_{xx}$.
+
+. . .
+
+**For $\hat\beta_0$:** $E[\hat\beta_0] = E[\bar Y] - \hat\beta_1 \bar x = (\beta_0 + \beta_1 \bar x) - \beta_1 \bar x = \beta_0 \checkmark$
+
+## Step 3: Exact Variances of OLS Estimators
+
+Under the GM assumptions ($\varepsilon_i$ independent with $\text{Var}(\varepsilon_i) = \sigma^2$):
+
+$$\text{Var}(\hat\beta_1) = \text{Var}\left(\sum c_i Y_i\right) = \sum c_i^2 \text{Var}(Y_i) = \sigma^2 \sum c_i^2 = \frac{\sigma^2}{S_{xx}}$$
+
+since $\sum c_i^2 = \sum \dfrac{(x_i - \bar x)^2}{S_{xx}^2} = \dfrac{S_{xx}}{S_{xx}^2} = \dfrac{1}{S_{xx}}$.
+
+. . .
+
+::: callout-important
+## Variance Formulas (DBC §12.2)
+
+$$\text{Var}(\hat\beta_1) = \frac{\sigma^2}{S_{xx}}$$
+
+$$\text{Var}(\hat\beta_0) = \sigma^2 \left(\frac{1}{n} + \frac{\bar x^2}{S_{xx}}\right)$$
+
+$$\text{Cov}(\hat\beta_0, \hat\beta_1) = -\frac{\sigma^2 \bar x}{S_{xx}}$$
+:::
+
+## Intuition: What Drives Variance of $\hat\beta_1$?
+
+$$\text{Var}(\hat\beta_1) = \frac{\sigma^2}{S_{xx}} = \frac{\sigma^2}{\sum(x_i - \bar x)^2}$$
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.0
+set.seed(42)
+n_pts <- 30
+sigma2 <- 100^2
+beta0_true <- -3200; beta1_true <- 170
+
+# Low spread in x
+x_low  <- seq(30, 32, length.out = n_pts)
+# High spread in x
+x_high <- seq(26, 36, length.out = n_pts)
+
+Sxx_low  <- sum((x_low  - mean(x_low))^2)
+Sxx_high <- sum((x_high - mean(x_high))^2)
+
+simulate_slope <- function(x_vals, n_sim = 2000) {
+  replicate(n_sim, {
+    Y <- beta0_true + beta1_true * x_vals + rnorm(length(x_vals), 0, sqrt(sigma2))
+    coef(lm(Y ~ x_vals))[2]
+  })
+}
+
+slopes_low  <- simulate_slope(x_low)
+slopes_high <- simulate_slope(x_high)
+
+tibble(
+  slope = c(slopes_low, slopes_high),
+  Design = rep(c("Sxx small", "Sxx large"),
+               each = 2000)
+) |>
+  ggplot(aes(x = slope, fill = Design)) +
+  geom_histogram(bins = 45, alpha = 0.65, position = "identity") +
+  geom_vline(xintercept = beta1_true, color = "black", linetype = "dashed",
+             linewidth = 1.2) +
+  scale_fill_manual(values = c("Sxx small" = "tomato",
+                               "Sxx large" = "steelblue")) +
+  labs(
+    title = expression("Variance of " * hat(beta)[1] * " depends on spread of x values"),
+    subtitle = bquote(Var(hat(beta)[1]) == sigma^2 / S[xx]),
+    x = expression(hat(beta)[1]),
+    y = "Count",
+    fill = "Design"
+  ) +
+  annotate("text", x = beta1_true + 3, y = 250, label = expression(beta[1] == 170),
+           size = 5) +
+  theme(legend.position = "top")
+```
+
+**Lesson for study design:** Spread your predictor values out to get a more precise slope estimate!
+
+# Part 4: The Gauss-Markov Theorem {background-color="#c0392b"}
+
+## Statement of the Gauss-Markov Theorem
+
+::: callout-important
+## Gauss-Markov Theorem (DBC §12.2)
+
+Under the four Gauss-Markov assumptions (linearity, independence, zero-mean errors, homoscedasticity), the OLS estimators $\hat\beta_0$ and $\hat\beta_1$ are the **Best Linear Unbiased Estimators** (BLUE) of $\beta_0$ and $\beta_1$.
+
+That is, among all estimators of the form $\tilde\beta_1 = \sum a_i Y_i$ that satisfy $E[\tilde\beta_1] = \beta_1$:
+
+$$\text{Var}(\hat\beta_1) \leq \text{Var}(\tilde\beta_1)$$
+
+with equality iff $\tilde\beta_1 = \hat\beta_1$.
+:::
+
+. . .
+
+**Unpacking "BLUE":**
+
+- **B**est = smallest variance among the class considered
+- **L**inear = estimator is a linear function of the $Y_i$'s
+- **U**nbiased = $E[\tilde\beta] = \beta$ for all $\beta_0, \beta_1, \sigma^2$
+- **E**stimator = a function of the observed data
+
+## Proof: Gauss-Markov for $\hat\beta_1$ {.smaller}
+
+**Setup:** Let $\tilde\beta_1 = \sum a_i Y_i$ be any linear unbiased estimator of $\beta_1$, where the $a_i$'s are constants.
+
+**Unbiasedness constraint:**
+
+$$E[\tilde\beta_1] = \sum a_i E[Y_i] = \sum a_i(\beta_0 + \beta_1 x_i) = \beta_0 \sum a_i + \beta_1 \sum a_i x_i = \beta_1$$
+
+This must hold for all $\beta_0$ and $\beta_1$, so: $\quad \sum a_i = 0 \quad$ and $\quad \sum a_i x_i = 1$.
+
+. . .
+
+**Write $a_i = c_i + e_i$** where $c_i = (x_i - \bar x)/S_{xx}$ are the OLS weights and $e_i = a_i - c_i$.
+
+The constraints $\sum a_i = 0$ and $\sum a_i x_i = 1$ imply $\sum e_i = 0$ and $\sum e_i x_i = 0$.
+
+. . .
+
+**Variance of $\tilde\beta_1$:**
+
+$$\text{Var}(\tilde\beta_1) = \sigma^2 \sum a_i^2 = \sigma^2 \sum (c_i + e_i)^2 = \sigma^2\left(\sum c_i^2 + 2\sum c_i e_i + \sum e_i^2\right)$$
+
+Since $\sum c_i e_i = \frac{1}{S_{xx}}\sum(x_i - \bar x)e_i = \frac{1}{S_{xx}}\left(\sum x_i e_i - \bar x \sum e_i\right) = 0$, we get:
+
+$$\text{Var}(\tilde\beta_1) = \underbrace{\frac{\sigma^2}{S_{xx}}}_{\text{Var}(\hat\beta_1)} + \underbrace{\sigma^2 \sum e_i^2}_{\geq 0} \geq \text{Var}(\hat\beta_1) \quad \checkmark$$
+
+## The BLUE Hierarchy: Connecting to MVUE
+
+```{r}
+#| echo: false
+#| fig-height: 6
+library(DiagrammeR)
+grViz("
+digraph BLUE_MVUE {
+  graph [rankdir = TB, bgcolor = transparent, splines = ortho]
+  node [shape = box, style = filled, fontsize = 14, width = 3.5]
+
+  All   [label = 'All Unbiased Estimators\\n(includes nonlinear functions of Y)', 
+          fillcolor = '#F5B7B1']
+  Lin   [label = 'Linear Unbiased Estimators\\n(tildeβ = Σ aᵢYᵢ, E[tildeβ] = β)', 
+          fillcolor = '#FAD7A0']
+  OLS   [label = 'OLS: Best Linear Unbiased (BLUE)\\nGauss-Markov: smallest Var among linear UEs', 
+          fillcolor = '#ABEBC6']
+  MVUE  [label = 'MVUE (under normality)\\nOLS = MLE = BLUE = MVUE', 
+          fillcolor = '#AED6F1']
+
+  All  -> Lin  [label = 'restrict to\\nlinear estimators']
+  Lin  -> OLS  [label = 'Gauss-Markov\\nTheorem']
+  OLS  -> MVUE [label = 'Add normality:\\nε ~ N(0,σ²)', style = dashed]
+}
+")
+```
+
+. . .
+
+- **Gauss-Markov (no normality needed):** OLS is BLUE — smallest variance among all linear unbiased estimators
+- **Add normality:** two independent arguments both conclude OLS is MVUE — see next slide
+
+## From BLUE to MVUE: Two Routes Under Normality
+
+Adding $\varepsilon_i \stackrel{iid}{\sim} N(0,\sigma^2)$ unlocks two separate arguments, each concluding OLS is the MVUE.
+
+. . .
+
+::: callout-important
+## Route 1: Lehmann-Scheffé
+
+Under the normal SLR model, $(\hat\beta_0, \hat\beta_1, S^2)$ is a **complete sufficient statistic** for $(\beta_0, \beta_1, \sigma^2)$.
+
+$\hat\beta_1$ is an **unbiased function** of that complete sufficient statistic.
+
+Therefore, by the Lehmann-Scheffé theorem, $\hat\beta_1$ is the **unique MVUE** of $\beta_1$.
+
+The CRLB plays no role in this argument — it follows from completeness and sufficiency alone.
+:::
+
+. . .
+
+::: callout-important
+## Route 2: CRLB / Efficiency
+
+The normal SLR model belongs to the **exponential family**. For exponential family models, the MLE achieves the Cramér-Rao Lower Bound **exactly** (not just asymptotically).
+
+Since OLS = MLE under normality (shown in Part 5), and $\text{Var}(\hat\beta_1) = \sigma^2/S_{xx}$ equals the CRLB:
+
+$$\text{Var}(\hat\beta_1) = \frac{\sigma^2}{S_{xx}} = \text{CRLB for } \beta_1$$
+
+An unbiased estimator that achieves the CRLB is, by definition, the MVUE.
+:::
+
+. . .
+
+These are parallel routes to the same destination. Lehmann-Scheffé works via the structure of the sufficient statistic; the CRLB route works via the information bound. Both require normality.
+
+## What BLUE Does Not Say
+
+::: callout-warning
+## Common Misconceptions
+
+**BLUE does not mean:**
+
+- OLS has the smallest variance among **all** estimators (biased or not): weighted least squares (WLS) or ridge regression can have smaller MSE
+- OLS is optimal when GM assumptions are **violated**: heteroscedasticity calls for WLS; dependence calls for generalized least squares (GLS)
+- The model is **correct**: OLS is BLUE for the stated model, regardless of whether the model fits the data well
+
+**BLUE does mean:**
+
+- Within the class of **linear, unbiased** estimators, OLS cannot be beaten
+- This is a remarkable, assumption-lean result: no distributional assumption on $\varepsilon_i$ beyond mean 0 and constant variance
+:::
+
+# Part 5: OLS = MLE Under Normality {background-color="#2c3e50"}
+
+## The Normal Simple Linear Regression Model
+
+Add one assumption to the GM setup:
+
+$$\varepsilon_i \stackrel{iid}{\sim} N(0, \sigma^2)$$
+
+This implies:
+$$Y_i \stackrel{\text{indep}}{\sim} N(\beta_0 + \beta_1 x_i, \; \sigma^2)$$
+
+. . .
+
+The joint likelihood is:
+
+$$L(\beta_0, \beta_1, \sigma^2) = \prod_{i=1}^n \frac{1}{\sqrt{2\pi\sigma^2}} \exp\!\left\{-\frac{(Y_i - \beta_0 - \beta_1 x_i)^2}{2\sigma^2}\right\}$$
+
+$$= \left(\frac{1}{2\pi\sigma^2}\right)^{n/2} \exp\!\left\{-\frac{1}{2\sigma^2}\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i)^2\right\}$$
+
+## Maximizing the Likelihood
+
+The log-likelihood is:
+
+$$\ell(\beta_0, \beta_1, \sigma^2) = -\frac{n}{2}\log(2\pi\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i)^2$$
+
+. . .
+
+**Key observation:** For fixed $\sigma^2$, maximizing $\ell$ with respect to $\beta_0$ and $\beta_1$ is **equivalent to minimizing**:
+
+$$\sum_{i=1}^n (Y_i - \beta_0 - \beta_1 x_i)^2 = \text{RSS}$$
+
+. . .
+
+::: callout-important
+## OLS = MLE Under Normality
+
+The OLS estimators $\hat\beta_0^{\text{OLS}}$ and $\hat\beta_1^{\text{OLS}}$ are **identical** to the MLE estimators $\hat\beta_0^{\text{MLE}}$ and $\hat\beta_1^{\text{MLE}}$.
+:::
+
+This is why we can use $t$-tests and $F$-tests in normal linear regression; the distributional framework that enables inference comes from normality + OLS = MLE.
+
+## From BLUE to MVUE: The Full Chain {.smaller}
+
+Under the normal SLR model ($\varepsilon_i \stackrel{iid}{\sim} N(0,\sigma^2)$):
+
+| Property | Justification |
+|----------|---------------|
+| $\hat\beta_1$ is linear | By construction: $\hat\beta_1 = \sum c_i Y_i$ |
+| $\hat\beta_1$ is unbiased | Shown above (only needs GM assumptions) |
+| $\hat\beta_1$ is BLUE | Gauss-Markov Theorem (only needs GM assumptions) |
+| $\hat\beta_1$ is sufficient | $(\hat\beta_0, \hat\beta_1, S^2)$ is sufficient for $(\beta_0, \beta_1, \sigma^2)$ under normality |
+| $\hat\beta_1$ is the MLE | OLS = MLE under normality (shown above) |
+| $\hat\beta_1$ is the MVUE | Lehmann-Scheffé: complete sufficient statistic + unbiased |
+| $\hat\beta_1$ achieves CRLB | MLE achieves CRLB asymptotically; exactly for exponential family |
+
+. . .
+
+::: callout-note
+## The Big Picture
+This is precisely the situation we studied with scalar parameters: the MLE of an exponential family parameter based on the sufficient statistic is unbiased, complete, and achieves the CRLB. The normal SLR model is an exponential family model, and OLS produces the sufficient statistics.
+:::
+
+## Connecting to the CRLB
+
+Under normal SLR, the Fisher information matrix for $(\beta_0, \beta_1)$ gives:
+
+$$\text{CRLB for } \beta_1 = \frac{\sigma^2}{S_{xx}} = \text{Var}(\hat\beta_1^{\text{OLS}})$$
+
+$$\text{CRLB for } \beta_0 = \sigma^2\!\left(\frac{1}{n} + \frac{\bar x^2}{S_{xx}}\right) = \text{Var}(\hat\beta_0^{\text{OLS}})$$
+
+. . .
+
+OLS estimators **achieve the Cramér-Rao Lower Bound**; they are **efficient** unbiased estimators.
+
+. . .
+
+```{r}
+# Verify: compare theoretical variance to simulation variance
+sigma <- 120
+Sxx_val <- Sxx
+
+cat("Theoretical Var(beta1_hat) =", round(sigma^2 / Sxx_val, 4), "\n")
+cat("Simulated  Var(beta1_hat) =", round(var(slopes_high), 4), "\n")
+```
+
+# Part 6: R Simulation: Verifying Gauss-Markov {background-color="#27ae60"}
+
+## Comparing OLS to Alternative Linear Estimators
+
+The GM theorem says OLS beats every other linear unbiased estimator. Let's verify with a simulation.
+
+**Setting:** Same premature infant model: $Y_i = -3200 + 170 x_i + \varepsilon_i$, $\varepsilon_i \sim N(0, 120^2)$
+
+**Competitors:**
+
+1. **OLS:** $\hat\beta_1 = S_{xy}/S_{xx}$ (the Gauss-Markov champion)
+2. **Naïve slope:** Use only the first and last observation: $\tilde\beta_1^{(2)} = (Y_n - Y_1)/(x_n - x_1)$
+3. **Trimmed OLS:** Drop middle third of observations, apply OLS to rest
+4. **Unweighted mean of slopes:** Average of all pairwise slopes (all pairs $i < j$)
+
+All four are linear in $Y$ and unbiased, but only OLS is BLUE.
+
+```{r}
+#| code-fold: true
+set.seed(551)
+n_sim <- 5000
+x_fixed <- sort(preterm$gestational_age)
+n <- length(x_fixed)
+beta0_true <- -3200; beta1_true <- 170; sigma <- 120
+
+simulate_estimators <- function(x_vals, n_sim, beta0, beta1, sigma) {
+  replicate(n_sim, {
+    Y <- beta0 + beta1 * x_vals + rnorm(length(x_vals), 0, sigma)
+    n  <- length(x_vals)
+    
+    # OLS slope
+    ols <- coef(lm(Y ~ x_vals))[2]
+    
+    # Two-point slope: first and last observation
+    two_pt <- (Y[n] - Y[1]) / (x_vals[n] - x_vals[1])
+    
+    # Trimmed OLS: drop middle third
+    keep <- c(1:floor(n/3), ceiling(2*n/3):n)
+    trimmed <- coef(lm(Y[keep] ~ x_vals[keep]))[2]
+    
+    # Mean of all pairwise slopes
+    pairs_i <- rep(1:(n-1), times = (n-1):1)
+    pairs_j <- unlist(lapply(2:n, \(j) j:n))
+    pairwise_slopes <- (Y[pairs_j] - Y[pairs_i]) / (x_vals[pairs_j] - x_vals[pairs_i])
+    pairwise_mean <- mean(pairwise_slopes)
+    
+    c(ols = ols, two_pt = two_pt, trimmed = trimmed, pairwise = pairwise_mean)
+  }) |> t() |> as_tibble()
+}
+
+sim_results <- simulate_estimators(x_fixed, n_sim, beta0_true, beta1_true, sigma)
+```
+
+## Simulation Results: OLS Wins
+
+```{r}
+#| code-fold: true
+#| fig-height: 5.5
+
+sim_results |>
+  pivot_longer(everything(),
+               names_to = "Estimator",
+               values_to = "slope_hat") |>
+  mutate(Estimator = recode(Estimator,
+    ols       = "OLS (BLUE)",
+    two_pt    = "Two-point",
+    trimmed   = "Trimmed OLS",
+    pairwise  = "Mean pairwise slopes"
+  )) |>
+  ggplot(aes(x = slope_hat, fill = Estimator)) +
+  geom_density(alpha = 0.55, color = "white") +
+  geom_vline(xintercept = beta1_true, linetype = "dashed",
+             color = "black", linewidth = 1.2) +
+  scale_fill_manual(values = c("#e74c3c", "#3498db", "#2ecc71", "#f39c12")) +
+  facet_wrap(~Estimator, ncol = 2, scales = "free_y") +
+  labs(
+    title = expression("Sampling Distributions of Four Linear Unbiased Estimators of " * beta[1]),
+    subtitle = bquote("True " * beta[1] == 170 * " (dashed line); OLS has smallest variance"),
+    x = expression(hat(beta)[1]),
+    y = "Density"
+  ) +
+  theme(legend.position = "none", strip.text = element_text(size = 13))
+```
+
+## Summarizing the Simulation
+
+```{r}
+sim_summary <- sim_results |>
+  summarise(across(everything(), list(Mean = mean, Variance = var, SD = sd))) |>
+  pivot_longer(everything()) |>
+  separate(name, into = c("Estimator", "Statistic"), sep = "_(?=[^_]+$)") |>
+  mutate(value = round(value, 4)) |>
+  pivot_wider(names_from = Statistic, values_from = value) |>
+  mutate(
+    Estimator = recode(Estimator,
+      ols      = "OLS (BLUE)",
+      two_pt   = "Two-point",
+      trimmed  = "Trimmed OLS",
+      pairwise = "Mean pairwise"
+    ),
+    `Relative Efficiency` = round(min(Variance) / Variance, 3)
+  )
+
+sim_summary |>
+  arrange(Variance) |>
+  knitr::kable(digits = 4,
+               caption = "Comparison of Linear Unbiased Estimators (5,000 simulations)")
+```
+
+. . .
+
+**Interpretation of relative efficiency:** The ratio of OLS variance to each competitor's variance; OLS (efficiency = 1.0) is the benchmark.
+
+# Part 7: Estimation of $\sigma^2$ and Inference {background-color="#8e44ad"}
+
+## Estimating the Error Variance $\sigma^2$
+
+The GM assumptions include an unknown error variance $\sigma^2$. We need to estimate it for inference.
+
+**Residuals:** $\hat\varepsilon_i = Y_i - \hat\beta_0 - \hat\beta_1 x_i = Y_i - \hat{Y}_i$
+
+. . .
+
+::: callout-important
+## Unbiased Estimator of $\sigma^2$ (DBC §12.2)
+
+$$\hat\sigma^2 = S^2 = \frac{\text{RSS}}{n-2} = \frac{\sum_{i=1}^n (Y_i - \hat\beta_0 - \hat\beta_1 x_i)^2}{n-2}$$
+
+$E[S^2] = \sigma^2$. Why $n - 2$? We lose 2 degrees of freedom because we estimate 2 parameters.
+:::
+
+. . .
+
+Under normality: $\dfrac{(n-2)S^2}{\sigma^2} \sim \chi^2_{n-2}$, independent of $\hat\beta_0$ and $\hat\beta_1$.
+
+This is the direct analog of how $S^2$ worked in one-sample inference: the distribution changes because the number of estimated parameters changes.
+
+## Standard Errors and t-Based Inference
+
+Replacing $\sigma^2$ with $S^2$ gives estimated standard errors:
+
+$$\widehat{\text{SE}}(\hat\beta_1) = \frac{S}{\sqrt{S_{xx}}} \qquad \widehat{\text{SE}}(\hat\beta_0) = S\sqrt{\frac{1}{n} + \frac{\bar x^2}{S_{xx}}}$$
+
+. . .
+
+Under normality, the pivot statistics follow $t$ distributions:
+
+$$T_1 = \frac{\hat\beta_1 - \beta_1}{S/\sqrt{S_{xx}}} \sim t_{n-2} \qquad T_0 = \frac{\hat\beta_0 - \beta_0}{S\sqrt{1/n + \bar x^2/S_{xx}}} \sim t_{n-2}$$
+
+```{r}
+# Standard errors in our example
+fit_summary <- summary(fit)
+cat("sigma_hat (S) =", round(fit_summary$sigma, 2), "\n")
+tidy(fit) |> select(term, estimate, std.error, statistic, p.value) |> 
+  mutate(across(where(is.numeric), \(x) round(x, 4)))
+```
+
+## Prediction and the Fitted Line
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+new_ages <- tibble(gestational_age = seq(26, 36, by = 0.5))
+pred_ci   <- predict(fit, newdata = new_ages, interval = "confidence") |> as_tibble()
+pred_pi   <- predict(fit, newdata = new_ages, interval = "prediction") |> as_tibble()
+
+plot_data <- bind_cols(new_ages, pred_ci) |>
+  rename(conf_lwr = lwr, conf_upr = upr) |>
+  mutate(pred_lwr = pred_pi$lwr, pred_upr = pred_pi$upr)
+
+ggplot() +
+  geom_ribbon(data = plot_data,
+              aes(x = gestational_age, ymin = pred_lwr, ymax = pred_upr, fill = "95% PI"),
+              alpha = 0.15) +
+  geom_ribbon(data = plot_data,
+              aes(x = gestational_age, ymin = conf_lwr, ymax = conf_upr, fill = "95% CI for mean"),
+              alpha = 0.35) +
+  geom_line(data = plot_data, aes(x = gestational_age, y = fit), color = "#c0392b", linewidth = 1.3) +
+  geom_point(data = preterm, aes(x = gestational_age, y = birth_weight),
+             color = "#2c3e50", alpha = 0.65, size = 2) +
+  scale_fill_manual(values = c("95% CI for mean" = "steelblue", "95% PI" = "orange"),
+                    name = "Interval") +
+  labs(
+    title = "Birth Weight vs. Gestational Age: Fitted Line with Uncertainty Bands",
+    subtitle = expression("CI for " * E*"[Y | x], PI for an individual future Y"),
+    x = "Gestational Age (weeks)", y = "Birth Weight (grams)"
+  ) +
+  theme(legend.position = "top")
+```
+
+# Part 8: When Gauss-Markov Fails {background-color="#e67e22"}
+
+## Violation: Heteroscedasticity
+
+If $\text{Var}(\varepsilon_i) = \sigma_i^2$ (not constant), OLS is still **unbiased** but is no longer BLUE.
+
+**Example:** In a study of drug dosage and response, variance in response may increase with dose.
+
+```{r}
+#| code-fold: true
+#| fig-height: 4.5
+set.seed(42)
+x_dose <- seq(1, 10, length.out = 80)
+y_response <- 2 + 1.5 * x_dose + rnorm(80, 0, sd = 0.4 * x_dose)
+hetero_data <- tibble(dose = x_dose, response = y_response)
+
+ggplot(hetero_data, aes(x = dose, y = response)) +
+  geom_point(alpha = 0.6, color = "#2c3e50") +
+  geom_smooth(method = "lm", se = FALSE, color = "#e74c3c") +
+  labs(
+    title = expression("Heteroscedasticity: " * Var(epsilon[i]) * " grows with dose"),
+    x = "Drug Dose (mg/kg)", y = "Biomarker Response"
+  )
+```
+
+. . .
+
+**Fix: Weighted Least Squares (WLS)** minimizes $\sum w_i (Y_i - \beta_0 - \beta_1 x_i)^2$ where $w_i \propto 1/\sigma_i^2$, down-weighting observations with higher variance.
+
+Weighted least squares is BLUE when weights are correctly specified. This is DBC §12.9.
+
+## Summary: The Hierarchy of OLS Optimality
+
+| Assumption Set | OLS Property |
+|----------------|-------------|
+| GM 1–4 (linearity, independence, $E[\varepsilon_i]=0$, homoscedasticity) | **BLUE**: best among linear unbiased estimators |
+| GM 1–4 + normality ($\varepsilon_i \sim N(0,\sigma^2)$) | **MVUE**: best among **all** unbiased estimators |
+| GM 1–4 + normality | **MLE**: OLS and MLE coincide |
+| GM 1–4 + normality | **Achieves CRLB**: efficient |
+| Homoscedasticity violated | OLS unbiased, but not BLUE; use weighted least squares (WLS) |
+| Independence violated | OLS unbiased, but not BLUE; use generalized least squares (GLS) |
+
+. . .
+
+::: callout-tip
+## The Takeaway for Applied Regression
+When you check regression diagnostics (residual plots, Q-Q plots, leverage), you are **verifying the GM assumptions** that justify the optimality of OLS. If they fail, you need a different estimator.
+:::
+
+# Part 9: Extended Example from DBC {background-color="#2c3e50"}
+
+## DBC Example 12.7: Tensile Strength and Percentage Cotton
+
+From DBC §12.1–12.2: Tensile strength (psi) of synthetic fiber as a function of percentage of cotton in the fiber.
+
+```{r}
+#| code-fold: true
+# DBC Table 12.1: cotton content and tensile strength
+cotton <- tibble(
+  pct_cotton   = c(15, 15, 15, 15, 20, 20, 20, 20, 25, 25,
+                   25, 25, 30, 30, 30, 30, 35, 35, 35, 35),
+  tensile_str  = c(7, 7, 15, 11, 12, 17, 12, 18, 14, 18,
+                   18, 19, 19, 25, 22, 19, 7, 10, 11, 15)
+)
+
+# Fit OLS
+fit_cotton <- lm(tensile_str ~ pct_cotton, data = cotton)
+
+# Manual OLS components
+x_c  <- cotton$pct_cotton
+Y_c  <- cotton$tensile_str
+Sxx_c <- sum((x_c - mean(x_c))^2)
+Sxy_c <- sum((x_c - mean(x_c)) * (Y_c - mean(Y_c)))
+
+cat("Sxx =", Sxx_c, "  Sxy =", Sxy_c, "\n")
+cat("beta1_hat =", round(Sxy_c / Sxx_c, 4), "\n")
+cat("beta0_hat =", round(mean(Y_c) - (Sxy_c/Sxx_c) * mean(x_c), 4), "\n")
+cat("Theoretical Var(beta1_hat) / sigma^2 =", round(1 / Sxx_c, 6), "\n\n")
+tidy(fit_cotton) |> select(term, estimate, std.error, statistic, p.value) |>
+  mutate(across(where(is.numeric), \(x) round(x, 4)))
+```
+
+## DBC Example 12.7: Plot
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+ggplot(cotton, aes(x = pct_cotton, y = tensile_str)) +
+  geom_point(size = 3, color = "#2c3e50", alpha = 0.8) +
+  geom_smooth(method = "lm", se = TRUE, color = "#c0392b", linewidth = 1.2) +
+  labs(
+    title = "DBC Example 12.7: Tensile Strength vs. Cotton Content",
+    subtitle = bquote(hat(beta)[1] == .(round(Sxy_c / Sxx_c, 3)) ~
+                        " psi per % cotton (OLS = BLUE = MLE)"),
+    x = "Percentage Cotton",
+    y = "Tensile Strength (psi)"
+  )
+```
+
+. . .
+
+The positive slope $\hat\beta_1 \approx$ `r round(Sxy_c/Sxx_c, 2)` is the **BLUE** of the true slope. Under normality, it also achieves the CRLB and is the MVUE.
+
+# Summary {background-color="#006a4e"}
+
+## What We Proved Today
+
+::: callout-important
+## Key Results
+
+1. **OLS estimators** $\hat\beta_0 = \bar Y - \hat\beta_1 \bar x$ and $\hat\beta_1 = S_{xy}/S_{xx}$ minimize the RSS
+
+2. OLS estimators are **linear** in $Y_i$ and **unbiased** under GM assumptions 1–3
+
+3. Under all four GM assumptions: $\text{Var}(\hat\beta_1) = \sigma^2/S_{xx}$, $\text{Var}(\hat\beta_0) = \sigma^2(1/n + \bar x^2/S_{xx})$
+
+4. **Gauss-Markov Theorem:** OLS is **BLUE** (no normality required)
+
+5. Under normality: OLS = MLE, and OLS is the **MVUE** (not just BLUE)
+
+6. OLS achieves the **Cramér-Rao Lower Bound**; it is an **efficient** estimator under normality
+:::
+
+## Connections to the Course Themes
+
+```{r}
+#| echo: false
+#| fig-height: 9
+grViz("
+digraph course_connections {
+  graph [rankdir = LR, bgcolor = transparent, splines = curved, nodesep = 0.8, ranksep = 2.2]
+  node [shape = box, style = filled, fontsize = 16, width = 3.2, height = 1.0]
+
+  MVUE  [label = 'MVUE Theory\\n(Lessons 3, 6)', fillcolor = '#AED6F1']
+  CRLB  [label = 'CRLB / Fisher Info\\n(Lessons 3, 6)', fillcolor = '#F5B7B1']
+  MLE   [label = 'MLE\\n(Lesson 4)', fillcolor = '#FAD7A0']
+  Suff  [label = 'Sufficient Stats\\n(Lesson 5)', fillcolor = '#D7BDE2']
+  GM    [label = 'Gauss-Markov:\\nOLS is BLUE (Today)', fillcolor = '#ABEBC6']
+  Reg   [label = 'Applied Regression\\n(Future courses)', fillcolor = '#D5D8DC']
+
+  MVUE -> GM  [label = 'BLUE = MVUE for\\nlinear models', fontsize = 13]
+  CRLB -> GM  [label = 'OLS achieves CRLB\\nunder normality', fontsize = 13]
+  MLE  -> GM  [label = 'OLS = MLE\\nunder normality', fontsize = 13]
+  Suff -> GM  [label = '(β̂₀, β̂₁, S²) sufficient\\nunder normality', fontsize = 13]
+  GM   -> Reg [label = 't-tests, F-tests,\\nprediction intervals', fontsize = 13]
+}
+")
+```
+
+## Looking Ahead
+
+- **Applied Regression (future courses):** Everything builds on today's theory
+  - Multiple regression extends to $\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{Y}$; the same BLUE result holds via matrix algebra
+  - Generalized Linear Models (GLMs): when $\varepsilon_i$ are non-normal → MLE replaces OLS
+  - Mixed models: when independence fails → GLS / REML
+
+- **Weighted Least Squares:** BLUE when heteroscedasticity is known (DBC §12.9)
+
+. . .
+
+::: callout-note
+## Matrix Formulation Preview
+In multiple regression: $\mathbf{Y} = \mathbf{X}\boldsymbol\beta + \boldsymbol\varepsilon$
+
+OLS estimate: $\hat{\boldsymbol\beta} = (\mathbf{X}^\top\mathbf{X})^{-1}\mathbf{X}^\top\mathbf{Y}$
+
+This is still linear in $\mathbf{Y}$, still unbiased under GM conditions, and still BLUE by the matrix version of the Gauss-Markov theorem.
+:::
+
+
