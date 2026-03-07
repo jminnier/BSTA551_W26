@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
+
+  <meta name="author" content="Jessica Minnier">
+  <meta name="dcterms.date" content="2026-03-11">
+  <title>Theory of Statistical Inference – Lesson 23: Introduction to Bayesian Inference</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-color="#006a4e" class="quarto-title-block center">
+  <h1 class="title">Lesson 23: Introduction to Bayesian Inference</h1>
+  <p class="subtitle">BSTA 551: Statistical Inference</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Jessica Minnier 
+</div>
+</div>
+</div>
+
+  <p class="date">2026-03-11</p>
+</section>
+<section>
+<section id="lesson-23-introduction-to-bayesian-inference" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Lesson 23: Introduction to Bayesian Inference</h1>
+
+</section>
+<section id="todays-goals" class="slide level2 scrollable">
+<h2>Today’s Goals</h2>
+<ol type="1">
+<li>Understand the <strong>Bayesian paradigm</strong>: parameters as random variables with prior distributions</li>
+<li>Derive <strong>posterior distributions</strong> using Bayes’ theorem for random variables</li>
+<li>Work with <strong>conjugate prior</strong> families: Beta/Binomial, Gamma/Exponential, Gamma/Poisson, Normal/Normal</li>
+<li>Compute <strong>Bayes estimators</strong> (posterior mean, MAP) and understand their properties</li>
+<li>Construct <strong>Bayesian credible intervals</strong> and compare with frequentist confidence intervals</li>
+<li>Perform <strong>Bayesian hypothesis testing</strong> via posterior probabilities</li>
+</ol>
+<div class="fragment">
+<p><strong>Reading:</strong></p>
+<ul>
+<li>Devore, Berk, and Carlton, Chapter 15 (Introduction to Bayesian Estimation)</li>
+<li>Chihara and Hesterberg, Chapter 10 (Bayesian Methods)</li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="frequentist-vs.-bayesian-inference" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Frequentist vs.&nbsp;Bayesian Inference</h1>
+
+</section>
+<section id="two-paradigms-for-statistical-inference" class="slide level2">
+<h2>Two Paradigms for Statistical Inference</h2>
+<p><strong>Frequentist (Classical) Inference:</strong></p>
+<p>Observe data <span class="math inline">\(X \sim f(x|\theta)\)</span> <span class="math inline">\(\longrightarrow\)</span> use observed data <span class="math inline">\(x\)</span> to make statements about <span class="math inline">\(\theta\)</span>, which is assumed to be a <strong>fixed (and unknown)</strong> model parameter.</p>
+<ul>
+<li>Point estimates, confidence intervals, hypothesis tests</li>
+<li><span class="math inline">\(\theta\)</span> is a constant; probability statements are about <strong>the data</strong>, not <span class="math inline">\(\theta\)</span></li>
+<li>Confidence interval interpretation: long-run frequency of coverage</li>
+</ul>
+<div class="fragment">
+<p><strong>Bayesian Inference:</strong></p>
+<p>Model random variable <span class="math inline">\(\theta \sim \pi(\theta)\)</span> <span class="math inline">\(\longrightarrow\)</span> observe <span class="math inline">\(X|\theta \sim f(x|\theta)\)</span> <span class="math inline">\(\longrightarrow\)</span> update with <span class="math inline">\(\pi(\theta|x)\)</span></p>
+<ul>
+<li><span class="math inline">\(\theta\)</span> is treated as a <strong>random variable</strong> with a probability distribution</li>
+<li><strong>Prior distribution</strong> <span class="math inline">\(\pi(\theta)\)</span>: incorporates available information about <span class="math inline">\(\theta\)</span> before data are observed</li>
+<li><strong>Posterior distribution</strong> <span class="math inline">\(\pi(\theta|x)\)</span>: “updated” distribution of <span class="math inline">\(\theta\)</span> after the data are observed</li>
+<li>All inference comes from the posterior</li>
+</ul>
+</div>
+</section>
+<section id="why-consider-bayesian-methods" class="slide level2">
+<h2>Why Consider Bayesian Methods?</h2>
+<p><strong>Advantages:</strong></p>
+<ul>
+<li>Incorporates prior knowledge or expert opinion formally</li>
+<li>Posterior probability statements are direct: <span class="math inline">\(P(\theta \in A | x)\)</span> has a natural interpretation</li>
+<li>Credible intervals say “there is a 95% probability that <span class="math inline">\(\theta\)</span> is in this interval”</li>
+<li>Naturally handles nuisance parameters through marginalization</li>
+<li>Provides a coherent framework for sequential updating of evidence</li>
+</ul>
+<div class="fragment">
+<p><strong>Challenges:</strong></p>
+<ul>
+<li>Requires specifying a prior distribution (can be subjective)</li>
+<li>Choice of prior can strongly influence results, especially with small samples</li>
+<li>Computational demands can be substantial for complex models</li>
+<li>Philosophical objections to treating fixed quantities as random</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Medical research context:</strong> Bayesian methods are increasingly used in clinical trials (adaptive designs), diagnostic testing, meta-analysis, and regulatory submissions (e.g., medical device trials at the FDA).</p>
+</div>
+</section></section>
+<section>
+<section id="prior-and-posterior-distributions" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Prior and Posterior Distributions</h1>
+
+</section>
+<section id="prior-distributions" class="slide level2">
+<h2>Prior Distributions</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Prior Distribution (DBC 15.1)</strong></p>
+</div>
+<div class="callout-content">
+<p>A <strong>prior distribution</strong> for a parameter <span class="math inline">\(\theta\)</span>, denoted <span class="math inline">\(\pi(\theta)\)</span>, is a probability distribution on the set of possible values for <span class="math inline">\(\theta\)</span>. If <span class="math inline">\(\theta\)</span> takes values in an interval <span class="math inline">\(I\)</span>, then <span class="math inline">\(\pi(\theta)\)</span> is a pdf satisfying <span class="math inline">\(\int_I \pi(\theta) \, d\theta = 1\)</span>. If <span class="math inline">\(\theta\)</span> takes values in a discrete set <span class="math inline">\(D\)</span>, then <span class="math inline">\(\pi(\theta)\)</span> is a pmf satisfying <span class="math inline">\(\sum_{\theta \in D} \pi(\theta) = 1\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The <strong>variability</strong> of the prior distribution reflects how certain we are about our initial belief:</p>
+<ul>
+<li>A <strong>narrow</strong> (concentrated) prior expresses strong belief</li>
+<li>A <strong>wide</strong> (diffuse) prior expresses substantial uncertainty</li>
+<li>A <strong>flat</strong> or <strong>noninformative</strong> prior attempts to let the data speak for themselves</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Prior distributions with different levels of certainty</span></span>
+<span id="cb1-2"><a></a><span class="fu">tibble</span>(<span class="at">theta =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">10</span>, <span class="at">by =</span> <span class="fl">0.01</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb1-3"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-4"><a></a>    <span class="st">`</span><span class="at">Strong belief (narrow)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">dnorm</span>(theta, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="fl">0.5</span>),</span>
+<span id="cb1-5"><a></a>    <span class="st">`</span><span class="at">Moderate belief</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">dnorm</span>(theta, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="fl">1.5</span>),</span>
+<span id="cb1-6"><a></a>    <span class="st">`</span><span class="at">Weak belief (diffuse)</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">dnorm</span>(theta, <span class="at">mean =</span> <span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">4</span>)</span>
+<span id="cb1-7"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>theta, <span class="at">names_to =</span> <span class="st">"Prior"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-9"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta, <span class="at">y =</span> density, <span class="at">color =</span> Prior, <span class="at">linetype =</span> Prior)) <span class="sc">+</span></span>
+<span id="cb1-10"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb1-11"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-12"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(theta),</span>
+<span id="cb1-13"><a></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="fu">pi</span>(theta)),</span>
+<span id="cb1-14"><a></a>    <span class="at">title =</span> <span class="st">"Prior distributions reflecting different levels of certainty"</span></span>
+<span id="cb1-15"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb1-16"><a></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set2"</span>) <span class="sc">+</span></span>
+<span id="cb1-17"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-1-1.png" class="quarto-figure quarto-figure-center" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-posterior-distribution" class="slide level2">
+<h2>The Posterior Distribution</h2>
+<p>The <strong>key</strong> to Bayesian inference is Bayes’ theorem applied to random variables.</p>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Posterior Distribution</strong></p>
+</div>
+<div class="callout-content">
+<p>Suppose <span class="math inline">\(X_1, \ldots, X_n\)</span> have joint pdf <span class="math inline">\(f(x_1, \ldots, x_n; \theta)\)</span> and <span class="math inline">\(\theta\)</span> has been assigned a prior distribution <span class="math inline">\(\pi(\theta)\)</span>. The <strong>posterior distribution</strong> of <span class="math inline">\(\theta\)</span> given the observed data is:</p>
+<p><span class="math display">\[\pi(\theta | x_1, \ldots, x_n) = \frac{\pi(\theta) \, f(x_1, \ldots, x_n; \theta)}{\int \pi(\theta) \, f(x_1, \ldots, x_n; \theta) \, d\theta}\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The denominator <span class="math inline">\(m(x) = \int \pi(\theta) f(x|\theta) \, d\theta\)</span> is the <strong>marginal distribution</strong> of the data. Since it does not depend on <span class="math inline">\(\theta\)</span>, we often write:</p>
+<p><span class="math display">\[\pi(\theta | x) \propto \underbrace{\pi(\theta)}_{\text{prior}} \times \underbrace{f(x|\theta)}_{\text{likelihood}}\]</span></p>
+<p><span class="math display">\[\boxed{\text{Posterior} \propto \text{Prior} \times \text{Likelihood}}\]</span></p>
+<p>This is the fundamental equation of Bayesian inference.</p>
+</div>
+</section>
+<section id="bayesian-updating-the-full-picture" class="slide level2 scrollable">
+<h2>Bayesian Updating: The Full Picture</h2>
+<p>The complete set of distributions in a Bayesian analysis:</p>
+<ol type="1">
+<li><strong>Prior distribution:</strong> <span class="math inline">\(\theta \sim \pi(\theta)\)</span> <em>(set in advance)</em></li>
+<li><strong>Data model (likelihood):</strong> <span class="math inline">\(X|\theta \sim f(x|\theta)\)</span> <em>(set in advance)</em></li>
+<li><strong>Joint distribution:</strong> <span class="math inline">\(f_{X,\theta}(x, \theta) = f(x|\theta) \, \pi(\theta)\)</span></li>
+<li><strong>Marginal distribution:</strong> <span class="math inline">\(m(x) = \int f(x|\theta) \, \pi(\theta) \, d\theta\)</span></li>
+<li><strong>Posterior distribution:</strong> <span class="math inline">\(\pi(\theta|x) = \frac{f(x|\theta) \, \pi(\theta)}{m(x)}\)</span></li>
+</ol>
+<div class="fragment">
+<p>The posterior combines <strong>prior belief</strong> with <strong>observed evidence</strong> from the data. As we collect more data, the posterior becomes increasingly driven by the likelihood.</p>
+</div>
+</section></section>
+<section>
+<section id="conjugate-priors" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Conjugate Priors</h1>
+
+</section>
+<section id="what-are-conjugate-priors" class="slide level2">
+<h2>What Are Conjugate Priors?</h2>
+<p>In practice, we want to choose a prior distribution family such that the posterior distribution belongs to the <strong>same family</strong>. When this happens, we say the prior is <strong>conjugate</strong> to the data distribution.</p>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Conjugate Prior</strong></p>
+</div>
+<div class="callout-content">
+<p>A prior distribution <span class="math inline">\(\pi(\theta)\)</span> from family <span class="math inline">\(\mathcal{F}\)</span> is <strong>conjugate</strong> to the data distribution <span class="math inline">\(f(x|\theta)\)</span> if the posterior distribution <span class="math inline">\(\pi(\theta|x)\)</span> also belongs to <span class="math inline">\(\mathcal{F}\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Why conjugate priors?</strong></p>
+<ul>
+<li>Posterior has a <strong>closed-form</strong> expression — no numerical integration needed</li>
+<li>The prior hyperparameters have interpretable roles (e.g., “prior sample size”)</li>
+<li>Easy to update sequentially as new data arrive</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Common conjugate pairs:</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 42%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Data Model</th>
+<th style="text-align: left;">Conjugate Prior</th>
+<th style="text-align: left;">Posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bernoulli/Binomial(<span class="math inline">\(p\)</span>)</td>
+<td style="text-align: left;">Beta(<span class="math inline">\(\alpha_0, \beta_0\)</span>)</td>
+<td style="text-align: left;">Beta(<span class="math inline">\(\alpha_0 + y, \beta_0 + n - y\)</span>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Poisson(<span class="math inline">\(\lambda\)</span>)</td>
+<td style="text-align: left;">Gamma(<span class="math inline">\(\alpha_0, \beta_0\)</span>)</td>
+<td style="text-align: left;">Gamma(<span class="math inline">\(\alpha_0 + \sum x_i, \frac{1}{n + 1/\beta_0}\)</span>)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Exponential(<span class="math inline">\(\lambda\)</span>)</td>
+<td style="text-align: left;">Gamma(<span class="math inline">\(\alpha_0, \beta_0\)</span>)</td>
+<td style="text-align: left;">Gamma(<span class="math inline">\(\alpha_0 + n, \frac{1}{1/\beta_0 + \sum x_i}\)</span>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Normal(<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma^2\)</span> known)</td>
+<td style="text-align: left;">Normal(<span class="math inline">\(\mu_0, \sigma_0^2\)</span>)</td>
+<td style="text-align: left;">Normal(<span class="math inline">\(\mu_1, \sigma_1^2\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="example-beta-prior-for-binomial-data-dbc-15.3-ch-10.3" class="slide level2">
+<h2>Example: Beta Prior for Binomial Data (DBC 15.3, C&amp;H 10.3)</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Proposition: Beta-Binomial Conjugacy</strong></p>
+</div>
+<div class="callout-content">
+<p>Let <span class="math inline">\(X_1, \ldots, X_n\)</span> be a random sample from a Bernoulli(<span class="math inline">\(p\)</span>) distribution. Equivalently, let <span class="math inline">\(Y = \sum X_i \sim \text{Bin}(n, p)\)</span>. If <span class="math inline">\(p\)</span> is assigned a Beta(<span class="math inline">\(\alpha_0, \beta_0\)</span>) prior, then the posterior distribution of <span class="math inline">\(p\)</span> given the data is:</p>
+<p><span class="math display">\[p \mid y \sim \text{Beta}(\alpha_0 + y, \;\beta_0 + n - y)\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Proof:</strong> The joint Bernoulli pmf is <span class="math inline">\(f(x|p) = p^y(1-p)^{n-y}\)</span> where <span class="math inline">\(y = \sum x_i\)</span>. The Beta prior is <span class="math inline">\(\pi(p) \propto p^{\alpha_0 - 1}(1-p)^{\beta_0 - 1}\)</span>. Applying Bayes’ theorem:</p>
+<p><span class="math display">\[\pi(p|x) \propto p^{\alpha_0 - 1}(1-p)^{\beta_0 - 1} \cdot p^y(1-p)^{n-y} = p^{(\alpha_0 + y) - 1}(1-p)^{(\beta_0 + n - y) - 1}\]</span></p>
+<p>We recognize this as proportional to the Beta(<span class="math inline">\(\alpha_0 + y, \beta_0 + n - y\)</span>) density. <span class="math inline">\(\square\)</span></p>
+</div>
+<div class="fragment">
+<p><strong>Interpretation:</strong> The hyperparameters <span class="math inline">\(\alpha_0\)</span> and <span class="math inline">\(\beta_0\)</span> act like “prior successes” and “prior failures.” The posterior adds observed successes <span class="math inline">\(y\)</span> and observed failures <span class="math inline">\(n - y\)</span>.</p>
+</div>
+</section>
+<section id="medical-example-beta-binomial-vaccine-efficacy" class="slide level2">
+<h2>Medical Example: Beta-Binomial — Vaccine Efficacy</h2>
+<p>A Phase II clinical trial tests a new vaccine. Prior studies suggest efficacy around 60%, but with substantial uncertainty. We use a Beta(6, 4) prior for <span class="math inline">\(p\)</span> (the true efficacy rate), which has mean <span class="math inline">\(6/10 = 0.60\)</span>.</p>
+<p>In the trial, <span class="math inline">\(n = 50\)</span> patients are vaccinated and <span class="math inline">\(y = 38\)</span> show a positive immune response.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># Beta-Binomial: Vaccine efficacy</span></span>
+<span id="cb2-2"><a></a>a0 <span class="ot">&lt;-</span> <span class="dv">6</span>; b0 <span class="ot">&lt;-</span> <span class="dv">4</span>       <span class="co"># Prior hyperparameters</span></span>
+<span id="cb2-3"><a></a>n <span class="ot">&lt;-</span> <span class="dv">50</span>; y <span class="ot">&lt;-</span> <span class="dv">38</span>         <span class="co"># Observed data</span></span>
+<span id="cb2-4"><a></a></span>
+<span id="cb2-5"><a></a><span class="co"># Posterior parameters</span></span>
+<span id="cb2-6"><a></a>a_post <span class="ot">&lt;-</span> a0 <span class="sc">+</span> y         <span class="co"># 44</span></span>
+<span id="cb2-7"><a></a>b_post <span class="ot">&lt;-</span> b0 <span class="sc">+</span> n <span class="sc">-</span> y     <span class="co"># 16</span></span>
+<span id="cb2-8"><a></a></span>
+<span id="cb2-9"><a></a><span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-10"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-11"><a></a>    <span class="at">Prior =</span> <span class="fu">dbeta</span>(p, a0, b0),</span>
+<span id="cb2-12"><a></a>    <span class="at">Likelihood =</span> <span class="fu">dbinom</span>(y, n, p) <span class="sc">*</span> <span class="dv">150</span>,  <span class="co"># scaled for visualization</span></span>
+<span id="cb2-13"><a></a>    <span class="at">Posterior =</span> <span class="fu">dbeta</span>(p, a_post, b_post)</span>
+<span id="cb2-14"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-15"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>p, <span class="at">names_to =</span> <span class="st">"Distribution"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-16"><a></a>  <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"Likelihood"</span>, <span class="st">"Posterior"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb2-17"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> Distribution, <span class="at">linetype =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb2-18"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb2-19"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-20"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(p),</span>
+<span id="cb2-21"><a></a>    <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb2-22"><a></a>    <span class="at">title =</span> <span class="st">"Bayesian updating: Vaccine efficacy"</span>,</span>
+<span id="cb2-23"><a></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(</span>
+<span id="cb2-24"><a></a>      <span class="st">"Prior: Beta("</span>, a0, <span class="st">", "</span>, b0, <span class="st">") | Data: "</span>, y, <span class="st">"/"</span>, n,</span>
+<span id="cb2-25"><a></a>      <span class="st">" | Posterior: Beta("</span>, a_post, <span class="st">", "</span>, b_post, <span class="st">")"</span></span>
+<span id="cb2-26"><a></a>    )</span>
+<span id="cb2-27"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb2-28"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Likelihood"</span> <span class="ot">=</span> <span class="st">"gray50"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"darkred"</span>)) <span class="sc">+</span></span>
+<span id="cb2-29"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-2-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"><div class="fragment">
+<ul>
+<li><strong>Prior mean:</strong> <span class="math inline">\(\frac{6}{10} = 0.60\)</span></li>
+<li><strong>MLE (frequentist):</strong> <span class="math inline">\(\hat{p} = 38/50 = 0.76\)</span></li>
+<li><strong>Posterior mean:</strong> <span class="math inline">\(\frac{44}{60} = 0.7333\)</span> — a weighted average, pulled toward the data</li>
+</ul>
+</div>
+</section>
+<section id="example-gamma-prior-for-exponential-data-dbc-15.2" class="slide level2">
+<h2>Example: Gamma Prior for Exponential Data (DBC 15.2)</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Proposition: Gamma-Exponential Conjugacy</strong></p>
+</div>
+<div class="callout-content">
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)\)</span> with pdf <span class="math inline">\(f(x|\lambda) = \lambda e^{-\lambda x}\)</span>. If <span class="math inline">\(\lambda\)</span> is assigned a Gamma(<span class="math inline">\(\alpha_0, \beta_0\)</span>) prior, the posterior distribution of <span class="math inline">\(\lambda\)</span> is:</p>
+<p><span class="math display">\[\lambda \mid x_1, \ldots, x_n \sim \text{Gamma}\!\left(\alpha_0 + n, \;\frac{1}{1/\beta_0 + \sum x_i}\right)\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Proof:</strong> The joint likelihood is <span class="math inline">\(f(x|\lambda) = \lambda^n e^{-\lambda \sum x_i}\)</span>. The Gamma prior is <span class="math inline">\(\pi(\lambda) \propto \lambda^{\alpha_0 - 1} e^{-\lambda/\beta_0}\)</span>. Then:</p>
+<p><span class="math display">\[\pi(\lambda|x) \propto \lambda^{\alpha_0 - 1} e^{-\lambda/\beta_0} \cdot \lambda^n e^{-\lambda \sum x_i} = \lambda^{(\alpha_0 + n) - 1} \exp\!\left(-\lambda\left(\frac{1}{\beta_0} + \sum x_i\right)\right)\]</span></p>
+<p>This is the kernel of a Gamma distribution with shape <span class="math inline">\(\alpha_0 + n\)</span> and scale <span class="math inline">\(\frac{1}{1/\beta_0 + \sum x_i}\)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+</section>
+<section id="medical-example-gamma-exponential-hospital-wait-times" class="slide level2">
+<h2>Medical Example: Gamma-Exponential — Hospital Wait Times</h2>
+<p>An emergency department models the rate <span class="math inline">\(\lambda\)</span> (patients per hour) of arrivals. Prior experience suggests approximately 5 patients per hour, so we use a Gamma(5, 1) prior for <span class="math inline">\(\lambda\)</span> (mean = 5).</p>
+<p>We observe <span class="math inline">\(n = 12\)</span> inter-arrival times (in hours) with <span class="math inline">\(\sum x_i = 2.8\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># Gamma-Exponential: Hospital arrival rate</span></span>
+<span id="cb3-2"><a></a>a0 <span class="ot">&lt;-</span> <span class="dv">5</span>; b0 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb3-3"><a></a>n_obs <span class="ot">&lt;-</span> <span class="dv">12</span>; sum_x <span class="ot">&lt;-</span> <span class="fl">2.8</span></span>
+<span id="cb3-4"><a></a></span>
+<span id="cb3-5"><a></a><span class="co"># Posterior</span></span>
+<span id="cb3-6"><a></a>a_post_exp <span class="ot">&lt;-</span> a0 <span class="sc">+</span> n_obs</span>
+<span id="cb3-7"><a></a>b_post_exp <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span><span class="sc">/</span>b0 <span class="sc">+</span> sum_x)</span>
+<span id="cb3-8"><a></a></span>
+<span id="cb3-9"><a></a><span class="fu">tibble</span>(<span class="at">lambda =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">15</span>, <span class="at">by =</span> <span class="fl">0.01</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb3-10"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb3-11"><a></a>    <span class="at">Prior =</span> <span class="fu">dgamma</span>(lambda, <span class="at">shape =</span> a0, <span class="at">scale =</span> b0),</span>
+<span id="cb3-12"><a></a>    <span class="at">Posterior =</span> <span class="fu">dgamma</span>(lambda, <span class="at">shape =</span> a_post_exp, <span class="at">scale =</span> b_post_exp)</span>
+<span id="cb3-13"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb3-14"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>lambda, <span class="at">names_to =</span> <span class="st">"Distribution"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> lambda, <span class="at">y =</span> density, <span class="at">color =</span> Distribution, <span class="at">linetype =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb3-16"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb3-17"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> n_obs <span class="sc">/</span> sum_x, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb3-18"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> n_obs <span class="sc">/</span> sum_x <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="fl">0.6</span>,</span>
+<span id="cb3-19"><a></a>           <span class="at">label =</span> <span class="st">"MLE"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb3-20"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-21"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(lambda <span class="sc">~</span> <span class="st">"(patients/hour)"</span>),</span>
+<span id="cb3-22"><a></a>    <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb3-23"><a></a>    <span class="at">title =</span> <span class="st">"Bayesian updating: ED arrival rate"</span>,</span>
+<span id="cb3-24"><a></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"Prior: Gamma("</span>, a0, <span class="st">", "</span>, b0, <span class="st">") | Posterior: Gamma("</span>,</span>
+<span id="cb3-25"><a></a>                       a_post_exp, <span class="st">", "</span>, <span class="fu">round</span>(b_post_exp, <span class="dv">3</span>), <span class="st">")"</span>)</span>
+<span id="cb3-26"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb3-27"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"darkred"</span>)) <span class="sc">+</span></span>
+<span id="cb3-28"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-3-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"></section>
+<section id="example-gamma-prior-for-poisson-data-cb-ch-10.4" class="slide level2">
+<h2>Example: Gamma Prior for Poisson Data (C&amp;B, C&amp;H 10.4)</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Proposition: Gamma-Poisson Conjugacy</strong></p>
+</div>
+<div class="callout-content">
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\theta)\)</span>. If <span class="math inline">\(\theta\)</span> is assigned a Gamma(<span class="math inline">\(\alpha_0, \beta_0\)</span>) prior, then:</p>
+<p><span class="math display">\[\theta \mid x_1, \ldots, x_n \sim \text{Gamma}\!\left(\alpha_0 + \sum_{i=1}^n x_i, \; \frac{1}{n + 1/\beta_0}\right)\]</span></p>
+</div>
+</div>
+</div>
+<p><strong>Proof:</strong> The joint pmf is <span class="math inline">\(f(x|\theta) = \frac{\theta^{\sum x_i} e^{-n\theta}}{\prod x_i!}\)</span>. Combining with the Gamma prior <span class="math inline">\(\pi(\theta) \propto \theta^{\alpha_0 - 1} e^{-\theta/\beta_0}\)</span>:</p>
+<p><span class="math display">\[\pi(\theta|x) \propto \theta^{\alpha_0 - 1} e^{-\theta/\beta_0} \cdot \theta^{\sum x_i} e^{-n\theta} = \theta^{(\alpha_0 + \sum x_i) - 1} \exp\!\left(-\theta\left(n + \frac{1}{\beta_0}\right)\right)\]</span></p>
+<p>which is the Gamma<span class="math inline">\(\!\left(\alpha_0 + \sum x_i, \; \frac{1}{n + 1/\beta_0}\right)\)</span> kernel. <span class="math inline">\(\square\)</span></p>
+</section>
+<section id="example-normal-prior-for-normal-mean-dbc-15.9-ch-10.4" class="slide level2">
+<h2>Example: Normal Prior for Normal Mean (DBC 15.9, C&amp;H 10.4)</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Proposition: Normal-Normal Conjugacy</strong></p>
+</div>
+<div class="callout-content">
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\sigma^2\)</span> known. If <span class="math inline">\(\mu\)</span> is assigned a <span class="math inline">\(N(\mu_0, \sigma_0^2)\)</span> prior, then:</p>
+<p><span class="math display">\[\mu \mid x_1, \ldots, x_n \sim N(\mu_1, \sigma_1^2)\]</span></p>
+<p>where the <strong>posterior precision</strong> (reciprocal of variance) is:</p>
+<p><span class="math display">\[\frac{1}{\sigma_1^2} = \frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}\]</span></p>
+<p>and the <strong>posterior mean</strong> is a weighted average:</p>
+<p><span class="math display">\[\mu_1 = \frac{\frac{1}{\sigma_0^2}}{\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}} \cdot \mu_0 + \frac{\frac{n}{\sigma^2}}{\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}} \cdot \bar{x}\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Key insight — Precision adds:</strong></p>
+<p><span class="math display">\[\underbrace{\frac{1}{\sigma_1^2}}_{\text{posterior precision}} = \underbrace{\frac{1}{\sigma_0^2}}_{\text{prior precision}} + \underbrace{\frac{n}{\sigma^2}}_{\text{data precision}}\]</span></p>
+<p>The weights in the posterior mean are proportional to the respective precisions!</p>
+</div>
+</section>
+<section id="medical-example-normal-normal-systolic-blood-pressure" class="slide level2">
+<h2>Medical Example: Normal-Normal — Systolic Blood Pressure</h2>
+<p>A researcher studies the mean systolic blood pressure <span class="math inline">\(\mu\)</span> in a hypertensive population. Prior clinical knowledge suggests <span class="math inline">\(\mu \approx 145\)</span> mmHg with <span class="math inline">\(\sigma_0 = 10\)</span>. Population <span class="math inline">\(\sigma = 20\)</span> mmHg is assumed known.</p>
+<p>A sample of <span class="math inline">\(n = 25\)</span> patients has <span class="math inline">\(\bar{x} = 152\)</span> mmHg.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Normal-Normal: Blood pressure</span></span>
+<span id="cb4-2"><a></a>mu0 <span class="ot">&lt;-</span> <span class="dv">145</span>; sigma0 <span class="ot">&lt;-</span> <span class="dv">10</span>    <span class="co"># Prior</span></span>
+<span id="cb4-3"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">20</span>                  <span class="co"># Known population SD</span></span>
+<span id="cb4-4"><a></a>n_bp <span class="ot">&lt;-</span> <span class="dv">25</span>; xbar <span class="ot">&lt;-</span> <span class="dv">152</span>     <span class="co"># Data</span></span>
+<span id="cb4-5"><a></a></span>
+<span id="cb4-6"><a></a><span class="co"># Posterior parameters</span></span>
+<span id="cb4-7"><a></a>sigma1_sq <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (<span class="dv">1</span><span class="sc">/</span>sigma0<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> n_bp<span class="sc">/</span>sigma<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-8"><a></a>sigma1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(sigma1_sq)</span>
+<span id="cb4-9"><a></a>mu1 <span class="ot">&lt;-</span> sigma1_sq <span class="sc">*</span> (mu0<span class="sc">/</span>sigma0<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> n_bp <span class="sc">*</span> xbar <span class="sc">/</span> sigma<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb4-10"><a></a></span>
+<span id="cb4-11"><a></a><span class="fu">tibble</span>(<span class="at">mu =</span> <span class="fu">seq</span>(<span class="dv">120</span>, <span class="dv">175</span>, <span class="at">by =</span> <span class="fl">0.1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb4-12"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-13"><a></a>    <span class="at">Prior =</span> <span class="fu">dnorm</span>(mu, mu0, sigma0),</span>
+<span id="cb4-14"><a></a>    <span class="st">`</span><span class="at">Data likelihood</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">dnorm</span>(mu, xbar, sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n_bp)),</span>
+<span id="cb4-15"><a></a>    <span class="at">Posterior =</span> <span class="fu">dnorm</span>(mu, mu1, sigma1)</span>
+<span id="cb4-16"><a></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-17"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>mu, <span class="at">names_to =</span> <span class="st">"Distribution"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb4-18"><a></a>  <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"Data likelihood"</span>, <span class="st">"Posterior"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb4-19"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu, <span class="at">y =</span> density, <span class="at">color =</span> Distribution, <span class="at">linetype =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb4-20"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb4-21"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-22"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(mu <span class="sc">~</span> <span class="st">"(mmHg)"</span>),</span>
+<span id="cb4-23"><a></a>    <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb4-24"><a></a>    <span class="at">title =</span> <span class="st">"Normal-Normal conjugate update: Systolic blood pressure"</span>,</span>
+<span id="cb4-25"><a></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Prior:"</span> <span class="sc">~</span> mu[<span class="dv">0</span>] <span class="sc">==</span> .(mu0) <span class="sc">*</span> <span class="st">","</span> <span class="sc">~</span> sigma[<span class="dv">0</span>] <span class="sc">==</span> .(sigma0) <span class="sc">~</span></span>
+<span id="cb4-26"><a></a>                       <span class="st">"| Data:"</span> <span class="sc">~</span> <span class="fu">bar</span>(x) <span class="sc">==</span> .(xbar) <span class="sc">*</span> <span class="st">","</span> <span class="sc">~</span> n <span class="sc">==</span> .(n_bp) <span class="sc">~</span></span>
+<span id="cb4-27"><a></a>                       <span class="st">"| Posterior:"</span> <span class="sc">~</span> mu[<span class="dv">1</span>] <span class="sc">==</span> .(<span class="fu">round</span>(mu1, <span class="dv">1</span>)) <span class="sc">*</span> <span class="st">","</span> <span class="sc">~</span> sigma[<span class="dv">1</span>] <span class="sc">==</span> .(<span class="fu">round</span>(sigma1, <span class="dv">2</span>)))</span>
+<span id="cb4-28"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb4-29"><a></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"steelblue"</span>, <span class="st">"Data likelihood"</span> <span class="ot">=</span> <span class="st">"gray50"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"darkred"</span>)) <span class="sc">+</span></span>
+<span id="cb4-30"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-4-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"><div class="fragment">
+<ul>
+<li><strong>Prior mean:</strong> <span class="math inline">\(\mu_0 = 145\)</span>, <strong>Data mean:</strong> <span class="math inline">\(\bar{x} = 152\)</span></li>
+<li><strong>Posterior mean:</strong> <span class="math inline">\(\mu_1 = 151.03\)</span> — between the two, weighted by precision</li>
+<li><strong>Posterior SD:</strong> <span class="math inline">\(\sigma_1 = 3.71\)</span> — always <strong>smaller</strong> than both <span class="math inline">\(\sigma_0\)</span> and <span class="math inline">\(\sigma/\sqrt{n}\)</span></li>
+</ul>
+</div>
+</section>
+<section id="proof-normal-normal-conjugacy" class="slide level2">
+<h2>Proof: Normal-Normal Conjugacy</h2>
+<p><strong>Proof sketch:</strong> Apply the posterior formula with <span class="math inline">\(\pi(\mu) = \frac{1}{\sqrt{2\pi}\sigma_0} e^{-(\mu - \mu_0)^2/(2\sigma_0^2)}\)</span> and the normal likelihood:</p>
+<p><span class="math display">\[\pi(\mu|x) \propto \exp\!\left(-\frac{(\mu - \mu_0)^2}{2\sigma_0^2}\right) \prod_{i=1}^n \exp\!\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)\]</span></p>
+<p>Expanding the exponent and collecting terms in <span class="math inline">\(\mu\)</span>:</p>
+<p><span class="math display">\[\pi(\mu|x) \propto \exp\!\left(-\frac{1}{2}\left[\frac{(\mu - \mu_0)^2}{\sigma_0^2} + \frac{\sum(x_i - \mu)^2}{\sigma^2}\right]\right)\]</span></p>
+<div class="fragment">
+<p><strong>Completing the square</strong> in <span class="math inline">\(\mu\)</span> (the key algebraic step):</p>
+<p><span class="math display">\[= \exp\!\left(-\frac{(\mu - \mu_1)^2}{2\sigma_1^2} + C\right)\]</span></p>
+<p>where <span class="math inline">\(C\)</span> does not depend on <span class="math inline">\(\mu\)</span>, and <span class="math inline">\(\mu_1, \sigma_1^2\)</span> are as defined in the proposition.</p>
+<p>Since this is proportional to a <span class="math inline">\(N(\mu_1, \sigma_1^2)\)</span> density in <span class="math inline">\(\mu\)</span>, the posterior must be <span class="math inline">\(N(\mu_1, \sigma_1^2)\)</span>. <span class="math inline">\(\square\)</span></p>
+</div>
+</section></section>
+<section>
+<section id="bayesian-point-estimation" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Bayesian Point Estimation</h1>
+
+</section>
+<section id="the-bayes-estimator" class="slide level2">
+<h2>The Bayes Estimator</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Bayes Estimator (DBC 15.2)</strong></p>
+</div>
+<div class="callout-content">
+<p>The most common Bayesian point estimator of <span class="math inline">\(\theta\)</span> is the <strong>mean of the posterior distribution</strong>:</p>
+<p><span class="math display">\[\hat{\theta}_B = E(\theta \mid X_1, \ldots, X_n)\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>An alternative is the <strong>maximum a posteriori (MAP)</strong> estimate — the <strong>mode</strong> of the posterior distribution.</p>
+</div>
+<div class="fragment">
+<p><strong>For our conjugate families:</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 82%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Model</th>
+<th style="text-align: left;">Bayes Estimator (Posterior Mean)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Beta(<span class="math inline">\(\alpha_0 + y, \beta_0 + n - y\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{p}_B = \frac{\alpha_0 + y}{\alpha_0 + \beta_0 + n}\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gamma(<span class="math inline">\(\alpha_0 + n, \frac{1}{1/\beta_0 + \sum x_i}\)</span>)</td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\lambda}_B = \frac{\alpha_0 + n}{1/\beta_0 + \sum x_i}\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><span class="math inline">\(N(\mu_1, \sigma_1^2)\)</span></td>
+<td style="text-align: left;"><span class="math inline">\(\hat{\mu}_B = \mu_1\)</span> (weighted average of <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\bar{x}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="the-bayes-estimator-as-a-weighted-average" class="slide level2">
+<h2>The Bayes Estimator as a Weighted Average</h2>
+<p>For the <strong>Binomial-Beta</strong> case, the Bayes estimator can be written as:</p>
+<p><span class="math display">\[\hat{p}_B = \frac{\alpha_0 + y}{\alpha_0 + \beta_0 + n} = \underbrace{\frac{\alpha_0 + \beta_0}{\alpha_0 + \beta_0 + n}}_{\text{weight on prior}} \cdot \underbrace{\frac{\alpha_0}{\alpha_0 + \beta_0}}_{\text{prior mean}} + \underbrace{\frac{n}{\alpha_0 + \beta_0 + n}}_{\text{weight on data}} \cdot \underbrace{\frac{y}{n}}_{\text{sample proportion}}\]</span></p>
+<div class="fragment">
+<p>As <span class="math inline">\(n \to \infty\)</span>: the weight on the prior <span class="math inline">\(\to 0\)</span> and the weight on the data <span class="math inline">\(\to 1\)</span>.</p>
+<p><span class="math display">\[\hat{p}_B \to \frac{y}{n} = \hat{p}_{MLE}\]</span></p>
+<p>The <strong>data dominates the prior</strong> for large samples.</p>
+</div>
+</section>
+<section id="properties-of-bayes-estimators" class="slide level2 scrollable">
+<h2>Properties of Bayes Estimators</h2>
+<p>Under general conditions, as <span class="math inline">\(n \to \infty\)</span>:</p>
+<ol type="1">
+<li>The <strong>mean</strong> of the posterior distribution converges to the true value of <span class="math inline">\(\theta\)</span></li>
+<li>The <strong>variance</strong> of the posterior distribution converges to zero</li>
+</ol>
+<div class="fragment">
+<p>These properties imply that <strong>Bayes estimators are generally consistent</strong> (in the frequentist sense).</p>
+</div>
+<div class="fragment">
+<p><strong>Key consequence:</strong> For large samples, Bayesian and frequentist estimates will typically be quite close, regardless of the prior chosen (as long as the prior is not degenerate — i.e., assigns zero probability to the true value).</p>
+</div>
+<div class="fragment">
+<p><strong>For small samples</strong>, the prior can have a substantial influence. This is a feature (incorporating prior knowledge) or a bug (sensitivity to subjective choices), depending on one’s perspective.</p>
+</div>
+</section>
+<section id="simulation-effect-of-sample-size-on-prior-influence" class="slide level2">
+<h2>Simulation: Effect of Sample Size on Prior Influence</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Show how the posterior evolves with increasing n</span></span>
+<span id="cb5-2"><a></a><span class="co"># True p = 0.7, Prior: Beta(3, 7) centered at 0.3</span></span>
+<span id="cb5-3"><a></a>a0 <span class="ot">&lt;-</span> <span class="dv">3</span>; b0 <span class="ot">&lt;-</span> <span class="dv">7</span>  <span class="co"># Prior mean = 0.3</span></span>
+<span id="cb5-4"><a></a>true_p <span class="ot">&lt;-</span> <span class="fl">0.7</span></span>
+<span id="cb5-5"><a></a></span>
+<span id="cb5-6"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb5-7"><a></a>sample_sizes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">200</span>)</span>
+<span id="cb5-8"><a></a>plot_data <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(sample_sizes, <span class="cf">function</span>(n_i) {</span>
+<span id="cb5-9"><a></a>  <span class="cf">if</span> (n_i <span class="sc">==</span> <span class="dv">0</span>) {</span>
+<span id="cb5-10"><a></a>    y_i <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb5-11"><a></a>  } <span class="cf">else</span> {</span>
+<span id="cb5-12"><a></a>    y_i <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, n_i, true_p)</span>
+<span id="cb5-13"><a></a>  }</span>
+<span id="cb5-14"><a></a>  <span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.002</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-15"><a></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-16"><a></a>      <span class="at">density =</span> <span class="fu">dbeta</span>(p, a0 <span class="sc">+</span> y_i, b0 <span class="sc">+</span> n_i <span class="sc">-</span> y_i),</span>
+<span id="cb5-17"><a></a>      <span class="at">n =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_i, <span class="fu">ifelse</span>(n_i <span class="sc">&gt;</span> <span class="dv">0</span>, <span class="fu">paste0</span>(<span class="st">" (y = "</span>, y_i, <span class="st">")"</span>), <span class="st">" (prior)"</span>))</span>
+<span id="cb5-18"><a></a>    )</span>
+<span id="cb5-19"><a></a>})</span>
+<span id="cb5-20"><a></a></span>
+<span id="cb5-21"><a></a>plot_data <span class="sc">|&gt;</span></span>
+<span id="cb5-22"><a></a>  <span class="fu">mutate</span>(<span class="at">n =</span> <span class="fu">fct_inorder</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb5-23"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> n)) <span class="sc">+</span></span>
+<span id="cb5-24"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb5-25"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> true_p, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb5-26"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> true_p <span class="sc">+</span> <span class="fl">0.03</span>, <span class="at">y =</span> <span class="fl">0.5</span>,</span>
+<span id="cb5-27"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"True p = "</span>, true_p), <span class="at">color =</span> <span class="st">"gray40"</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb5-28"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-29"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(p), <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb5-30"><a></a>    <span class="at">title =</span> <span class="st">"Posterior distribution evolves toward the truth as n increases"</span>,</span>
+<span id="cb5-31"><a></a>    <span class="at">subtitle =</span> <span class="st">"Prior: Beta(3, 7), centered at 0.3 — far from the true p = 0.7"</span></span>
+<span id="cb5-32"><a></a>  ) <span class="sc">+</span></span>
+<span id="cb5-33"><a></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">name =</span> <span class="st">"Sample size"</span>, <span class="at">option =</span> <span class="st">"C"</span>, <span class="at">end =</span> <span class="fl">0.85</span>) <span class="sc">+</span></span>
+<span id="cb5-34"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-5-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"></section></section>
+<section>
+<section id="bayesian-hypothesis-testing" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Bayesian Hypothesis Testing</h1>
+
+</section>
+<section id="bayesian-approach-to-hypothesis-testing" class="slide level2">
+<h2>Bayesian Approach to Hypothesis Testing</h2>
+<p>In frequentist testing, <span class="math inline">\(\theta\)</span> is fixed and a hypothesis is either true or false. The probabilities <span class="math inline">\(P(H_0 \text{ is true} | x)\)</span> and <span class="math inline">\(P(H_1 \text{ is true} | x)\)</span> are simply 0 or 1.</p>
+<p>In Bayesian testing, <span class="math inline">\(\theta\)</span> has a distribution, so we can <strong>directly compute</strong>:</p>
+<p><span class="math display">\[P(H_0 \text{ is true} | x) = P(\theta \in \Theta_0 | x) = \int_{\Theta_0} \pi(\theta|x) \, d\theta\]</span></p>
+<p><span class="math display">\[P(H_1 \text{ is true} | x) = P(\theta \in \Theta_0^c | x) = \int_{\Theta_0^c} \pi(\theta|x) \, d\theta\]</span></p>
+<div class="fragment">
+<p><strong>Decision rules</strong> (examples):</p>
+<ul>
+<li>Accept <span class="math inline">\(H_0\)</span> if <span class="math inline">\(P(\theta \in \Theta_0 | x) \geq P(\theta \in \Theta_0^c | x)\)</span></li>
+<li>Accept <span class="math inline">\(H_0\)</span> if <span class="math inline">\(P(\theta \in \Theta_0 | x) &gt; 0.95\)</span> (or some high threshold)</li>
+</ul>
+</div>
+</section>
+<section id="medical-example-bayesian-test-drug-response-rate" class="slide level2">
+<h2>Medical Example: Bayesian Test — Drug Response Rate</h2>
+<p>A new cancer drug is tested. We want to assess:</p>
+<p><span class="math display">\[H_0: p \leq 0.30 \quad \text{vs} \quad H_1: p &gt; 0.30\]</span></p>
+<p>where <span class="math inline">\(p\)</span> is the response rate. We use a Beta(2, 5) prior (prior mean <span class="math inline">\(\approx 0.29\)</span>, reflecting skepticism).</p>
+<p>In the trial, <span class="math inline">\(n = 40\)</span> patients are treated and <span class="math inline">\(y = 18\)</span> respond.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Bayesian hypothesis test</span></span>
+<span id="cb6-2"><a></a>a0_drug <span class="ot">&lt;-</span> <span class="dv">2</span>; b0_drug <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb6-3"><a></a>n_drug <span class="ot">&lt;-</span> <span class="dv">40</span>; y_drug <span class="ot">&lt;-</span> <span class="dv">18</span></span>
+<span id="cb6-4"><a></a></span>
+<span id="cb6-5"><a></a>a_post_drug <span class="ot">&lt;-</span> a0_drug <span class="sc">+</span> y_drug    <span class="co"># 20</span></span>
+<span id="cb6-6"><a></a>b_post_drug <span class="ot">&lt;-</span> b0_drug <span class="sc">+</span> n_drug <span class="sc">-</span> y_drug  <span class="co"># 27</span></span>
+<span id="cb6-7"><a></a></span>
+<span id="cb6-8"><a></a><span class="co"># Posterior probability of H0</span></span>
+<span id="cb6-9"><a></a>p_H0 <span class="ot">&lt;-</span> <span class="fu">pbeta</span>(<span class="fl">0.30</span>, a_post_drug, b_post_drug)</span>
+<span id="cb6-10"><a></a>p_H1 <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> p_H0</span>
+<span id="cb6-11"><a></a></span>
+<span id="cb6-12"><a></a><span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-13"><a></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> <span class="fu">dbeta</span>(p, a_post_drug, b_post_drug)) <span class="sc">|&gt;</span></span>
+<span id="cb6-14"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb6-15"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb6-16"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> . <span class="sc">%&gt;%</span> <span class="fu">filter</span>(p <span class="sc">&lt;=</span> <span class="fl">0.30</span>),</span>
+<span id="cb6-17"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> posterior), <span class="at">fill =</span> <span class="st">"steelblue"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-18"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> . <span class="sc">%&gt;%</span> <span class="fu">filter</span>(p <span class="sc">&gt;</span> <span class="fl">0.30</span>),</span>
+<span id="cb6-19"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> posterior), <span class="at">fill =</span> <span class="st">"darkred"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb6-20"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.30</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb6-21"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.20</span>, <span class="at">y =</span> <span class="fl">2.5</span>,</span>
+<span id="cb6-22"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"P(H0) = "</span>, <span class="fu">round</span>(p_H0, <span class="dv">3</span>)),</span>
+<span id="cb6-23"><a></a>           <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb6-24"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.55</span>, <span class="at">y =</span> <span class="fl">2.5</span>,</span>
+<span id="cb6-25"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"P(H1) = "</span>, <span class="fu">round</span>(p_H1, <span class="dv">3</span>)),</span>
+<span id="cb6-26"><a></a>           <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size =</span> <span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb6-27"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-28"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(p), <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb6-29"><a></a>    <span class="at">title =</span> <span class="st">"Bayesian hypothesis test: Drug response rate"</span>,</span>
+<span id="cb6-30"><a></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"Posterior: Beta("</span>, a_post_drug, <span class="st">", "</span>, b_post_drug,</span>
+<span id="cb6-31"><a></a>                       <span class="st">") | P(p &gt; 0.30 | data) = "</span>, <span class="fu">round</span>(p_H1, <span class="dv">3</span>))</span>
+<span id="cb6-32"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-6-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"><div class="fragment">
+<p>The posterior probability that <span class="math inline">\(p &gt; 0.30\)</span> is <span class="math inline">\(0.964\)</span>, providing strong evidence that the drug’s response rate exceeds 30%.</p>
+</div>
+</section>
+<section id="example-bayesian-test-with-bernoulli-data-cb-8.2.2" class="slide level2">
+<h2>Example: Bayesian Test with Bernoulli Data (C&amp;B 8.2.2)</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim}\)</span> Bernoulli(<span class="math inline">\(p\)</span>) with prior <span class="math inline">\(p \sim\)</span> Uniform(0, 1) = Beta(1, 1).</p>
+<p><span class="math display">\[H_0: p \leq 1/2 \quad \text{vs} \quad H_1: p &gt; 1/2\]</span></p>
+<p>The posterior is Beta<span class="math inline">\((\sum x_i + 1, \; n - \sum x_i + 1)\)</span>.</p>
+<p><strong>Decision rule:</strong> Reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(P(p \leq 1/2 \mid x) \leq 0.5\)</span>.</p>
+<div class="fragment">
+<p><strong>Case 1:</strong> <span class="math inline">\(n = 20\)</span>, <span class="math inline">\(\sum x_i = 11\)</span>. Then <span class="math inline">\(p|x \sim\)</span> Beta(12, 10) and:</p>
+<p><span class="math display">\[P(p \leq 0.5 \mid x) = 0.332\]</span></p>
+<p>Since this is less than 0.5, we would reject <span class="math inline">\(H_0\)</span> and conclude <span class="math inline">\(p &gt; 1/2\)</span>.</p>
+</div>
+<div class="fragment">
+<p><strong>Case 2:</strong> <span class="math inline">\(n = 20\)</span>, <span class="math inline">\(\sum x_i = 9\)</span>. Then <span class="math inline">\(p|x \sim\)</span> Beta(10, 12) and:</p>
+<p><span class="math display">\[P(p \leq 0.5 \mid x) = 0.668\]</span></p>
+<p>Since this exceeds 0.5, we would not reject <span class="math inline">\(H_0\)</span>.</p>
+</div>
+</section></section>
+<section>
+<section id="bayesian-interval-estimation" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Bayesian Interval Estimation</h1>
+
+</section>
+<section id="credible-intervals" class="slide level2">
+<h2>Credible Intervals</h2>
+<div class="callout callout-note no-icon callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<p><strong>Definition: Credible Interval</strong></p>
+</div>
+<div class="callout-content">
+<p>For a posterior distribution <span class="math inline">\(\pi(\theta|x)\)</span>, an interval <span class="math inline">\([a, b]\)</span> having posterior probability <span class="math inline">\(1 - \alpha\)</span> is called a <span class="math inline">\(100(1-\alpha)\%\)</span> <strong>credible interval</strong>:</p>
+<p><span class="math display">\[P(a \leq \theta \leq b \mid x) = \int_a^b \pi(\theta|x) \, d\theta = 1 - \alpha\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>The standard approach is an <strong>equal-tailed</strong> credible interval: choose <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span> as the <span class="math inline">\(\alpha/2\)</span> and <span class="math inline">\(1 - \alpha/2\)</span> quantiles of the posterior distribution.</p>
+</div>
+<div class="fragment">
+<p>An alternative is the <strong>highest posterior density (HPD)</strong> credible interval: the shortest interval with the required posterior probability. For symmetric, unimodal posteriors, the equal-tailed and HPD intervals coincide.</p>
+</div>
+</section>
+<section id="credible-intervals-vs.-confidence-intervals" class="slide level2">
+<h2>Credible Intervals vs.&nbsp;Confidence Intervals</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Frequentist Confidence Interval:</strong></p>
+<ul>
+<li>The parameter <span class="math inline">\(\theta\)</span> is <strong>fixed</strong> (not random)</li>
+<li>The interval <span class="math inline">\([L(X), U(X)]\)</span> is <strong>random</strong></li>
+<li>Interpretation: If we repeated the experiment many times and computed an interval each time, <span class="math inline">\(100(1-\alpha)\%\)</span> of those intervals would contain the true <span class="math inline">\(\theta\)</span></li>
+<li>We do <strong>not</strong> say “<span class="math inline">\(P(\theta \in [L, U]) = 0.95\)</span>”</li>
+</ul>
+</div><div class="column" style="width:4%;">
+
+</div><div class="column" style="width:48%;">
+<p><strong>Bayesian Credible Interval:</strong></p>
+<ul>
+<li>The parameter <span class="math inline">\(\theta\)</span> is <strong>random</strong></li>
+<li>The interval <span class="math inline">\([a, b]\)</span> is <strong>fixed</strong> (given observed data)</li>
+<li>Interpretation: There is a <span class="math inline">\(100(1-\alpha)\%\)</span> <strong>probability</strong> that <span class="math inline">\(\theta\)</span> lies in <span class="math inline">\([a, b]\)</span></li>
+<li>We <strong>can</strong> say “<span class="math inline">\(P(\theta \in [a, b] \mid x) = 0.95\)</span>”</li>
+</ul>
+</div></div>
+<div class="fragment">
+<p>For large samples, credible intervals and confidence intervals are often numerically similar, but their <strong>interpretations remain fundamentally different</strong>.</p>
+</div>
+</section>
+<section id="example-credible-intervals-for-vaccine-efficacy" class="slide level2">
+<h2>Example: Credible Intervals for Vaccine Efficacy</h2>
+<p>Continuing our vaccine example (Beta(44, 16) posterior):</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>a_post_v <span class="ot">&lt;-</span> <span class="dv">44</span>; b_post_v <span class="ot">&lt;-</span> <span class="dv">16</span></span>
+<span id="cb7-2"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb7-3"><a></a></span>
+<span id="cb7-4"><a></a><span class="co"># Equal-tailed credible interval</span></span>
+<span id="cb7-5"><a></a>ci_lower <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(alpha<span class="sc">/</span><span class="dv">2</span>, a_post_v, b_post_v)</span>
+<span id="cb7-6"><a></a>ci_upper <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>, a_post_v, b_post_v)</span>
+<span id="cb7-7"><a></a></span>
+<span id="cb7-8"><a></a><span class="co"># Frequentist Wald CI for comparison</span></span>
+<span id="cb7-9"><a></a>p_hat <span class="ot">&lt;-</span> <span class="dv">38</span><span class="sc">/</span><span class="dv">50</span></span>
+<span id="cb7-10"><a></a>freq_lower <span class="ot">&lt;-</span> p_hat <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(p_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat) <span class="sc">/</span> <span class="dv">50</span>)</span>
+<span id="cb7-11"><a></a>freq_upper <span class="ot">&lt;-</span> p_hat <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>) <span class="sc">*</span> <span class="fu">sqrt</span>(p_hat <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> p_hat) <span class="sc">/</span> <span class="dv">50</span>)</span>
+<span id="cb7-12"><a></a></span>
+<span id="cb7-13"><a></a><span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.4</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb7-14"><a></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> <span class="fu">dbeta</span>(p, a_post_v, b_post_v)) <span class="sc">|&gt;</span></span>
+<span id="cb7-15"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb7-16"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb7-17"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> . <span class="sc">%&gt;%</span> <span class="fu">filter</span>(p <span class="sc">&gt;=</span> ci_lower <span class="sc">&amp;</span> p <span class="sc">&lt;=</span> ci_upper),</span>
+<span id="cb7-18"><a></a>            <span class="at">fill =</span> <span class="st">"darkred"</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb7-19"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(ci_lower, ci_upper), <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb7-20"><a></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> freq_lower, <span class="at">xend =</span> freq_upper, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.2</span>, <span class="at">yend =</span> <span class="sc">-</span><span class="fl">0.2</span>),</span>
+<span id="cb7-21"><a></a>               <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>) <span class="sc">+</span></span>
+<span id="cb7-22"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(<span class="fu">c</span>(freq_lower, freq_upper)), <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.5</span>,</span>
+<span id="cb7-23"><a></a>           <span class="at">label =</span> <span class="st">"Frequentist Wald CI"</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb7-24"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(<span class="fu">c</span>(ci_lower, ci_upper)), <span class="at">y =</span> <span class="fl">1.5</span>,</span>
+<span id="cb7-25"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"95% Credible: ["</span>, <span class="fu">round</span>(ci_lower, <span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">round</span>(ci_upper, <span class="dv">3</span>), <span class="st">"]"</span>),</span>
+<span id="cb7-26"><a></a>           <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb7-27"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-28"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(p), <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb7-29"><a></a>    <span class="at">title =</span> <span class="st">"95% Credible interval vs. frequentist Wald CI for vaccine efficacy"</span></span>
+<span id="cb7-30"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-7-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"><div class="fragment">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">95% Interval</th>
+<th style="text-align: left;">Length</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Bayesian credible (Beta posterior)</td>
+<td style="text-align: left;">[0.616, 0.836]</td>
+<td style="text-align: left;">0.221</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Frequentist Wald CI</td>
+<td style="text-align: left;">[0.642, 0.878]</td>
+<td style="text-align: left;">0.237</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="example-poisson-credible-interval-cb-9.2.16" class="slide level2">
+<h2>Example: Poisson Credible Interval (C&amp;B 9.2.16)</h2>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim}\)</span> Poisson(<span class="math inline">\(\theta\)</span>) with sufficient statistic <span class="math inline">\(T = \sum X_i\)</span> and prior Gamma(<span class="math inline">\(\alpha, \beta\)</span>).</p>
+<p>The posterior is Gamma<span class="math inline">\((\alpha + t, \; 1/(n + 1/\beta))\)</span>.</p>
+<p>A <span class="math inline">\(100(1-\alpha)\%\)</span> credible interval splits <span class="math inline">\(\alpha\)</span> equally between the tails of this posterior.</p>
+<div class="fragment">
+<p>Using the Gamma–chi-squared relationship, if <span class="math inline">\(\alpha\)</span> is an integer, the credible interval can be expressed using chi-squared quantiles:</p>
+<p><span class="math display">\[\left[\frac{\beta}{2(\beta n + 1)} \chi^2_{2(\alpha + t), 1-\alpha/2}, \quad \frac{\beta}{2(\beta n + 1)} \chi^2_{2(\alpha + t), \alpha/2}\right]\]</span></p>
+</div>
+<div class="fragment">
+<p>Compare to the frequentist confidence interval from pivoting the CDF (Lesson 8):</p>
+<p><span class="math display">\[\left[\frac{1}{2n} \chi^2_{2t, 1-\alpha/2}, \quad \frac{1}{2n} \chi^2_{2(t+1), \alpha/2}\right]\]</span></p>
+<p>The Bayesian interval incorporates the prior through <span class="math inline">\(\alpha\)</span> and <span class="math inline">\(\beta\)</span>; the frequentist interval depends only on the data.</p>
+</div>
+</section>
+<section id="poisson-credible-interval-soccer-goals-example" class="slide level2">
+<h2>Poisson Credible Interval: Soccer Goals Example</h2>
+<p>Data from the English Premier League: <span class="math inline">\(n = 380\)</span> games, total goals <span class="math inline">\(t = 1060\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Poisson credible interval: Soccer example from class notes</span></span>
+<span id="cb8-2"><a></a>nn <span class="ot">&lt;-</span> <span class="dv">380</span></span>
+<span id="cb8-3"><a></a>tstat <span class="ot">&lt;-</span> <span class="dv">1060</span></span>
+<span id="cb8-4"><a></a></span>
+<span id="cb8-5"><a></a><span class="co"># Prior: Gamma(1.5, 2)</span></span>
+<span id="cb8-6"><a></a>aa <span class="ot">&lt;-</span> <span class="fl">1.5</span>; bb <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb8-7"><a></a>astar <span class="ot">&lt;-</span> tstat <span class="sc">+</span> aa</span>
+<span id="cb8-8"><a></a>bstar <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">/</span> (nn <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>bb)</span>
+<span id="cb8-9"><a></a></span>
+<span id="cb8-10"><a></a>alpha_ci <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb8-11"><a></a>low_bayes <span class="ot">&lt;-</span> <span class="fu">qgamma</span>(alpha_ci<span class="sc">/</span><span class="dv">2</span>, <span class="at">shape =</span> astar, <span class="at">scale =</span> bstar)</span>
+<span id="cb8-12"><a></a>upper_bayes <span class="ot">&lt;-</span> <span class="fu">qgamma</span>(<span class="dv">1</span> <span class="sc">-</span> alpha_ci<span class="sc">/</span><span class="dv">2</span>, <span class="at">shape =</span> astar, <span class="at">scale =</span> bstar)</span>
+<span id="cb8-13"><a></a></span>
+<span id="cb8-14"><a></a><span class="co"># Frequentist CI using chi-squared pivot</span></span>
+<span id="cb8-15"><a></a>low_freq <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">-</span> alpha_ci<span class="sc">/</span><span class="dv">2</span>, <span class="at">df =</span> <span class="dv">2</span> <span class="sc">*</span> tstat, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> nn)</span>
+<span id="cb8-16"><a></a>upper_freq <span class="ot">&lt;-</span> <span class="fu">qchisq</span>(<span class="at">p =</span> alpha_ci<span class="sc">/</span><span class="dv">2</span>, <span class="at">df =</span> <span class="dv">2</span> <span class="sc">*</span> (tstat <span class="sc">+</span> <span class="dv">1</span>), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> nn)</span>
+<span id="cb8-17"><a></a></span>
+<span id="cb8-18"><a></a><span class="fu">tibble</span>(<span class="at">theta =</span> <span class="fu">seq</span>(<span class="fl">2.4</span>, <span class="fl">3.2</span>, <span class="at">by =</span> <span class="fl">0.001</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb8-19"><a></a>  <span class="fu">mutate</span>(<span class="at">posterior =</span> <span class="fu">dgamma</span>(theta, <span class="at">shape =</span> astar, <span class="at">scale =</span> bstar)) <span class="sc">|&gt;</span></span>
+<span id="cb8-20"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> theta, <span class="at">y =</span> posterior)) <span class="sc">+</span></span>
+<span id="cb8-21"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-22"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(low_bayes, upper_bayes), <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb8-23"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">c</span>(low_freq, upper_freq), <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>) <span class="sc">+</span></span>
+<span id="cb8-24"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fu">max</span>(<span class="fu">dgamma</span>(<span class="fu">seq</span>(<span class="fl">2.4</span>, <span class="fl">3.2</span>, <span class="fl">0.01</span>), astar, <span class="at">scale =</span> bstar)) <span class="sc">*</span> <span class="fl">0.9</span>,</span>
+<span id="cb8-25"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Bayes: ["</span>, <span class="fu">round</span>(low_bayes, <span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">round</span>(upper_bayes, <span class="dv">3</span>), <span class="st">"]"</span>),</span>
+<span id="cb8-26"><a></a>           <span class="at">color =</span> <span class="st">"darkred"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb8-27"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">2.5</span>, <span class="at">y =</span> <span class="fu">max</span>(<span class="fu">dgamma</span>(<span class="fu">seq</span>(<span class="fl">2.4</span>, <span class="fl">3.2</span>, <span class="fl">0.01</span>), astar, <span class="at">scale =</span> bstar)) <span class="sc">*</span> <span class="fl">0.75</span>,</span>
+<span id="cb8-28"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Freq: ["</span>, <span class="fu">round</span>(low_freq, <span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">round</span>(upper_freq, <span class="dv">3</span>), <span class="st">"]"</span>),</span>
+<span id="cb8-29"><a></a>           <span class="at">color =</span> <span class="st">"steelblue"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb8-30"><a></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-31"><a></a>    <span class="at">x =</span> <span class="fu">expression</span>(theta <span class="sc">~</span> <span class="st">"(goals per game)"</span>),</span>
+<span id="cb8-32"><a></a>    <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb8-33"><a></a>    <span class="at">title =</span> <span class="st">"Poisson credible interval: Mean goals per game (EPL)"</span>,</span>
+<span id="cb8-34"><a></a>    <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, nn, <span class="st">" games, total goals = "</span>, tstat,</span>
+<span id="cb8-35"><a></a>                       <span class="st">", Prior: Gamma(1.5, 2), Posterior: Gamma("</span>, astar, <span class="st">", "</span>, <span class="fu">round</span>(bstar, <span class="dv">5</span>), <span class="st">")"</span>)</span>
+<span id="cb8-36"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-8-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1152"><p>With <span class="math inline">\(n = 380\)</span>, the Bayesian and frequentist intervals are nearly identical — the data overwhelms the prior.</p>
+</section></section>
+<section>
+<section id="noninformative-priors-and-sensitivity" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Noninformative Priors and Sensitivity</h1>
+
+</section>
+<section id="noninformative-flat-priors" class="slide level2">
+<h2>Noninformative (Flat) Priors</h2>
+<p>When little prior knowledge is available, we may want a prior that has <strong>minimal influence</strong> on the posterior. Common choices include:</p>
+<ul>
+<li><strong>Beta(1, 1) = Uniform(0,1)</strong> for a proportion — the “flat” prior</li>
+<li><strong>Beta(0.5, 0.5)</strong> — Jeffreys’ prior for a binomial proportion</li>
+<li><span class="math inline">\(\pi(\mu) \propto 1\)</span> for a normal mean — an <strong>improper</strong> prior (does not integrate to a finite value, but yields a proper posterior)</li>
+</ul>
+<div class="fragment">
+<p>With the <strong>flat prior</strong> Beta(1, 1) for binomial data, the posterior is Beta(<span class="math inline">\(1 + y, 1 + n - y\)</span>), and:</p>
+<p><span class="math display">\[\hat{p}_B = \frac{1 + y}{2 + n}\]</span></p>
+<p>This is the <strong>Laplace estimator</strong> — equivalent to adding one prior success and one prior failure.</p>
+</div>
+<div class="fragment">
+<p><strong>Noninformative priors</strong> let the data “speak for themselves” and produce results similar to frequentist methods. The posterior mean with a flat prior is approximately the MLE for large <span class="math inline">\(n\)</span>.</p>
+</div>
+</section>
+<section id="prior-sensitivity-analysis" class="slide level2">
+<h2>Prior Sensitivity Analysis</h2>
+<p>A responsible Bayesian analysis should assess how sensitive the conclusions are to the choice of prior. This is called <strong>sensitivity analysis</strong> or <strong>robustness analysis</strong>.</p>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="co"># Sensitivity to prior choice</span></span>
+<span id="cb9-2"><a></a>n_sens <span class="ot">&lt;-</span> <span class="dv">20</span>; y_sens <span class="ot">&lt;-</span> <span class="dv">14</span></span>
+<span id="cb9-3"><a></a></span>
+<span id="cb9-4"><a></a>priors <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb9-5"><a></a>  <span class="sc">~</span>name, <span class="sc">~</span>a0, <span class="sc">~</span>b0,</span>
+<span id="cb9-6"><a></a>  <span class="st">"Flat: Beta(1, 1)"</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb9-7"><a></a>  <span class="st">"Skeptical: Beta(2, 8)"</span>, <span class="dv">2</span>, <span class="dv">8</span>,</span>
+<span id="cb9-8"><a></a>  <span class="st">"Optimistic: Beta(8, 2)"</span>, <span class="dv">8</span>, <span class="dv">2</span>,</span>
+<span id="cb9-9"><a></a>  <span class="st">"Jeffreys: Beta(0.5, 0.5)"</span>, <span class="fl">0.5</span>, <span class="fl">0.5</span></span>
+<span id="cb9-10"><a></a>)</span>
+<span id="cb9-11"><a></a></span>
+<span id="cb9-12"><a></a>plot_data_sens <span class="ot">&lt;-</span> priors <span class="sc">|&gt;</span></span>
+<span id="cb9-13"><a></a>  <span class="fu">rowwise</span>() <span class="sc">|&gt;</span></span>
+<span id="cb9-14"><a></a>  <span class="fu">mutate</span>(<span class="at">data =</span> <span class="fu">list</span>(</span>
+<span id="cb9-15"><a></a>    <span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="at">by =</span> <span class="fl">0.002</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-16"><a></a>      <span class="fu">mutate</span>(</span>
+<span id="cb9-17"><a></a>        <span class="at">prior =</span> <span class="fu">dbeta</span>(p, a0, b0),</span>
+<span id="cb9-18"><a></a>        <span class="at">posterior =</span> <span class="fu">dbeta</span>(p, a0 <span class="sc">+</span> y_sens, b0 <span class="sc">+</span> n_sens <span class="sc">-</span> y_sens)</span>
+<span id="cb9-19"><a></a>      )</span>
+<span id="cb9-20"><a></a>  )) <span class="sc">|&gt;</span></span>
+<span id="cb9-21"><a></a>  <span class="fu">unnest</span>(data) <span class="sc">|&gt;</span></span>
+<span id="cb9-22"><a></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb9-23"><a></a></span>
+<span id="cb9-24"><a></a>p_prior <span class="ot">&lt;-</span> plot_data_sens <span class="sc">|&gt;</span></span>
+<span id="cb9-25"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> prior, <span class="at">color =</span> name)) <span class="sc">+</span></span>
+<span id="cb9-26"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-27"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(p), <span class="at">y =</span> <span class="st">"Density"</span>, <span class="at">title =</span> <span class="st">"Prior distributions"</span>) <span class="sc">+</span></span>
+<span id="cb9-28"><a></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>, <span class="at">name =</span> <span class="st">"Prior"</span>) <span class="sc">+</span></span>
+<span id="cb9-29"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb9-30"><a></a></span>
+<span id="cb9-31"><a></a>p_post <span class="ot">&lt;-</span> plot_data_sens <span class="sc">|&gt;</span></span>
+<span id="cb9-32"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> posterior, <span class="at">color =</span> name)) <span class="sc">+</span></span>
+<span id="cb9-33"><a></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb9-34"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> y_sens <span class="sc">/</span> n_sens, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb9-35"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(p), <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb9-36"><a></a>       <span class="at">title =</span> <span class="fu">paste0</span>(<span class="st">"Posterior distributions (n = "</span>, n_sens, <span class="st">", y = "</span>, y_sens, <span class="st">")"</span>)) <span class="sc">+</span></span>
+<span id="cb9-37"><a></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>, <span class="at">name =</span> <span class="st">"Prior"</span>) <span class="sc">+</span></span>
+<span id="cb9-38"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb9-39"><a></a></span>
+<span id="cb9-40"><a></a>p_prior <span class="sc">+</span> p_post <span class="sc">+</span> <span class="fu">plot_layout</span>(<span class="at">widths =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="23_BayesianInference_files/figure-revealjs/unnamed-chunk-9-1.png" class="quarto-figure quarto-figure-center r-stretch" width="1344"><div class="fragment">
+<p>Even with <span class="math inline">\(n = 20\)</span>, the posteriors are already converging. With larger <span class="math inline">\(n\)</span>, the choice of prior matters even less.</p>
+</div>
+</section></section>
+<section>
+<section id="bayesian-vs.-frequentist-summary" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Bayesian vs.&nbsp;Frequentist: Summary</h1>
+
+</section>
+<section id="side-by-side-comparison" class="slide level2">
+<h2>Side-by-Side Comparison</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 40%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Aspect</th>
+<th style="text-align: left;">Frequentist</th>
+<th style="text-align: left;">Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Parameter <span class="math inline">\(\theta\)</span></strong></td>
+<td style="text-align: left;">Fixed, unknown constant</td>
+<td style="text-align: left;">Random variable with a distribution</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Probability</strong></td>
+<td style="text-align: left;">Long-run frequency</td>
+<td style="text-align: left;">Degree of belief</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Prior information</strong></td>
+<td style="text-align: left;">Not formally incorporated</td>
+<td style="text-align: left;">Encoded in <span class="math inline">\(\pi(\theta)\)</span></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Point estimate</strong></td>
+<td style="text-align: left;">MLE <span class="math inline">\(\hat{\theta}\)</span></td>
+<td style="text-align: left;">Posterior mean <span class="math inline">\(E(\theta|x)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interval estimate</strong></td>
+<td style="text-align: left;">Confidence interval</td>
+<td style="text-align: left;">Credible interval</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Hypothesis test</strong></td>
+<td style="text-align: left;">P-value, rejection region</td>
+<td style="text-align: left;">Posterior probability <span class="math inline">\(P(H_0|x)\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Interpretation of 95% CI</strong></td>
+<td style="text-align: left;">95% of intervals from repeated samples cover <span class="math inline">\(\theta\)</span></td>
+<td style="text-align: left;">95% probability <span class="math inline">\(\theta\)</span> is in the interval</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>Large sample behavior</strong></td>
+<td style="text-align: left;">Asymptotic normality via CLT</td>
+<td style="text-align: left;">Posterior concentrates on true <span class="math inline">\(\theta\)</span></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Agreement</strong></td>
+<td style="text-align: left;">For large <span class="math inline">\(n\)</span>, methods typically agree</td>
+<td style="text-align: left;"></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p>As C&amp;B state: <em>“There is no one best way to do statistics; some problems are best solved with classical statistics and some are best solved with Bayesian statistics.”</em></p>
+</div>
+</section>
+<section id="bayesian-methods-in-modern-biostatistics" class="slide level2">
+<h2>Bayesian Methods in Modern Biostatistics</h2>
+<p><strong>Clinical Trials:</strong></p>
+<ul>
+<li>FDA guidance on Bayesian methods for medical devices (2010)</li>
+<li>Adaptive trial designs that update allocations based on accumulating data</li>
+<li>Borrowing information from historical trials via informative priors</li>
+</ul>
+<div class="fragment">
+<p><strong>Genomics and Precision Medicine:</strong></p>
+<ul>
+<li>Hierarchical Bayesian models for gene expression analysis</li>
+<li>False discovery rate control through empirical Bayes methods</li>
+<li>Bayesian network models for pathway analysis</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Epidemiology:</strong></p>
+<ul>
+<li>Disease mapping and spatial modeling</li>
+<li>Bayesian meta-analysis combining multiple studies</li>
+<li>Real-time surveillance and outbreak detection</li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="summary-and-connections" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Summary and Connections</h1>
+
+</section>
+<section id="key-takeaways" class="slide level2 scrollable">
+<h2>Key Takeaways</h2>
+<ol type="1">
+<li><p><strong>Bayes’ theorem</strong> provides a principled way to update beliefs: <span class="math inline">\(\text{Posterior} \propto \text{Prior} \times \text{Likelihood}\)</span></p></li>
+<li><p><strong>Conjugate priors</strong> yield tractable posteriors in the same family as the prior</p></li>
+<li><p>The <strong>Bayes estimator</strong> (posterior mean) is a weighted average of prior belief and observed data, with weights determined by relative precision</p></li>
+<li><p><strong>Credible intervals</strong> allow direct probability statements about parameters</p></li>
+<li><p>For <strong>large samples</strong>, Bayesian and frequentist methods converge; differences matter most for small samples or strong priors</p></li>
+<li><p>Bayesian methods offer a <strong>coherent framework</strong> for combining prior knowledge with data — particularly valuable in medical research where historical data and expert knowledge are abundant</p></li>
+</ol>
+</section>
+<section id="connection-to-course-themes" class="slide level2">
+<h2>Connection to Course Themes</h2>
+<p>Throughout BSTA 551, we have studied the <strong>foundations of statistical inference</strong>:</p>
+<ul>
+<li><strong>Point estimation:</strong> MLE, method of moments, MVUE, sufficiency, Fisher information (Lessons 1–6)</li>
+<li><strong>Interval estimation:</strong> Confidence intervals, bootstrap CIs (Lessons 7–11)</li>
+<li><strong>Hypothesis testing:</strong> P-values, power, Neyman-Pearson, LRT (Lessons 12–17)</li>
+<li><strong>Two-sample and nonparametric methods</strong> (Lessons 18–22)</li>
+</ul>
+<div class="fragment">
+<p><strong>Bayesian inference</strong> provides an alternative paradigm that:</p>
+<ul>
+<li>Uses the <strong>same likelihood function</strong> as frequentist methods</li>
+<li>Reaches similar conclusions for large samples (consistency of Bayes estimators)</li>
+<li>Offers different — sometimes more intuitive — interpretations of uncertainty</li>
+<li>Formalizes the incorporation of prior knowledge into analysis</li>
+</ul>
+</div>
+</section>
+<section id="references" class="slide level2">
+<h2>References</h2>
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Chapter 15.</li>
+<li>Chihara, L. M. and Hesterberg, T. C. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapter 10.</li>
+<li>Casella, G. and Berger, R. L. <em>Statistical Inference</em> (2nd ed.). Sections 8.2.2, 9.2.16.</li>
+<li>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). <em>Bayesian Data Analysis</em> (3rd ed.). CRC Press.</li>
+</ul>
+</section>
+<section id="questions" class="slide level2 center" data-background-color="#3498db">
+<h2>Questions?</h2>
+<p>Thank you!</p>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Lesson 23 - Introduction to Bayesian Inference</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1955,
+
+        height: 1100,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

@@ -1,0 +1,2110 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Jessica Minnier">
+<meta name="dcterms.date" content="2026-03-11">
+
+<title>Lesson 23: Introduction to Bayesian Inference – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-3fbce8e5d0ad6a145f129f53e9b2a4da.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo light-content">
+    <img src="../../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#lesson-23-introduction-to-bayesian-inference" id="toc-lesson-23-introduction-to-bayesian-inference" class="nav-link active" data-scroll-target="#lesson-23-introduction-to-bayesian-inference">Lesson 23: Introduction to Bayesian Inference</a>
+  <ul class="collapse">
+  <li><a href="#review-the-frequentist-framework" id="toc-review-the-frequentist-framework" class="nav-link" data-scroll-target="#review-the-frequentist-framework">Review: The Frequentist Framework</a></li>
+  <li><a href="#todays-goals" id="toc-todays-goals" class="nav-link" data-scroll-target="#todays-goals">Today’s Goals</a></li>
+  <li><a href="#roadmap-for-today" id="toc-roadmap-for-today" class="nav-link" data-scroll-target="#roadmap-for-today">Roadmap for Today</a></li>
+  </ul></li>
+  <li><a href="#the-bayesian-philosophy" id="toc-the-bayesian-philosophy" class="nav-link" data-scroll-target="#the-bayesian-philosophy">The Bayesian Philosophy</a>
+  <ul class="collapse">
+  <li><a href="#parameters-as-random-variables" id="toc-parameters-as-random-variables" class="nav-link" data-scroll-target="#parameters-as-random-variables">Parameters as Random Variables</a></li>
+  <li><a href="#bayes-theorem-for-parameters" id="toc-bayes-theorem-for-parameters" class="nav-link" data-scroll-target="#bayes-theorem-for-parameters">Bayes’ Theorem for Parameters</a></li>
+  <li><a href="#medical-motivation-estimating-disease-prevalence" id="toc-medical-motivation-estimating-disease-prevalence" class="nav-link" data-scroll-target="#medical-motivation-estimating-disease-prevalence">Medical Motivation: Estimating Disease Prevalence</a></li>
+  </ul></li>
+  <li><a href="#prior-distributions" id="toc-prior-distributions" class="nav-link" data-scroll-target="#prior-distributions">Prior Distributions</a>
+  <ul class="collapse">
+  <li><a href="#choosing-a-prior" id="toc-choosing-a-prior" class="nav-link" data-scroll-target="#choosing-a-prior">Choosing a Prior</a></li>
+  <li><a href="#visualizing-prior-beliefs" id="toc-visualizing-prior-beliefs" class="nav-link" data-scroll-target="#visualizing-prior-beliefs">Visualizing Prior Beliefs</a></li>
+  </ul></li>
+  <li><a href="#conjugate-prior-families" id="toc-conjugate-prior-families" class="nav-link" data-scroll-target="#conjugate-prior-families">Conjugate Prior Families</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-conjugate-prior" id="toc-what-is-a-conjugate-prior" class="nav-link" data-scroll-target="#what-is-a-conjugate-prior">What is a Conjugate Prior?</a></li>
+  <li><a href="#betabinomial-conjugate-family" id="toc-betabinomial-conjugate-family" class="nav-link" data-scroll-target="#betabinomial-conjugate-family">Beta–Binomial Conjugate Family</a></li>
+  <li><a href="#betabinomial-prior-to-posterior-updating" id="toc-betabinomial-prior-to-posterior-updating" class="nav-link" data-scroll-target="#betabinomial-prior-to-posterior-updating">Beta–Binomial: Prior-to-Posterior Updating</a></li>
+  <li><a href="#betabinomial-summary-of-estimates" id="toc-betabinomial-summary-of-estimates" class="nav-link" data-scroll-target="#betabinomial-summary-of-estimates">Beta–Binomial: Summary of Estimates</a></li>
+  <li><a href="#betabinomial-effect-of-sample-size" id="toc-betabinomial-effect-of-sample-size" class="nav-link" data-scroll-target="#betabinomial-effect-of-sample-size">Beta–Binomial: Effect of Sample Size</a></li>
+  <li><a href="#normalnormal-conjugate-family" id="toc-normalnormal-conjugate-family" class="nav-link" data-scroll-target="#normalnormal-conjugate-family">Normal–Normal Conjugate Family</a></li>
+  <li><a href="#normalnormal-blood-pressure-example" id="toc-normalnormal-blood-pressure-example" class="nav-link" data-scroll-target="#normalnormal-blood-pressure-example">Normal–Normal: Blood Pressure Example</a></li>
+  <li><a href="#gammapoisson-conjugate-family" id="toc-gammapoisson-conjugate-family" class="nav-link" data-scroll-target="#gammapoisson-conjugate-family">Gamma–Poisson Conjugate Family</a></li>
+  </ul></li>
+  <li><a href="#credible-intervals" id="toc-credible-intervals" class="nav-link" data-scroll-target="#credible-intervals">Credible Intervals</a>
+  <ul class="collapse">
+  <li><a href="#what-is-a-credible-interval" id="toc-what-is-a-credible-interval" class="nav-link" data-scroll-target="#what-is-a-credible-interval">What is a Credible Interval?</a></li>
+  <li><a href="#comparing-credible-intervals-and-confidence-intervals" id="toc-comparing-credible-intervals-and-confidence-intervals" class="nav-link" data-scroll-target="#comparing-credible-intervals-and-confidence-intervals">Comparing Credible Intervals and Confidence Intervals</a></li>
+  <li><a href="#computing-credible-intervals-betabinomial" id="toc-computing-credible-intervals-betabinomial" class="nav-link" data-scroll-target="#computing-credible-intervals-betabinomial">Computing Credible Intervals: Beta–Binomial</a></li>
+  <li><a href="#sequential-bayesian-updating" id="toc-sequential-bayesian-updating" class="nav-link" data-scroll-target="#sequential-bayesian-updating">Sequential Bayesian Updating</a></li>
+  </ul></li>
+  <li><a href="#bayes-estimators-and-decision-theory" id="toc-bayes-estimators-and-decision-theory" class="nav-link" data-scroll-target="#bayes-estimators-and-decision-theory">Bayes Estimators and Decision Theory</a>
+  <ul class="collapse">
+  <li><a href="#point-estimation-from-the-posterior" id="toc-point-estimation-from-the-posterior" class="nav-link" data-scroll-target="#point-estimation-from-the-posterior">Point Estimation from the Posterior</a></li>
+  <li><a href="#derivation-posterior-mean-minimizes-squared-error-loss" id="toc-derivation-posterior-mean-minimizes-squared-error-loss" class="nav-link" data-scroll-target="#derivation-posterior-mean-minimizes-squared-error-loss">Derivation: Posterior Mean Minimizes Squared Error Loss</a></li>
+  <li><a href="#bayes-estimator-betabinomial-case" id="toc-bayes-estimator-betabinomial-case" class="nav-link" data-scroll-target="#bayes-estimator-betabinomial-case">Bayes Estimator: Beta–Binomial Case</a></li>
+  <li><a href="#posterior-expected-loss-visualization" id="toc-posterior-expected-loss-visualization" class="nav-link" data-scroll-target="#posterior-expected-loss-visualization">Posterior Expected Loss: Visualization</a></li>
+  </ul></li>
+  <li><a href="#frequentist-vs.-bayesian-a-direct-comparison" id="toc-frequentist-vs.-bayesian-a-direct-comparison" class="nav-link" data-scroll-target="#frequentist-vs.-bayesian-a-direct-comparison">Frequentist vs.&nbsp;Bayesian: A Direct Comparison</a>
+  <ul class="collapse">
+  <li><a href="#side-by-side-comparison" id="toc-side-by-side-comparison" class="nav-link" data-scroll-target="#side-by-side-comparison">Side-by-Side Comparison</a></li>
+  <li><a href="#when-does-the-prior-matter-most" id="toc-when-does-the-prior-matter-most" class="nav-link" data-scroll-target="#when-does-the-prior-matter-most">When Does the Prior Matter Most?</a></li>
+  <li><a href="#key-philosophical-points" id="toc-key-philosophical-points" class="nav-link" data-scroll-target="#key-philosophical-points">Key Philosophical Points</a></li>
+  <li><a href="#frequentist-properties-of-bayesian-estimators" id="toc-frequentist-properties-of-bayesian-estimators" class="nav-link" data-scroll-target="#frequentist-properties-of-bayesian-estimators">Frequentist Properties of Bayesian Estimators</a></li>
+  </ul></li>
+  <li><a href="#textbook-examples" id="toc-textbook-examples" class="nav-link" data-scroll-target="#textbook-examples">Textbook Examples</a>
+  <ul class="collapse">
+  <li><a href="#devore-12-bayesian-estimation-overview" id="toc-devore-12-bayesian-estimation-overview" class="nav-link" data-scroll-target="#devore-12-bayesian-estimation-overview">Devore §12: Bayesian Estimation (Overview)</a></li>
+  <li><a href="#chihara-hesterberg-connection" id="toc-chihara-hesterberg-connection" class="nav-link" data-scroll-target="#chihara-hesterberg-connection">Chihara &amp; Hesterberg Connection</a></li>
+  </ul></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">Summary</a>
+  <ul class="collapse">
+  <li><a href="#key-takeaways-bayesian-inference" id="toc-key-takeaways-bayesian-inference" class="nav-link" data-scroll-target="#key-takeaways-bayesian-inference">Key Takeaways: Bayesian Inference</a></li>
+  <li><a href="#looking-forward" id="toc-looking-forward" class="nav-link" data-scroll-target="#looking-forward">Looking Forward</a></li>
+  </ul></li>
+  <li><a href="#homework-problems" id="toc-homework-problems" class="nav-link" data-scroll-target="#homework-problems">Homework Problems</a>
+  <ul class="collapse">
+  <li><a href="#homework-problems-1" id="toc-homework-problems-1" class="nav-link" data-scroll-target="#homework-problems-1">Homework Problems</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="23_BayesianInference_old.html"><i class="bi bi-file-slides"></i>RevealJS</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lesson 23: Introduction to Bayesian Inference</h1>
+<p class="subtitle lead">BSTA 551: Statistical Inference</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jessica Minnier </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">March 11, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="lesson-23-introduction-to-bayesian-inference" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Lesson 23: Introduction to Bayesian Inference</h1>
+<section id="review-the-frequentist-framework" class="level2">
+<h2 class="anchored" data-anchor-id="review-the-frequentist-framework">Review: The Frequentist Framework</h2>
+<p>Everything we have built this quarter rests on a single foundation:</p>
+<ul>
+<li><strong>Parameters</strong> (<span class="math inline">\(\theta\)</span>) are <strong>fixed, unknown constants</strong></li>
+<li><strong>Data</strong> (<span class="math inline">\(X_1, \ldots, X_n\)</span>) are random</li>
+<li>Inference is based on the <strong>sampling distribution</strong> of estimators and test statistics</li>
+</ul>
+<p>. . .</p>
+<p>What we have accomplished:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 22%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Framework</th>
+<th>Tool</th>
+<th>Key Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Point estimation</td>
+<td>MLE, MOM, MVUE</td>
+<td><span class="math inline">\(\hat\theta\)</span> chosen to summarize the data</td>
+</tr>
+<tr class="even">
+<td>Interval estimation</td>
+<td>CI, bootstrap CI</td>
+<td>Procedure covers <span class="math inline">\(\theta\)</span> with prob <span class="math inline">\(1-\alpha\)</span></td>
+</tr>
+<tr class="odd">
+<td>Hypothesis testing</td>
+<td>NP, LRT, permutation</td>
+<td>Control Type I error; reject <span class="math inline">\(H_0\)</span> if evidence extreme</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>A Different Question
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>What if we treated <span class="math inline">\(\theta\)</span> as <strong>random</strong> — capturing our <em>uncertainty</em> about its value — and updated our beliefs when we observe data?</p>
+<p>This is the <strong>Bayesian approach</strong>, and it underpins a large portion of modern biostatistical and machine learning methodology.</p>
+</div>
+</div>
+</section>
+<section id="todays-goals" class="level2">
+<h2 class="anchored" data-anchor-id="todays-goals">Today’s Goals</h2>
+<ol type="1">
+<li>Understand the <strong>philosophical distinction</strong> between Bayesian and frequentist inference</li>
+<li>Formulate Bayes’ theorem for continuous parameters: <strong>prior → posterior</strong></li>
+<li>Identify <strong>conjugate prior families</strong> for common likelihoods (Beta–Binomial, Normal–Normal, Gamma–Poisson)</li>
+<li>Compute <strong>credible intervals</strong> and contrast them with confidence intervals</li>
+<li>Derive <strong>Bayes estimators</strong> as minimizers of posterior expected loss under squared and absolute error</li>
+<li>See these ideas applied in medical research contexts</li>
+</ol>
+</section>
+<section id="roadmap-for-today" class="level2">
+<h2 class="anchored" data-anchor-id="roadmap-for-today">Roadmap for Today</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 41%">
+<col style="width: 58%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Topic</th>
+<th>Key Idea</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Bayesian philosophy</td>
+<td><span class="math inline">\(\theta\)</span> is random; prior encodes uncertainty before data</td>
+</tr>
+<tr class="even">
+<td>Bayes’ theorem</td>
+<td><span class="math inline">\(\pi(\theta \mid \mathbf{x}) \propto L(\theta) \cdot \pi(\theta)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Conjugate priors</td>
+<td>Posterior is in the same family as the prior</td>
+</tr>
+<tr class="even">
+<td>Beta–Binomial</td>
+<td>Disease prevalence from a clinical study</td>
+</tr>
+<tr class="odd">
+<td>Normal–Normal</td>
+<td>Blood pressure with informative historical data</td>
+</tr>
+<tr class="even">
+<td>Credible intervals</td>
+<td>HPD and equal-tail intervals; comparison to CIs</td>
+</tr>
+<tr class="odd">
+<td>Bayes estimators</td>
+<td>Posterior mean minimizes squared error loss</td>
+</tr>
+<tr class="even">
+<td>Frequentist vs.&nbsp;Bayes</td>
+<td>Key philosophical and practical contrasts</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="the-bayesian-philosophy" class="level1" data-background-color="#3498db">
+<h1 data-background-color="#3498db">The Bayesian Philosophy</h1>
+<section id="parameters-as-random-variables" class="level2">
+<h2 class="anchored" data-anchor-id="parameters-as-random-variables">Parameters as Random Variables</h2>
+<p>In the frequentist framework, <span class="math inline">\(\theta\)</span> is a fixed constant. We ask:</p>
+<blockquote class="blockquote">
+<p>“What would happen if we repeated this experiment many times?”</p>
+</blockquote>
+<p>. . .</p>
+<p>In the <strong>Bayesian framework</strong>, <span class="math inline">\(\theta\)</span> is treated as a <strong>random variable</strong> with its own distribution. We ask:</p>
+<blockquote class="blockquote">
+<p>“Given the data I actually observed, what do I now believe about <span class="math inline">\(\theta\)</span>?”</p>
+</blockquote>
+<p>. . .</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Bayesian Ingredients
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Three quantities determine everything:</p>
+<ol type="1">
+<li><strong>Prior distribution</strong> <span class="math inline">\(\pi(\theta)\)</span>: encodes beliefs about <span class="math inline">\(\theta\)</span> <em>before</em> observing data</li>
+<li><strong>Likelihood</strong> <span class="math inline">\(L(\theta \mid \mathbf{x}) = f(\mathbf{x} \mid \theta)\)</span>: the probability of the data given <span class="math inline">\(\theta\)</span></li>
+<li><strong>Posterior distribution</strong> <span class="math inline">\(\pi(\theta \mid \mathbf{x})\)</span>: updated beliefs about <span class="math inline">\(\theta\)</span> <em>after</em> observing data</li>
+</ol>
+</div>
+</div>
+<p>. . .</p>
+<p>All Bayesian inference flows from the <strong>posterior distribution</strong>.</p>
+</section>
+<section id="bayes-theorem-for-parameters" class="level2">
+<h2 class="anchored" data-anchor-id="bayes-theorem-for-parameters">Bayes’ Theorem for Parameters</h2>
+<p>For a <strong>continuous</strong> parameter <span class="math inline">\(\theta\)</span> and observed data <span class="math inline">\(\mathbf{x} = (x_1, \ldots, x_n)\)</span>:</p>
+<p><span class="math display">\[\boxed{\pi(\theta \mid \mathbf{x}) = \frac{f(\mathbf{x} \mid \theta) \cdot \pi(\theta)}{f(\mathbf{x})} = \frac{f(\mathbf{x} \mid \theta) \cdot \pi(\theta)}{\int f(\mathbf{x} \mid \theta') \, \pi(\theta') \, d\theta'}}\]</span></p>
+<p>. . .</p>
+<p>Since the <strong>marginal likelihood</strong> <span class="math inline">\(f(\mathbf{x}) = \int f(\mathbf{x} \mid \theta') \pi(\theta') d\theta'\)</span> does not depend on <span class="math inline">\(\theta\)</span>, we often write:</p>
+<p><span class="math display">\[\pi(\theta \mid \mathbf{x}) \propto f(\mathbf{x} \mid \theta) \cdot \pi(\theta) = L(\theta) \cdot \pi(\theta)\]</span></p>
+<p>. . .</p>
+<p>In words:</p>
+<p><span class="math display">\[\underbrace{\text{Posterior}}_{\text{updated beliefs}} \propto \underbrace{\text{Likelihood}}_{\text{evidence from data}} \times \underbrace{\text{Prior}}_{\text{initial beliefs}}\]</span></p>
+</section>
+<section id="medical-motivation-estimating-disease-prevalence" class="level2">
+<h2 class="anchored" data-anchor-id="medical-motivation-estimating-disease-prevalence">Medical Motivation: Estimating Disease Prevalence</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Running Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A public health researcher wants to estimate <span class="math inline">\(p\)</span>, the true prevalence of a rare genetic condition in a population. A clinical study observes <span class="math inline">\(X\)</span> cases among <span class="math inline">\(n\)</span> patients.</p>
+<ul>
+<li><strong>Frequentist:</strong> <span class="math inline">\(\hat{p} = X/n\)</span> with CI <span class="math inline">\(\hat{p} \pm 1.96\sqrt{\hat{p}(1-\hat{p})/n}\)</span></li>
+<li><strong>Bayesian:</strong> Start with a prior <span class="math inline">\(\pi(p)\)</span> based on historical knowledge, observe data, and compute <span class="math inline">\(\pi(p \mid X)\)</span></li>
+</ul>
+</div>
+</div>
+<p>. . .</p>
+<p>Why might Bayesian methods be attractive here?</p>
+<ul>
+<li>If the condition is <strong>rare</strong> (<span class="math inline">\(n\)</span> is small, <span class="math inline">\(X\)</span> may be 0 or 1), the MLE is unstable</li>
+<li>We often have <strong>historical data</strong> or <strong>domain expertise</strong> that should inform the estimate</li>
+<li>Regulatory agencies (e.g., FDA) increasingly accept Bayesian designs for clinical trials</li>
+<li>Bayesian estimates naturally <strong>shrink</strong> toward prior beliefs, reducing variance</li>
+</ul>
+</section>
+</section>
+<section id="prior-distributions" class="level1" data-background-color="#8e44ad">
+<h1 data-background-color="#8e44ad">Prior Distributions</h1>
+<section id="choosing-a-prior" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-a-prior">Choosing a Prior</h2>
+<p>The prior <span class="math inline">\(\pi(\theta)\)</span> encodes our uncertainty about <span class="math inline">\(\theta\)</span> before data are collected. Three common choices:</p>
+<p>. . .</p>
+<p><strong>Informative priors</strong>: reflect genuine prior knowledge <span class="math display">\[\text{e.g., } p \sim \text{Beta}(3, 17) \text{ if historical data suggest prevalence} \approx 15\%\]</span></p>
+<p>. . .</p>
+<p><strong>Weakly informative priors</strong>: constrain parameters to plausible ranges without dominating the data <span class="math display">\[\text{e.g., } p \sim \text{Beta}(1.5, 1.5) \text{ — slightly favors interior values}\]</span></p>
+<p>. . .</p>
+<p><strong>Non-informative (flat) priors</strong>: minimal prior assumptions; let data dominate</p>
+<p><span class="math display">\[\text{e.g., } p \sim \text{Beta}(1, 1) = \text{Uniform}(0,1) \text{ — all values of } p \text{ equally likely}\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Jeffreys Prior
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A principled non-informative prior is the <strong>Jeffreys prior</strong>: <span class="math inline">\(\pi(\theta) \propto \sqrt{I(\theta)}\)</span>, where <span class="math inline">\(I(\theta)\)</span> is the Fisher information. For a Binomial proportion, the Jeffreys prior is <span class="math inline">\(\text{Beta}(1/2, 1/2)\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="visualizing-prior-beliefs" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-prior-beliefs">Visualizing Prior Beliefs</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.999</span>, <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Beta(1,1) — Uniform</span><span class="st">`</span>       <span class="ot">=</span> <span class="fu">dbeta</span>(p, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Beta(0.5,0.5) — Jeffreys</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">dbeta</span>(p, <span class="fl">0.5</span>, <span class="fl">0.5</span>),</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Beta(3,17) — Informative</span><span class="st">`</span>  <span class="ot">=</span> <span class="fu">dbeta</span>(p, <span class="dv">3</span>, <span class="dv">17</span>),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">`</span><span class="at">Beta(1.5,1.5) — Weakly inf</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">dbeta</span>(p, <span class="fl">1.5</span>, <span class="fl">1.5</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>p, <span class="at">names_to =</span> <span class="st">"Prior"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> Prior)) <span class="sc">+</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Prior density"</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Prior distributions for disease prevalence "</span> <span class="sc">*</span> <span class="fu">italic</span>(p)),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-priors" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-priors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-priors-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-priors-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Different Beta priors for a disease prevalence parameter p
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="conjugate-prior-families" class="level1" data-background-color="#e74c3c">
+<h1 data-background-color="#e74c3c">Conjugate Prior Families</h1>
+<section id="what-is-a-conjugate-prior" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-conjugate-prior">What is a Conjugate Prior?</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Definition: Conjugate Prior
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A prior <span class="math inline">\(\pi(\theta)\)</span> is <strong>conjugate</strong> to the likelihood <span class="math inline">\(f(\mathbf{x} \mid \theta)\)</span> if the posterior <span class="math inline">\(\pi(\theta \mid \mathbf{x})\)</span> belongs to the <strong>same parametric family</strong> as the prior.</p>
+</div>
+</div>
+<p>. . .</p>
+<p>Conjugate priors are computationally convenient:</p>
+<ul>
+<li>Posterior has a <strong>closed-form</strong> expression</li>
+<li>Posterior parameters have intuitive <strong>data-update</strong> interpretations</li>
+<li>Sequential Bayesian updating is trivial: the posterior after <span class="math inline">\(n\)</span> observations becomes the prior for observation <span class="math inline">\(n+1\)</span></li>
+</ul>
+<p>. . .</p>
+<p>We will study three conjugate families:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 42%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Likelihood</th>
+<th>Conjugate Prior</th>
+<th>Posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Binomial<span class="math inline">\((n, p)\)</span></td>
+<td>Beta<span class="math inline">\((\alpha, \beta)\)</span></td>
+<td>Beta<span class="math inline">\((\alpha + x,\; \beta + n - x)\)</span></td>
+</tr>
+<tr class="even">
+<td>Normal<span class="math inline">\((\mu, \sigma^2)\)</span>, <span class="math inline">\(\sigma^2\)</span> known</td>
+<td>Normal<span class="math inline">\((\mu_0, \tau_0^2)\)</span></td>
+<td>Normal<span class="math inline">\((\mu_n, \tau_n^2)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Poisson<span class="math inline">\((\lambda)\)</span></td>
+<td>Gamma<span class="math inline">\((\alpha, \beta)\)</span></td>
+<td>Gamma<span class="math inline">\((\alpha + \sum x_i,\; \beta + n)\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="betabinomial-conjugate-family" class="level2">
+<h2 class="anchored" data-anchor-id="betabinomial-conjugate-family">Beta–Binomial Conjugate Family</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X \mid p \sim \text{Binomial}(n, p)\)</span>, prior <span class="math inline">\(p \sim \text{Beta}(\alpha, \beta)\)</span></p>
+<p>. . .</p>
+<p><strong>Posterior derivation:</strong></p>
+<p><span class="math display">\[\pi(p \mid x) \propto L(p) \cdot \pi(p) = \binom{n}{x} p^x (1-p)^{n-x} \cdot \frac{p^{\alpha-1}(1-p)^{\beta-1}}{B(\alpha,\beta)}\]</span></p>
+<p><span class="math display">\[\propto p^{x + \alpha - 1}(1-p)^{n-x+\beta-1}\]</span></p>
+<p>. . .</p>
+<p>This is the kernel of a <span class="math inline">\(\text{Beta}(x + \alpha,\; n - x + \beta)\)</span> distribution:</p>
+<p><span class="math display">\[\boxed{p \mid x \sim \text{Beta}(\alpha + x, \; \beta + n - x)}\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Intuition
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The prior parameters <span class="math inline">\((\alpha, \beta)\)</span> act like <strong>pseudo-counts</strong>: <span class="math inline">\(\alpha - 1\)</span> prior successes and <span class="math inline">\(\beta - 1\)</span> prior failures. Observing <span class="math inline">\(x\)</span> successes and <span class="math inline">\(n-x\)</span> failures simply adds to these counts.</p>
+</div>
+</div>
+</section>
+<section id="betabinomial-prior-to-posterior-updating" class="level2">
+<h2 class="anchored" data-anchor-id="betabinomial-prior-to-posterior-updating">Beta–Binomial: Prior-to-Posterior Updating</h2>
+<p><strong>Example:</strong> Estimating prevalence of a rare genetic condition.</p>
+<ul>
+<li>Historical data suggests prevalence <span class="math inline">\(\approx 15\%\)</span>, with uncertainty <span class="math inline">\(\Rightarrow\)</span> Prior: <span class="math inline">\(p \sim \text{Beta}(3, 17)\)</span></li>
+<li>New study: <span class="math inline">\(n = 50\)</span> patients, <span class="math inline">\(x = 10\)</span> test positive</li>
+</ul>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prior parameters</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">3</span>; beta0 <span class="ot">&lt;-</span> <span class="dv">17</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Data</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n_obs <span class="ot">&lt;-</span> <span class="dv">50</span>; x_obs <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior parameters</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> alpha0 <span class="sc">+</span> x_obs</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>beta1  <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> n_obs <span class="sc">-</span> x_obs</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># MLE</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>mle <span class="ot">&lt;-</span> x_obs <span class="sc">/</span> n_obs</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.999</span>, <span class="at">length.out =</span> <span class="dv">600</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">Prior     =</span> <span class="fu">dbeta</span>(p, alpha0, beta0),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">Posterior =</span> <span class="fu">dbeta</span>(p, alpha1, beta1),</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">Likelihood =</span> <span class="fu">dbeta</span>(p, x_obs <span class="sc">+</span> <span class="dv">1</span>, n_obs <span class="sc">-</span> x_obs <span class="sc">+</span> <span class="dv">1</span>) <span class="co"># proportional to likelihood</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Normalize likelihood for display</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Likelihood =</span> Likelihood <span class="sc">/</span> <span class="fu">max</span>(Likelihood) <span class="sc">*</span> <span class="fu">max</span>(Posterior)) <span class="sc">|&gt;</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>p, <span class="at">names_to =</span> <span class="st">"Distribution"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"Likelihood"</span>, <span class="st">"Posterior"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> Distribution, <span class="at">linetype =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mle, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mle <span class="sc">+</span> <span class="fl">0.01</span>, <span class="at">y =</span> <span class="fl">0.5</span>, <span class="at">label =</span> <span class="st">"MLE"</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> alpha1 <span class="sc">/</span> (alpha1 <span class="sc">+</span> beta1), <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>) <span class="sc">+</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> alpha1<span class="sc">/</span>(alpha1<span class="sc">+</span>beta1) <span class="sc">+</span> <span class="fl">0.01</span>, <span class="at">y =</span> <span class="dv">2</span>, </span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Posterior</span><span class="sc">\n</span><span class="st">mean"</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>) <span class="sc">+</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>, <span class="st">"Likelihood"</span> <span class="ot">=</span> <span class="st">"#2ecc71"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"dashed"</span>, <span class="st">"Likelihood"</span> <span class="ot">=</span> <span class="st">"dotted"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"solid"</span>)) <span class="sc">+</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density (likelihood normalized for display)"</span>,</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Beta–Binomial updating: prevalence estimation"</span>),</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Prior: Beta("</span><span class="sc">*</span>.(alpha0)<span class="sc">*</span><span class="st">","</span><span class="sc">*</span>.(beta0)<span class="sc">*</span><span class="st">")   Data: x="</span><span class="sc">*</span>.(x_obs)<span class="sc">*</span><span class="st">", n="</span><span class="sc">*</span>.(n_obs)<span class="sc">*</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"   Posterior: Beta("</span><span class="sc">*</span>.(alpha1)<span class="sc">*</span><span class="st">","</span><span class="sc">*</span>.(beta1)<span class="sc">*</span><span class="st">")"</span>),</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>, <span class="at">linetype =</span> <span class="cn">NULL</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-beta-binomial" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-beta-binomial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-beta-binomial-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-beta-binomial-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;2: Prior-to-posterior updating for disease prevalence (Beta-Binomial conjugate)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="betabinomial-summary-of-estimates" class="level2">
+<h2 class="anchored" data-anchor-id="betabinomial-summary-of-estimates">Beta–Binomial: Summary of Estimates</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">3</span>; beta0 <span class="ot">&lt;-</span> <span class="dv">17</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>n_obs  <span class="ot">&lt;-</span> <span class="dv">50</span>; x_obs <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> alpha0 <span class="sc">+</span> x_obs</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>beta1  <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> n_obs <span class="sc">-</span> x_obs</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior summaries</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>post_mean   <span class="ot">&lt;-</span> alpha1 <span class="sc">/</span> (alpha1 <span class="sc">+</span> beta1)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>post_median <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.5</span>, alpha1, beta1)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>post_mode   <span class="ot">&lt;-</span> (alpha1 <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> (alpha1 <span class="sc">+</span> beta1 <span class="sc">-</span> <span class="dv">2</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>mle_est     <span class="ot">&lt;-</span> x_obs <span class="sc">/</span> n_obs</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 95% credible interval (equal-tail)</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>ci_lo <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.025</span>, alpha1, beta1)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>ci_hi <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.975</span>, alpha1, beta1)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Quantity =</span> <span class="fu">c</span>(<span class="st">"Prior mean"</span>, <span class="st">"MLE (frequentist)"</span>, <span class="st">"Posterior mean"</span>, <span class="st">"Posterior median"</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Posterior mode (MAP)"</span>, <span class="st">"95% Credible interval"</span>),</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(alpha0<span class="sc">/</span>(alpha0<span class="sc">+</span>beta0), <span class="dv">3</span>),</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(mle_est, <span class="dv">3</span>),</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(post_mean, <span class="dv">3</span>),</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(post_median, <span class="dv">3</span>),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(post_mode, <span class="dv">3</span>),</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"["</span>, <span class="fu">round</span>(ci_lo, <span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">round</span>(ci_hi, <span class="dv">3</span>), <span class="st">"]"</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">caption =</span> <span class="st">"Bayesian and frequentist estimates of disease prevalence p"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Bayesian and frequentist estimates of disease prevalence p</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Quantity</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Prior mean</td>
+<td style="text-align: left;">0.15</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MLE (frequentist)</td>
+<td style="text-align: left;">0.2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Posterior mean</td>
+<td style="text-align: left;">0.186</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Posterior median</td>
+<td style="text-align: left;">0.183</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Posterior mode (MAP)</td>
+<td style="text-align: left;">0.176</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">95% Credible interval</td>
+<td style="text-align: left;">[0.104, 0.284]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Interpretation:</strong></p>
+<ul>
+<li>Posterior mean <span class="math inline">\(= \frac{\alpha + x}{\alpha + \beta + n} = \frac{13}{63} \approx 0.206\)</span> — a <strong>weighted average</strong> of prior mean (<span class="math inline">\(0.150\)</span>) and MLE (<span class="math inline">\(0.200\)</span>)</li>
+<li>With small samples, the prior has more influence; as <span class="math inline">\(n \to \infty\)</span>, posterior concentrates around the MLE</li>
+</ul>
+</section>
+<section id="betabinomial-effect-of-sample-size" class="level2">
+<h2 class="anchored" data-anchor-id="betabinomial-effect-of-sample-size">Beta–Binomial: Effect of Sample Size</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">3</span>; beta0 <span class="ot">&lt;-</span> <span class="dv">17</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>true_p <span class="ot">&lt;-</span> <span class="fl">0.20</span>  <span class="co"># true prevalence</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">crossing</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_obs =</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">200</span>, <span class="dv">1000</span>),</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.999</span>, <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_obs =</span> <span class="fu">round</span>(true_p <span class="sc">*</span> n_obs),</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha1 =</span> alpha0 <span class="sc">+</span> x_obs,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta1  =</span> beta0 <span class="sc">+</span> n_obs <span class="sc">-</span> x_obs,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">density =</span> <span class="fu">dbeta</span>(p, alpha1, beta1),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, n_obs)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> <span class="fu">factor</span>(n_obs))) <span class="sc">+</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> true_p, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> true_p <span class="sc">+</span> <span class="fl">0.01</span>, <span class="at">y =</span> <span class="dv">25</span>, </span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">expression</span>(<span class="st">"True "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" = 0.20"</span>), <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Posterior Beta distributions for increasing sample sizes"</span>),</span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Prior: Beta("</span><span class="sc">*</span>.(alpha0)<span class="sc">*</span><span class="st">","</span><span class="sc">*</span>.(beta0)<span class="sc">*</span><span class="st">"), true "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" = 0.20"</span>),</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Sample size"</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Reds"</span>, <span class="at">direction =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-sample-size-effect" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sample-size-effect-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-sample-size-effect-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sample-size-effect-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;3: As sample size grows, the posterior concentrates around the MLE regardless of prior
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="normalnormal-conjugate-family" class="level2">
+<h2 class="anchored" data-anchor-id="normalnormal-conjugate-family">Normal–Normal Conjugate Family</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \mid \mu \stackrel{iid}{\sim} N(\mu, \sigma^2)\)</span>, <span class="math inline">\(\sigma^2\)</span> <strong>known</strong></p>
+<p>Prior: <span class="math inline">\(\mu \sim N(\mu_0, \tau_0^2)\)</span></p>
+<p>. . .</p>
+<p><strong>Posterior derivation</strong> (completing the square in the exponent):</p>
+<p><span class="math display">\[\pi(\mu \mid \mathbf{x}) \propto \exp\!\left(-\frac{n(\bar{x} - \mu)^2}{2\sigma^2}\right) \cdot \exp\!\left(-\frac{(\mu - \mu_0)^2}{2\tau_0^2}\right)\]</span></p>
+<p><span class="math display">\[\propto \exp\!\left(-\frac{(\mu - \mu_n)^2}{2\tau_n^2}\right)\]</span></p>
+<p>. . .</p>
+<p>where the <strong>posterior parameters</strong> are:</p>
+<p><span class="math display">\[\boxed{\frac{1}{\tau_n^2} = \frac{1}{\tau_0^2} + \frac{n}{\sigma^2}, \qquad \mu_n = \frac{\mu_0/\tau_0^2 + n\bar{x}/\sigma^2}{1/\tau_0^2 + n/\sigma^2}}\]</span></p>
+<p><span class="math display">\[\mu \mid \mathbf{x} \sim N(\mu_n, \, \tau_n^2)\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Precision Weighting
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Define <strong>precision</strong> = <span class="math inline">\(1/\text{variance}\)</span>. The posterior precision is the <strong>sum</strong> of prior and data precisions. The posterior mean is a <strong>precision-weighted average</strong> of <span class="math inline">\(\mu_0\)</span> and <span class="math inline">\(\bar{x}\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="normalnormal-blood-pressure-example" class="level2">
+<h2 class="anchored" data-anchor-id="normalnormal-blood-pressure-example">Normal–Normal: Blood Pressure Example</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Medical Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A cardiologist wants to estimate mean systolic blood pressure (SBP) for a new patient population.</p>
+<ul>
+<li>Historical data from similar populations: mean SBP <span class="math inline">\(\approx 128\)</span> mmHg, <span class="math inline">\(\sigma_{\text{prior}} = 10\)</span> mmHg</li>
+<li>Known measurement <span class="math inline">\(\sigma = 15\)</span> mmHg</li>
+<li>New study: <span class="math inline">\(n = 30\)</span>, <span class="math inline">\(\bar{x} = 135\)</span> mmHg</li>
+</ul>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mu0   <span class="ot">&lt;-</span> <span class="dv">128</span>; tau0  <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>xbar  <span class="ot">&lt;-</span> <span class="dv">135</span>; sigma <span class="ot">&lt;-</span> <span class="dv">15</span>; n_obs <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Posterior parameters</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>prec0 <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">/</span>tau0<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>prec_data <span class="ot">&lt;-</span> n_obs<span class="sc">/</span>sigma<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>prec_n    <span class="ot">&lt;-</span> prec0 <span class="sc">+</span> prec_data</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>tau_n     <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span>prec_n)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>mu_n      <span class="ot">&lt;-</span> (mu0 <span class="sc">*</span> prec0 <span class="sc">+</span> xbar <span class="sc">*</span> prec_data) <span class="sc">/</span> prec_n</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">mu =</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">160</span>, <span class="at">length.out =</span> <span class="dv">600</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">Prior     =</span> <span class="fu">dnorm</span>(mu, mu0, tau0),</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">Likelihood =</span> <span class="fu">dnorm</span>(mu, xbar, sigma<span class="sc">/</span><span class="fu">sqrt</span>(n_obs)),</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">Posterior =</span> <span class="fu">dnorm</span>(mu, mu_n, tau_n)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>mu, <span class="at">names_to =</span> <span class="st">"Distribution"</span>, <span class="at">values_to =</span> <span class="st">"density"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Distribution =</span> <span class="fu">factor</span>(Distribution, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Prior"</span>, <span class="st">"Likelihood"</span>, <span class="st">"Posterior"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> mu, <span class="at">y =</span> density, <span class="at">color =</span> Distribution, <span class="at">linetype =</span> Distribution)) <span class="sc">+</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu_n, <span class="at">linetype =</span> <span class="st">"solid"</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mu0,  <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> xbar, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"#2ecc71"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>, <span class="st">"Likelihood"</span> <span class="ot">=</span> <span class="st">"#2ecc71"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>)) <span class="sc">+</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_linetype_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Prior"</span> <span class="ot">=</span> <span class="st">"dashed"</span>, <span class="st">"Likelihood"</span> <span class="ot">=</span> <span class="st">"dotted"</span>, <span class="st">"Posterior"</span> <span class="ot">=</span> <span class="st">"solid"</span>)) <span class="sc">+</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(mu <span class="sc">~</span> <span class="st">"(mmHg)"</span>),</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Normal–Normal updating: mean systolic blood pressure"</span>),</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(</span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Prior: N("</span><span class="sc">*</span>.(mu0)<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(tau0)<span class="sc">^</span><span class="dv">2</span><span class="sc">*</span><span class="st">"),  "</span><span class="sc">*</span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">bar</span>(x)<span class="sc">*</span><span class="st">" = "</span><span class="sc">*</span>.(xbar)<span class="sc">*</span><span class="st">",  n = "</span><span class="sc">*</span>.(n_obs)<span class="sc">*</span><span class="st">",  "</span><span class="sc">*</span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Posterior: N("</span><span class="sc">*</span>.(<span class="fu">round</span>(mu_n,<span class="dv">1</span>))<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(<span class="fu">round</span>(tau_n<span class="sc">^</span><span class="dv">2</span>,<span class="dv">2</span>))<span class="sc">*</span><span class="st">")"</span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="cn">NULL</span>, <span class="at">linetype =</span> <span class="cn">NULL</span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-normal-normal" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-normal-normal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-normal-normal-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-normal-normal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;4: Normal-Normal conjugate updating for mean systolic blood pressure
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="gammapoisson-conjugate-family" class="level2">
+<h2 class="anchored" data-anchor-id="gammapoisson-conjugate-family">Gamma–Poisson Conjugate Family</h2>
+<p><strong>Setup:</strong> <span class="math inline">\(X_1, \ldots, X_n \mid \lambda \stackrel{iid}{\sim} \text{Poisson}(\lambda)\)</span></p>
+<p>Prior: <span class="math inline">\(\lambda \sim \text{Gamma}(\alpha, \beta)\)</span> with mean <span class="math inline">\(\alpha/\beta\)</span></p>
+<p>. . .</p>
+<p><strong>Posterior derivation:</strong></p>
+<p><span class="math display">\[\pi(\lambda \mid \mathbf{x}) \propto \prod_{i=1}^n \frac{e^{-\lambda}\lambda^{x_i}}{x_i!} \cdot \lambda^{\alpha-1} e^{-\beta\lambda}\]</span></p>
+<p><span class="math display">\[\propto \lambda^{\alpha + \sum x_i - 1} e^{-(\beta + n)\lambda}\]</span></p>
+<p>. . .</p>
+<p><span class="math display">\[\boxed{\lambda \mid \mathbf{x} \sim \text{Gamma}\!\left(\alpha + \textstyle\sum_{i=1}^n x_i, \;\; \beta + n\right)}\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Medical Example
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Adverse event monitoring:</strong> A clinical trial monitors rare adverse events. Prior knowledge suggests <span class="math inline">\(\lambda \approx 0.5\)</span> events/patient-month. Data from <span class="math inline">\(n = 40\)</span> patients: <span class="math inline">\(\sum x_i = 25\)</span> events.</p>
+<p><span class="math display">\[\text{Prior: Gamma}(2, 4) \quad\Rightarrow\quad \text{Posterior: Gamma}(2 + 25, 4 + 40) = \text{Gamma}(27, 44)\]</span></p>
+<p>Posterior mean <span class="math inline">\(= 27/44 \approx 0.614\)</span> events/patient-month</p>
+</div>
+</div>
+</section>
+</section>
+<section id="credible-intervals" class="level1" data-background-color="#f39c12">
+<h1 data-background-color="#f39c12">Credible Intervals</h1>
+<section id="what-is-a-credible-interval" class="level2">
+<h2 class="anchored" data-anchor-id="what-is-a-credible-interval">What is a Credible Interval?</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Definition: Credible Interval
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A <strong><span class="math inline">\(100(1-\alpha)\%\)</span> credible interval</strong> (also called a <strong>Bayesian interval</strong> or <strong>posterior interval</strong>) is a set <span class="math inline">\(C(\mathbf{x})\)</span> such that</p>
+<p><span class="math display">\[P(\theta \in C(\mathbf{x}) \mid \mathbf{x}) = 1 - \alpha\]</span></p>
+<p>The probability is with respect to the <strong>posterior distribution</strong> <span class="math inline">\(\pi(\theta \mid \mathbf{x})\)</span>.</p>
+</div>
+</div>
+<p>. . .</p>
+<p>This is the interval that students <em>think</em> a frequentist CI gives!</p>
+<p>. . .</p>
+<p>Two common choices:</p>
+<p><strong>1. Equal-tail credible interval:</strong> <span class="math inline">\(\left[Q_{\alpha/2},\; Q_{1-\alpha/2}\right]\)</span> where <span class="math inline">\(Q_p\)</span> is the <span class="math inline">\(p\)</span>-th quantile of the posterior</p>
+<p><strong>2. Highest posterior density (HPD) interval:</strong> the shortest interval containing <span class="math inline">\(1-\alpha\)</span> posterior probability</p>
+<p><span class="math display">\[C_{\text{HPD}} = \{\theta : \pi(\theta \mid \mathbf{x}) \geq k_\alpha\}\]</span></p>
+<p>where <span class="math inline">\(k_\alpha\)</span> is chosen so that <span class="math inline">\(P(\theta \in C_{\text{HPD}} \mid \mathbf{x}) = 1-\alpha\)</span>.</p>
+</section>
+<section id="comparing-credible-intervals-and-confidence-intervals" class="level2">
+<h2 class="anchored" data-anchor-id="comparing-credible-intervals-and-confidence-intervals">Comparing Credible Intervals and Confidence Intervals</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 30%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Frequentist CI</th>
+<th>Bayesian Credible Interval</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>What is random?</td>
+<td>The interval (over repeated samples)</td>
+<td>The parameter <span class="math inline">\(\theta\)</span></td>
+</tr>
+<tr class="even">
+<td>Correct interpretation</td>
+<td>“95% of such intervals contain <span class="math inline">\(\theta\)</span>”</td>
+<td>“95% probability that <span class="math inline">\(\theta\)</span> is in this interval”</td>
+</tr>
+<tr class="odd">
+<td>Depends on prior?</td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="even">
+<td>Valid for small <span class="math inline">\(n\)</span>?</td>
+<td>Approximately</td>
+<td>Yes (via posterior)</td>
+</tr>
+<tr class="odd">
+<td>Can be asymmetric?</td>
+<td>Typically symmetric</td>
+<td>Naturally asymmetric for skewed posteriors</td>
+</tr>
+</tbody>
+</table>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>The Interpretation Students Want
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A 95% credible interval <strong>literally means</strong>: given the observed data, there is a 95% probability that <span class="math inline">\(\theta\)</span> lies in the interval. This is the statement frequentist CIs <strong>cannot</strong> make.</p>
+</div>
+</div>
+</section>
+<section id="computing-credible-intervals-betabinomial" class="level2">
+<h2 class="anchored" data-anchor-id="computing-credible-intervals-betabinomial">Computing Credible Intervals: Beta–Binomial</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> <span class="dv">13</span>; beta1 <span class="ot">&lt;-</span> <span class="dv">53</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Equal-tail CI</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>et_lo <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.025</span>, alpha1, beta1)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>et_hi <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.975</span>, alpha1, beta1)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># HPD: search for shortest interval</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Use grid search for HPD</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>find_hpd <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b, <span class="at">level =</span> <span class="fl">0.95</span>) {</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.0001</span>, <span class="dv">1</span> <span class="sc">-</span> level <span class="sc">-</span> <span class="fl">0.0001</span>, <span class="at">length.out =</span> <span class="dv">2000</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  widths <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(grid <span class="sc">+</span> level, a, b) <span class="sc">-</span> <span class="fu">qbeta</span>(grid, a, b)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  lo_prob <span class="ot">&lt;-</span> grid[<span class="fu">which.min</span>(widths)]</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="fu">qbeta</span>(lo_prob, a, b), <span class="fu">qbeta</span>(lo_prob <span class="sc">+</span> level, a, b))</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>hpd <span class="ot">&lt;-</span> <span class="fu">find_hpd</span>(alpha1, beta1)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.65</span>, <span class="at">length.out =</span> <span class="dv">600</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">density =</span> <span class="fu">dbeta</span>(p, alpha1, beta1)) <span class="sc">|&gt;</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density)) <span class="sc">+</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># HPD region</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_area</span>(</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="sc">~</span> <span class="fu">filter</span>(.x, p <span class="sc">&gt;=</span> hpd[<span class="dv">1</span>] <span class="sc">&amp;</span> p <span class="sc">&lt;=</span> hpd[<span class="dv">2</span>]),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">fill =</span> <span class="st">"HPD 95%"</span>), <span class="at">alpha =</span> <span class="fl">0.3</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Equal-tail region</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_ribbon</span>(</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">data =</span> <span class="sc">~</span> <span class="fu">filter</span>(.x, p <span class="sc">&gt;=</span> et_lo <span class="sc">&amp;</span> p <span class="sc">&lt;=</span> et_hi),</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">ymin =</span> <span class="dv">0</span>, <span class="at">ymax =</span> density, <span class="at">fill =</span> <span class="st">"Equal-tail 95%"</span>), <span class="at">alpha =</span> <span class="fl">0.2</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>) <span class="sc">+</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> et_lo, <span class="at">xend =</span> et_hi, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.15</span>, <span class="at">yend =</span> <span class="sc">-</span><span class="fl">0.15</span>),</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">ends =</span> <span class="st">"both"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"inches"</span>))) <span class="sc">+</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> (et_lo <span class="sc">+</span> et_hi)<span class="sc">/</span><span class="dv">2</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">0.6</span>, </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Equal-tail 95% CI"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"#3498db"</span>) <span class="sc">+</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> hpd[<span class="dv">1</span>], <span class="at">xend =</span> hpd[<span class="dv">2</span>], <span class="at">y =</span> <span class="sc">-</span><span class="fl">1.0</span>, <span class="at">yend =</span> <span class="sc">-</span><span class="fl">1.0</span>),</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>               <span class="at">color =</span> <span class="st">"#2ecc71"</span>, <span class="at">linewidth =</span> <span class="dv">2</span>, <span class="at">arrow =</span> <span class="fu">arrow</span>(<span class="at">ends =</span> <span class="st">"both"</span>, <span class="at">length =</span> <span class="fu">unit</span>(<span class="fl">0.1</span>, <span class="st">"inches"</span>))) <span class="sc">+</span></span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> (hpd[<span class="dv">1</span>] <span class="sc">+</span> hpd[<span class="dv">2</span>])<span class="sc">/</span><span class="dv">2</span>, <span class="at">y =</span> <span class="sc">-</span><span class="fl">1.45</span>, </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"HPD 95% CI"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"#2ecc71"</span>) <span class="sc">+</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"HPD 95%"</span> <span class="ot">=</span> <span class="st">"#2ecc71"</span>, <span class="st">"Equal-tail 95%"</span> <span class="ot">=</span> <span class="st">"#3498db"</span>)) <span class="sc">+</span></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"95% credible intervals: Beta("</span><span class="sc">*</span>alpha[<span class="dv">1</span>]<span class="sc">*</span><span class="st">","</span><span class="sc">*</span>beta[<span class="dv">1</span>]<span class="sc">*</span><span class="st">") posterior"</span>),</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Posterior: Beta("</span><span class="sc">*</span>.(alpha1)<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(beta1)<span class="sc">*</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>                       <span class="st">")   ET: ["</span><span class="sc">*</span>.(<span class="fu">round</span>(et_lo,<span class="dv">3</span>))<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(<span class="fu">round</span>(et_hi,<span class="dv">3</span>))<span class="sc">*</span></span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"]   HPD: ["</span><span class="sc">*</span>.(<span class="fu">round</span>(hpd[<span class="dv">1</span>],<span class="dv">3</span>))<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(<span class="fu">round</span>(hpd[<span class="dv">2</span>],<span class="dv">3</span>))<span class="sc">*</span><span class="st">"]"</span>),</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="cn">NULL</span></span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>) <span class="sc">+</span></span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">ylim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-credible-interval" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-credible-interval-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-credible-interval-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-credible-interval-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;5: Equal-tail and HPD 95% credible intervals for disease prevalence
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sequential-bayesian-updating" class="level2">
+<h2 class="anchored" data-anchor-id="sequential-bayesian-updating">Sequential Bayesian Updating</h2>
+<p>One of the most powerful features of the Bayesian framework: <strong>today’s posterior becomes tomorrow’s prior</strong>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Start with Uniform prior; observe data sequentially</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">1</span>; beta0 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulated sequence of patients (true p = 0.15)</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">60</span>, <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.15</span>)  <span class="co"># 0 = negative, 1 = positive</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>check_points <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">15</span>, <span class="dv">30</span>, <span class="dv">60</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plots_data <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(check_points, <span class="cf">function</span>(k) {</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  x_k <span class="ot">&lt;-</span> <span class="fu">sum</span>(results[<span class="fu">seq_len</span>(k)])</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  a_k <span class="ot">&lt;-</span> alpha0 <span class="sc">+</span> x_k</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  b_k <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> k <span class="sc">-</span> x_k</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.001</span>, <span class="fl">0.6</span>, <span class="at">length.out =</span> <span class="dv">400</span>),</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">density =</span> <span class="fu">dbeta</span>(p, a_k, b_k),</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_obs =</span> k,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_obs =</span> x_k,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_mean =</span> a_k <span class="sc">/</span> (a_k <span class="sc">+</span> b_k),</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"n = "</span>, k, <span class="st">", x = "</span>, x_k)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(plots_data, <span class="fu">aes</span>(<span class="at">x =</span> p, <span class="at">y =</span> density, <span class="at">color =</span> <span class="fu">factor</span>(n_obs))) <span class="sc">+</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fl">0.15</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.155</span>, <span class="at">y =</span> <span class="dv">12</span>, <span class="at">label =</span> <span class="fu">expression</span>(<span class="st">"True "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" = 0.15"</span>),</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Posterior density"</span>,</span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Sequential updating: Beta(1,1) prior, "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" = 0.15"</span>),</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Patients seen"</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_viridis_d</span>(<span class="at">option =</span> <span class="st">"C"</span>, <span class="at">end =</span> <span class="fl">0.9</span>,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">unique</span>(plots_data<span class="sc">$</span>label)) <span class="sc">+</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-sequential-updating" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sequential-updating-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-sequential-updating-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sequential-updating-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;6: Sequential Bayesian updating as more patients are tested
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="bayes-estimators-and-decision-theory" class="level1" data-background-color="#16a085">
+<h1 data-background-color="#16a085">Bayes Estimators and Decision Theory</h1>
+<section id="point-estimation-from-the-posterior" class="level2">
+<h2 class="anchored" data-anchor-id="point-estimation-from-the-posterior">Point Estimation from the Posterior</h2>
+<p>The posterior <span class="math inline">\(\pi(\theta \mid \mathbf{x})\)</span> is a full probability distribution. How do we extract a single <strong>point estimate</strong>?</p>
+<p>. . .</p>
+<p>Answer: it depends on your <strong>loss function</strong>. A <strong>Bayes estimator</strong> minimizes <strong>posterior expected loss</strong>:</p>
+<p><span class="math display">\[\hat{\theta}_{\text{Bayes}} = \arg\min_{\delta} \, E[L(\theta, \delta) \mid \mathbf{x}] = \arg\min_{\delta} \int L(\theta, \delta) \, \pi(\theta \mid \mathbf{x}) \, d\theta\]</span></p>
+<p>. . .</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Three Key Results
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 39%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Loss function</th>
+<th><span class="math inline">\(L(\theta, \delta)\)</span></th>
+<th>Bayes estimator</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Squared error</strong></td>
+<td><span class="math inline">\((\theta - \delta)^2\)</span></td>
+<td>Posterior <strong>mean</strong> <span class="math inline">\(E[\theta \mid \mathbf{x}]\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Absolute error</strong></td>
+<td><span class="math inline">\(|\theta - \delta|\)</span></td>
+<td>Posterior <strong>median</strong></td>
+</tr>
+<tr class="odd">
+<td><strong>0–1 loss</strong></td>
+<td><span class="math inline">\(\mathbf{1}(\theta \neq \delta)\)</span></td>
+<td>Posterior <strong>mode</strong> (MAP)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="derivation-posterior-mean-minimizes-squared-error-loss" class="level2">
+<h2 class="anchored" data-anchor-id="derivation-posterior-mean-minimizes-squared-error-loss">Derivation: Posterior Mean Minimizes Squared Error Loss</h2>
+<p>We want to find <span class="math inline">\(\delta^*\)</span> that minimizes:</p>
+<p><span class="math display">\[E[(\theta - \delta)^2 \mid \mathbf{x}] = \int (\theta - \delta)^2 \pi(\theta \mid \mathbf{x}) \, d\theta\]</span></p>
+<p>. . .</p>
+<p>Add and subtract the posterior mean <span class="math inline">\(\mu_{\text{post}} = E[\theta \mid \mathbf{x}]\)</span>:</p>
+<p><span class="math display">\[E[(\theta - \delta)^2 \mid \mathbf{x}] = E[(\theta - \mu_{\text{post}} + \mu_{\text{post}} - \delta)^2 \mid \mathbf{x}]\]</span></p>
+<p><span class="math display">\[= \underbrace{E[(\theta - \mu_{\text{post}})^2 \mid \mathbf{x}]}_{\text{Var}(\theta \mid \mathbf{x})} + (\mu_{\text{post}} - \delta)^2 + 2(\mu_{\text{post}} - \delta)\underbrace{E[\theta - \mu_{\text{post}} \mid \mathbf{x}]}_{=\, 0}\]</span></p>
+<p><span class="math display">\[= \text{Var}(\theta \mid \mathbf{x}) + (\mu_{\text{post}} - \delta)^2\]</span></p>
+<p>. . .</p>
+<p>This is minimized when <span class="math inline">\(\delta^* = \mu_{\text{post}} = E[\theta \mid \mathbf{x}]\)</span>. <span class="math inline">\(\qquad \square\)</span></p>
+</section>
+<section id="bayes-estimator-betabinomial-case" class="level2">
+<h2 class="anchored" data-anchor-id="bayes-estimator-betabinomial-case">Bayes Estimator: Beta–Binomial Case</h2>
+<p>For <span class="math inline">\(p \mid x \sim \text{Beta}(\alpha + x, \, \beta + n - x)\)</span>:</p>
+<p><span class="math display">\[\hat{p}_{\text{Bayes}} = E[p \mid x] = \frac{\alpha + x}{\alpha + \beta + n}\]</span></p>
+<p>. . .</p>
+<p>Let <span class="math inline">\(n_0 = \alpha + \beta\)</span> (the “prior sample size”) and <span class="math inline">\(p_0 = \alpha/(\alpha+\beta)\)</span> (the prior mean). Then:</p>
+<p><span class="math display">\[\hat{p}_{\text{Bayes}} = \frac{n_0}{n_0 + n} \cdot p_0 + \frac{n}{n_0 + n} \cdot \hat{p}_{\text{MLE}}\]</span></p>
+<p>. . .</p>
+<p>This is a <strong>convex combination</strong> (weighted average) of the prior mean and the MLE:</p>
+<ul>
+<li>Weight on prior <span class="math inline">\(= n_0/(n_0 + n)\)</span> — decreases as <span class="math inline">\(n\)</span> grows</li>
+<li>Weight on MLE <span class="math inline">\(= n/(n_0 + n)\)</span> — increases as <span class="math inline">\(n\)</span> grows</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>Connection to Shrinkage Estimation
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This “shrinkage toward the prior” is related to <strong>James–Stein estimation</strong> and <strong>ridge regression</strong> in linear models. Bayesian estimators systematically trade a little bias for reduced variance — often beneficial in finite samples.</p>
+</div>
+</div>
+</section>
+<section id="posterior-expected-loss-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="posterior-expected-loss-visualization">Posterior Expected Loss: Visualization</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> <span class="dv">13</span>; beta1 <span class="ot">&lt;-</span> <span class="dv">53</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>post_mean   <span class="ot">&lt;-</span> alpha1 <span class="sc">/</span> (alpha1 <span class="sc">+</span> beta1)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>post_median <span class="ot">&lt;-</span> <span class="fu">qbeta</span>(<span class="fl">0.5</span>, alpha1, beta1)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mle_val     <span class="ot">&lt;-</span> <span class="dv">10</span> <span class="sc">/</span> <span class="dv">50</span>  <span class="co"># x=10, n=50</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Compute posterior expected squared error for a range of delta values</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>delta_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fl">0.05</span>, <span class="fl">0.45</span>, <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a><span class="co"># E[(p - delta)^2 | x] = Var(p|x) + (E[p|x] - delta)^2</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>post_var <span class="ot">&lt;-</span> alpha1 <span class="sc">*</span> beta1 <span class="sc">/</span> ((alpha1 <span class="sc">+</span> beta1)<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (alpha1 <span class="sc">+</span> beta1 <span class="sc">+</span> <span class="dv">1</span>))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>exp_loss <span class="ot">&lt;-</span> post_var <span class="sc">+</span> (post_mean <span class="sc">-</span> delta_grid)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(<span class="at">delta =</span> delta_grid, <span class="at">expected_loss =</span> exp_loss) <span class="sc">|&gt;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> delta, <span class="at">y =</span> expected_loss)) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> post_mean,   <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linetype =</span> <span class="st">"solid"</span>,  <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> post_median, <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> mle_val,     <span class="at">color =</span> <span class="st">"#2ecc71"</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> post_mean <span class="sc">+</span> <span class="fl">0.005</span>,   <span class="at">y =</span> <span class="fu">max</span>(exp_loss)<span class="sc">*</span><span class="fl">0.95</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Post. mean"</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> post_median <span class="sc">-</span> <span class="fl">0.005</span>, <span class="at">y =</span> <span class="fu">max</span>(exp_loss)<span class="sc">*</span><span class="fl">0.85</span>,</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"Post. median"</span>, <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mle_val <span class="sc">+</span> <span class="fl">0.005</span>,     <span class="at">y =</span> <span class="fu">max</span>(exp_loss)<span class="sc">*</span><span class="fl">0.75</span>,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="st">"MLE"</span>, <span class="at">color =</span> <span class="st">"#2ecc71"</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(delta <span class="sc">~</span> <span class="st">"(point estimate)"</span>),</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="fu">expression</span>(<span class="st">"Posterior expected squared error loss"</span>),</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Posterior expected loss: "</span><span class="sc">*</span>E<span class="sc">*</span><span class="st">"[("</span><span class="sc">*</span>theta<span class="sc">-</span>delta<span class="sc">*</span><span class="st">")²|"</span><span class="sc">*</span><span class="fu">bold</span>(x)<span class="sc">*</span><span class="st">"]"</span>),</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"Posterior: Beta("</span><span class="sc">*</span>.(alpha1)<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(beta1)<span class="sc">*</span><span class="st">")  —  minimum at posterior mean = "</span><span class="sc">*</span>.(<span class="fu">round</span>(post_mean,<span class="dv">3</span>)))</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-posterior-loss" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-posterior-loss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-posterior-loss-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-posterior-loss-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;7: Posterior expected loss under squared error for different point estimates
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="frequentist-vs.-bayesian-a-direct-comparison" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Frequentist vs.&nbsp;Bayesian: A Direct Comparison</h1>
+<section id="side-by-side-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="side-by-side-comparison">Side-by-Side Comparison</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 8%">
+<col style="width: 52%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Frequentist</th>
+<th>Bayesian</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Nature of <span class="math inline">\(\theta\)</span></strong></td>
+<td>Fixed, unknown constant</td>
+<td>Random variable with prior distribution</td>
+</tr>
+<tr class="even">
+<td><strong>Source of probability</strong></td>
+<td>Long-run frequency of events</td>
+<td>Degree of belief / uncertainty</td>
+</tr>
+<tr class="odd">
+<td><strong>Inference basis</strong></td>
+<td>Sampling distribution of <span class="math inline">\(\hat{\theta}\)</span></td>
+<td>Posterior distribution <span class="math inline">\(\pi(\theta \mid \mathbf{x})\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Point estimate</strong></td>
+<td>MLE, MOM, UMVUE</td>
+<td>Posterior mean, median, or mode</td>
+</tr>
+<tr class="odd">
+<td><strong>Interval estimate</strong></td>
+<td>CI: covers <span class="math inline">\(\theta\)</span> with prob <span class="math inline">\(1-\alpha\)</span> over repeated samples</td>
+<td>Credible interval: <span class="math inline">\(P(\theta \in C \mid \mathbf{x}) = 1-\alpha\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Prior needed?</strong></td>
+<td>No</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
+<td><strong>Small samples</strong></td>
+<td>May require asymptotic approximations</td>
+<td>Can be exact if prior + likelihood are tractable</td>
+</tr>
+<tr class="even">
+<td><strong>Computation</strong></td>
+<td>Often analytic or standard software</td>
+<td>May require MCMC (Stan, JAGS, brms)</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="when-does-the-prior-matter-most" class="level2">
+<h2 class="anchored" data-anchor-id="when-does-the-prior-matter-most">When Does the Prior Matter Most?</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Three priors; true p = 0.30</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>priors <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">name  =</span> <span class="fu">c</span>(<span class="st">"Strongly wrong prior</span><span class="sc">\n</span><span class="st">Beta(2,18)"</span>, <span class="st">"Uniform</span><span class="sc">\n</span><span class="st">Beta(1,1)"</span>, <span class="st">"Correct prior</span><span class="sc">\n</span><span class="st">Beta(6,14)"</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">6</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">beta  =</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">1</span>, <span class="dv">14</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>true_p <span class="ot">&lt;-</span> <span class="fl">0.30</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>n_grid <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">100</span>, <span class="dv">500</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">crossing</span>(priors, <span class="at">n_obs =</span> n_grid) <span class="sc">|&gt;</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x_obs =</span> <span class="fu">round</span>(true_p <span class="sc">*</span> n_obs),</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha1 =</span> alpha <span class="sc">+</span> x_obs,</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta1  =</span> beta  <span class="sc">+</span> n_obs <span class="sc">-</span> x_obs,</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">post_mean =</span> alpha1 <span class="sc">/</span> (alpha1 <span class="sc">+</span> beta1)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x =</span> n_obs, <span class="at">y =</span> post_mean, <span class="at">color =</span> name, <span class="at">group =</span> name)) <span class="sc">+</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> true_p, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">450</span>, <span class="at">y =</span> true_p <span class="sc">+</span> <span class="fl">0.015</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">expression</span>(<span class="st">"True "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" = 0.30"</span>), <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>) <span class="sc">+</span></span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>(<span class="at">breaks =</span> n_grid, <span class="at">labels =</span> n_grid) <span class="sc">+</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Sample size (log scale)"</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Posterior mean"</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Prior influence diminishes with increasing sample size"</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="st">"All posteriors converge to true "</span><span class="sc">*</span><span class="fu">italic</span>(p)<span class="sc">*</span><span class="st">" as n grows"</span>),</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Prior"</span></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_brewer</span>(<span class="at">palette =</span> <span class="st">"Set1"</span>) <span class="sc">+</span></span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"right"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-prior-influence" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prior-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-prior-influence-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prior-influence-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;8: Influence of prior vs.&nbsp;data as a function of sample size
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="key-philosophical-points" class="level2">
+<h2 class="anchored" data-anchor-id="key-philosophical-points">Key Philosophical Points</h2>
+<p><strong>Subjectivity vs.&nbsp;Objectivity</strong></p>
+<ul>
+<li>The prior is <em>subjective</em> — two analysts with different priors reach different posteriors</li>
+<li>Frequentist methods are also not fully “objective” (choice of test statistic, significance level, etc.)</li>
+<li>With large data, both approaches give similar answers</li>
+</ul>
+<p>. . .</p>
+<p><strong>The Bayesian Framework Naturally Handles:</strong></p>
+<ul>
+<li><strong>Sequential analyses</strong>: posterior updates naturally as data accumulate (no multiple-testing correction needed for planned sequential designs)</li>
+<li><strong>Prediction</strong>: posterior predictive distribution <span class="math inline">\(f(\tilde{x} \mid \mathbf{x}) = \int f(\tilde{x} \mid \theta) \pi(\theta \mid \mathbf{x}) d\theta\)</span></li>
+<li><strong>Complex models</strong>: hierarchical models, latent variable models via MCMC</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Note</span>In Your Career
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>You will encounter Bayesian methods in: - <strong>Adaptive clinical trials</strong> (FDA Bayesian guidance documents) - <strong>Hierarchical / mixed-effects models</strong> (often estimated via MCMC) - <strong>Biomarker analysis, genomics, imaging</strong> (high-dimensional priors) - <strong>Machine learning</strong> (Bayesian optimization, Gaussian processes, probabilistic neural networks)</p>
+</div>
+</div>
+</section>
+<section id="frequentist-properties-of-bayesian-estimators" class="level2">
+<h2 class="anchored" data-anchor-id="frequentist-properties-of-bayesian-estimators">Frequentist Properties of Bayesian Estimators</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>Bernstein–von Mises Theorem
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Under regularity conditions, as <span class="math inline">\(n \to \infty\)</span>:</p>
+<p><span class="math display">\[\pi(\theta \mid \mathbf{x}) \xrightarrow{d} N\!\left(\hat{\theta}_{\text{MLE}},\; [I_n(\hat\theta)]^{-1}\right)\]</span></p>
+<p>That is, the posterior <strong>concentrates around the MLE</strong> and becomes approximately normal — regardless of the prior.</p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Consequences:</strong></p>
+<ul>
+<li>For large samples, Bayesian and frequentist estimates agree</li>
+<li>The <span class="math inline">\(95\%\)</span> credible interval is <strong>asymptotically identical</strong> to the <span class="math inline">\(95\%\)</span> Wald CI</li>
+<li>The prior only matters in small samples or with strongly informative priors</li>
+</ul>
+<p>. . .</p>
+<p><strong>Admissibility:</strong> Under squared error loss, the Bayes estimator is <strong>admissible</strong> (cannot be uniformly improved). This connects to decision theory — Bayesian procedures often have excellent frequentist risk properties.</p>
+</section>
+</section>
+<section id="textbook-examples" class="level1" data-background-color="#3498db">
+<h1 data-background-color="#3498db">Textbook Examples</h1>
+<section id="devore-12-bayesian-estimation-overview" class="level2">
+<h2 class="anchored" data-anchor-id="devore-12-bayesian-estimation-overview">Devore §12: Bayesian Estimation (Overview)</h2>
+<p>Devore–Berk–Carlton introduces Bayesian estimation in Chapter 12. The key formula for a <strong>Beta–Binomial</strong> model with <span class="math inline">\(X \mid p \sim \text{Binomial}(n, p)\)</span> and <span class="math inline">\(p \sim \text{Beta}(\alpha, \beta)\)</span>:</p>
+<ul>
+<li>Posterior: <span class="math inline">\(p \mid x \sim \text{Beta}(\alpha + x, \beta + n - x)\)</span></li>
+<li>Bayes estimate (squared error): <span class="math inline">\(\hat{p}_B = \dfrac{\alpha + x}{\alpha + \beta + n}\)</span></li>
+</ul>
+<p>. . .</p>
+<p><strong>Example (DBC spirit):</strong> A pharmaceutical company tests a new compound in 20 patients with <span class="math inline">\(x = 7\)</span> responders. Prior: <span class="math inline">\(p \sim \text{Beta}(2, 2)\)</span> (weakly centered at 0.5).</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>alpha0 <span class="ot">&lt;-</span> <span class="dv">2</span>; beta0 <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">7</span>; n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> alpha0 <span class="sc">+</span> x; beta1 <span class="ot">&lt;-</span> beta0 <span class="sc">+</span> n <span class="sc">-</span> x</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Estimate =</span> <span class="fu">c</span>(<span class="st">"Prior mean"</span>, <span class="st">"MLE"</span>, <span class="st">"Bayes (posterior mean)"</span>, <span class="st">"95% Equal-tail CI"</span>),</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(alpha0<span class="sc">/</span>(alpha0<span class="sc">+</span>beta0), <span class="dv">3</span>),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(x<span class="sc">/</span>n, <span class="dv">3</span>),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">round</span>(alpha1<span class="sc">/</span>(alpha1<span class="sc">+</span>beta1), <span class="dv">3</span>),</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste0</span>(<span class="st">"["</span>, <span class="fu">round</span>(<span class="fu">qbeta</span>(<span class="fl">0.025</span>, alpha1, beta1), <span class="dv">3</span>), <span class="st">", "</span>, <span class="fu">round</span>(<span class="fu">qbeta</span>(<span class="fl">0.975</span>, alpha1, beta1), <span class="dv">3</span>), <span class="st">"]"</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estimate</th>
+<th style="text-align: left;">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Prior mean</td>
+<td style="text-align: left;">0.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">MLE</td>
+<td style="text-align: left;">0.35</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bayes (posterior mean)</td>
+<td style="text-align: left;">0.375</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">95% Equal-tail CI</td>
+<td style="text-align: left;">[0.197, 0.573]</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="chihara-hesterberg-connection" class="level2">
+<h2 class="anchored" data-anchor-id="chihara-hesterberg-connection">Chihara &amp; Hesterberg Connection</h2>
+<p>Chihara &amp; Hesterberg emphasize <strong>computational</strong> and <strong>simulation-based</strong> approaches. This connects beautifully to Bayesian inference:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate from Beta posterior directly (C&amp;H computational spirit)</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>alpha1 <span class="ot">&lt;-</span> <span class="dv">13</span>; beta1 <span class="ot">&lt;-</span> <span class="dv">53</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">&lt;-</span> <span class="dv">50000</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>posterior_draws <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">rbeta</span>(n_sim, alpha1, beta1))</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Summary</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>cred_int <span class="ot">&lt;-</span> <span class="fu">quantile</span>(posterior_draws<span class="sc">$</span>p, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(posterior_draws, <span class="fu">aes</span>(<span class="at">x =</span> p)) <span class="sc">+</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">80</span>,</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_function</span>(<span class="at">fun =</span> dbeta, <span class="at">args =</span> <span class="fu">list</span>(<span class="at">shape1 =</span> alpha1, <span class="at">shape2 =</span> beta1),</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>                <span class="at">color =</span> <span class="st">"#3498db"</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> cred_int, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">color =</span> <span class="st">"gray20"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> cred_int[<span class="dv">1</span>] <span class="sc">-</span> <span class="fl">0.005</span>, <span class="at">y =</span> <span class="dv">4</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(cred_int[<span class="dv">1</span>], <span class="dv">3</span>)), <span class="at">hjust =</span> <span class="dv">1</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> cred_int[<span class="dv">2</span>] <span class="sc">+</span> <span class="fl">0.005</span>, <span class="at">y =</span> <span class="dv">4</span>,</span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="fu">round</span>(cred_int[<span class="dv">2</span>], <span class="dv">3</span>)), <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">size =</span> <span class="fl">4.5</span>) <span class="sc">+</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">italic</span>(p)),</span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Posterior simulation: Beta("</span><span class="sc">*</span>.(<span class="dv">13</span>)<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(<span class="dv">53</span>)<span class="sc">*</span><span class="st">")"</span>),</span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(<span class="st">"50,000 posterior draws — 95% credible interval: ["</span><span class="sc">*</span></span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                        .(<span class="fu">round</span>(cred_int[<span class="dv">1</span>],<span class="dv">3</span>))<span class="sc">*</span><span class="st">", "</span><span class="sc">*</span>.(<span class="fu">round</span>(cred_int[<span class="dv">2</span>],<span class="dv">3</span>))<span class="sc">*</span><span class="st">"]"</span>)</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-posterior-simulation" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-posterior-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="23_BayesianInference_old_files/figure-html/fig-posterior-simulation-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-posterior-simulation-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;9: Posterior distribution for disease prevalence via direct simulation
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The dashed curve is the exact <span class="math inline">\(\text{Beta}(13, 53)\)</span> density — Monte Carlo is indistinguishable with 50,000 draws.</p>
+</section>
+</section>
+<section id="summary" class="level1" data-background-color="#2c3e50">
+<h1 data-background-color="#2c3e50">Summary</h1>
+<section id="key-takeaways-bayesian-inference" class="level2">
+<h2 class="anchored" data-anchor-id="key-takeaways-bayesian-inference">Key Takeaways: Bayesian Inference</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Important</span>The Fundamental Workflow
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><span class="math display">\[\underbrace{\pi(\theta)}_{\text{prior}} \xrightarrow{\text{observe data}} \underbrace{\pi(\theta \mid \mathbf{x}) \propto L(\theta) \cdot \pi(\theta)}_{\text{posterior}}\]</span></p>
+</div>
+</div>
+<p>. . .</p>
+<p><strong>Core concepts:</strong></p>
+<ul>
+<li><strong>Prior</strong> encodes pre-data beliefs; can be informative, weakly informative, or flat</li>
+<li><strong>Posterior</strong> is the complete inferential summary — it <em>is</em> the answer to “what do we know about <span class="math inline">\(\theta\)</span>?”</li>
+<li><strong>Conjugate priors</strong> give closed-form posteriors: Beta–Binomial, Normal–Normal, Gamma–Poisson</li>
+<li><strong>Credible intervals</strong>: direct probability statements about <span class="math inline">\(\theta\)</span> — the interpretation frequentist CIs can’t make</li>
+<li><strong>Bayes estimators</strong>: minimize posterior expected loss; posterior mean (sq. error), median (abs. error), mode (0–1 loss)</li>
+<li><strong>Consistency</strong>: by Bernstein–von Mises, posteriors concentrate around the MLE as <span class="math inline">\(n \to \infty\)</span></li>
+</ul>
+</section>
+<section id="looking-forward" class="level2">
+<h2 class="anchored" data-anchor-id="looking-forward">Looking Forward</h2>
+<p>The tools from this quarter — MLE theory, sufficiency, sampling distributions, hypothesis testing — <strong>all appear in the Bayesian framework</strong> too:</p>
+<ul>
+<li>The likelihood <span class="math inline">\(L(\theta)\)</span> is the same object we have been maximizing</li>
+<li>Sufficient statistics reduce the posterior: <span class="math inline">\(\pi(\theta \mid \mathbf{x}) = \pi(\theta \mid T(\mathbf{x}))\)</span></li>
+<li>MCMC (Markov Chain Monte Carlo) generalizes bootstrap simulation for complex posteriors</li>
+<li>Bayesian adaptive designs, hierarchical models, and posterior predictive checks are standard tools in biostatistics</li>
+</ul>
+<p>. . .</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Recommended Resources
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li>Gelman et al., <em>Bayesian Data Analysis</em> (3rd ed.) — the standard reference</li>
+<li>McElreath, <em>Statistical Rethinking</em> — intuitive introduction with R/Stan code</li>
+<li>Stan/brms: modern probabilistic programming for Bayesian models in R</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="homework-problems" class="level1" data-background-color="#006a4e">
+<h1 data-background-color="#006a4e">Homework Problems</h1>
+<section id="homework-problems-1" class="level2">
+<h2 class="anchored" data-anchor-id="homework-problems-1">Homework Problems</h2>
+<p><strong>Problem 1 (Beta–Binomial Updating)</strong></p>
+<p>A clinical trial monitors the probability <span class="math inline">\(p\)</span> of a treatment-related serious adverse event. Historical data from similar drugs suggest <span class="math inline">\(p \approx 0.08\)</span>, which you encode as a <span class="math inline">\(\text{Beta}(2, 23)\)</span> prior.</p>
+<ol type="a">
+<li>Verify that this prior has mean approximately 0.08 and compute its standard deviation.</li>
+<li>In the current trial, 4 out of 75 patients experience the event. Derive the posterior distribution of <span class="math inline">\(p\)</span>.</li>
+<li>Compute the posterior mean, mode, and a 95% equal-tail credible interval.</li>
+<li>An event rate above 0.15 would trigger a safety review. Compute the posterior probability <span class="math inline">\(P(p &gt; 0.15 \mid x = 4, n = 75)\)</span>.</li>
+<li>How does the posterior probability in (d) change if you use a <span class="math inline">\(\text{Uniform}(0,1)\)</span> prior instead? Discuss the sensitivity of your conclusion to the prior choice.</li>
+</ol>
+<hr>
+<p><strong>Problem 2 (Normal–Normal Conjugate)</strong></p>
+<p>Systolic blood pressure measurements for a patient population are modeled as <span class="math inline">\(X_i \mid \mu \stackrel{iid}{\sim} N(\mu, 20^2)\)</span> (measurement <span class="math inline">\(\sigma = 20\)</span> mmHg is assumed known). A clinician’s prior belief, based on patients from a similar clinic, is <span class="math inline">\(\mu \sim N(130, 15^2)\)</span>.</p>
+<ol type="a">
+<li>A new dataset of <span class="math inline">\(n = 25\)</span> patients yields <span class="math inline">\(\bar{x} = 142\)</span> mmHg. Derive the posterior distribution of <span class="math inline">\(\mu\)</span>.</li>
+<li>Compute the posterior mean and show that it is a precision-weighted average of the prior mean and <span class="math inline">\(\bar{x}\)</span>.</li>
+<li>Construct a 95% credible interval for <span class="math inline">\(\mu\)</span>. Compare it to the frequentist 95% CI for <span class="math inline">\(\mu\)</span> (using the known <span class="math inline">\(\sigma\)</span>).</li>
+<li>How large must <span class="math inline">\(n\)</span> be for the data precision to be at least 10 times the prior precision? At that sample size, how close are the Bayes and MLE estimates?</li>
+</ol>
+<hr>
+<p><strong>Problem 3 (Bayes Estimators and Loss)</strong></p>
+<p>Let <span class="math inline">\(X_1, \ldots, X_n \mid p \stackrel{iid}{\sim} \text{Bernoulli}(p)\)</span> and <span class="math inline">\(p \sim \text{Beta}(\alpha, \beta)\)</span>.</p>
+<ol type="a">
+<li>Show that the Bayes estimator under squared error loss is <span class="math inline">\(\hat{p}_B = (\alpha + \sum X_i)/(\alpha + \beta + n)\)</span>.</li>
+<li>Write <span class="math inline">\(\hat{p}_B\)</span> as a weighted average of the prior mean <span class="math inline">\(p_0 = \alpha/(\alpha + \beta)\)</span> and the MLE <span class="math inline">\(\bar{X}\)</span>. What are the weights?</li>
+<li>Compute the <strong>frequentist risk</strong> <span class="math inline">\(R(p, \hat{p}_B) = E_p[(\hat{p}_B - p)^2]\)</span> and compare it to the risk of the MLE <span class="math inline">\(\hat{p}_{\text{MLE}} = \bar{X}\)</span>.</li>
+<li>Show that <span class="math inline">\(\hat{p}_B\)</span> has smaller MSE than the MLE when <span class="math inline">\(p\)</span> is near the prior mean, but larger MSE when <span class="math inline">\(p\)</span> is far from it. Illustrate with a plot in R using <span class="math inline">\(\alpha = \beta = 2\)</span>, <span class="math inline">\(n = 20\)</span>.</li>
+</ol>
+<hr>
+<p><strong>Problem 4 (Gamma–Poisson; Devore-style)</strong></p>
+<p>Hospital records show the number of patients presenting with a rare condition per month follows a Poisson distribution with unknown rate <span class="math inline">\(\lambda\)</span>. The prior is <span class="math inline">\(\lambda \sim \text{Gamma}(3, 1)\)</span> (mean = 3 cases/month, <span class="math inline">\(\beta = 1\)</span> is the rate parameter).</p>
+<ol type="a">
+<li>In the past 6 months, the observed counts were 2, 5, 1, 4, 3, 2. Derive the posterior distribution of <span class="math inline">\(\lambda\)</span>.</li>
+<li>Compute the posterior mean and compare to the MLE.</li>
+<li>Compute a 95% equal-tail credible interval using the <code>qgamma()</code> function in R.</li>
+<li>The hospital wants to staff for a month where <span class="math inline">\(\lambda &gt; 6\)</span>. Compute the posterior probability of this event.</li>
+</ol>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.7.32">
+<meta name="generator" content="quarto-1.8.25">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -68,14 +68,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="quarto:offset" content="../">
 <script src="../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d6f443738f3b57692772a425065fe845.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-3fbce8e5d0ad6a145f129f53e9b2a4da.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -118,7 +119,7 @@ const typesetMath = (el) => {
     var macros = [];
     for (var i = 0; i < mathElements.length; i++) {
       var texText = mathElements[i].firstChild;
-      if (mathElements[i].tagName == "SPAN") {
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
         window.katex.render(texText.data, mathElements[i], {
           displayMode: mathElements[i].classList.contains('display'),
           throwOnError: false,
@@ -144,7 +145,8 @@ window.Quarto = {
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a href="../index.html" class="navbar-brand navbar-brand-logo">
-    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo light-content">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo dark-content">
     </a>
     <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Theory of Statistical Inference</span>
@@ -223,7 +225,7 @@ window.Quarto = {
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 18, 2026</p>
+      <p class="date-modified">March 6, 2026</p>
     </div>
   </div>
     
@@ -262,9 +264,9 @@ window.Quarto = {
 <p><strong>(c)</strong> Compute a 95% one-sided confidence interval (lower bound, <span class="math inline">\(\infty\)</span>) for the mean fasting glucose <span class="math inline">\(\mu\)</span> and verify that it is consistent with your conclusion from part (a). <em>(Hint: For a one-sided upper confidence bound/lower confidence bound, the critical value is <span class="math inline">\(t_{\alpha, n-1}\)</span>, not <span class="math inline">\(t_{\alpha/2, n-1}\)</span>.)</em></p>
 <p><strong>(d)</strong> In R, use <code>t.test()</code> to verify your calculations. Show your code.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>glucose <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">98</span>, <span class="dv">103</span>, <span class="dv">91</span>, <span class="dv">107</span>, <span class="dv">96</span>, <span class="dv">88</span>, <span class="dv">101</span>, <span class="dv">95</span>, <span class="dv">99</span>, <span class="dv">102</span>, <span class="dv">94</span>, <span class="dv">97</span>, <span class="dv">89</span>, <span class="dv">100</span>, <span class="dv">93</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>glucose <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">98</span>, <span class="dv">103</span>, <span class="dv">91</span>, <span class="dv">107</span>, <span class="dv">96</span>, <span class="dv">88</span>, <span class="dv">101</span>, <span class="dv">95</span>, <span class="dv">99</span>, <span class="dv">102</span>, <span class="dv">94</span>, <span class="dv">97</span>, <span class="dv">89</span>, <span class="dv">100</span>, <span class="dv">93</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="problem-3-test-for-a-proportion-lesson-13-devore-9.3" class="level3">
@@ -283,18 +285,18 @@ window.Quarto = {
 <p><strong>(b)</strong> For a <strong>one-sided lower-tailed</strong> z test with <span class="math inline">\(\alpha = 0.05\)</span> and a planned sample size of <span class="math inline">\(n = 40\)</span> patients, compute the power of the test against the alternative <span class="math inline">\(\mu_a = 5.5\)</span> days. Use the formula: <span class="math display">\[\text{Power} = \Phi\!\left(\frac{\mu_0 - \mu_a}{\sigma/\sqrt{n}} - z_\alpha\right)\]</span> where <span class="math inline">\(z_\alpha = z_{0.05}\)</span> is the upper <span class="math inline">\(\alpha\)</span> critical value. Show your work.</p>
 <p><strong>(c)</strong> The team sets a target of 85% power. Use <code>power.t.test()</code> in R to find the required sample size, treating this as a one-sample t test (the normal approximation is close for planning purposes). Use <code>sd = 2.5</code>, <code>delta = 1.5</code>, <code>sig.level = 0.05</code>, <code>power = 0.85</code>, <code>alternative = "one.sided"</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">power.t.test</span>(</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">delta =</span> ___,</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">sd =</span> ___,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sig.level =</span> ___,</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">power =</span> ___,</span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"one.sample"</span>,</span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">alternative =</span> <span class="st">"one.sided"</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>(d)</strong> Create a <strong>power curve</strong> in R: for the one-sided lower-tailed z test, plot power as a function of <span class="math inline">\(n\)</span> (from 5 to 120) fixing <span class="math inline">\(\mu_a = 5.5\)</span>, <span class="math inline">\(\sigma = 2.5\)</span>, <span class="math inline">\(\alpha = 0.05\)</span>. Add a horizontal reference line at 85% power and a vertical reference line at the sample size found in part (c).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_vals <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">120</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n_vals <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">:</span><span class="dv">120</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>mu0 <span class="ot">&lt;-</span> <span class="dv">7</span>; mu_a <span class="ot">&lt;-</span> <span class="fl">5.5</span>; sigma <span class="ot">&lt;-</span> <span class="fl">2.5</span>; alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>power_vals <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(___ <span class="sc">-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha))</span>
@@ -310,7 +312,7 @@ window.Quarto = {
 <span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">bquote</span>(<span class="st">"Power curve: ERAS post-surgical LOS study"</span>),</span>
 <span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="fu">bquote</span>(H[a]<span class="sc">*</span><span class="st">":"</span><span class="sc">~</span>mu <span class="sc">==</span> .(mu_a)<span class="sc">~</span><span class="st">"days,"</span><span class="sc">~</span>sigma <span class="sc">==</span> .(sigma)<span class="sc">~</span><span class="st">","</span><span class="sc">~</span>alpha <span class="sc">==</span> .(alpha))</span>
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">labels =</span> scales<span class="sc">::</span>percent)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>(e)</strong> The ERAS study is ultimately run with <span class="math inline">\(n = 55\)</span> patients and produces a sample mean LOS of <span class="math inline">\(\bar{x} = 6.1\)</span> days.</p>
 <ul>
@@ -326,10 +328,10 @@ window.Quarto = {
 <p><strong>(b)</strong> Apply the <strong>Bonferroni correction</strong>: what adjusted significance threshold <span class="math inline">\(\alpha^*\)</span> should be used for each individual test to control the family-wise error rate (FWER) at 0.05?</p>
 <p><strong>(c)</strong> Of the 500 tests, the 37 significant raw p-values are given below. Apply the Bonferroni correction and report how many genes remain significant.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Simulate 37 "significant" raw p-values</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>sig_pvals <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">37</span>, <span class="at">min =</span> <span class="dv">0</span>, <span class="at">max =</span> <span class="fl">0.05</span>)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sig_pvals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>sig_pvals</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] 0.039991622 0.009029548 0.029696850 0.010112608 0.036451590 0.004385602
  [7] 0.003395444 0.029779669 0.016211141 0.013747465 0.039203407 0.004591254
@@ -339,7 +341,7 @@ window.Quarto = {
 [31] 0.044336905 0.048007904 0.014847766 0.039496309 0.043135550 0.020120665
 [37] 0.040028855</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction -- your code here</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply Bonferroni correction -- your code here</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><strong>(d)</strong> Explain briefly why the Benjamini-Hochberg (BH) procedure for controlling the False Discovery Rate (FDR) is often preferred over Bonferroni in “omics” studies.</p>
 
@@ -399,13 +401,14 @@ window.Quarto = {
       e.clearSelection();
     }
     const getTextToCopy = function(trigger) {
-        const codeEl = trigger.previousElementSibling.cloneNode(true);
-        for (const childEl of codeEl.children) {
-          if (isCodeAnnotation(childEl)) {
-            childEl.remove();
-          }
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
         }
-        return codeEl.innerText;
+      }
+      return codeEl.innerText;
     }
     const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
       text: getTextToCopy

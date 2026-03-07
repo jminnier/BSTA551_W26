@@ -1,0 +1,1005 @@
+---
+title: "Lesson 23: Introduction to Bayesian Inference"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "2026-03-11"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 23 - Introduction to Bayesian Inference
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 23: Introduction to Bayesian Inference {background-color="#2c3e50"}
+
+## Today's Goals
+
+1. Understand the **Bayesian paradigm**: parameters as random variables with prior distributions
+2. Derive **posterior distributions** using Bayes' theorem for random variables
+3. Work with **conjugate prior** families: Beta/Binomial, Gamma/Exponential, Gamma/Poisson, Normal/Normal
+4. Compute **Bayes estimators** (posterior mean, MAP) and understand their properties
+5. Construct **Bayesian credible intervals** and compare with frequentist confidence intervals
+6. Perform **Bayesian hypothesis testing** via posterior probabilities
+
+. . .
+
+**Reading:**
+
+- Devore, Berk, and Carlton, Chapter 15 (Introduction to Bayesian Estimation)
+- Chihara and Hesterberg, Chapter 10 (Bayesian Methods)
+
+# Frequentist vs. Bayesian Inference {background-color="#2c3e50"}
+
+## Two Paradigms for Statistical Inference
+
+**Frequentist (Classical) Inference:**
+
+Observe data $X \sim f(x|\theta)$ $\longrightarrow$ use observed data $x$ to make statements about $\theta$, which is assumed to be a **fixed (and unknown)** model parameter.
+
+- Point estimates, confidence intervals, hypothesis tests
+- $\theta$ is a constant; probability statements are about **the data**, not $\theta$
+- Confidence interval interpretation: long-run frequency of coverage
+
+. . .
+
+**Bayesian Inference:**
+
+Model random variable $\theta \sim \pi(\theta)$ $\longrightarrow$ observe $X|\theta \sim f(x|\theta)$ $\longrightarrow$ update with $\pi(\theta|x)$
+
+- $\theta$ is treated as a **random variable** with a probability distribution
+- **Prior distribution** $\pi(\theta)$: incorporates available information about $\theta$ before data are observed
+- **Posterior distribution** $\pi(\theta|x)$: "updated" distribution of $\theta$ after the data are observed
+- All inference comes from the posterior
+
+## Why Consider Bayesian Methods?
+
+**Advantages:**
+
+- Incorporates prior knowledge or expert opinion formally
+- Posterior probability statements are direct: $P(\theta \in A | x)$ has a natural interpretation
+- Credible intervals say "there is a 95% probability that $\theta$ is in this interval"
+- Naturally handles nuisance parameters through marginalization
+- Provides a coherent framework for sequential updating of evidence
+
+. . .
+
+**Challenges:**
+
+- Requires specifying a prior distribution (can be subjective)
+- Choice of prior can strongly influence results, especially with small samples
+- Computational demands can be substantial for complex models
+- Philosophical objections to treating fixed quantities as random
+
+. . .
+
+**Medical research context:** Bayesian methods are increasingly used in clinical trials (adaptive designs), diagnostic testing, meta-analysis, and regulatory submissions (e.g., medical device trials at the FDA).
+
+
+# Prior and Posterior Distributions {background-color="#2c3e50"}
+
+## Prior Distributions
+
+::: {.callout-note icon=false}
+## Definition: Prior Distribution (DBC 15.1)
+A **prior distribution** for a parameter $\theta$, denoted $\pi(\theta)$, is a probability distribution on the set of possible values for $\theta$. If $\theta$ takes values in an interval $I$, then $\pi(\theta)$ is a pdf satisfying $\int_I \pi(\theta) \, d\theta = 1$. If $\theta$ takes values in a discrete set $D$, then $\pi(\theta)$ is a pmf satisfying $\sum_{\theta \in D} \pi(\theta) = 1$.
+:::
+
+. . .
+
+The **variability** of the prior distribution reflects how certain we are about our initial belief:
+
+- A **narrow** (concentrated) prior expresses strong belief
+- A **wide** (diffuse) prior expresses substantial uncertainty
+- A **flat** or **noninformative** prior attempts to let the data speak for themselves
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+#| fig-width: 10
+#| fig-align: center
+# Prior distributions with different levels of certainty
+tibble(theta = seq(0, 10, by = 0.01)) |>
+  mutate(
+    `Strong belief (narrow)` = dnorm(theta, mean = 5, sd = 0.5),
+    `Moderate belief` = dnorm(theta, mean = 5, sd = 1.5),
+    `Weak belief (diffuse)` = dnorm(theta, mean = 5, sd = 4)
+  ) |>
+  pivot_longer(-theta, names_to = "Prior", values_to = "density") |>
+  ggplot(aes(x = theta, y = density, color = Prior, linetype = Prior)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    x = expression(theta),
+    y = expression(pi(theta)),
+    title = "Prior distributions reflecting different levels of certainty"
+  ) +
+  scale_color_brewer(palette = "Set2") +
+  theme(legend.position = "bottom")
+```
+
+## The Posterior Distribution
+
+The **key** to Bayesian inference is Bayes' theorem applied to random variables.
+
+::: {.callout-note icon=false}
+## Definition: Posterior Distribution
+Suppose $X_1, \ldots, X_n$ have joint pdf $f(x_1, \ldots, x_n; \theta)$ and $\theta$ has been assigned a prior distribution $\pi(\theta)$. The **posterior distribution** of $\theta$ given the observed data is:
+
+$$\pi(\theta | x_1, \ldots, x_n) = \frac{\pi(\theta) \, f(x_1, \ldots, x_n; \theta)}{\int \pi(\theta) \, f(x_1, \ldots, x_n; \theta) \, d\theta}$$
+:::
+
+. . .
+
+The denominator $m(x) = \int \pi(\theta) f(x|\theta) \, d\theta$ is the **marginal distribution** of the data. Since it does not depend on $\theta$, we often write:
+
+$$\pi(\theta | x) \propto \underbrace{\pi(\theta)}_{\text{prior}} \times \underbrace{f(x|\theta)}_{\text{likelihood}}$$
+
+$$\boxed{\text{Posterior} \propto \text{Prior} \times \text{Likelihood}}$$
+
+This is the fundamental equation of Bayesian inference.
+
+
+## Bayesian Updating: The Full Picture
+
+The complete set of distributions in a Bayesian analysis:
+
+1. **Prior distribution:** $\theta \sim \pi(\theta)$  *(set in advance)*
+2. **Data model (likelihood):** $X|\theta \sim f(x|\theta)$ *(set in advance)*
+3. **Joint distribution:** $f_{X,\theta}(x, \theta) = f(x|\theta) \, \pi(\theta)$
+4. **Marginal distribution:** $m(x) = \int f(x|\theta) \, \pi(\theta) \, d\theta$
+5. **Posterior distribution:** $\pi(\theta|x) = \frac{f(x|\theta) \, \pi(\theta)}{m(x)}$
+
+. . .
+
+The posterior combines **prior belief** with **observed evidence** from the data. As we collect more data, the posterior becomes increasingly driven by the likelihood.
+
+# Conjugate Priors {background-color="#2c3e50"}
+
+## What Are Conjugate Priors?
+
+In practice, we want to choose a prior distribution family such that the posterior distribution belongs to the **same family**. When this happens, we say the prior is **conjugate** to the data distribution.
+
+::: {.callout-note icon=false}
+## Definition: Conjugate Prior
+A prior distribution $\pi(\theta)$ from family $\mathcal{F}$ is **conjugate** to the data distribution $f(x|\theta)$ if the posterior distribution $\pi(\theta|x)$ also belongs to $\mathcal{F}$.
+:::
+
+. . .
+
+**Why conjugate priors?**
+
+- Posterior has a **closed-form** expression — no numerical integration needed
+- The prior hyperparameters have interpretable roles (e.g., "prior sample size")
+- Easy to update sequentially as new data arrive
+
+. . .
+
+**Common conjugate pairs:**
+
+| Data Model | Conjugate Prior | Posterior |
+|:-----------|:----------------|:----------|
+| Bernoulli/Binomial($p$) | Beta($\alpha_0, \beta_0$) | Beta($\alpha_0 + y, \beta_0 + n - y$) |
+| Poisson($\lambda$) | Gamma($\alpha_0, \beta_0$) | Gamma($\alpha_0 + \sum x_i, \frac{1}{n + 1/\beta_0}$) |
+| Exponential($\lambda$) | Gamma($\alpha_0, \beta_0$) | Gamma($\alpha_0 + n, \frac{1}{1/\beta_0 + \sum x_i}$) |
+| Normal($\mu$, $\sigma^2$ known) | Normal($\mu_0, \sigma_0^2$) | Normal($\mu_1, \sigma_1^2$) |
+
+## Example: Beta Prior for Binomial Data (DBC 15.3, C&H 10.3)
+
+::: {.callout-note icon=false}
+## Proposition: Beta-Binomial Conjugacy
+Let $X_1, \ldots, X_n$ be a random sample from a Bernoulli($p$) distribution. Equivalently, let $Y = \sum X_i \sim \text{Bin}(n, p)$. If $p$ is assigned a Beta($\alpha_0, \beta_0$) prior, then the posterior distribution of $p$ given the data is:
+
+$$p \mid y \sim \text{Beta}(\alpha_0 + y, \;\beta_0 + n - y)$$
+:::
+
+. . .
+
+**Proof:** The joint Bernoulli pmf is $f(x|p) = p^y(1-p)^{n-y}$ where $y = \sum x_i$. The Beta prior is $\pi(p) \propto p^{\alpha_0 - 1}(1-p)^{\beta_0 - 1}$. Applying Bayes' theorem:
+
+$$\pi(p|x) \propto p^{\alpha_0 - 1}(1-p)^{\beta_0 - 1} \cdot p^y(1-p)^{n-y} = p^{(\alpha_0 + y) - 1}(1-p)^{(\beta_0 + n - y) - 1}$$
+
+We recognize this as proportional to the Beta($\alpha_0 + y, \beta_0 + n - y$) density. $\square$
+
+. . .
+
+**Interpretation:** The hyperparameters $\alpha_0$ and $\beta_0$ act like "prior successes" and "prior failures." The posterior adds observed successes $y$ and observed failures $n - y$.
+
+
+## Medical Example: Beta-Binomial — Vaccine Efficacy
+
+A Phase II clinical trial tests a new vaccine. Prior studies suggest efficacy around 60%, but with substantial uncertainty. We use a Beta(6, 4) prior for $p$ (the true efficacy rate), which has mean $6/10 = 0.60$.
+
+In the trial, $n = 50$ patients are vaccinated and $y = 38$ show a positive immune response.
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+# Beta-Binomial: Vaccine efficacy
+a0 <- 6; b0 <- 4       # Prior hyperparameters
+n <- 50; y <- 38         # Observed data
+
+# Posterior parameters
+a_post <- a0 + y         # 44
+b_post <- b0 + n - y     # 16
+
+tibble(p = seq(0, 1, by = 0.001)) |>
+  mutate(
+    Prior = dbeta(p, a0, b0),
+    Likelihood = dbinom(y, n, p) * 150,  # scaled for visualization
+    Posterior = dbeta(p, a_post, b_post)
+  ) |>
+  pivot_longer(-p, names_to = "Distribution", values_to = "density") |>
+  mutate(Distribution = factor(Distribution, levels = c("Prior", "Likelihood", "Posterior"))) |>
+  ggplot(aes(x = p, y = density, color = Distribution, linetype = Distribution)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    x = expression(p),
+    y = "Density",
+    title = "Bayesian updating: Vaccine efficacy",
+    subtitle = paste0(
+      "Prior: Beta(", a0, ", ", b0, ") | Data: ", y, "/", n,
+      " | Posterior: Beta(", a_post, ", ", b_post, ")"
+    )
+  ) +
+  scale_color_manual(values = c("Prior" = "steelblue", "Likelihood" = "gray50", "Posterior" = "darkred")) +
+  theme(legend.position = "bottom")
+```
+
+. . .
+
+- **Prior mean:** $\frac{6}{10} = 0.60$
+- **MLE (frequentist):** $\hat{p} = 38/50 = 0.76$
+- **Posterior mean:** $\frac{44}{60} = `r round(a_post/(a_post + b_post), 4)`$ — a weighted average, pulled toward the data
+
+
+## Example: Gamma Prior for Exponential Data (DBC 15.2)
+
+::: {.callout-note icon=false}
+## Proposition: Gamma-Exponential Conjugacy
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Exponential}(\lambda)$ with pdf $f(x|\lambda) = \lambda e^{-\lambda x}$. If $\lambda$ is assigned a Gamma($\alpha_0, \beta_0$) prior, the posterior distribution of $\lambda$ is:
+
+$$\lambda \mid x_1, \ldots, x_n \sim \text{Gamma}\!\left(\alpha_0 + n, \;\frac{1}{1/\beta_0 + \sum x_i}\right)$$
+:::
+
+. . .
+
+**Proof:** The joint likelihood is $f(x|\lambda) = \lambda^n e^{-\lambda \sum x_i}$. The Gamma prior is $\pi(\lambda) \propto \lambda^{\alpha_0 - 1} e^{-\lambda/\beta_0}$. Then:
+
+$$\pi(\lambda|x) \propto \lambda^{\alpha_0 - 1} e^{-\lambda/\beta_0} \cdot \lambda^n e^{-\lambda \sum x_i} = \lambda^{(\alpha_0 + n) - 1} \exp\!\left(-\lambda\left(\frac{1}{\beta_0} + \sum x_i\right)\right)$$
+
+This is the kernel of a Gamma distribution with shape $\alpha_0 + n$ and scale $\frac{1}{1/\beta_0 + \sum x_i}$. $\square$
+
+
+## Medical Example: Gamma-Exponential — Hospital Wait Times
+
+An emergency department models the rate $\lambda$ (patients per hour) of arrivals. Prior experience suggests approximately 5 patients per hour, so we use a Gamma(5, 1) prior for $\lambda$ (mean = 5).
+
+We observe $n = 12$ inter-arrival times (in hours) with $\sum x_i = 2.8$.
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+# Gamma-Exponential: Hospital arrival rate
+a0 <- 5; b0 <- 1
+n_obs <- 12; sum_x <- 2.8
+
+# Posterior
+a_post_exp <- a0 + n_obs
+b_post_exp <- 1 / (1/b0 + sum_x)
+
+tibble(lambda = seq(0, 15, by = 0.01)) |>
+  mutate(
+    Prior = dgamma(lambda, shape = a0, scale = b0),
+    Posterior = dgamma(lambda, shape = a_post_exp, scale = b_post_exp)
+  ) |>
+  pivot_longer(-lambda, names_to = "Distribution", values_to = "density") |>
+  ggplot(aes(x = lambda, y = density, color = Distribution, linetype = Distribution)) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(xintercept = n_obs / sum_x, linetype = "dotted", color = "gray40") +
+  annotate("text", x = n_obs / sum_x + 0.3, y = 0.6,
+           label = "MLE", color = "gray40", size = 5) +
+  labs(
+    x = expression(lambda ~ "(patients/hour)"),
+    y = "Density",
+    title = "Bayesian updating: ED arrival rate",
+    subtitle = paste0("Prior: Gamma(", a0, ", ", b0, ") | Posterior: Gamma(",
+                       a_post_exp, ", ", round(b_post_exp, 3), ")")
+  ) +
+  scale_color_manual(values = c("Prior" = "steelblue", "Posterior" = "darkred")) +
+  theme(legend.position = "bottom")
+```
+
+
+## Example: Gamma Prior for Poisson Data (C&B, C&H 10.4)
+
+::: {.callout-note icon=false}
+## Proposition: Gamma-Poisson Conjugacy
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Poisson}(\theta)$. If $\theta$ is assigned a Gamma($\alpha_0, \beta_0$) prior, then:
+
+$$\theta \mid x_1, \ldots, x_n \sim \text{Gamma}\!\left(\alpha_0 + \sum_{i=1}^n x_i, \; \frac{1}{n + 1/\beta_0}\right)$$
+:::
+
+**Proof:** The joint pmf is $f(x|\theta) = \frac{\theta^{\sum x_i} e^{-n\theta}}{\prod x_i!}$. Combining with the Gamma prior $\pi(\theta) \propto \theta^{\alpha_0 - 1} e^{-\theta/\beta_0}$:
+
+$$\pi(\theta|x) \propto \theta^{\alpha_0 - 1} e^{-\theta/\beta_0} \cdot \theta^{\sum x_i} e^{-n\theta} = \theta^{(\alpha_0 + \sum x_i) - 1} \exp\!\left(-\theta\left(n + \frac{1}{\beta_0}\right)\right)$$
+
+which is the Gamma$\!\left(\alpha_0 + \sum x_i, \; \frac{1}{n + 1/\beta_0}\right)$ kernel. $\square$
+
+
+## Example: Normal Prior for Normal Mean (DBC 15.9, C&H 10.4)
+
+::: {.callout-note icon=false}
+## Proposition: Normal-Normal Conjugacy
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)$ with $\sigma^2$ known. If $\mu$ is assigned a $N(\mu_0, \sigma_0^2)$ prior, then:
+
+$$\mu \mid x_1, \ldots, x_n \sim N(\mu_1, \sigma_1^2)$$
+
+where the **posterior precision** (reciprocal of variance) is:
+
+$$\frac{1}{\sigma_1^2} = \frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}$$
+
+and the **posterior mean** is a weighted average:
+
+$$\mu_1 = \frac{\frac{1}{\sigma_0^2}}{\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}} \cdot \mu_0 + \frac{\frac{n}{\sigma^2}}{\frac{1}{\sigma_0^2} + \frac{n}{\sigma^2}} \cdot \bar{x}$$
+:::
+
+. . .
+
+**Key insight — Precision adds:**
+
+$$\underbrace{\frac{1}{\sigma_1^2}}_{\text{posterior precision}} = \underbrace{\frac{1}{\sigma_0^2}}_{\text{prior precision}} + \underbrace{\frac{n}{\sigma^2}}_{\text{data precision}}$$
+
+The weights in the posterior mean are proportional to the respective precisions!
+
+
+## Medical Example: Normal-Normal — Systolic Blood Pressure
+
+A researcher studies the mean systolic blood pressure $\mu$ in a hypertensive population. Prior clinical knowledge suggests $\mu \approx 145$ mmHg with $\sigma_0 = 10$. Population $\sigma = 20$ mmHg is assumed known.
+
+A sample of $n = 25$ patients has $\bar{x} = 152$ mmHg.
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 12
+#| fig-align: center
+# Normal-Normal: Blood pressure
+mu0 <- 145; sigma0 <- 10    # Prior
+sigma <- 20                  # Known population SD
+n_bp <- 25; xbar <- 152     # Data
+
+# Posterior parameters
+sigma1_sq <- 1 / (1/sigma0^2 + n_bp/sigma^2)
+sigma1 <- sqrt(sigma1_sq)
+mu1 <- sigma1_sq * (mu0/sigma0^2 + n_bp * xbar / sigma^2)
+
+tibble(mu = seq(120, 175, by = 0.1)) |>
+  mutate(
+    Prior = dnorm(mu, mu0, sigma0),
+    `Data likelihood` = dnorm(mu, xbar, sigma / sqrt(n_bp)),
+    Posterior = dnorm(mu, mu1, sigma1)
+  ) |>
+  pivot_longer(-mu, names_to = "Distribution", values_to = "density") |>
+  mutate(Distribution = factor(Distribution, levels = c("Prior", "Data likelihood", "Posterior"))) |>
+  ggplot(aes(x = mu, y = density, color = Distribution, linetype = Distribution)) +
+  geom_line(linewidth = 1.2) +
+  labs(
+    x = expression(mu ~ "(mmHg)"),
+    y = "Density",
+    title = "Normal-Normal conjugate update: Systolic blood pressure",
+    subtitle = bquote("Prior:" ~ mu[0] == .(mu0) * "," ~ sigma[0] == .(sigma0) ~
+                       "| Data:" ~ bar(x) == .(xbar) * "," ~ n == .(n_bp) ~
+                       "| Posterior:" ~ mu[1] == .(round(mu1, 1)) * "," ~ sigma[1] == .(round(sigma1, 2)))
+  ) +
+  scale_color_manual(values = c("Prior" = "steelblue", "Data likelihood" = "gray50", "Posterior" = "darkred")) +
+  theme(legend.position = "bottom")
+```
+
+. . .
+
+- **Prior mean:** $\mu_0 = 145$, **Data mean:** $\bar{x} = 152$
+- **Posterior mean:** $\mu_1 = `r round(mu1, 2)`$ — between the two, weighted by precision
+- **Posterior SD:** $\sigma_1 = `r round(sigma1, 2)`$ — always **smaller** than both $\sigma_0$ and $\sigma/\sqrt{n}$
+
+
+## Proof: Normal-Normal Conjugacy
+
+**Proof sketch:** Apply the posterior formula with $\pi(\mu) = \frac{1}{\sqrt{2\pi}\sigma_0} e^{-(\mu - \mu_0)^2/(2\sigma_0^2)}$ and the normal likelihood:
+
+$$\pi(\mu|x) \propto \exp\!\left(-\frac{(\mu - \mu_0)^2}{2\sigma_0^2}\right) \prod_{i=1}^n \exp\!\left(-\frac{(x_i - \mu)^2}{2\sigma^2}\right)$$
+
+Expanding the exponent and collecting terms in $\mu$:
+
+$$\pi(\mu|x) \propto \exp\!\left(-\frac{1}{2}\left[\frac{(\mu - \mu_0)^2}{\sigma_0^2} + \frac{\sum(x_i - \mu)^2}{\sigma^2}\right]\right)$$
+
+. . .
+
+**Completing the square** in $\mu$ (the key algebraic step):
+
+$$= \exp\!\left(-\frac{(\mu - \mu_1)^2}{2\sigma_1^2} + C\right)$$
+
+where $C$ does not depend on $\mu$, and $\mu_1, \sigma_1^2$ are as defined in the proposition.
+
+Since this is proportional to a $N(\mu_1, \sigma_1^2)$ density in $\mu$, the posterior must be $N(\mu_1, \sigma_1^2)$. $\square$
+
+
+# Bayesian Point Estimation {background-color="#2c3e50"}
+
+## The Bayes Estimator
+
+::: {.callout-note icon=false}
+## Definition: Bayes Estimator (DBC 15.2)
+The most common Bayesian point estimator of $\theta$ is the **mean of the posterior distribution**:
+
+$$\hat{\theta}_B = E(\theta \mid X_1, \ldots, X_n)$$
+:::
+
+. . .
+
+An alternative is the **maximum a posteriori (MAP)** estimate — the **mode** of the posterior distribution.
+
+. . .
+
+**For our conjugate families:**
+
+| Model | Bayes Estimator (Posterior Mean) |
+|:------|:-------------------------------|
+| Beta($\alpha_0 + y, \beta_0 + n - y$) | $\hat{p}_B = \frac{\alpha_0 + y}{\alpha_0 + \beta_0 + n}$ |
+| Gamma($\alpha_0 + n, \frac{1}{1/\beta_0 + \sum x_i}$) | $\hat{\lambda}_B = \frac{\alpha_0 + n}{1/\beta_0 + \sum x_i}$ |
+| $N(\mu_1, \sigma_1^2)$ | $\hat{\mu}_B = \mu_1$ (weighted average of $\mu_0$ and $\bar{x}$) |
+
+
+## The Bayes Estimator as a Weighted Average
+
+For the **Binomial-Beta** case, the Bayes estimator can be written as:
+
+$$\hat{p}_B = \frac{\alpha_0 + y}{\alpha_0 + \beta_0 + n} = \underbrace{\frac{\alpha_0 + \beta_0}{\alpha_0 + \beta_0 + n}}_{\text{weight on prior}} \cdot \underbrace{\frac{\alpha_0}{\alpha_0 + \beta_0}}_{\text{prior mean}} + \underbrace{\frac{n}{\alpha_0 + \beta_0 + n}}_{\text{weight on data}} \cdot \underbrace{\frac{y}{n}}_{\text{sample proportion}}$$
+
+. . .
+
+As $n \to \infty$: the weight on the prior $\to 0$ and the weight on the data $\to 1$.
+
+$$\hat{p}_B \to \frac{y}{n} = \hat{p}_{MLE}$$
+
+The **data dominates the prior** for large samples.
+
+
+## Properties of Bayes Estimators
+
+Under general conditions, as $n \to \infty$:
+
+1. The **mean** of the posterior distribution converges to the true value of $\theta$
+2. The **variance** of the posterior distribution converges to zero
+
+. . .
+
+These properties imply that **Bayes estimators are generally consistent** (in the frequentist sense).
+
+. . .
+
+**Key consequence:** For large samples, Bayesian and frequentist estimates will typically be quite close, regardless of the prior chosen (as long as the prior is not degenerate — i.e., assigns zero probability to the true value).
+
+. . .
+
+**For small samples**, the prior can have a substantial influence. This is a feature (incorporating prior knowledge) or a bug (sensitivity to subjective choices), depending on one's perspective.
+
+
+## Simulation: Effect of Sample Size on Prior Influence
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+#| fig-align: center
+# Show how the posterior evolves with increasing n
+# True p = 0.7, Prior: Beta(3, 7) centered at 0.3
+a0 <- 3; b0 <- 7  # Prior mean = 0.3
+true_p <- 0.7
+
+set.seed(551)
+sample_sizes <- c(0, 5, 20, 50, 200)
+plot_data <- map_dfr(sample_sizes, function(n_i) {
+  if (n_i == 0) {
+    y_i <- 0
+  } else {
+    y_i <- rbinom(1, n_i, true_p)
+  }
+  tibble(p = seq(0, 1, by = 0.002)) |>
+    mutate(
+      density = dbeta(p, a0 + y_i, b0 + n_i - y_i),
+      n = paste0("n = ", n_i, ifelse(n_i > 0, paste0(" (y = ", y_i, ")"), " (prior)"))
+    )
+})
+
+plot_data |>
+  mutate(n = fct_inorder(n)) |>
+  ggplot(aes(x = p, y = density, color = n)) +
+  geom_line(linewidth = 1.1) +
+  geom_vline(xintercept = true_p, linetype = "dashed", color = "gray40") +
+  annotate("text", x = true_p + 0.03, y = 0.5,
+           label = paste0("True p = ", true_p), color = "gray40", hjust = 0, size = 5) +
+  labs(
+    x = expression(p), y = "Posterior density",
+    title = "Posterior distribution evolves toward the truth as n increases",
+    subtitle = "Prior: Beta(3, 7), centered at 0.3 — far from the true p = 0.7"
+  ) +
+  scale_color_viridis_d(name = "Sample size", option = "C", end = 0.85) +
+  theme(legend.position = "bottom")
+```
+
+
+# Bayesian Hypothesis Testing {background-color="#2c3e50"}
+
+## Bayesian Approach to Hypothesis Testing
+
+In frequentist testing, $\theta$ is fixed and a hypothesis is either true or false. The probabilities $P(H_0 \text{ is true} | x)$ and $P(H_1 \text{ is true} | x)$ are simply 0 or 1.
+
+In Bayesian testing, $\theta$ has a distribution, so we can **directly compute**:
+
+$$P(H_0 \text{ is true} | x) = P(\theta \in \Theta_0 | x) = \int_{\Theta_0} \pi(\theta|x) \, d\theta$$
+
+$$P(H_1 \text{ is true} | x) = P(\theta \in \Theta_0^c | x) = \int_{\Theta_0^c} \pi(\theta|x) \, d\theta$$
+
+. . .
+
+**Decision rules** (examples):
+
+- Accept $H_0$ if $P(\theta \in \Theta_0 | x) \geq P(\theta \in \Theta_0^c | x)$
+- Accept $H_0$ if $P(\theta \in \Theta_0 | x) > 0.95$ (or some high threshold)
+
+
+## Medical Example: Bayesian Test — Drug Response Rate
+
+A new cancer drug is tested. We want to assess:
+
+$$H_0: p \leq 0.30 \quad \text{vs} \quad H_1: p > 0.30$$
+
+where $p$ is the response rate. We use a Beta(2, 5) prior (prior mean $\approx 0.29$, reflecting skepticism).
+
+In the trial, $n = 40$ patients are treated and $y = 18$ respond.
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+#| fig-width: 12
+#| fig-align: center
+# Bayesian hypothesis test
+a0_drug <- 2; b0_drug <- 5
+n_drug <- 40; y_drug <- 18
+
+a_post_drug <- a0_drug + y_drug    # 20
+b_post_drug <- b0_drug + n_drug - y_drug  # 27
+
+# Posterior probability of H0
+p_H0 <- pbeta(0.30, a_post_drug, b_post_drug)
+p_H1 <- 1 - p_H0
+
+tibble(p = seq(0, 1, by = 0.001)) |>
+  mutate(posterior = dbeta(p, a_post_drug, b_post_drug)) |>
+  ggplot(aes(x = p, y = posterior)) +
+  geom_line(linewidth = 1) +
+  geom_area(data = . %>% filter(p <= 0.30),
+            aes(x = p, y = posterior), fill = "steelblue", alpha = 0.3) +
+  geom_area(data = . %>% filter(p > 0.30),
+            aes(x = p, y = posterior), fill = "darkred", alpha = 0.3) +
+  geom_vline(xintercept = 0.30, linetype = "dashed") +
+  annotate("text", x = 0.20, y = 2.5,
+           label = paste0("P(H0) = ", round(p_H0, 3)),
+           color = "steelblue", size = 6) +
+  annotate("text", x = 0.55, y = 2.5,
+           label = paste0("P(H1) = ", round(p_H1, 3)),
+           color = "darkred", size = 6) +
+  labs(
+    x = expression(p), y = "Posterior density",
+    title = "Bayesian hypothesis test: Drug response rate",
+    subtitle = paste0("Posterior: Beta(", a_post_drug, ", ", b_post_drug,
+                       ") | P(p > 0.30 | data) = ", round(p_H1, 3))
+  )
+```
+
+. . .
+
+The posterior probability that $p > 0.30$ is $`r round(p_H1, 3)`$, providing `r ifelse(p_H1 > 0.95, "strong", ifelse(p_H1 > 0.80, "moderate", "limited"))` evidence that the drug's response rate exceeds 30%.
+
+
+## Example: Bayesian Test with Bernoulli Data (C&B 8.2.2)
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim}$ Bernoulli($p$) with prior $p \sim$ Uniform(0, 1) = Beta(1, 1).
+
+$$H_0: p \leq 1/2 \quad \text{vs} \quad H_1: p > 1/2$$
+
+The posterior is Beta$(\sum x_i + 1, \; n - \sum x_i + 1)$.
+
+**Decision rule:** Reject $H_0$ if $P(p \leq 1/2 \mid x) \leq 0.5$.
+
+. . .
+
+**Case 1:** $n = 20$, $\sum x_i = 11$. Then $p|x \sim$ Beta(12, 10) and:
+
+$$P(p \leq 0.5 \mid x) = `r round(pbeta(0.5, 12, 10), 3)`$$
+
+Since this is less than 0.5, we would reject $H_0$ and conclude $p > 1/2$.
+
+. . .
+
+**Case 2:** $n = 20$, $\sum x_i = 9$. Then $p|x \sim$ Beta(10, 12) and:
+
+$$P(p \leq 0.5 \mid x) = `r round(pbeta(0.5, 10, 12), 3)`$$
+
+Since this exceeds 0.5, we would not reject $H_0$.
+
+
+# Bayesian Interval Estimation {background-color="#2c3e50"}
+
+## Credible Intervals
+
+::: {.callout-note icon=false}
+## Definition: Credible Interval
+For a posterior distribution $\pi(\theta|x)$, an interval $[a, b]$ having posterior probability $1 - \alpha$ is called a $100(1-\alpha)\%$ **credible interval**:
+
+$$P(a \leq \theta \leq b \mid x) = \int_a^b \pi(\theta|x) \, d\theta = 1 - \alpha$$
+:::
+
+. . .
+
+The standard approach is an **equal-tailed** credible interval: choose $a$ and $b$ as the $\alpha/2$ and $1 - \alpha/2$ quantiles of the posterior distribution.
+
+. . .
+
+An alternative is the **highest posterior density (HPD)** credible interval: the shortest interval with the required posterior probability. For symmetric, unimodal posteriors, the equal-tailed and HPD intervals coincide.
+
+
+## Credible Intervals vs. Confidence Intervals
+
+::: columns
+::: {.column width="48%"}
+**Frequentist Confidence Interval:**
+
+- The parameter $\theta$ is **fixed** (not random)
+- The interval $[L(X), U(X)]$ is **random**
+- Interpretation: If we repeated the experiment many times and computed an interval each time, $100(1-\alpha)\%$ of those intervals would contain the true $\theta$
+- We do **not** say "$P(\theta \in [L, U]) = 0.95$"
+:::
+
+::: {.column width="4%"}
+:::
+
+::: {.column width="48%"}
+**Bayesian Credible Interval:**
+
+- The parameter $\theta$ is **random**
+- The interval $[a, b]$ is **fixed** (given observed data)
+- Interpretation: There is a $100(1-\alpha)\%$ **probability** that $\theta$ lies in $[a, b]$
+- We **can** say "$P(\theta \in [a, b] \mid x) = 0.95$"
+:::
+:::
+
+. . .
+
+For large samples, credible intervals and confidence intervals are often numerically similar, but their **interpretations remain fundamentally different**.
+
+
+## Example: Credible Intervals for Vaccine Efficacy
+
+Continuing our vaccine example (Beta(44, 16) posterior):
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+#| fig-width: 12
+#| fig-align: center
+a_post_v <- 44; b_post_v <- 16
+alpha <- 0.05
+
+# Equal-tailed credible interval
+ci_lower <- qbeta(alpha/2, a_post_v, b_post_v)
+ci_upper <- qbeta(1 - alpha/2, a_post_v, b_post_v)
+
+# Frequentist Wald CI for comparison
+p_hat <- 38/50
+freq_lower <- p_hat - qnorm(1 - alpha/2) * sqrt(p_hat * (1 - p_hat) / 50)
+freq_upper <- p_hat + qnorm(1 - alpha/2) * sqrt(p_hat * (1 - p_hat) / 50)
+
+tibble(p = seq(0.4, 1, by = 0.001)) |>
+  mutate(posterior = dbeta(p, a_post_v, b_post_v)) |>
+  ggplot(aes(x = p, y = posterior)) +
+  geom_line(linewidth = 1) +
+  geom_area(data = . %>% filter(p >= ci_lower & p <= ci_upper),
+            fill = "darkred", alpha = 0.2) +
+  geom_vline(xintercept = c(ci_lower, ci_upper), color = "darkred", linetype = "dashed") +
+  geom_segment(aes(x = freq_lower, xend = freq_upper, y = -0.2, yend = -0.2),
+               color = "steelblue", linewidth = 2) +
+  annotate("text", x = mean(c(freq_lower, freq_upper)), y = -0.5,
+           label = "Frequentist Wald CI", color = "steelblue", size = 4.5) +
+  annotate("text", x = mean(c(ci_lower, ci_upper)), y = 1.5,
+           label = paste0("95% Credible: [", round(ci_lower, 3), ", ", round(ci_upper, 3), "]"),
+           color = "darkred", size = 5) +
+  labs(
+    x = expression(p), y = "Posterior density",
+    title = "95% Credible interval vs. frequentist Wald CI for vaccine efficacy"
+  )
+```
+
+. . .
+
+| Method | 95% Interval | Length |
+|:-------|:-------------|:-------|
+| Bayesian credible (Beta posterior) | [`r round(ci_lower, 3)`, `r round(ci_upper, 3)`] | `r round(ci_upper - ci_lower, 3)` |
+| Frequentist Wald CI | [`r round(freq_lower, 3)`, `r round(freq_upper, 3)`] | `r round(freq_upper - freq_lower, 3)` |
+
+
+## Example: Poisson Credible Interval (C&B 9.2.16)
+
+Let $X_1, \ldots, X_n \stackrel{iid}{\sim}$ Poisson($\theta$) with sufficient statistic $T = \sum X_i$ and prior Gamma($\alpha, \beta$).
+
+The posterior is Gamma$(\alpha + t, \; 1/(n + 1/\beta))$.
+
+A $100(1-\alpha)\%$ credible interval splits $\alpha$ equally between the tails of this posterior.
+
+. . .
+
+Using the Gamma–chi-squared relationship, if $\alpha$ is an integer, the credible interval can be expressed using chi-squared quantiles:
+
+$$\left[\frac{\beta}{2(\beta n + 1)} \chi^2_{2(\alpha + t), 1-\alpha/2}, \quad \frac{\beta}{2(\beta n + 1)} \chi^2_{2(\alpha + t), \alpha/2}\right]$$
+
+. . .
+
+Compare to the frequentist confidence interval from pivoting the CDF (Lesson 8):
+
+$$\left[\frac{1}{2n} \chi^2_{2t, 1-\alpha/2}, \quad \frac{1}{2n} \chi^2_{2(t+1), \alpha/2}\right]$$
+
+The Bayesian interval incorporates the prior through $\alpha$ and $\beta$; the frequentist interval depends only on the data.
+
+## Poisson Credible Interval: Soccer Goals Example
+
+Data from the English Premier League: $n = 380$ games, total goals $t = 1060$.
+
+```{r}
+#| code-fold: true
+#| fig-height: 5
+#| fig-width: 12
+#| fig-align: center
+# Poisson credible interval: Soccer example from class notes
+nn <- 380
+tstat <- 1060
+
+# Prior: Gamma(1.5, 2)
+aa <- 1.5; bb <- 2
+astar <- tstat + aa
+bstar <- 1 / (nn + 1/bb)
+
+alpha_ci <- 0.05
+low_bayes <- qgamma(alpha_ci/2, shape = astar, scale = bstar)
+upper_bayes <- qgamma(1 - alpha_ci/2, shape = astar, scale = bstar)
+
+# Frequentist CI using chi-squared pivot
+low_freq <- qchisq(p = 1 - alpha_ci/2, df = 2 * tstat, lower.tail = FALSE) / (2 * nn)
+upper_freq <- qchisq(p = alpha_ci/2, df = 2 * (tstat + 1), lower.tail = FALSE) / (2 * nn)
+
+tibble(theta = seq(2.4, 3.2, by = 0.001)) |>
+  mutate(posterior = dgamma(theta, shape = astar, scale = bstar)) |>
+  ggplot(aes(x = theta, y = posterior)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = c(low_bayes, upper_bayes), color = "darkred", linetype = "dashed") +
+  geom_vline(xintercept = c(low_freq, upper_freq), color = "steelblue", linetype = "dotted") +
+  annotate("text", x = 2.5, y = max(dgamma(seq(2.4, 3.2, 0.01), astar, scale = bstar)) * 0.9,
+           label = paste0("Bayes: [", round(low_bayes, 3), ", ", round(upper_bayes, 3), "]"),
+           color = "darkred", size = 5, hjust = 0) +
+  annotate("text", x = 2.5, y = max(dgamma(seq(2.4, 3.2, 0.01), astar, scale = bstar)) * 0.75,
+           label = paste0("Freq: [", round(low_freq, 3), ", ", round(upper_freq, 3), "]"),
+           color = "steelblue", size = 5, hjust = 0) +
+  labs(
+    x = expression(theta ~ "(goals per game)"),
+    y = "Posterior density",
+    title = "Poisson credible interval: Mean goals per game (EPL)",
+    subtitle = paste0("n = ", nn, " games, total goals = ", tstat,
+                       ", Prior: Gamma(1.5, 2), Posterior: Gamma(", astar, ", ", round(bstar, 5), ")")
+  )
+```
+
+With $n = 380$, the Bayesian and frequentist intervals are nearly identical — the data overwhelms the prior.
+
+
+# Noninformative Priors and Sensitivity {background-color="#2c3e50"}
+
+## Noninformative (Flat) Priors
+
+When little prior knowledge is available, we may want a prior that has **minimal influence** on the posterior. Common choices include:
+
+- **Beta(1, 1) = Uniform(0,1)** for a proportion — the "flat" prior
+- **Beta(0.5, 0.5)** — Jeffreys' prior for a binomial proportion
+- $\pi(\mu) \propto 1$ for a normal mean — an **improper** prior (does not integrate to a finite value, but yields a proper posterior)
+
+. . .
+
+With the **flat prior** Beta(1, 1) for binomial data, the posterior is Beta($1 + y, 1 + n - y$), and:
+
+$$\hat{p}_B = \frac{1 + y}{2 + n}$$
+
+This is the **Laplace estimator** — equivalent to adding one prior success and one prior failure.
+
+. . .
+
+**Noninformative priors** let the data "speak for themselves" and produce results similar to frequentist methods. The posterior mean with a flat prior is approximately the MLE for large $n$.
+
+
+## Prior Sensitivity Analysis
+
+A responsible Bayesian analysis should assess how sensitive the conclusions are to the choice of prior. This is called **sensitivity analysis** or **robustness analysis**.
+
+```{r}
+#| code-fold: true
+#| fig-height: 6
+#| fig-width: 14
+#| fig-align: center
+# Sensitivity to prior choice
+n_sens <- 20; y_sens <- 14
+
+priors <- tribble(
+  ~name, ~a0, ~b0,
+  "Flat: Beta(1, 1)", 1, 1,
+  "Skeptical: Beta(2, 8)", 2, 8,
+  "Optimistic: Beta(8, 2)", 8, 2,
+  "Jeffreys: Beta(0.5, 0.5)", 0.5, 0.5
+)
+
+plot_data_sens <- priors |>
+  rowwise() |>
+  mutate(data = list(
+    tibble(p = seq(0, 1, by = 0.002)) |>
+      mutate(
+        prior = dbeta(p, a0, b0),
+        posterior = dbeta(p, a0 + y_sens, b0 + n_sens - y_sens)
+      )
+  )) |>
+  unnest(data) |>
+  ungroup()
+
+p_prior <- plot_data_sens |>
+  ggplot(aes(x = p, y = prior, color = name)) +
+  geom_line(linewidth = 1) +
+  labs(x = expression(p), y = "Density", title = "Prior distributions") +
+  scale_color_brewer(palette = "Set1", name = "Prior") +
+  theme(legend.position = "none")
+
+p_post <- plot_data_sens |>
+  ggplot(aes(x = p, y = posterior, color = name)) +
+  geom_line(linewidth = 1) +
+  geom_vline(xintercept = y_sens / n_sens, linetype = "dotted", color = "gray40") +
+  labs(x = expression(p), y = "Density",
+       title = paste0("Posterior distributions (n = ", n_sens, ", y = ", y_sens, ")")) +
+  scale_color_brewer(palette = "Set1", name = "Prior") +
+  theme(legend.position = "bottom")
+
+p_prior + p_post + plot_layout(widths = c(1, 1.2))
+```
+
+. . .
+
+Even with $n = 20$, the posteriors are already converging. With larger $n$, the choice of prior matters even less.
+
+
+# Bayesian vs. Frequentist: Summary {background-color="#2c3e50"}
+
+## Side-by-Side Comparison
+
+| Aspect | Frequentist | Bayesian |
+|:-------|:-----------|:---------|
+| **Parameter $\theta$** | Fixed, unknown constant | Random variable with a distribution |
+| **Probability** | Long-run frequency | Degree of belief |
+| **Prior information** | Not formally incorporated | Encoded in $\pi(\theta)$ |
+| **Point estimate** | MLE $\hat{\theta}$ | Posterior mean $E(\theta|x)$ |
+| **Interval estimate** | Confidence interval | Credible interval |
+| **Hypothesis test** | P-value, rejection region | Posterior probability $P(H_0|x)$ |
+| **Interpretation of 95% CI** | 95% of intervals from repeated samples cover $\theta$ | 95% probability $\theta$ is in the interval |
+| **Large sample behavior** | Asymptotic normality via CLT | Posterior concentrates on true $\theta$ |
+| **Agreement** | For large $n$, methods typically agree | |
+
+. . .
+
+As C&B state: *"There is no one best way to do statistics; some problems are best solved with classical statistics and some are best solved with Bayesian statistics."*
+
+
+## Bayesian Methods in Modern Biostatistics
+
+**Clinical Trials:**
+
+- FDA guidance on Bayesian methods for medical devices (2010)
+- Adaptive trial designs that update allocations based on accumulating data
+- Borrowing information from historical trials via informative priors
+
+. . .
+
+**Genomics and Precision Medicine:**
+
+- Hierarchical Bayesian models for gene expression analysis
+- False discovery rate control through empirical Bayes methods
+- Bayesian network models for pathway analysis
+
+. . .
+
+**Epidemiology:**
+
+- Disease mapping and spatial modeling
+- Bayesian meta-analysis combining multiple studies
+- Real-time surveillance and outbreak detection
+
+
+# Summary and Connections {background-color="#2c3e50"}
+
+## Key Takeaways
+
+1. **Bayes' theorem** provides a principled way to update beliefs: $\text{Posterior} \propto \text{Prior} \times \text{Likelihood}$
+
+2. **Conjugate priors** yield tractable posteriors in the same family as the prior
+
+3. The **Bayes estimator** (posterior mean) is a weighted average of prior belief and observed data, with weights determined by relative precision
+
+4. **Credible intervals** allow direct probability statements about parameters
+
+5. For **large samples**, Bayesian and frequentist methods converge; differences matter most for small samples or strong priors
+
+6. Bayesian methods offer a **coherent framework** for combining prior knowledge with data — particularly valuable in medical research where historical data and expert knowledge are abundant
+
+## Connection to Course Themes
+
+Throughout BSTA 551, we have studied the **foundations of statistical inference**:
+
+- **Point estimation:** MLE, method of moments, MVUE, sufficiency, Fisher information (Lessons 1–6)
+- **Interval estimation:** Confidence intervals, bootstrap CIs (Lessons 7–11)
+- **Hypothesis testing:** P-values, power, Neyman-Pearson, LRT (Lessons 12–17)
+- **Two-sample and nonparametric methods** (Lessons 18–22)
+
+. . .
+
+**Bayesian inference** provides an alternative paradigm that:
+
+- Uses the **same likelihood function** as frequentist methods
+- Reaches similar conclusions for large samples (consistency of Bayes estimators)
+- Offers different — sometimes more intuitive — interpretations of uncertainty
+- Formalizes the incorporation of prior knowledge into analysis
+
+## References
+
+::: nonincremental
+- Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). Chapter 15.
+- Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapter 10.
+- Casella, G. and Berger, R. L. *Statistical Inference* (2nd ed.). Sections 8.2.2, 9.2.16.
+- Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis* (3rd ed.). CRC Press.
+:::
+
+## Questions? {.center background-color="#3498db"}
+
+Thank you!
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/23_BayesianInference/23_BayesianInference.html lessons/23_BayesianInference/23_BayesianInference.pdf
+```
