@@ -11,7 +11,7 @@ format:
     toc-depth: 2
     number-sections: false
     html-math-method: mathjax
-    theme: cosmo
+    theme: "../simple_NW.scss"
 execute:
   echo: true
   warning: false

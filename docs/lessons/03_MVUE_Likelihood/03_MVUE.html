@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c1f63da3e08f13bc72dc17e92cfd001d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Jessica Minnier">
   <meta name="dcterms.date" content="2026-01-07">
@@ -96,7 +96,7 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-956f8314d6009c897a35e82a733a9b04.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -245,15 +245,15 @@ Jessica Minnier
 <div class="fragment">
 <p>Both estimators are functions of the same data. <strong>Which should we use?</strong></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Suppose 15 out of 20 patients respond</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Suppose 15 out of 20 patients respond</span></span>
 <span id="cb1-2"><a></a>n <span class="ot">&lt;-</span> <span class="dv">20</span>; x <span class="ot">&lt;-</span> <span class="dv">15</span></span>
 <span id="cb1-3"><a></a>p_hat_A <span class="ot">&lt;-</span> x <span class="sc">/</span> n</span>
 <span id="cb1-4"><a></a>p_hat_B <span class="ot">&lt;-</span> (x <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> (n <span class="sc">+</span> <span class="dv">2</span>)</span>
-<span id="cb1-5"><a></a><span class="fu">cat</span>(<span class="st">"Researcher A's estimate:"</span>, p_hat_A, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-5"><a></a><span class="fu">cat</span>(<span class="st">"Researcher A's estimate:"</span>, p_hat_A, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Researcher A's estimate: 0.75 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">cat</span>(<span class="st">"Researcher B's estimate:"</span>, p_hat_B)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="fu">cat</span>(<span class="st">"Researcher B's estimate:"</span>, p_hat_B)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Researcher B's estimate: 0.7272727</code></pre>
 </div>
@@ -349,7 +349,7 @@ Jessica Minnier
 <section id="simulation-comparing-the-two-estimators" class="slide level2">
 <h2>Simulation: Comparing the Two Estimators</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5" data-code-line-numbers="|1-3|5-12|14-19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>theta <span class="ot">&lt;-</span> <span class="dv">10</span>  <span class="co"># True upper bound</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5" data-code-line-numbers="|1-3|5-12|14-19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a>theta <span class="ot">&lt;-</span> <span class="dv">10</span>  <span class="co"># True upper bound</span></span>
 <span id="cb5-2"><a></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
 <span id="cb5-3"><a></a>n_sims <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
 <span id="cb5-4"><a></a></span>
@@ -370,7 +370,7 @@ Jessica Minnier
 <span id="cb5-19"><a></a>    <span class="st">`</span><span class="at">Theoretical Var(corrected max)</span><span class="st">`</span> <span class="ot">=</span> theta<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (n <span class="sc">*</span> (n <span class="sc">+</span> <span class="dv">2</span>))</span>
 <span id="cb5-20"><a></a>  ) <span class="sc">|&gt;</span> </span>
 <span id="cb5-21"><a></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb5-22"><a></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">round</span>(value, <span class="dv">4</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb5-22"><a></a>  <span class="fu">mutate</span>(<span class="at">value =</span> <span class="fu">round</span>(value, <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 4 × 2
   name                           value
@@ -658,7 +658,7 @@ Jessica Minnier
 <h2>Medical Application: Estimating Treatment Effect</h2>
 <p>A clinical trial measures systolic BP reduction (mmHg). Assume <span class="math inline">\(N(\mu, \sigma^2 = 100)\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a>n <span class="ot">&lt;-</span> <span class="dv">30</span></span>
 <span id="cb7-2"><a></a>sigma_sq <span class="ot">&lt;-</span> <span class="dv">100</span></span>
 <span id="cb7-3"><a></a></span>
 <span id="cb7-4"><a></a><span class="co"># CRLB for μ</span></span>
@@ -668,28 +668,28 @@ Jessica Minnier
 <span id="cb7-8"><a></a>var_xbar <span class="ot">&lt;-</span> sigma_sq <span class="sc">/</span> n</span>
 <span id="cb7-9"><a></a></span>
 <span id="cb7-10"><a></a><span class="co"># Efficiency check</span></span>
-<span id="cb7-11"><a></a><span class="fu">cat</span>(<span class="st">"CRLB for μ:"</span>, <span class="fu">round</span>(crlb, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb7-11"><a></a><span class="fu">cat</span>(<span class="st">"CRLB for μ:"</span>, <span class="fu">round</span>(crlb, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>CRLB for μ: 3.333 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">cat</span>(<span class="st">"Var(X̄):"</span>, <span class="fu">round</span>(var_xbar, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">cat</span>(<span class="st">"Var(X̄):"</span>, <span class="fu">round</span>(var_xbar, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Var(X̄): 3.333 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">cat</span>(<span class="st">"Is X̄ efficient?"</span>, var_xbar <span class="sc">==</span> crlb, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">cat</span>(<span class="st">"Is X̄ efficient?"</span>, var_xbar <span class="sc">==</span> crlb, <span class="st">"</span><span class="sc">\n\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Is X̄ efficient? TRUE </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Sample data</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Sample data</span></span>
 <span id="cb13-2"><a></a>bp_data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">12.3</span>, <span class="fl">8.7</span>, <span class="fl">15.2</span>, <span class="fl">10.1</span>, <span class="fl">7.4</span>, <span class="fl">14.8</span>, <span class="fl">11.2</span>, <span class="fl">9.5</span>, <span class="fl">13.1</span>, <span class="fl">16.2</span>,</span>
 <span id="cb13-3"><a></a>             <span class="fl">8.1</span>, <span class="fl">12.5</span>, <span class="fl">10.8</span>, <span class="fl">14.3</span>, <span class="fl">11.7</span>, <span class="fl">9.2</span>, <span class="fl">15.0</span>, <span class="fl">13.4</span>, <span class="fl">7.9</span>, <span class="fl">12.1</span>,</span>
 <span id="cb13-4"><a></a>             <span class="fl">10.5</span>, <span class="fl">8.3</span>, <span class="fl">14.1</span>, <span class="fl">11.5</span>, <span class="fl">13.8</span>, <span class="fl">9.8</span>, <span class="fl">11.9</span>, <span class="fl">12.7</span>, <span class="fl">10.3</span>, <span class="fl">14.6</span>)</span>
 <span id="cb13-5"><a></a></span>
-<span id="cb13-6"><a></a><span class="fu">cat</span>(<span class="st">"MVUE of μ (sample mean):"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(bp_data), <span class="dv">2</span>), <span class="st">"mmHg</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-6"><a></a><span class="fu">cat</span>(<span class="st">"MVUE of μ (sample mean):"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(bp_data), <span class="dv">2</span>), <span class="st">"mmHg</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>MVUE of μ (sample mean): 11.7 mmHg</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">cat</span>(<span class="st">"Standard Error:"</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(crlb), <span class="dv">2</span>), <span class="st">"mmHg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">cat</span>(<span class="st">"Standard Error:"</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(crlb), <span class="dv">2</span>), <span class="st">"mmHg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Standard Error: 1.83 mmHg</code></pre>
 </div>
@@ -1217,13 +1217,14 @@ Jessica Minnier
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy

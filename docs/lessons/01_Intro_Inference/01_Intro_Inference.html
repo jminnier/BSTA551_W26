@@ -6,8 +6,8 @@
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-c1f63da3e08f13bc72dc17e92cfd001d.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
-  <meta name="generator" content="quarto-1.7.32">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
 
   <meta name="author" content="Jessica Minnier">
   <meta name="dcterms.date" content="2026-01-05">
@@ -96,7 +96,7 @@
     code span.vs { color: #da4453; } /* VerbatimString */
     code span.wa { color: #da4453; } /* Warning */
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-956f8314d6009c897a35e82a733a9b04.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
   <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
   <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
@@ -241,13 +241,13 @@ Jessica Minnier
 <div class="fragment">
 <p><strong>What we have:</strong> Data from 25 patients in a trial</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Actual blood pressure reductions (mmHg) from 25 patients</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Actual blood pressure reductions (mmHg) from 25 patients</span></span>
 <span id="cb1-2"><a></a>bp_reductions <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">12</span>, <span class="dv">8</span>, <span class="dv">15</span>, <span class="dv">10</span>, <span class="dv">7</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">9</span>, <span class="dv">13</span>, <span class="dv">16</span>,</span>
 <span id="cb1-3"><a></a>                   <span class="dv">8</span>, <span class="dv">12</span>, <span class="dv">10</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">9</span>, <span class="dv">15</span>, <span class="dv">13</span>, <span class="dv">7</span>, <span class="dv">12</span>,</span>
 <span id="cb1-4"><a></a>                   <span class="dv">10</span>, <span class="dv">8</span>, <span class="dv">14</span>, <span class="dv">11</span>, <span class="dv">13</span>)</span>
 <span id="cb1-5"><a></a></span>
 <span id="cb1-6"><a></a><span class="co"># What's our estimate of the true mean reduction?</span></span>
-<span id="cb1-7"><a></a><span class="fu">mean</span>(bp_reductions)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-7"><a></a><span class="fu">mean</span>(bp_reductions)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 11.28</code></pre>
 </div>
@@ -530,7 +530,7 @@ Jessica Minnier
 <section id="simulation-building-a-sampling-distribution" class="slide level2">
 <h2>Simulation: Building a Sampling Distribution</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3" data-code-line-numbers="|1-5|6-15|16-28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># Parameters</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3" data-code-line-numbers="|1-5|6-15|16-28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a><span class="co"># Parameters</span></span>
 <span id="cb3-2"><a></a>true_effect <span class="ot">&lt;-</span> <span class="dv">10</span>  <span class="co"># True mean BP reduction (mmHg)</span></span>
 <span id="cb3-3"><a></a>true_sd <span class="ot">&lt;-</span> <span class="dv">4</span>       <span class="co"># Standard deviation</span></span>
 <span id="cb3-4"><a></a>n_patients <span class="ot">&lt;-</span> <span class="dv">25</span>   <span class="co"># Patients per trial</span></span>
@@ -552,7 +552,7 @@ Jessica Minnier
 <span id="cb3-20"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> true_effect, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
 <span id="cb3-21"><a></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Sampling Distribution of the Sample Mean"</span>,</span>
 <span id="cb3-22"><a></a>       <span class="at">subtitle =</span> <span class="fu">str_glue</span>(<span class="st">"True μ = {true_effect}, n = {n_patients}, {n_trials} simulated trials"</span>),</span>
-<span id="cb3-23"><a></a>       <span class="at">x =</span> <span class="st">"Sample Mean (estimated BP reduction)"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-23"><a></a>       <span class="at">x =</span> <span class="st">"Sample Mean (estimated BP reduction)"</span>, <span class="at">y =</span> <span class="st">"Frequency"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 </section>
@@ -567,7 +567,7 @@ Jessica Minnier
 </div></section><section id="simulation-seeing-variance-decrease" class="slide level2">
 <h2>Simulation: Seeing Variance Decrease</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|1-3|5-12|14-15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Population parameters</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4" data-code-line-numbers="|1-3|5-12|14-15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co"># Population parameters</span></span>
 <span id="cb4-2"><a></a>true_mean <span class="ot">&lt;-</span> <span class="dv">120</span>  <span class="co"># True mean systolic BP</span></span>
 <span id="cb4-3"><a></a>true_sd <span class="ot">&lt;-</span> <span class="dv">15</span>     <span class="co"># Population standard deviation</span></span>
 <span id="cb4-4"><a></a></span>
@@ -586,7 +586,7 @@ Jessica Minnier
 <span id="cb4-17"><a></a>  <span class="fu">summarize</span>(</span>
 <span id="cb4-18"><a></a>    <span class="at">observed_sd =</span> <span class="fu">sd</span>(sample_mean),</span>
 <span id="cb4-19"><a></a>    <span class="at">theoretical_sd =</span> true_sd <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">first</span>(n))</span>
-<span id="cb4-20"><a></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb4-20"><a></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 3
       n observed_sd theoretical_sd
@@ -639,7 +639,7 @@ Jessica Minnier
 <h2>Grid Search: A Simple Numerical Approach</h2>
 <p><strong>Idea:</strong> Try many values and see which gives the largest result.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Try different values of p</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Try different values of p</span></span>
 <span id="cb6-2"><a></a>grid_search <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">p =</span> <span class="fu">seq</span>(<span class="fl">0.01</span>, <span class="fl">0.99</span>, <span class="at">by =</span> <span class="fl">0.01</span>)) <span class="sc">|&gt;</span> </span>
 <span id="cb6-3"><a></a>  <span class="fu">mutate</span>(</span>
 <span id="cb6-4"><a></a>    <span class="at">likelihood =</span> <span class="fu">dbinom</span>(<span class="dv">7</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">prob =</span> p)</span>
@@ -647,7 +647,7 @@ Jessica Minnier
 <span id="cb6-6"><a></a></span>
 <span id="cb6-7"><a></a><span class="co"># Find the maximum</span></span>
 <span id="cb6-8"><a></a>grid_search <span class="sc">|&gt;</span> </span>
-<span id="cb6-9"><a></a>  <span class="fu">slice_max</span>(likelihood, <span class="at">n =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-9"><a></a>  <span class="fu">slice_max</span>(likelihood, <span class="at">n =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
       p likelihood
@@ -663,7 +663,7 @@ Jessica Minnier
 <h2>Using R’s Optimizer</h2>
 <p>R has built-in functions to find maximums and minimums more precisely:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Define the likelihood function</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a></a><span class="co"># Define the likelihood function</span></span>
 <span id="cb8-2"><a></a>likelihood_function <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
 <span id="cb8-3"><a></a>  <span class="fu">dbinom</span>(<span class="dv">7</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">prob =</span> p)</span>
 <span id="cb8-4"><a></a>}</span>
@@ -676,7 +676,7 @@ Jessica Minnier
 <span id="cb8-11"><a></a>)</span>
 <span id="cb8-12"><a></a></span>
 <span id="cb8-13"><a></a><span class="co"># The maximum occurs at:</span></span>
-<span id="cb8-14"><a></a><span class="fu">cat</span>(<span class="st">"Maximum likelihood estimate: p ="</span>, result<span class="sc">$</span>minimum)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-14"><a></a><span class="fu">cat</span>(<span class="st">"Maximum likelihood estimate: p ="</span>, result<span class="sc">$</span>minimum)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Maximum likelihood estimate: p = 0.6999843</code></pre>
 </div>
@@ -691,7 +691,7 @@ Jessica Minnier
 <h2>Your Turn: Numerical Optimization</h2>
 <p><strong>Exercise:</strong> A diagnostic test correctly identifies a disease in 18 out of 25 patients who have it. Find the maximum likelihood estimate for the test’s sensitivity <span class="math inline">\(p\)</span>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co"># Fill in the blanks:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a></a><span class="co"># Fill in the blanks:</span></span>
 <span id="cb10-2"><a></a>likelihood_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
 <span id="cb10-3"><a></a>  <span class="fu">dbinom</span>(___, <span class="at">size =</span> ___, <span class="at">prob =</span> p)  <span class="co"># What goes here?</span></span>
 <span id="cb10-4"><a></a>}</span>
@@ -701,17 +701,17 @@ Jessica Minnier
 <span id="cb10-8"><a></a>  <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)</span>
 <span id="cb10-9"><a></a>)</span>
 <span id="cb10-10"><a></a></span>
-<span id="cb10-11"><a></a>result<span class="sc">$</span>minimum  <span class="co"># This is the MLE</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-11"><a></a>result<span class="sc">$</span>minimum  <span class="co"># This is the MLE</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="fragment">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="co"># Solution:</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="co"># Solution:</span></span>
 <span id="cb11-2"><a></a>likelihood_fn <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
 <span id="cb11-3"><a></a>  <span class="fu">dbinom</span>(<span class="dv">18</span>, <span class="at">size =</span> <span class="dv">25</span>, <span class="at">prob =</span> p)</span>
 <span id="cb11-4"><a></a>}</span>
 <span id="cb11-5"><a></a></span>
 <span id="cb11-6"><a></a>result <span class="ot">&lt;-</span> <span class="fu">optimize</span>(<span class="at">f =</span> <span class="cf">function</span>(p) <span class="sc">-</span><span class="fu">likelihood_fn</span>(p), <span class="at">interval =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>))</span>
-<span id="cb11-7"><a></a><span class="fu">cat</span>(<span class="st">"MLE of sensitivity:"</span>, result<span class="sc">$</span>minimum)  <span class="co"># Should be 18/25 = 0.72</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb11-7"><a></a><span class="fu">cat</span>(<span class="st">"MLE of sensitivity:"</span>, result<span class="sc">$</span>minimum)  <span class="co"># Should be 18/25 = 0.72</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>MLE of sensitivity: 0.7200103</code></pre>
 </div>
@@ -722,7 +722,7 @@ Jessica Minnier
 <h2>When Optimization Gets Harder</h2>
 <p>Sometimes we need to optimize over multiple parameters or complex functions:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Example: Finding mean and SD that best fit data</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># Example: Finding mean and SD that best fit data</span></span>
 <span id="cb13-2"><a></a>patient_data <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">120</span>, <span class="dv">135</span>, <span class="dv">128</span>, <span class="dv">142</span>, <span class="dv">131</span>, <span class="dv">125</span>, <span class="dv">138</span>, <span class="dv">129</span>, <span class="dv">133</span>, <span class="dv">127</span>)</span>
 <span id="cb13-3"><a></a></span>
 <span id="cb13-4"><a></a><span class="co"># Negative log-likelihood for normal distribution</span></span>
@@ -735,15 +735,15 @@ Jessica Minnier
 <span id="cb13-11"><a></a></span>
 <span id="cb13-12"><a></a><span class="co"># Use optim() for multiple parameters</span></span>
 <span id="cb13-13"><a></a>result <span class="ot">&lt;-</span> <span class="fu">optim</span>(<span class="at">par =</span> <span class="fu">c</span>(<span class="dv">130</span>, <span class="dv">10</span>), <span class="at">fn =</span> neg_log_lik)</span>
-<span id="cb13-14"><a></a><span class="fu">cat</span>(<span class="st">"MLE for mean:"</span>, <span class="fu">round</span>(result<span class="sc">$</span>par[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb13-14"><a></a><span class="fu">cat</span>(<span class="st">"MLE for mean:"</span>, <span class="fu">round</span>(result<span class="sc">$</span>par[<span class="dv">1</span>], <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>MLE for mean: 130.8 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">cat</span>(<span class="st">"MLE for SD:"</span>, <span class="fu">round</span>(result<span class="sc">$</span>par[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">cat</span>(<span class="st">"MLE for SD:"</span>, <span class="fu">round</span>(result<span class="sc">$</span>par[<span class="dv">2</span>], <span class="dv">2</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>MLE for SD: 6.13 </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">cat</span>(<span class="st">"Compare to sample mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(patient_data), <span class="dv">2</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">cat</span>(<span class="st">"Compare to sample mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(patient_data), <span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Compare to sample mean: 130.8</code></pre>
 </div>
@@ -1112,13 +1112,14 @@ Jessica Minnier
           e.clearSelection();
         }
         const getTextToCopy = function(trigger) {
-            const codeEl = trigger.previousElementSibling.cloneNode(true);
-            for (const childEl of codeEl.children) {
-              if (isCodeAnnotation(childEl)) {
-                childEl.remove();
-              }
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
             }
-            return codeEl.innerText;
+          }
+          return codeEl.innerText;
         }
         const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
           text: getTextToCopy
