@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Homework 7 Solutions – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3fbce8e5d0ad6a145f129f53e9b2a4da.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo light-content">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#problem-1-two-sample-t-tests-for-means" id="toc-problem-1-two-sample-t-tests-for-means" class="nav-link active" data-scroll-target="#problem-1-two-sample-t-tests-for-means">Problem 1: Two-Sample t-Tests for Means</a>
+  <ul class="collapse">
+  <li><a href="#part-a-welchsatterthwaite-degrees-of-freedom" id="toc-part-a-welchsatterthwaite-degrees-of-freedom" class="nav-link" data-scroll-target="#part-a-welchsatterthwaite-degrees-of-freedom">Part (a) — Welch–Satterthwaite degrees of freedom</a></li>
+  <li><a href="#part-b-welch-t-test-one-sided" id="toc-part-b-welch-t-test-one-sided" class="nav-link" data-scroll-target="#part-b-welch-t-test-one-sided">Part (b) — Welch t-test (one-sided)</a></li>
+  <li><a href="#part-c-95-two-sided-ci" id="toc-part-c-95-two-sided-ci" class="nav-link" data-scroll-target="#part-c-95-two-sided-ci">Part (c) — 95% two-sided CI</a></li>
+  <li><a href="#part-d-f-test-for-equality-of-variances" id="toc-part-d-f-test-for-equality-of-variances" class="nav-link" data-scroll-target="#part-d-f-test-for-equality-of-variances">Part (d) — F-test for equality of variances</a></li>
+  <li><a href="#part-e-pooled-t-test-for-comparison" id="toc-part-e-pooled-t-test-for-comparison" class="nav-link" data-scroll-target="#part-e-pooled-t-test-for-comparison">Part (e) — Pooled t-test for comparison</a></li>
+  </ul></li>
+  <li><a href="#problem-2-two-sample-inference-for-proportions" id="toc-problem-2-two-sample-inference-for-proportions" class="nav-link" data-scroll-target="#problem-2-two-sample-inference-for-proportions">Problem 2: Two-Sample Inference for Proportions</a>
+  <ul class="collapse">
+  <li><a href="#part-a-verify-large-sample-conditions" id="toc-part-a-verify-large-sample-conditions" class="nav-link" data-scroll-target="#part-a-verify-large-sample-conditions">Part (a) — Verify large-sample conditions</a></li>
+  <li><a href="#part-b-95-ci-unpooled-se" id="toc-part-b-95-ci-unpooled-se" class="nav-link" data-scroll-target="#part-b-95-ci-unpooled-se">Part (b) — 95% CI (unpooled SE)</a></li>
+  <li><a href="#part-c-two-sided-z-test-pooled-se" id="toc-part-c-two-sided-z-test-pooled-se" class="nav-link" data-scroll-target="#part-c-two-sided-z-test-pooled-se">Part (c) — Two-sided z-test (pooled SE)</a></li>
+  <li><a href="#part-d-pooled-vs.-unpooled-se-conceptual-explanation" id="toc-part-d-pooled-vs.-unpooled-se-conceptual-explanation" class="nav-link" data-scroll-target="#part-d-pooled-vs.-unpooled-se-conceptual-explanation">Part (d) — Pooled vs.&nbsp;unpooled SE: conceptual explanation</a></li>
+  <li><a href="#part-e-relative-risk-and-delta-method-ci" id="toc-part-e-relative-risk-and-delta-method-ci" class="nav-link" data-scroll-target="#part-e-relative-risk-and-delta-method-ci">Part (e) — Relative risk and delta-method CI</a></li>
+  </ul></li>
+  <li><a href="#problem-3-paired-data-analysis" id="toc-problem-3-paired-data-analysis" class="nav-link" data-scroll-target="#problem-3-paired-data-analysis">Problem 3: Paired Data Analysis</a>
+  <ul class="collapse">
+  <li><a href="#part-a-why-paired-analysis-is-appropriate" id="toc-part-a-why-paired-analysis-is-appropriate" class="nav-link" data-scroll-target="#part-a-why-paired-analysis-is-appropriate">Part (a) — Why paired analysis is appropriate</a></li>
+  <li><a href="#part-b-summary-statistics-of-differences" id="toc-part-b-summary-statistics-of-differences" class="nav-link" data-scroll-target="#part-b-summary-statistics-of-differences">Part (b) — Summary statistics of differences</a></li>
+  <li><a href="#part-c-paired-t-test-one-sided" id="toc-part-c-paired-t-test-one-sided" class="nav-link" data-scroll-target="#part-c-paired-t-test-one-sided">Part (c) — Paired t-test (one-sided)</a></li>
+  <li><a href="#part-d-95-ci-for-mu_d" id="toc-part-d-95-ci-for-mu_d" class="nav-link" data-scroll-target="#part-d-95-ci-for-mu_d">Part (d) — 95% CI for <span class="math inline">\(\mu_D\)</span></a></li>
+  <li><a href="#part-e-incorrect-welch-two-sample-t-test" id="toc-part-e-incorrect-welch-two-sample-t-test" class="nav-link" data-scroll-target="#part-e-incorrect-welch-two-sample-t-test">Part (e) — Incorrect Welch two-sample t-test</a></li>
+  <li><a href="#part-f-spaghetti-plot-and-histogram" id="toc-part-f-spaghetti-plot-and-histogram" class="nav-link" data-scroll-target="#part-f-spaghetti-plot-and-histogram">Part (f) — Spaghetti plot and histogram</a></li>
+  </ul></li>
+  <li><a href="#problem-4-bootstrap-and-permutation-inference" id="toc-problem-4-bootstrap-and-permutation-inference" class="nav-link" data-scroll-target="#problem-4-bootstrap-and-permutation-inference">Problem 4: Bootstrap and Permutation Inference</a>
+  <ul class="collapse">
+  <li><a href="#part-a-exploratory-summaries" id="toc-part-a-exploratory-summaries" class="nav-link" data-scroll-target="#part-a-exploratory-summaries">Part (a) — Exploratory summaries</a></li>
+  <li><a href="#part-b-bootstrap-cis-for-difference-in-means" id="toc-part-b-bootstrap-cis-for-difference-in-means" class="nav-link" data-scroll-target="#part-b-bootstrap-cis-for-difference-in-means">Part (b) — Bootstrap CIs for difference in means</a></li>
+  <li><a href="#part-c-bootstrap-ci-for-difference-in-medians" id="toc-part-c-bootstrap-ci-for-difference-in-medians" class="nav-link" data-scroll-target="#part-c-bootstrap-ci-for-difference-in-medians">Part (c) — Bootstrap CI for difference in medians</a></li>
+  <li><a href="#part-d-welch-t-test-comparison" id="toc-part-d-welch-t-test-comparison" class="nav-link" data-scroll-target="#part-d-welch-t-test-comparison">Part (d) — Welch t-test comparison</a></li>
+  <li><a href="#part-e-two-sample-permutation-test" id="toc-part-e-two-sample-permutation-test" class="nav-link" data-scroll-target="#part-e-two-sample-permutation-test">Part (e) — Two-sample permutation test</a></li>
+  <li><a href="#part-f-permutation-null-distribution" id="toc-part-f-permutation-null-distribution" class="nav-link" data-scroll-target="#part-f-permutation-null-distribution">Part (f) — Permutation null distribution</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_07_Solutions.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 7 Solutions</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 6, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<section id="problem-1-two-sample-t-tests-for-means" class="level2">
+<h2 class="anchored" data-anchor-id="problem-1-two-sample-t-tests-for-means">Problem 1: Two-Sample t-Tests for Means</h2>
+<section id="part-a-welchsatterthwaite-degrees-of-freedom" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-welchsatterthwaite-degrees-of-freedom">Part (a) — Welch–Satterthwaite degrees of freedom</h3>
+<p>Summary statistics:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>n1 <span class="ot">&lt;-</span> <span class="dv">22</span>; xbar1 <span class="ot">&lt;-</span> <span class="fl">412.8</span>; s1 <span class="ot">&lt;-</span> <span class="fl">68.4</span>  <span class="co"># COPD</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>n2 <span class="ot">&lt;-</span> <span class="dv">25</span>; xbar2 <span class="ot">&lt;-</span> <span class="fl">356.2</span>; s2 <span class="ot">&lt;-</span> <span class="fl">41.7</span>  <span class="co"># Controls</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Welch-Satterthwaite</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> s1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> n1</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>v2 <span class="ot">&lt;-</span> s2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> n2</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>nu_hat <span class="ot">&lt;-</span> (v1 <span class="sc">+</span> v2)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (v1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (n1 <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">+</span> v2<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> (n2 <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"v1 = s1^2/n1 = %.4f</span><span class="sc">\n</span><span class="st">"</span>, v1))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>v1 = s1^2/n1 = 212.6618</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"v2 = s2^2/n2 = %.4f</span><span class="sc">\n</span><span class="st">"</span>, v2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>v2 = s2^2/n2 = 69.5556</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Numerator:   (v1 + v2)^2 = %.4f</span><span class="sc">\n</span><span class="st">"</span>, (v1 <span class="sc">+</span> v2)<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Numerator:   (v1 + v2)^2 = 79646.6711</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Denominator: %.4f</span><span class="sc">\n</span><span class="st">"</span>, v1<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(n1<span class="dv">-1</span>) <span class="sc">+</span> v2<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>(n2<span class="dv">-1</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Denominator: 2355.1563</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"nu_hat = %.2f  --&gt;  round down to %d</span><span class="sc">\n</span><span class="st">"</span>, nu_hat, <span class="fu">floor</span>(nu_hat)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>nu_hat = 33.82  --&gt;  round down to 33</code></pre>
+</div>
+</div>
+<p><span class="math display">\[\hat{\nu} = \frac{(s_1^2/n_1 + s_2^2/n_2)^2}{\dfrac{(s_1^2/n_1)^2}{n_1-1} + \dfrac{(s_2^2/n_2)^2}{n_2-1}}\]</span></p>
+<p>The Welch–Satterthwaite approximation gives <span class="math inline">\(\hat{\nu} \approx 33.8\)</span>, rounded down to <span class="math inline">\(33\)</span> degrees of freedom.</p>
+<hr>
+</section>
+<section id="part-b-welch-t-test-one-sided" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-welch-t-test-one-sided">Part (b) — Welch t-test (one-sided)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>SE_diff <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(s1<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n1 <span class="sc">+</span> s2<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span>n2)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>t_obs   <span class="ot">&lt;-</span> (xbar1 <span class="sc">-</span> xbar2) <span class="sc">/</span> SE_diff</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>p_one   <span class="ot">&lt;-</span> <span class="fu">pt</span>(t_obs, <span class="at">df =</span> nu_hat, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE(xbar1 - xbar2) = %.4f</span><span class="sc">\n</span><span class="st">"</span>, SE_diff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE(xbar1 - xbar2) = 16.7993</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"t_obs = %.4f</span><span class="sc">\n</span><span class="st">"</span>, t_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t_obs = 3.3692</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"df    = %.2f</span><span class="sc">\n</span><span class="st">"</span>, nu_hat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>df    = 33.82</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value (one-sided, upper) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, p_one))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value (one-sided, upper) = 0.00095</code></pre>
+</div>
+</div>
+<p><strong>Test statistic:</strong> <span class="math inline">\(T_W = \dfrac{412.8 - 356.2}{\sqrt{68.4^2/22 + 41.7^2/25}} = 3.369\)</span></p>
+<p><strong>Degrees of freedom:</strong> <span class="math inline">\(\hat{\nu} \approx 33.8\)</span></p>
+<p><strong><span class="math inline">\(p\)</span>-value:</strong> <span class="math inline">\(9.5\times 10^{-4}\)</span></p>
+<p><strong>Conclusion:</strong> At <span class="math inline">\(\alpha = 0.05\)</span> we reject <span class="math inline">\(H_0\)</span> (<span class="math inline">\(p &lt; 0.05\)</span>). There is statistically significant evidence that mean plasma fibrinogen is higher in COPD patients than in healthy controls.</p>
+<hr>
+</section>
+<section id="part-c-95-two-sided-ci" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-95-two-sided-ci">Part (c) — 95% two-sided CI</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>t_crit <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> nu_hat)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>ci_lo  <span class="ot">&lt;-</span> (xbar1 <span class="sc">-</span> xbar2) <span class="sc">-</span> t_crit <span class="sc">*</span> SE_diff</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>ci_hi  <span class="ot">&lt;-</span> (xbar1 <span class="sc">-</span> xbar2) <span class="sc">+</span> t_crit <span class="sc">*</span> SE_diff</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"t_crit (df = %.1f) = %.4f</span><span class="sc">\n</span><span class="st">"</span>, nu_hat, t_crit))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t_crit (df = 33.8) = 2.0326</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI: (%.2f, %.2f) mg/dL</span><span class="sc">\n</span><span class="st">"</span>, ci_lo, ci_hi))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI: (22.45, 90.75) mg/dL</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> We are 95% confident that the true mean plasma fibrinogen is between 22.5 and 90.7 mg/dL higher in COPD patients than in healthy controls. Because the entire interval is positive and excludes zero, the data provide strong evidence of a meaningful difference.</p>
+<hr>
+</section>
+<section id="part-d-f-test-for-equality-of-variances" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-f-test-for-equality-of-variances">Part (d) — F-test for equality of variances</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>F_obs  <span class="ot">&lt;-</span> s1<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> s2<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df1    <span class="ot">&lt;-</span> n1 <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df2    <span class="ot">&lt;-</span> n2 <span class="sc">-</span> <span class="dv">1</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Two-sided p-value: 2 * min(lower, upper) tail</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>p_F <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">min</span>(<span class="fu">pf</span>(F_obs, df1, df2), <span class="fu">pf</span>(F_obs, df1, df2, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>))</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"F = s1^2/s2^2 = %.4f^2 / %.4f^2 = %.4f</span><span class="sc">\n</span><span class="st">"</span>, s1, s2, F_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>F = s1^2/s2^2 = 68.4000^2 / 41.7000^2 = 2.6905</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"df1 = %d, df2 = %d</span><span class="sc">\n</span><span class="st">"</span>, df1, df2))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>df1 = 21, df2 = 24</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Two-sided p-value = %.5f</span><span class="sc">\n</span><span class="st">"</span>, p_F))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Two-sided p-value = 0.02115</code></pre>
+</div>
+</div>
+<p><strong>Hypotheses:</strong> <span class="math inline">\(H_0: \sigma_1^2 = \sigma_2^2\)</span> vs.&nbsp;<span class="math inline">\(H_a: \sigma_1^2 \neq \sigma_2^2\)</span></p>
+<p><strong>Test statistic:</strong> <span class="math inline">\(F_0 = s_1^2 / s_2^2 = 4678.6 / 1738.9 = 2.691\)</span> on <span class="math inline">\((21, 24)\)</span> df</p>
+<p><strong><span class="math inline">\(p\)</span>-value:</strong> <span class="math inline">\(0.0211\)</span></p>
+<p>The <span class="math inline">\(F\)</span>-test is highly significant, providing strong evidence that the population variances are <em>unequal</em>. <strong>The Welch <span class="math inline">\(t\)</span>-test is therefore the more appropriate choice</strong> because it does not assume equal variances. The pooled <span class="math inline">\(t\)</span>-test would be invalid here.</p>
+<hr>
+</section>
+<section id="part-e-pooled-t-test-for-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-pooled-t-test-for-comparison">Part (e) — Pooled t-test for comparison</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>Sp2 <span class="ot">&lt;-</span> ((n1<span class="dv">-1</span>)<span class="sc">*</span>s1<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> (n2<span class="dv">-1</span>)<span class="sc">*</span>s2<span class="sc">^</span><span class="dv">2</span>) <span class="sc">/</span> (n1 <span class="sc">+</span> n2 <span class="sc">-</span> <span class="dv">2</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>Sp  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(Sp2)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>SE_pool <span class="ot">&lt;-</span> Sp <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">/</span>n1 <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>n2)</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>t_pool  <span class="ot">&lt;-</span> (xbar1 <span class="sc">-</span> xbar2) <span class="sc">/</span> SE_pool</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>df_pool <span class="ot">&lt;-</span> n1 <span class="sc">+</span> n2 <span class="sc">-</span> <span class="dv">2</span></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>p_pool  <span class="ot">&lt;-</span> <span class="fu">pt</span>(t_pool, <span class="at">df =</span> df_pool, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>t_crit_pool <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> df_pool)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>ci_pool <span class="ot">&lt;-</span> <span class="fu">c</span>((xbar1 <span class="sc">-</span> xbar2) <span class="sc">-</span> t_crit_pool <span class="sc">*</span> SE_pool,</span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>             (xbar1 <span class="sc">-</span> xbar2) <span class="sc">+</span> t_crit_pool <span class="sc">*</span> SE_pool)</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Sp^2 = %.2f  --&gt;  Sp = %.2f</span><span class="sc">\n</span><span class="st">"</span>, Sp2, Sp))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Sp^2 = 3110.74  --&gt;  Sp = 55.77</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE_pool = %.4f</span><span class="sc">\n</span><span class="st">"</span>, SE_pool))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE_pool = 16.3042</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"t_pool = %.4f, df = %d</span><span class="sc">\n</span><span class="st">"</span>, t_pool, df_pool))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>t_pool = 3.4715, df = 45</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value (one-sided) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, p_pool))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value (one-sided) = 0.00058</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% Pooled CI: (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pool[<span class="dv">1</span>], ci_pool[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% Pooled CI: (23.76, 89.44)</code></pre>
+</div>
+</div>
+<p><strong>Comparison:</strong></p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Method</th>
+<th><span class="math inline">\(t\)</span></th>
+<th>df</th>
+<th>95% CI</th>
+<th><span class="math inline">\(p\)</span>-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Welch</td>
+<td>3.369</td>
+<td>33.8</td>
+<td>(22.5, 90.7)</td>
+<td>9.5^{-4}</td>
+</tr>
+<tr class="even">
+<td>Pooled</td>
+<td>3.472</td>
+<td>45</td>
+<td>(23.8, 89.4)</td>
+<td>5.8^{-4}</td>
+</tr>
+</tbody>
+</table>
+<p>The two procedures give similar conclusions here because both <span class="math inline">\(n_1\)</span> and <span class="math inline">\(n_2\)</span> are moderate. However, the pooled SE is inflated relative to the Welch SE because the larger variance (COPD, <span class="math inline">\(s_1 = 68.4\)</span>) is averaged with the smaller (Controls, <span class="math inline">\(s_2 = 41.7\)</span>). When sample sizes are <strong>unequal and the larger variance is in the smaller group</strong>, the pooled test can be anti-conservative (actual Type I error exceeds nominal <span class="math inline">\(\alpha\)</span>). The Welch test does not rely on equal-variance assumptions and is generally preferred.</p>
+<hr>
+</section>
+</section>
+<section id="problem-2-two-sample-inference-for-proportions" class="level2">
+<h2 class="anchored" data-anchor-id="problem-2-two-sample-inference-for-proportions">Problem 2: Two-Sample Inference for Proportions</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>nA <span class="ot">&lt;-</span> <span class="dv">105</span>; xA <span class="ot">&lt;-</span> <span class="dv">89</span>   <span class="co"># Regimen A</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>nB <span class="ot">&lt;-</span> <span class="dv">105</span>; xB <span class="ot">&lt;-</span> <span class="dv">76</span>   <span class="co"># Regimen B</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>phatA <span class="ot">&lt;-</span> xA <span class="sc">/</span> nA</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>phatB <span class="ot">&lt;-</span> xB <span class="sc">/</span> nB</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>diff_hat <span class="ot">&lt;-</span> phatA <span class="sc">-</span> phatB</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"phat_A = %d/%d = %.4f</span><span class="sc">\n</span><span class="st">"</span>, xA, nA, phatA))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phat_A = 89/105 = 0.8476</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"phat_B = %d/%d = %.4f</span><span class="sc">\n</span><span class="st">"</span>, xB, nB, phatB))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phat_B = 76/105 = 0.7238</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"phat_A - phat_B = %.4f</span><span class="sc">\n</span><span class="st">"</span>, diff_hat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phat_A - phat_B = 0.1238</code></pre>
+</div>
+</div>
+<section id="part-a-verify-large-sample-conditions" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-verify-large-sample-conditions">Part (a) — Verify large-sample conditions</h3>
+<p>The four conditions for <span class="math inline">\(\hat{p}_1 - \hat{p}_2 \approx N(p_1-p_2, \text{SE}^2)\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>cond <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Regimen =</span> <span class="fu">c</span>(<span class="st">"A"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"B"</span>),</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Condition =</span> <span class="fu">c</span>(<span class="st">"n*phat"</span>, <span class="st">"n*(1-phat)"</span>, <span class="st">"n*phat"</span>, <span class="st">"n*(1-phat)"</span>),</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">Value =</span> <span class="fu">c</span>(nA<span class="sc">*</span>phatA, nA<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>phatA), nB<span class="sc">*</span>phatB, nB<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>phatB))</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>cond</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  Regimen Condition  Value
+  &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt;
+1 A       n*phat        89
+2 A       n*(1-phat)    16
+3 B       n*phat        76
+4 B       n*(1-phat)    29</code></pre>
+</div>
+</div>
+<p>All four values exceed 5 (in fact all exceed 10), so the normal approximation is appropriate.</p>
+<hr>
+</section>
+<section id="part-b-95-ci-unpooled-se" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-95-ci-unpooled-se">Part (b) — 95% CI (unpooled SE)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>SE_unpooled <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(phatA<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>phatA)<span class="sc">/</span>nA <span class="sc">+</span> phatB<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>phatB)<span class="sc">/</span>nB)</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>z_crit      <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>ci_lo_p     <span class="ot">&lt;-</span> diff_hat <span class="sc">-</span> z_crit <span class="sc">*</span> SE_unpooled</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>ci_hi_p     <span class="ot">&lt;-</span> diff_hat <span class="sc">+</span> z_crit <span class="sc">*</span> SE_unpooled</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE (unpooled) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, SE_unpooled))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE (unpooled) = 0.05598</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI: (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, ci_lo_p, ci_hi_p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI: (0.0141, 0.2335)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI: (%.1f%%, %.1f%%)</span><span class="sc">\n</span><span class="st">"</span>, <span class="dv">100</span><span class="sc">*</span>ci_lo_p, <span class="dv">100</span><span class="sc">*</span>ci_hi_p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI: (1.4%, 23.4%)</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> We are 95% confident that the true success rate for Regimen A is between 1.4% and 23.4% higher than for Regimen B. Since the interval contains 0, the data do <strong>not</strong> provide statistically significant evidence of a difference at the 5% level (though the point estimate favors A).</p>
+<hr>
+</section>
+<section id="part-c-two-sided-z-test-pooled-se" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-two-sided-z-test-pooled-se">Part (c) — Two-sided z-test (pooled SE)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>phat_pool <span class="ot">&lt;-</span> (xA <span class="sc">+</span> xB) <span class="sc">/</span> (nA <span class="sc">+</span> nB)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>SE_pool_p <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(phat_pool<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>phat_pool)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">/</span>nA <span class="sc">+</span> <span class="dv">1</span><span class="sc">/</span>nB))</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>Z_obs     <span class="ot">&lt;-</span> diff_hat <span class="sc">/</span> SE_pool_p</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>p_two     <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="fu">abs</span>(Z_obs), <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"phat_pool = (%d+%d)/(%d+%d) = %.4f</span><span class="sc">\n</span><span class="st">"</span>, xA, xB, nA, nB, phat_pool))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>phat_pool = (89+76)/(105+105) = 0.7857</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE (pooled) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, SE_pool_p))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SE (pooled) = 0.05663</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Z = %.4f</span><span class="sc">\n</span><span class="st">"</span>, Z_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Z = 2.1863</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value (two-sided) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, p_two))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value (two-sided) = 0.02880</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Verify</span></span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.test</span>(<span class="fu">c</span>(xA, xB), <span class="fu">c</span>(nA, nB), <span class="at">correct =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 9
+  estimate1 estimate2 statistic p.value parameter conf.low conf.high method     
+      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      
+1     0.848     0.724      4.78  0.0288         1   0.0141     0.234 2-sample t…
+# ℹ 1 more variable: alternative &lt;chr&gt;</code></pre>
+</div>
+</div>
+<p><strong>Test statistic:</strong> <span class="math inline">\(Z = 2.186\)</span>, <strong><span class="math inline">\(p\)</span>-value</strong> = 0.0288</p>
+<p>At <span class="math inline">\(\alpha = 0.05\)</span> we fail to reject <span class="math inline">\(H_0\)</span>. There is insufficient evidence to conclude that the success rates differ between the two regimens.</p>
+<hr>
+</section>
+<section id="part-d-pooled-vs.-unpooled-se-conceptual-explanation" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-pooled-vs.-unpooled-se-conceptual-explanation">Part (d) — Pooled vs.&nbsp;unpooled SE: conceptual explanation</h3>
+<p>When we test <span class="math inline">\(H_0: p_A = p_B\)</span>, we assume under <span class="math inline">\(H_0\)</span> that there is a <strong>single common success probability</strong> <span class="math inline">\(p\)</span>. The pooled estimate <span class="math inline">\(\hat{p}_{\text{pool}} = (x_A + x_B)/(n_A + n_B)\)</span> is the most efficient estimate of this common <span class="math inline">\(p\)</span> under <span class="math inline">\(H_0\)</span>, so plugging it into the SE is consistent with the null hypothesis and yields a valid test.</p>
+<p>For the CI we make <strong>no such assumption</strong> — the CI must be valid whether or not <span class="math inline">\(p_A = p_B\)</span>. Using the pooled estimate in the CI would distort coverage when <span class="math inline">\(p_A \neq p_B\)</span> (which is the interesting case we are trying to characterize). The unpooled SE is therefore correct for CI construction.</p>
+<hr>
+</section>
+<section id="part-e-relative-risk-and-delta-method-ci" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-relative-risk-and-delta-method-ci">Part (e) — Relative risk and delta-method CI</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>RR_hat  <span class="ot">&lt;-</span> phatA <span class="sc">/</span> phatB</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>log_RR  <span class="ot">&lt;-</span> <span class="fu">log</span>(RR_hat)</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Var(log(phat_A/phat_B)) = Var(log phat_A) + Var(log phat_B)</span></span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a><span class="co"># By delta method: Var(log phat) = (1-p)/(n*p)</span></span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>var_log_A <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> phatA) <span class="sc">/</span> (nA <span class="sc">*</span> phatA)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>var_log_B <span class="ot">&lt;-</span> (<span class="dv">1</span> <span class="sc">-</span> phatB) <span class="sc">/</span> (nB <span class="sc">*</span> phatB)</span>
+<span id="cb63-8"><a href="#cb63-8" aria-hidden="true" tabindex="-1"></a>se_log_RR <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(var_log_A <span class="sc">+</span> var_log_B)</span>
+<span id="cb63-9"><a href="#cb63-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-10"><a href="#cb63-10" aria-hidden="true" tabindex="-1"></a>ci_log  <span class="ot">&lt;-</span> log_RR <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>) <span class="sc">*</span> z_crit <span class="sc">*</span> se_log_RR</span>
+<span id="cb63-11"><a href="#cb63-11" aria-hidden="true" tabindex="-1"></a>ci_RR   <span class="ot">&lt;-</span> <span class="fu">exp</span>(ci_log)</span>
+<span id="cb63-12"><a href="#cb63-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb63-13"><a href="#cb63-13" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"RR = phat_A / phat_B = %.4f / %.4f = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb63-14"><a href="#cb63-14" aria-hidden="true" tabindex="-1"></a>            phatA, phatB, RR_hat))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>RR = phat_A / phat_B = 0.8476 / 0.7238 = 1.1711</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"log(RR) = %.4f,  SE(log RR) = %.5f</span><span class="sc">\n</span><span class="st">"</span>, log_RR, se_log_RR))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>log(RR) = 0.1579,  SE(log RR) = 0.07312</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI for log(RR): (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, ci_log[<span class="dv">1</span>], ci_log[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for log(RR): (0.0146, 0.3012)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI for RR:      (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, ci_RR[<span class="dv">1</span>],  ci_RR[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for RR:      (1.0147, 1.3515)</code></pre>
+</div>
+</div>
+<p><strong>Point estimate:</strong> <span class="math inline">\(\widehat{RR} = 1.171\)</span>. Regimen A has an estimated 17.1% higher success rate than Regimen B.</p>
+<p><strong>95% CI for RR:</strong> (1.015, 1.351). Since this interval includes 1.0, the relative risk is not significantly different from 1 at the 5% level, consistent with the z-test conclusion.</p>
+<hr>
+</section>
+</section>
+<section id="problem-3-paired-data-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="problem-3-paired-data-analysis">Problem 3: Paired Data Analysis</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>before <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.8</span>, <span class="fl">5.2</span>, <span class="fl">4.1</span>, <span class="fl">6.7</span>, <span class="fl">3.3</span>, <span class="fl">4.9</span>, <span class="fl">5.8</span>, <span class="fl">7.1</span>, <span class="fl">3.6</span>, <span class="fl">4.4</span>,</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>            <span class="fl">6.0</span>, <span class="fl">5.5</span>, <span class="fl">4.7</span>, <span class="fl">3.9</span>, <span class="fl">5.1</span>)</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>after  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.9</span>, <span class="fl">4.4</span>, <span class="fl">3.2</span>, <span class="fl">5.8</span>, <span class="fl">2.8</span>, <span class="fl">4.1</span>, <span class="fl">4.9</span>, <span class="fl">6.0</span>, <span class="fl">2.7</span>, <span class="fl">3.5</span>,</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>            <span class="fl">5.0</span>, <span class="fl">4.6</span>, <span class="fl">3.8</span>, <span class="fl">3.1</span>, <span class="fl">4.3</span>)</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>d      <span class="ot">&lt;-</span> before <span class="sc">-</span> after</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>n_pair <span class="ot">&lt;-</span> <span class="fu">length</span>(d)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="part-a-why-paired-analysis-is-appropriate" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-why-paired-analysis-is-appropriate">Part (a) — Why paired analysis is appropriate</h3>
+<p>The same 15 participants are measured <strong>twice</strong> (before and after the intervention). The two measurements on the same individual are positively correlated — people who start with high HOMA-IR tend to end with high HOMA-IR even after the intervention, reflecting between-subject variation in baseline insulin sensitivity.</p>
+<p>If the Welch two-sample test were incorrectly applied, it would treat the 30 observations as independent, ignoring the within-person correlation. This inflates the variance estimate (<span class="math inline">\(\hat{\sigma}_D^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2 &lt; \sigma_1^2 + \sigma_2^2\)</span> when <span class="math inline">\(\rho &gt; 0\)</span>), producing wider CIs and larger <span class="math inline">\(p\)</span>-values — i.e., <strong>reduced statistical power</strong> to detect a real treatment effect.</p>
+<hr>
+</section>
+<section id="part-b-summary-statistics-of-differences" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-summary-statistics-of-differences">Part (b) — Summary statistics of differences</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>Dbar  <span class="ot">&lt;-</span> <span class="fu">mean</span>(d)</span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>SD_d  <span class="ot">&lt;-</span> <span class="fu">sd</span>(d)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>r_cor <span class="ot">&lt;-</span> <span class="fu">cor</span>(before, after)</span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"n (pairs)     = %d</span><span class="sc">\n</span><span class="st">"</span>,   n_pair))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n (pairs)     = 15</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"D_bar         = %.4f</span><span class="sc">\n</span><span class="st">"</span>, Dbar))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>D_bar         = 0.8667</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"S_D           = %.4f</span><span class="sc">\n</span><span class="st">"</span>, SD_d))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>S_D           = 0.1291</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"cor(before, after) = %.4f</span><span class="sc">\n</span><span class="st">"</span>, r_cor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>cor(before, after) = 0.9954</code></pre>
+</div>
+</div>
+<p><span class="math inline">\(\bar{D} = 0.8667\)</span>, <span class="math inline">\(S_D = 0.1291\)</span>, <span class="math inline">\(r = 0.9954\)</span>.</p>
+<hr>
+</section>
+<section id="part-c-paired-t-test-one-sided" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-paired-t-test-one-sided">Part (c) — Paired t-test (one-sided)</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>t_pair <span class="ot">&lt;-</span> Dbar <span class="sc">/</span> (SD_d <span class="sc">/</span> <span class="fu">sqrt</span>(n_pair))</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>p_pair <span class="ot">&lt;-</span> <span class="fu">pt</span>(t_pair, <span class="at">df =</span> n_pair <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>t_crit_pair <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, <span class="at">df =</span> n_pair <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"T = %.4f</span><span class="sc">\n</span><span class="st">"</span>, t_pair))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>T = 26.0000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"df = %d</span><span class="sc">\n</span><span class="st">"</span>, n_pair <span class="sc">-</span> <span class="dv">1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>df = 14</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value (one-sided) = %.6f</span><span class="sc">\n</span><span class="st">"</span>, p_pair))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value (one-sided) = 0.000000</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Confirm with t.test</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(before, after, <span class="at">paired =</span> <span class="cn">TRUE</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  estimate statistic  p.value parameter conf.low conf.high method    alternative
+     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
+1    0.867        26 1.50e-13        14    0.808       Inf Paired t… greater    </code></pre>
+</div>
+</div>
+<p><strong>Test statistic:</strong> <span class="math inline">\(T = \bar{D}/(S_D/\sqrt{n}) = 0.8667 / (0.1291/\)</span><span class="math inline">\() = 26\)</span></p>
+<p><strong><span class="math inline">\(p\)</span>-value:</strong> <span class="math inline">\(0\)</span></p>
+<p><strong>Conclusion:</strong> We reject <span class="math inline">\(H_0: \mu_D = 0\)</span> at <span class="math inline">\(\alpha = 0.05\)</span> (<span class="math inline">\(p \ll 0.001\)</span>). There is strong evidence that the dietary intervention reduces HOMA-IR.</p>
+<hr>
+</section>
+<section id="part-d-95-ci-for-mu_d" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-95-ci-for-mu_d">Part (d) — 95% CI for <span class="math inline">\(\mu_D\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>ci_pair_lo <span class="ot">&lt;-</span> Dbar <span class="sc">-</span> t_crit_pair <span class="sc">*</span> SD_d <span class="sc">/</span> <span class="fu">sqrt</span>(n_pair)</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>ci_pair_hi <span class="ot">&lt;-</span> Dbar <span class="sc">+</span> t_crit_pair <span class="sc">*</span> SD_d <span class="sc">/</span> <span class="fu">sqrt</span>(n_pair)</span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI for mu_D: (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pair_lo, ci_pair_hi))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI for mu_D: (0.7952, 0.9382)</code></pre>
+</div>
+</div>
+<p><strong>Interpretation:</strong> We are 95% confident that the dietary intervention reduces HOMA-IR by between 0.8 and 0.94 units on average. The entire interval is positive and away from zero, confirming a clinically meaningful reduction.</p>
+<hr>
+</section>
+<section id="part-e-incorrect-welch-two-sample-t-test" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-incorrect-welch-two-sample-t-test">Part (e) — Incorrect Welch two-sample t-test</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>welch_wrong <span class="ot">&lt;-</span> <span class="fu">t.test</span>(before, after, <span class="at">paired =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">alternative =</span> <span class="st">"greater"</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>welch_paired <span class="ot">&lt;-</span> <span class="fu">t.test</span>(before, after, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Incorrect: Welch two-sample ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=== Incorrect: Welch two-sample ===</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE      = %.4f</span><span class="sc">\n</span><span class="st">"</span>, welch_wrong<span class="sc">$</span>std.error))</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value = %.6f (one-sided approx)</span><span class="sc">\n</span><span class="st">"</span>, welch_wrong<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value = 0.019516 (one-sided approx)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI  = (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, welch_wrong<span class="sc">$</span>conf.low, welch_wrong<span class="sc">$</span>conf.high))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI  = (0.1859, Inf)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Correct: Paired t-test ===</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+=== Correct: Paired t-test ===</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"SE      = %.4f</span><span class="sc">\n</span><span class="st">"</span>, welch_paired<span class="sc">$</span>std.error))</span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"p-value = %.6f (two-sided)</span><span class="sc">\n</span><span class="st">"</span>, welch_paired<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>p-value = 0.000000 (two-sided)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"95%% CI  = (%.4f, %.4f)</span><span class="sc">\n</span><span class="st">"</span>, welch_paired<span class="sc">$</span>conf.low, welch_paired<span class="sc">$</span>conf.high))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>95% CI  = (0.7952, 0.9382)</code></pre>
+</div>
+</div>
+<p><strong>Variance formula explanation:</strong></p>
+<p>Under the correct paired model: <span class="math display">\[\text{Var}(D_i) = \sigma_1^2 + \sigma_2^2 - 2\rho\,\sigma_1\,\sigma_2\]</span></p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>s1_obs <span class="ot">&lt;-</span> <span class="fu">sd</span>(before)</span>
+<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>s2_obs <span class="ot">&lt;-</span> <span class="fu">sd</span>(after)</span>
+<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>var_d_formula <span class="ot">&lt;-</span> s1_obs<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> s2_obs<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="dv">2</span> <span class="sc">*</span> r_cor <span class="sc">*</span> s1_obs <span class="sc">*</span> s2_obs</span>
+<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>var_d_direct  <span class="ot">&lt;-</span> SD_d<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb102-7"><a href="#cb102-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"s_before = %.4f,  s_after = %.4f,  r = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb102-8"><a href="#cb102-8" aria-hidden="true" tabindex="-1"></a>            s1_obs, s2_obs, r_cor))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>s_before = 1.1325,  s_after = 1.0579,  r = 0.9954</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Var(D) via formula = %.4f</span><span class="sc">\n</span><span class="st">"</span>, var_d_formula))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Var(D) via formula = 0.0167</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Var(D) direct      = %.4f  (should match)</span><span class="sc">\n</span><span class="st">"</span>, var_d_direct))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Var(D) direct      = 0.0167  (should match)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Var(D) if rho = 0  = %.4f  (what unpaired assumes)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>            s1_obs<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> s2_obs<span class="sc">^</span><span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Var(D) if rho = 0  = 2.4018  (what unpaired assumes)</code></pre>
+</div>
+</div>
+<p>When <span class="math inline">\(\rho &gt; 0\)</span>, <span class="math inline">\(\sigma_D^2\)</span> is smaller than <span class="math inline">\(\sigma_1^2 + \sigma_2^2\)</span>. The incorrect Welch test uses <span class="math inline">\(S_1^2/n + S_2^2/n\)</span> as its SE, which overestimates the variance, yielding a <strong>wider CI and larger <span class="math inline">\(p\)</span>-value</strong> — in this case failing to detect the significant treatment effect more clearly.</p>
+<hr>
+</section>
+<section id="part-f-spaghetti-plot-and-histogram" class="level3">
+<h3 class="anchored" data-anchor-id="part-f-spaghetti-plot-and-histogram">Part (f) — Spaghetti plot and histogram</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>pair_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Patient =</span> <span class="fu">factor</span>(<span class="fu">seq_len</span>(n_pair)),</span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Before  =</span> before,</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">After   =</span> after,</span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">D       =</span> d</span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb110-7"><a href="#cb110-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-8"><a href="#cb110-8" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> pair_df <span class="sc">|&gt;</span></span>
+<span id="cb110-9"><a href="#cb110-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">c</span>(Before, After), <span class="at">names_to =</span> <span class="st">"Time"</span>, <span class="at">values_to =</span> <span class="st">"HOMA_IR"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb110-10"><a href="#cb110-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Time =</span> <span class="fu">factor</span>(Time, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Before"</span>, <span class="st">"After"</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb110-11"><a href="#cb110-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Time, <span class="at">y =</span> HOMA_IR, <span class="at">group =</span> Patient)) <span class="sc">+</span></span>
+<span id="cb110-12"><a href="#cb110-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"grey65"</span>, <span class="at">linewidth =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb110-13"><a href="#cb110-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> Time), <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb110-14"><a href="#cb110-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Before"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"After"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>)) <span class="sc">+</span></span>
+<span id="cb110-15"><a href="#cb110-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb110-16"><a href="#cb110-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">title  =</span> <span class="st">"Individual HOMA-IR Profiles"</span>,</span>
+<span id="cb110-17"><a href="#cb110-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">x      =</span> <span class="cn">NULL</span>,</span>
+<span id="cb110-18"><a href="#cb110-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">y      =</span> <span class="st">"HOMA-IR"</span>,</span>
+<span id="cb110-19"><a href="#cb110-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">color  =</span> <span class="cn">NULL</span></span>
+<span id="cb110-20"><a href="#cb110-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb110-21"><a href="#cb110-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span>
+<span id="cb110-22"><a href="#cb110-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-23"><a href="#cb110-23" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> pair_df <span class="sc">|&gt;</span></span>
+<span id="cb110-24"><a href="#cb110-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> D)) <span class="sc">+</span></span>
+<span id="cb110-25"><a href="#cb110-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">y =</span> <span class="fu">after_stat</span>(density)), <span class="at">bins =</span> <span class="dv">8</span>,</span>
+<span id="cb110-26"><a href="#cb110-26" aria-hidden="true" tabindex="-1"></a>                 <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">alpha =</span> <span class="fl">0.75</span>) <span class="sc">+</span></span>
+<span id="cb110-27"><a href="#cb110-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.1</span>) <span class="sc">+</span></span>
+<span id="cb110-28"><a href="#cb110-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>,    <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
+<span id="cb110-29"><a href="#cb110-29" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"grey40"</span>,  <span class="at">linewidth =</span> <span class="fl">1.0</span>) <span class="sc">+</span></span>
+<span id="cb110-30"><a href="#cb110-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> Dbar, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.4</span>) <span class="sc">+</span></span>
+<span id="cb110-31"><a href="#cb110-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> Dbar <span class="sc">+</span> <span class="fl">0.03</span>, <span class="at">y =</span> <span class="fl">1.05</span>,</span>
+<span id="cb110-32"><a href="#cb110-32" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">bar</span>(D) <span class="sc">==</span> .(<span class="fu">round</span>(Dbar, <span class="dv">2</span>))),</span>
+<span id="cb110-33"><a href="#cb110-33" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb110-34"><a href="#cb110-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb110-35"><a href="#cb110-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="fu">expression</span>(<span class="st">"Distribution of Differences  "</span> <span class="sc">*</span> D[i] <span class="sc">==</span> <span class="st">"Before"</span> <span class="sc">-</span> <span class="st">"After"</span>),</span>
+<span id="cb110-36"><a href="#cb110-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">x     =</span> <span class="st">"D (HOMA-IR units)"</span>,</span>
+<span id="cb110-37"><a href="#cb110-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">y     =</span> <span class="st">"Density"</span></span>
+<span id="cb110-38"><a href="#cb110-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb110-39"><a href="#cb110-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-40"><a href="#cb110-40" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 <span class="sc">+</span></span>
+<span id="cb110-41"><a href="#cb110-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot_annotation</span>(</span>
+<span id="cb110-42"><a href="#cb110-42" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Dietary Intervention: HOMA-IR Before vs. After (n = 15 pairs)"</span>,</span>
+<span id="cb110-43"><a href="#cb110-43" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Left: each line connects the same patient's two measurements  |  Right: distribution of within-patient differences"</span></span>
+<span id="cb110-44"><a href="#cb110-44" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_07_Solutions_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="1248"></p>
+</figure>
+</div>
+</div>
+</div>
+<hr>
+</section>
+</section>
+<section id="problem-4-bootstrap-and-permutation-inference" class="level2">
+<h2 class="anchored" data-anchor-id="problem-4-bootstrap-and-permutation-inference">Problem 4: Bootstrap and Permutation Inference</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>platelets_shock  <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rgamma</span>(<span class="dv">35</span>, <span class="at">shape =</span> <span class="fl">2.0</span>, <span class="at">rate =</span> <span class="fl">0.016</span>), <span class="dv">1</span>)</span>
+<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a>platelets_sepsis <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rgamma</span>(<span class="dv">40</span>, <span class="at">shape =</span> <span class="fl">3.5</span>, <span class="at">rate =</span> <span class="fl">0.022</span>), <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="part-a-exploratory-summaries" class="level3">
+<h3 class="anchored" data-anchor-id="part-a-exploratory-summaries">Part (a) — Exploratory summaries</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Group =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Septic Shock"</span>, <span class="dv">35</span>), <span class="fu">rep</span>(<span class="st">"Non-septic Sepsis"</span>, <span class="dv">40</span>)),</span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Platelets =</span> <span class="fu">c</span>(platelets_shock, platelets_sepsis)</span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb112-5"><a href="#cb112-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(Group) <span class="sc">|&gt;</span></span>
+<span id="cb112-6"><a href="#cb112-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb112-7"><a href="#cb112-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">n      =</span> <span class="fu">n</span>(),</span>
+<span id="cb112-8"><a href="#cb112-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">Mean   =</span> <span class="fu">round</span>(<span class="fu">mean</span>(Platelets), <span class="dv">1</span>),</span>
+<span id="cb112-9"><a href="#cb112-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">Median =</span> <span class="fu">round</span>(<span class="fu">median</span>(Platelets), <span class="dv">1</span>),</span>
+<span id="cb112-10"><a href="#cb112-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">SD     =</span> <span class="fu">round</span>(<span class="fu">sd</span>(Platelets), <span class="dv">1</span>),</span>
+<span id="cb112-11"><a href="#cb112-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb112-12"><a href="#cb112-12" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+  Group                 n  Mean Median    SD
+  &lt;chr&gt;             &lt;int&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+1 Non-septic Sepsis    40  173.   145  111. 
+2 Septic Shock         35  130.   112.  91.6</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tibble</span>(</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Group     =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"Septic Shock"</span>, <span class="dv">35</span>), <span class="fu">rep</span>(<span class="st">"Non-septic Sepsis"</span>, <span class="dv">40</span>)),</span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Platelets =</span> <span class="fu">c</span>(platelets_shock, platelets_sepsis)</span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>) <span class="sc">|&gt;</span></span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Platelets, <span class="at">fill =</span> Group)) <span class="sc">+</span></span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="fu">aes</span>(<span class="at">color =</span> Group), <span class="at">linewidth =</span> <span class="fl">1.1</span>, <span class="at">alpha =</span> <span class="fl">0.35</span>) <span class="sc">+</span></span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rug</span>(<span class="fu">aes</span>(<span class="at">color =</span> Group), <span class="at">linewidth =</span> <span class="fl">0.6</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>) <span class="sc">+</span></span>
+<span id="cb114-8"><a href="#cb114-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values  =</span> <span class="fu">c</span>(<span class="st">"Septic Shock"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"Non-septic Sepsis"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>)) <span class="sc">+</span></span>
+<span id="cb114-9"><a href="#cb114-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Septic Shock"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>, <span class="st">"Non-septic Sepsis"</span> <span class="ot">=</span> <span class="st">"#006a4e"</span>)) <span class="sc">+</span></span>
+<span id="cb114-10"><a href="#cb114-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb114-11"><a href="#cb114-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="fu">expression</span>(<span class="st">"Platelet Count Distribution by Sepsis Severity  (× 10"</span><span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> <span class="st">"/µL)"</span>),</span>
+<span id="cb114-12"><a href="#cb114-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Right-skewed distributions; rug marks show individual observations"</span>,</span>
+<span id="cb114-13"><a href="#cb114-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="st">"Platelet Count (× 10"</span><span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> <span class="st">"/µL)"</span>),</span>
+<span id="cb114-14"><a href="#cb114-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Density"</span>,</span>
+<span id="cb114-15"><a href="#cb114-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill     =</span> <span class="cn">NULL</span>, <span class="at">color =</span> <span class="cn">NULL</span></span>
+<span id="cb114-16"><a href="#cb114-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb114-17"><a href="#cb114-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"bottom"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_07_Solutions_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="1056"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Both distributions are right-skewed, as expected from gamma-distributed platelet counts. The septic shock group shows a lower mean and median compared to the non-septic sepsis group, and also greater spread (larger SD).</p>
+<hr>
+</section>
+<section id="part-b-bootstrap-cis-for-difference-in-means" class="level3">
+<h3 class="anchored" data-anchor-id="part-b-bootstrap-cis-for-difference-in-means">Part (b) — Bootstrap CIs for difference in means</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>B        <span class="ot">&lt;-</span> <span class="dv">5000</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>n1_plt   <span class="ot">&lt;-</span> <span class="fu">length</span>(platelets_shock)</span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>n2_plt   <span class="ot">&lt;-</span> <span class="fu">length</span>(platelets_sepsis)</span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>obs_diff <span class="ot">&lt;-</span> <span class="fu">mean</span>(platelets_shock) <span class="sc">-</span> <span class="fu">mean</span>(platelets_sepsis)</span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">sample</span>(platelets_shock,  n1_plt, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(<span class="fu">sample</span>(platelets_sepsis, n2_plt, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb115-11"><a href="#cb115-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-12"><a href="#cb115-12" aria-hidden="true" tabindex="-1"></a>ci_pct   <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb115-13"><a href="#cb115-13" aria-hidden="true" tabindex="-1"></a>ci_basic <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> obs_diff <span class="sc">-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.975</span>, <span class="fl">0.025</span>))</span>
+<span id="cb115-14"><a href="#cb115-14" aria-hidden="true" tabindex="-1"></a>boot_se  <span class="ot">&lt;-</span> <span class="fu">sd</span>(boot_means)</span>
+<span id="cb115-15"><a href="#cb115-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-16"><a href="#cb115-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed difference (Shock - Sepsis): %.2f</span><span class="sc">\n</span><span class="st">"</span>, obs_diff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed difference (Shock - Sepsis): -42.71</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE:                         %.4f</span><span class="sc">\n</span><span class="st">"</span>, boot_se))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap SE:                         22.5641</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap Percentile 95%% CI: (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pct[<span class="dv">1</span>],   ci_pct[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap Percentile 95% CI: (-87.97, 0.57)</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap Basic      95%% CI: (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>, ci_basic[<span class="dv">1</span>], ci_basic[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap Basic      95% CI: (-85.99, 2.55)</code></pre>
+</div>
+</div>
+<p>The two bootstrap intervals are similar; the percentile CI is (-87.97, 0.57) and the basic CI is (-85.99, 2.55).</p>
+<hr>
+</section>
+<section id="part-c-bootstrap-ci-for-difference-in-medians" class="level3">
+<h3 class="anchored" data-anchor-id="part-c-bootstrap-ci-for-difference-in-medians">Part (c) — Bootstrap CI for difference in medians</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>obs_med_diff <span class="ot">&lt;-</span> <span class="fu">median</span>(platelets_shock) <span class="sc">-</span> <span class="fu">median</span>(platelets_sepsis)</span>
+<span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>boot_meds <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">median</span>(<span class="fu">sample</span>(platelets_shock,  n1_plt, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">-</span></span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">median</span>(<span class="fu">sample</span>(platelets_sepsis, n2_plt, <span class="at">replace =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb123-7"><a href="#cb123-7" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb123-8"><a href="#cb123-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-9"><a href="#cb123-9" aria-hidden="true" tabindex="-1"></a>ci_med_pct <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_meds, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb123-10"><a href="#cb123-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-11"><a href="#cb123-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed median difference (Shock - Sepsis): %.2f</span><span class="sc">\n</span><span class="st">"</span>, obs_med_diff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed median difference (Shock - Sepsis): -32.90</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap Percentile 95%% CI (medians): (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>            ci_med_pct[<span class="dv">1</span>], ci_med_pct[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap Percentile 95% CI (medians): (-104.35, 11.05)</code></pre>
+</div>
+</div>
+<p>The percentile CI for the difference in medians is (-104.35, 11.05). For right-skewed data, the median is often a more robust measure of location than the mean, and the bootstrap provides a valid CI without requiring distributional assumptions.</p>
+<hr>
+</section>
+<section id="part-d-welch-t-test-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="part-d-welch-t-test-comparison">Part (d) — Welch t-test comparison</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>welch_plt <span class="ot">&lt;-</span> <span class="fu">t.test</span>(platelets_shock, platelets_sepsis) <span class="sc">|&gt;</span> <span class="fu">tidy</span>()</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t-test:  diff = %.2f,  95%% CI = (%.2f, %.2f),  p = %.4f</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb127-3"><a href="#cb127-3" aria-hidden="true" tabindex="-1"></a>            welch_plt<span class="sc">$</span>estimate, welch_plt<span class="sc">$</span>conf.low, welch_plt<span class="sc">$</span>conf.high,</span>
+<span id="cb127-4"><a href="#cb127-4" aria-hidden="true" tabindex="-1"></a>            welch_plt<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Welch t-test:  diff = -42.71,  95% CI = (-89.27, 3.86),  p = 0.0716</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap SE CI: diff = %.2f,  boot SE = %.4f</span><span class="sc">\n</span><span class="st">"</span>, obs_diff, boot_se))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap SE CI: diff = -42.71,  boot SE = 22.5641</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Bootstrap Percentile 95%% CI: (%.2f, %.2f)</span><span class="sc">\n</span><span class="st">"</span>, ci_pct[<span class="dv">1</span>], ci_pct[<span class="dv">2</span>]))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Bootstrap Percentile 95% CI: (-87.97, 0.57)</code></pre>
+</div>
+</div>
+<p>The Welch <span class="math inline">\(t\)</span> CI and bootstrap percentile CI are similar, suggesting the CLT approximation is reasonably good for these moderate sample sizes despite some skewness. If the distributions were more severely skewed or <span class="math inline">\(n\)</span> were smaller, the bootstrap percentile CI would be preferred because it does not rely on the approximate normality of <span class="math inline">\(\bar{X}_1 - \bar{X}_2\)</span>.</p>
+<hr>
+</section>
+<section id="part-e-two-sample-permutation-test" class="level3">
+<h3 class="anchored" data-anchor-id="part-e-two-sample-permutation-test">Part (e) — Two-sample permutation test</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a>all_obs <span class="ot">&lt;-</span> <span class="fu">c</span>(platelets_shock, platelets_sepsis)</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>T_obs   <span class="ot">&lt;-</span> <span class="fu">mean</span>(platelets_shock) <span class="sc">-</span> <span class="fu">mean</span>(platelets_sepsis)</span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a>perm_stats <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, {</span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a>  perm <span class="ot">&lt;-</span> <span class="fu">sample</span>(all_obs)</span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(perm[<span class="dv">1</span><span class="sc">:</span>n1_plt]) <span class="sc">-</span> <span class="fu">mean</span>(perm[(n1_plt<span class="sc">+</span><span class="dv">1</span>)<span class="sc">:</span>(n1_plt<span class="sc">+</span>n2_plt)])</span>
+<span id="cb133-8"><a href="#cb133-8" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb133-9"><a href="#cb133-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-10"><a href="#cb133-10" aria-hidden="true" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm_stats) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs))</span>
+<span id="cb133-11"><a href="#cb133-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb133-12"><a href="#cb133-12" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Observed test statistic: %.4f</span><span class="sc">\n</span><span class="st">"</span>, T_obs))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Observed test statistic: -42.7086</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Permutation p-value (two-sided): %.4f</span><span class="sc">\n</span><span class="st">"</span>, p_perm))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Permutation p-value (two-sided): 0.0684</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">sprintf</span>(<span class="st">"Welch t-test p-value:            %.4f</span><span class="sc">\n</span><span class="st">"</span>, welch_plt<span class="sc">$</span>p.value))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Welch t-test p-value:            0.0716</code></pre>
+</div>
+</div>
+<p><strong>Observed statistic:</strong> <span class="math inline">\(\hat{\Delta} = -42.71\)</span>, <strong>permutation <span class="math inline">\(p\)</span>-value:</strong> <span class="math inline">\(0.0684\)</span></p>
+<p>The permutation <span class="math inline">\(p\)</span>-value and Welch <span class="math inline">\(t\)</span>-test <span class="math inline">\(p\)</span>-value agree closely. The <strong>permutation test</strong> is exactly valid under <span class="math inline">\(H_0: F_1 = F_2\)</span> (the two populations have the <em>same distribution</em>) — it tests whether the group labels could have been permuted by chance. The Welch <span class="math inline">\(t\)</span>-test is asymptotically valid under the weaker <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span>.</p>
+<hr>
+</section>
+<section id="part-f-permutation-null-distribution" class="level3">
+<h3 class="anchored" data-anchor-id="part-f-permutation-null-distribution">Part (f) — Permutation null distribution</h3>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Pre-compute histogram bins so density heights are consistent across fill groups. This part is not necessary for the solution because it's tricky to get right. As long as vertical are there that's good enough.</span></span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-4"><a href="#cb139-4" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">hist</span>(perm_stats, <span class="at">breaks =</span> <span class="dv">60</span>, <span class="at">plot =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb139-5"><a href="#cb139-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-6"><a href="#cb139-6" aria-hidden="true" tabindex="-1"></a>bin_df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb139-7"><a href="#cb139-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xmin    =</span> h<span class="sc">$</span>breaks[<span class="sc">-</span><span class="fu">length</span>(h<span class="sc">$</span>breaks)],</span>
+<span id="cb139-8"><a href="#cb139-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">xmax    =</span> h<span class="sc">$</span>breaks[<span class="sc">-</span><span class="dv">1</span>],</span>
+<span id="cb139-9"><a href="#cb139-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">density =</span> h<span class="sc">$</span>density,</span>
+<span id="cb139-10"><a href="#cb139-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xmid    =</span> h<span class="sc">$</span>mids,</span>
+<span id="cb139-11"><a href="#cb139-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">in_tail =</span> <span class="fu">abs</span>(xmid) <span class="sc">&gt;=</span> <span class="fu">abs</span>(T_obs)</span>
+<span id="cb139-12"><a href="#cb139-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb139-13"><a href="#cb139-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-14"><a href="#cb139-14" aria-hidden="true" tabindex="-1"></a>p_val_label <span class="ot">&lt;-</span> <span class="fu">sprintf</span>(<span class="st">"p = %.3f"</span>, p_perm)</span>
+<span id="cb139-15"><a href="#cb139-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb139-16"><a href="#cb139-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(bin_df) <span class="sc">+</span></span>
+<span id="cb139-17"><a href="#cb139-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_rect</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> xmin, <span class="at">xmax =</span> xmax,</span>
+<span id="cb139-18"><a href="#cb139-18" aria-hidden="true" tabindex="-1"></a>                <span class="at">ymin =</span> <span class="dv">0</span>,    <span class="at">ymax =</span> density,</span>
+<span id="cb139-19"><a href="#cb139-19" aria-hidden="true" tabindex="-1"></a>                <span class="at">fill =</span> in_tail),</span>
+<span id="cb139-20"><a href="#cb139-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">linewidth =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb139-21"><a href="#cb139-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"FALSE"</span> <span class="ot">=</span> <span class="st">"#aecde8"</span>, <span class="st">"TRUE"</span> <span class="ot">=</span> <span class="st">"#e74c3c"</span>),</span>
+<span id="cb139-22"><a href="#cb139-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">guide =</span> <span class="st">"none"</span>) <span class="sc">+</span></span>
+<span id="cb139-23"><a href="#cb139-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span>  T_obs, <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>) <span class="sc">+</span></span>
+<span id="cb139-24"><a href="#cb139-24" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="sc">-</span>T_obs, <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.5</span>,</span>
+<span id="cb139-25"><a href="#cb139-25" aria-hidden="true" tabindex="-1"></a>             <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb139-26"><a href="#cb139-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> T_obs <span class="sc">+</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fu">max</span>(h<span class="sc">$</span>density) <span class="sc">*</span> <span class="fl">0.92</span>,</span>
+<span id="cb139-27"><a href="#cb139-27" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> <span class="fu">bquote</span>(<span class="fu">hat</span>(Delta)[obs] <span class="sc">==</span> .(<span class="fu">round</span>(T_obs, <span class="dv">1</span>))),</span>
+<span id="cb139-28"><a href="#cb139-28" aria-hidden="true" tabindex="-1"></a>           <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb139-29"><a href="#cb139-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">min</span>(h<span class="sc">$</span>breaks) <span class="sc">+</span> <span class="dv">2</span>, <span class="at">y =</span> <span class="fu">max</span>(h<span class="sc">$</span>density) <span class="sc">*</span> <span class="fl">0.80</span>,</span>
+<span id="cb139-30"><a href="#cb139-30" aria-hidden="true" tabindex="-1"></a>           <span class="at">label =</span> p_val_label, <span class="at">color =</span> <span class="st">"#e74c3c"</span>,</span>
+<span id="cb139-31"><a href="#cb139-31" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> <span class="fl">5.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>) <span class="sc">+</span></span>
+<span id="cb139-32"><a href="#cb139-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb139-33"><a href="#cb139-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Permutation Null Distribution: Difference in Mean Platelet Count"</span>,</span>
+<span id="cb139-34"><a href="#cb139-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red bars = permuted statistics at least as extreme as observed (both tails)"</span>,</span>
+<span id="cb139-35"><a href="#cb139-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(x)[shock]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">-</span> <span class="fu">bar</span>(x)[sepsis]<span class="sc">^</span><span class="st">"*"</span> <span class="sc">~</span></span>
+<span id="cb139-36"><a href="#cb139-36" aria-hidden="true" tabindex="-1"></a>                          <span class="st">"(× 10"</span><span class="sc">^</span><span class="dv">3</span> <span class="sc">*</span> <span class="st">"/µL)"</span>),</span>
+<span id="cb139-37"><a href="#cb139-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Density"</span></span>
+<span id="cb139-38"><a href="#cb139-38" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="HW_07_Solutions_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="1152"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

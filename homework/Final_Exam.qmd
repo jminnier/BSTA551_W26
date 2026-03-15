@@ -56,7 +56,7 @@ Researchers studying blood pressure reduction in hypertensive patients record sy
 
 **(b)** (3 pts) Without performing any new calculations, use the interval from (a) to conduct a two-sided test of $H_0: \mu = 0$ versus $H_a: \mu \neq 0$ at the $\alpha = 0.05$ level. State your conclusion and explain the duality principle you are using.
 
-**(c)** (4 pts) A second research group reports a 90% confidence interval for a similar mean: $(-11.2,\; -3.0)$ based on $n = 25$ patients. Explain conceptually (without a formula) why this interval is narrower at 90% confidence despite having a larger sample.
+**(c)** (4 pts) A second research group reports a 90% confidence interval for a similar mean: $(-10.5,\; -6.3)$ based on $n = 25$ patients. Explain conceptually (without a formula) why this interval is narrower at 90% confidence despite having a larger sample.
 
 **(d)** (4 pts) The researchers want to report a bootstrap percentile interval instead. Describe, in precise mathematical steps, how you would construct a 95% bootstrap percentile confidence interval for $\mu$ given the original sample of $n = 16$ observations. Under what conditions is the bootstrap percentile interval preferred over the classical $t$-interval, and when might the studentized bootstrap $t$-interval be preferable?
 

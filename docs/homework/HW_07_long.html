@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.25">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Due: 03/12 at 11pm">
+
+<title>Homework 7 – Theory of Statistical Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-7b89279ff1a6dce999919e0e67d4d9ec.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-3fbce8e5d0ad6a145f129f53e9b2a4da.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-sm " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="../index.html" class="navbar-brand navbar-brand-logo">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo light-content">
+    <img src="../images/lummi_curiosity_discovery_crop.png" alt="" class="navbar-logo dark-content">
+    </a>
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Theory of Statistical Inference</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../schedule.html"> 
+<span class="menu-text">Schedule</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../syllabus.html"> 
+<span class="menu-text">Syllabus</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../instructors.html"> 
+<span class="menu-text">Instructor</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../homeworks.html"> 
+<span class="menu-text">Homework</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#directions" id="toc-directions" class="nav-link active" data-scroll-target="#directions">Directions</a></li>
+  <li><a href="#questions" id="toc-questions" class="nav-link" data-scroll-target="#questions">Questions</a>
+  <ul class="collapse">
+  <li><a href="#problem-1-two-sample-t-tests-for-means-lesson-18-devore-section-9.5" id="toc-problem-1-two-sample-t-tests-for-means-lesson-18-devore-section-9.5" class="nav-link" data-scroll-target="#problem-1-two-sample-t-tests-for-means-lesson-18-devore-section-9.5">Problem 1: Two-Sample t-Tests for Means (Lesson 18 — Devore Section 9.5)</a></li>
+  <li><a href="#problem-2-two-sample-inference-for-proportions-lesson-18-dbc-9.6" id="toc-problem-2-two-sample-inference-for-proportions-lesson-18-dbc-9.6" class="nav-link" data-scroll-target="#problem-2-two-sample-inference-for-proportions-lesson-18-dbc-9.6">Problem 2: Two-Sample Inference for Proportions (Lesson 18 — DBC 9.6)</a></li>
+  <li><a href="#problem-3-paired-data-analysis-lesson-19-dbc-10.3" id="toc-problem-3-paired-data-analysis-lesson-19-dbc-10.3" class="nav-link" data-scroll-target="#problem-3-paired-data-analysis-lesson-19-dbc-10.3">Problem 3: Paired Data Analysis (Lesson 19 — DBC 10.3)</a></li>
+  <li><a href="#problem-4-bootstrap-and-permutation-inference-lesson-20-ch-ch.-3-5-8" id="toc-problem-4-bootstrap-and-permutation-inference-lesson-20-ch-ch.-3-5-8" class="nav-link" data-scroll-target="#problem-4-bootstrap-and-permutation-inference-lesson-20-ch-ch.-3-5-8">Problem 4: Bootstrap and Permutation Inference (Lesson 20 — C&amp;H Ch. 3, 5, 8)</a></li>
+  <li><a href="#problem-5-conceptual-questions" id="toc-problem-5-conceptual-questions" class="nav-link" data-scroll-target="#problem-5-conceptual-questions">Problem 5: Conceptual Questions</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="HW_07_long.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Homework 7</h1>
+<p class="subtitle lead">BSTA 551</p>
+</div>
+
+<div>
+  <div class="description">
+    Due: 03/12 at 11pm
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">March 6, 2026</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="directions" class="level2">
+<h2 class="anchored" data-anchor-id="directions">Directions</h2>
+<p><strong>Same as previous instructions.</strong></p>
+<p>For simulation problems, set your seed to <code>set.seed(551)</code> for reproducibility.</p>
+<p>For the qmd of this Homework page, see this <a href="https://github.com/jminnier/BSTA551_W26/blob/main/homework/HW_07.qmd">github link</a></p>
+<p><em>You must show all of your work to receive credit.</em></p>
+<p>This homework covers material from Lessons 18, 19, and 20: Two-Sample Inference (z, t, proportions, F-test), Analysis of Paired Data, and Bootstrap/Permutation Methods for Two Samples.</p>
+<hr>
+</section>
+<section id="questions" class="level2">
+<h2 class="anchored" data-anchor-id="questions">Questions</h2>
+<section id="problem-1-two-sample-t-tests-for-means-lesson-18-devore-section-9.5" class="level3">
+<h3 class="anchored" data-anchor-id="problem-1-two-sample-t-tests-for-means-lesson-18-devore-section-9.5">Problem 1: Two-Sample t-Tests for Means (Lesson 18 — Devore Section 9.5)</h3>
+<p>A pulmonologist is comparing plasma fibrinogen levels (mg/dL) between patients diagnosed with COPD and age-matched healthy controls. High fibrinogen is associated with systemic inflammation. The following summary statistics were recorded:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Group</th>
+<th><span class="math inline">\(n\)</span></th>
+<th><span class="math inline">\(\bar{x}\)</span></th>
+<th><span class="math inline">\(s\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>COPD</td>
+<td>22</td>
+<td>412.8</td>
+<td>68.4</td>
+</tr>
+<tr class="even">
+<td>Healthy controls</td>
+<td>25</td>
+<td>356.2</td>
+<td>41.7</td>
+</tr>
+</tbody>
+</table>
+<p>Assume the data within each group are approximately normally distributed.</p>
+<p><strong>(a)</strong> Compute the Welch–Satterthwaite approximation to the degrees of freedom <span class="math inline">\(\hat{\nu}\)</span> by hand (you may verify using R). Show all intermediate calculations.</p>
+<p><strong>(b)</strong> Test <span class="math inline">\(H_0: \mu_1 - \mu_2 = 0\)</span> vs.&nbsp;<span class="math inline">\(H_a: \mu_1 &gt; \mu_2\)</span> at <span class="math inline">\(\alpha = 0.05\)</span> using the Welch <span class="math inline">\(t\)</span>-statistic. State the test statistic, approximate degrees of freedom, <span class="math inline">\(p\)</span>-value (use R to compute), and conclusion.</p>
+<p><strong>(c)</strong> Compute a 95% two-sided confidence interval for <span class="math inline">\(\mu_{\text{COPD}} - \mu_{\text{Control}}\)</span>. Interpret in the context of this study.</p>
+<p><strong>(d)</strong> Now test whether the population variances are equal using the <span class="math inline">\(F\)</span>-test. State the hypotheses, the test statistic <span class="math inline">\(F_0 = s_1^2 / s_2^2\)</span>, degrees of freedom, and <span class="math inline">\(p\)</span>-value. Based on this result, is the Welch <span class="math inline">\(t\)</span>-test or pooled <span class="math inline">\(t\)</span>-test more appropriate? Explain briefly.</p>
+<p><strong>(e)</strong> For reference, carry out the pooled <span class="math inline">\(t\)</span>-test as well. Report the pooled estimate <span class="math inline">\(S_p^2\)</span>, the pooled test statistic, and the 95% CI. How do the Welch and pooled results compare? Under what condition on <span class="math inline">\(n_1, n_2, s_1, s_2\)</span> might they differ substantially?</p>
+<blockquote class="blockquote">
+<p><em>Hint:</em> You do not have raw data, so use <code>pt()</code> and <code>qchisq()</code> / <code>qf()</code> as needed. You can construct a function to compute the Welch-Satterthwaite df from the summary statistics.</p>
+</blockquote>
+<hr>
+</section>
+<section id="problem-2-two-sample-inference-for-proportions-lesson-18-dbc-9.6" class="level3">
+<h3 class="anchored" data-anchor-id="problem-2-two-sample-inference-for-proportions-lesson-18-dbc-9.6">Problem 2: Two-Sample Inference for Proportions (Lesson 18 — DBC 9.6)</h3>
+<p>A multi-site clinical trial randomizes 210 patients with community-acquired pneumonia to one of two antibiotic regimens:</p>
+<ul>
+<li><strong>Regimen A</strong>: 105 patients, 89 classified as treatment successes at Day 14</li>
+<li><strong>Regimen B</strong>: 105 patients, 76 classified as treatment successes at Day 14</li>
+</ul>
+<p>Let <span class="math inline">\(p_A\)</span> and <span class="math inline">\(p_B\)</span> denote the true success probabilities.</p>
+<p><strong>(a)</strong> Verify that the large-sample normal approximation is appropriate for inference on <span class="math inline">\(p_A - p_B\)</span> (check all four conditions).</p>
+<p><strong>(b)</strong> Compute a 95% confidence interval for <span class="math inline">\(p_A - p_B\)</span> using the <strong>unpooled</strong> standard error. Interpret the interval in the context of the study. Do these data provide evidence that the two regimens differ in success rate?</p>
+<p><strong>(c)</strong> Test <span class="math inline">\(H_0: p_A = p_B\)</span> vs.&nbsp;<span class="math inline">\(H_a: p_A \neq p_B\)</span> at <span class="math inline">\(\alpha = 0.05\)</span> using the <strong>pooled</strong> standard error. Show your calculation of <span class="math inline">\(\hat{p}_{\text{pool}}\)</span>, the test statistic <span class="math inline">\(Z\)</span>, and the <span class="math inline">\(p\)</span>-value. Verify using <code>prop.test()</code> with <code>correct = FALSE</code>.</p>
+<p><strong>(d)</strong> Explain why the test in part (c) uses the <strong>pooled</strong> estimate <span class="math inline">\(\hat{p}_{\text{pool}}\)</span> while the CI in part (b) uses the <strong>unpooled</strong> SEs. What assumption does <span class="math inline">\(H_0\)</span> impose that justifies pooling?</p>
+<p><strong>(e)</strong> Suppose the trial statistician also wants to estimate the <strong>relative risk</strong> <span class="math inline">\(\text{RR} = p_A / p_B\)</span>. Compute the point estimate. Using the delta method (or a log-transform approach), give a 95% CI for RR.</p>
+<p><em>Hint for (e):</em> Apply the delta method to <span class="math inline">\(\log(\hat{p}_A / \hat{p}_B)\)</span>. If <span class="math inline">\(\hat{p}\)</span> is a sample proportion, <span class="math inline">\(\text{Var}(\log \hat{p}) \approx (1-p)/(np)\)</span> by the delta method.</p>
+<hr>
+</section>
+<section id="problem-3-paired-data-analysis-lesson-19-dbc-10.3" class="level3">
+<h3 class="anchored" data-anchor-id="problem-3-paired-data-analysis-lesson-19-dbc-10.3">Problem 3: Paired Data Analysis (Lesson 19 — DBC 10.3)</h3>
+<p>A clinical investigator studies the effect of a 16-week low-glycemic-index dietary intervention on insulin resistance. Insulin resistance is measured via the <strong>HOMA-IR</strong> index (higher values = more insulin resistance) in 15 participants, both before and after the intervention. The individual HOMA-IR values are:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>before <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">3.8</span>, <span class="fl">5.2</span>, <span class="fl">4.1</span>, <span class="fl">6.7</span>, <span class="fl">3.3</span>, <span class="fl">4.9</span>, <span class="fl">5.8</span>, <span class="fl">7.1</span>, <span class="fl">3.6</span>, <span class="fl">4.4</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>            <span class="fl">6.0</span>, <span class="fl">5.5</span>, <span class="fl">4.7</span>, <span class="fl">3.9</span>, <span class="fl">5.1</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>after  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.9</span>, <span class="fl">4.4</span>, <span class="fl">3.2</span>, <span class="fl">5.8</span>, <span class="fl">2.8</span>, <span class="fl">4.1</span>, <span class="fl">4.9</span>, <span class="fl">6.0</span>, <span class="fl">2.7</span>, <span class="fl">3.5</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>            <span class="fl">5.0</span>, <span class="fl">4.6</span>, <span class="fl">3.8</span>, <span class="fl">3.1</span>, <span class="fl">4.3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>(a)</strong> Explain why a <strong>paired</strong> analysis is appropriate here rather than an independent two-sample test. What would be the consequences of incorrectly applying the Welch two-sample <span class="math inline">\(t\)</span>-test?</p>
+<p><strong>(b)</strong> Compute the within-subject differences <span class="math inline">\(D_i = \text{Before}_i - \text{After}_i\)</span>. Report <span class="math inline">\(\bar{D}\)</span>, <span class="math inline">\(S_D\)</span>, and the sample correlation <span class="math inline">\(r\)</span> between the before and after measurements.</p>
+<p><strong>(c)</strong> Using the paired <span class="math inline">\(t\)</span>-test, test <span class="math inline">\(H_0: \mu_D = 0\)</span> vs.&nbsp;<span class="math inline">\(H_a: \mu_D &gt; 0\)</span> (intervention reduces HOMA-IR). Report the test statistic, <span class="math inline">\(p\)</span>-value, and conclusion at <span class="math inline">\(\alpha = 0.05\)</span>.</p>
+<p><strong>(d)</strong> Compute a 95% two-sided confidence interval for <span class="math inline">\(\mu_D\)</span>. Interpret in context.</p>
+<p><strong>(e)</strong> Now apply the (incorrect) Welch two-sample <span class="math inline">\(t\)</span>-test to the same data by ignoring the pairing. Report the <span class="math inline">\(p\)</span>-value and 95% CI. Compare the SE of the estimate, the width of the CI, and the <span class="math inline">\(p\)</span>-value to the paired analysis. Explain quantitatively why they differ using the variance formula from the slides: <span class="math display">\[\sigma_D^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\,\sigma_1\,\sigma_2\]</span></p>
+<p><strong>(f)</strong> Construct a spaghetti plot (individual patient profiles, before vs.&nbsp;after) and a histogram of the differences <span class="math inline">\(D_i\)</span>. Add a vertical line at <span class="math inline">\(D = 0\)</span> and annotate <span class="math inline">\(\bar{D}\)</span>. Use <code>ggplot2</code>.</p>
+<hr>
+</section>
+<section id="problem-4-bootstrap-and-permutation-inference-lesson-20-ch-ch.-3-5-8" class="level3">
+<h3 class="anchored" data-anchor-id="problem-4-bootstrap-and-permutation-inference-lesson-20-ch-ch.-3-5-8">Problem 4: Bootstrap and Permutation Inference (Lesson 20 — C&amp;H Ch. 3, 5, 8)</h3>
+<p>A hematologist is comparing <strong>platelet counts</strong> (× 10³/µL) between patients admitted with <strong>septic shock</strong> (<span class="math inline">\(n_1 = 35\)</span>) and <strong>non-septic sepsis</strong> (<span class="math inline">\(n_2 = 40\)</span>) to a medical ICU. Platelet counts in critically ill patients are often right-skewed with heavy tails. Use the following code to generate the data:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>platelets_shock  <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rgamma</span>(<span class="dv">35</span>, <span class="at">shape =</span> <span class="fl">2.0</span>, <span class="at">rate =</span> <span class="fl">0.016</span>), <span class="dv">1</span>) </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>platelets_sepsis <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">rgamma</span>(<span class="dv">40</span>, <span class="at">shape =</span> <span class="fl">3.5</span>, <span class="at">rate =</span> <span class="fl">0.022</span>), <span class="dv">1</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><strong>(a)</strong> Produce exploratory summaries: compute the mean, median, and SD for each group and create side-by-side density plots (or violin plots) overlaid with rug marks. Comment on the distributional shape of each group.</p>
+<p><strong>(b)</strong> Compute a 95% bootstrap <strong>percentile</strong> CI and a 95% bootstrap <strong>basic (reflection)</strong> CI for the difference in means <span class="math inline">\(\mu_{\text{shock}} - \mu_{\text{sepsis}}\)</span> using <span class="math inline">\(B = 5000\)</span> bootstrap resamples. Report both CIs and the bootstrap SE.</p>
+<p><strong>(c)</strong> Compute a 95% bootstrap <strong>percentile</strong> CI for the difference in <strong>medians</strong> <span class="math inline">\(\tilde{\mu}_{\text{shock}} - \tilde{\mu}_{\text{sepsis}}\)</span> using <span class="math inline">\(B = 5000\)</span> resamples. Report the point estimate and CI.</p>
+<p><strong>(d)</strong> Compute a two-sided Welch <span class="math inline">\(t\)</span>-test and 95% CI for the difference in means. Compare to the bootstrap CI from (b). In what way do the bootstrap and <span class="math inline">\(t\)</span> CIs agree or disagree? What does this tell you about the appropriateness of the <span class="math inline">\(t\)</span> approximation here?</p>
+<p><strong>(e)</strong> Perform a <strong>two-sample permutation test</strong> of <span class="math inline">\(H_0: F_1 = F_2\)</span> vs.&nbsp;<span class="math inline">\(H_a: F_1 \neq F_2\)</span> using the difference in sample means as the test statistic with <span class="math inline">\(B = 5000\)</span> permutations. Report the observed test statistic, the permutation <span class="math inline">\(p\)</span>-value, and compare it to the Welch <span class="math inline">\(t\)</span>-test <span class="math inline">\(p\)</span>-value. Under what null hypothesis is the permutation test <em>exactly</em> valid?</p>
+<p><strong>(f)</strong> Visualize the permutation null distribution. Plot a histogram of the <span class="math inline">\(B = 5000\)</span> permuted statistics, add a vertical line at the observed statistic, and shade the area corresponding to the <span class="math inline">\(p\)</span>-value. Use <code>bquote()</code> or <code>expression()</code> for axis labels involving statistical notation.</p>
+<hr>
+<p>add to final exam</p>
+</section>
+<section id="problem-5-conceptual-questions" class="level3">
+<h3 class="anchored" data-anchor-id="problem-5-conceptual-questions">Problem 5: Conceptual Questions</h3>
+<p><strong>(a)</strong> A researcher has <span class="math inline">\(n = 12\)</span> matched pairs and the differences <span class="math inline">\(D_i = X_{1i} - X_{2i}\)</span> appear moderately right-skewed. She applies the paired <span class="math inline">\(t\)</span>-test. Discuss: (i) whether the test is reliable in this setting; (ii) what alternatives she might consider; and (iii) how bootstrap inference on the paired differences could be applied.</p>
+<p><strong>(b)</strong> Explain why the two-sample permutation test tests <span class="math inline">\(H_0: F_1 = F_2\)</span> (the two <em>distributions</em> are equal) rather than just <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span> (the two means are equal). Under what additional assumptions would the permutation test provide a valid test of the location hypothesis <span class="math inline">\(H_0: \mu_1 = \mu_2\)</span>?</p>
+<p><strong>(c)</strong> In the F-test for <span class="math inline">\(H_0: \sigma_1^2 = \sigma_2^2\)</span>, what happens to the Type I error rate when the underlying populations are non-normal (e.g., exponential or <span class="math inline">\(t_3\)</span>)? How does Levene’s test address this limitation?</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

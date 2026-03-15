@@ -1,0 +1,653 @@
+---
+title: "Homework 7 Solutions"
+subtitle: "BSTA 551"
+date-modified: "today"
+format: 
+  html:
+    link-external-newwindow: true
+    toc: true
+  pdf: default 
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: "setup"
+#| include: false
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+---
+
+## Problem 1: Two-Sample t-Tests for Means
+
+### Part (a) — Welch–Satterthwaite degrees of freedom
+
+Summary statistics:
+
+```{r}
+n1 <- 22; xbar1 <- 412.8; s1 <- 68.4  # COPD
+n2 <- 25; xbar2 <- 356.2; s2 <- 41.7  # Controls
+
+# Welch-Satterthwaite
+v1 <- s1^2 / n1
+v2 <- s2^2 / n2
+
+nu_hat <- (v1 + v2)^2 / (v1^2 / (n1 - 1) + v2^2 / (n2 - 1))
+cat(sprintf("v1 = s1^2/n1 = %.4f\n", v1))
+cat(sprintf("v2 = s2^2/n2 = %.4f\n", v2))
+cat(sprintf("Numerator:   (v1 + v2)^2 = %.4f\n", (v1 + v2)^2))
+cat(sprintf("Denominator: %.4f\n", v1^2/(n1-1) + v2^2/(n2-1)))
+cat(sprintf("nu_hat = %.2f  -->  round down to %d\n", nu_hat, floor(nu_hat)))
+```
+
+$$\hat{\nu} = \frac{(s_1^2/n_1 + s_2^2/n_2)^2}{\dfrac{(s_1^2/n_1)^2}{n_1-1} + \dfrac{(s_2^2/n_2)^2}{n_2-1}}$$
+
+The Welch–Satterthwaite approximation gives $\hat{\nu} \approx `r round(nu_hat, 1)`$, rounded down to $`r floor(nu_hat)`$ degrees of freedom.
+
+---
+
+### Part (b) — Welch t-test (one-sided)
+
+```{r}
+SE_diff <- sqrt(s1^2/n1 + s2^2/n2)
+t_obs   <- (xbar1 - xbar2) / SE_diff
+p_one   <- pt(t_obs, df = nu_hat, lower.tail = FALSE)
+
+cat(sprintf("SE(xbar1 - xbar2) = %.4f\n", SE_diff))
+cat(sprintf("t_obs = %.4f\n", t_obs))
+cat(sprintf("df    = %.2f\n", nu_hat))
+cat(sprintf("p-value (one-sided, upper) = %.5f\n", p_one))
+```
+
+**Test statistic:** $T_W = \dfrac{412.8 - 356.2}{\sqrt{68.4^2/22 + 41.7^2/25}} = `r round(t_obs, 3)`$
+
+**Degrees of freedom:** $\hat{\nu} \approx `r round(nu_hat, 1)`$
+
+**$p$-value:** $`r round(p_one, 5)`$
+
+**Conclusion:** At $\alpha = 0.05$ we reject $H_0$ ($p < 0.05$). There is statistically significant evidence that mean plasma fibrinogen is higher in COPD patients than in healthy controls.
+
+---
+
+### Part (c) — 95% two-sided CI
+
+```{r}
+t_crit <- qt(0.975, df = nu_hat)
+ci_lo  <- (xbar1 - xbar2) - t_crit * SE_diff
+ci_hi  <- (xbar1 - xbar2) + t_crit * SE_diff
+
+cat(sprintf("t_crit (df = %.1f) = %.4f\n", nu_hat, t_crit))
+cat(sprintf("95%% CI: (%.2f, %.2f) mg/dL\n", ci_lo, ci_hi))
+```
+
+**Interpretation:** We are 95% confident that the true mean plasma fibrinogen is between `r round(ci_lo, 1)` and `r round(ci_hi, 1)` mg/dL higher in COPD patients than in healthy controls. Because the entire interval is positive and excludes zero, the data provide strong evidence of a meaningful difference.
+
+---
+
+### Part (d) — F-test for equality of variances
+
+```{r}
+F_obs  <- s1^2 / s2^2
+df1    <- n1 - 1
+df2    <- n2 - 1
+
+# Two-sided p-value: 2 * min(lower, upper) tail
+p_F <- 2 * min(pf(F_obs, df1, df2), pf(F_obs, df1, df2, lower.tail = FALSE))
+
+cat(sprintf("F = s1^2/s2^2 = %.4f^2 / %.4f^2 = %.4f\n", s1, s2, F_obs))
+cat(sprintf("df1 = %d, df2 = %d\n", df1, df2))
+cat(sprintf("Two-sided p-value = %.5f\n", p_F))
+```
+
+**Hypotheses:** $H_0: \sigma_1^2 = \sigma_2^2$ vs. $H_a: \sigma_1^2 \neq \sigma_2^2$
+
+**Test statistic:** $F_0 = s_1^2 / s_2^2 = `r round(s1^2, 1)` / `r round(s2^2, 1)` = `r round(F_obs, 3)`$ on $(21, 24)$ df
+
+**$p$-value:** $`r round(p_F, 4)`$
+
+The $F$-test is highly significant, providing strong evidence that the population variances are *unequal*. **The Welch $t$-test is therefore the more appropriate choice** because it does not assume equal variances. The pooled $t$-test would be invalid here.
+
+---
+
+### Part (e) — Pooled t-test for comparison
+
+```{r}
+Sp2 <- ((n1-1)*s1^2 + (n2-1)*s2^2) / (n1 + n2 - 2)
+Sp  <- sqrt(Sp2)
+SE_pool <- Sp * sqrt(1/n1 + 1/n2)
+t_pool  <- (xbar1 - xbar2) / SE_pool
+df_pool <- n1 + n2 - 2
+p_pool  <- pt(t_pool, df = df_pool, lower.tail = FALSE)
+t_crit_pool <- qt(0.975, df = df_pool)
+ci_pool <- c((xbar1 - xbar2) - t_crit_pool * SE_pool,
+             (xbar1 - xbar2) + t_crit_pool * SE_pool)
+
+cat(sprintf("Sp^2 = %.2f  -->  Sp = %.2f\n", Sp2, Sp))
+cat(sprintf("SE_pool = %.4f\n", SE_pool))
+cat(sprintf("t_pool = %.4f, df = %d\n", t_pool, df_pool))
+cat(sprintf("p-value (one-sided) = %.5f\n", p_pool))
+cat(sprintf("95%% Pooled CI: (%.2f, %.2f)\n", ci_pool[1], ci_pool[2]))
+```
+
+**Comparison:**
+
+| Method | $t$ | df | 95% CI | $p$-value |
+|--------|-----|-----|--------|-----------|
+| Welch | `r round(t_obs,3)` | `r round(nu_hat,1)` | (`r round(ci_lo,1)`, `r round(ci_hi,1)`) | `r round(p_one,5)` |
+| Pooled | `r round(t_pool,3)` | `r df_pool` | (`r round(ci_pool[1],1)`, `r round(ci_pool[2],1)`) | `r round(p_pool,5)` |
+
+The two procedures give similar conclusions here because both $n_1$ and $n_2$ are moderate. However, the pooled SE is inflated relative to the Welch SE because the larger variance (COPD, $s_1 = 68.4$) is averaged with the smaller (Controls, $s_2 = 41.7$). When sample sizes are **unequal and the larger variance is in the smaller group**, the pooled test can be anti-conservative (actual Type I error exceeds nominal $\alpha$). The Welch test does not rely on equal-variance assumptions and is generally preferred.
+
+---
+
+## Problem 2: Two-Sample Inference for Proportions
+
+```{r}
+nA <- 105; xA <- 89   # Regimen A
+nB <- 105; xB <- 76   # Regimen B
+
+phatA <- xA / nA
+phatB <- xB / nB
+diff_hat <- phatA - phatB
+
+cat(sprintf("phat_A = %d/%d = %.4f\n", xA, nA, phatA))
+cat(sprintf("phat_B = %d/%d = %.4f\n", xB, nB, phatB))
+cat(sprintf("phat_A - phat_B = %.4f\n", diff_hat))
+```
+
+### Part (a) — Verify large-sample conditions
+
+The four conditions for $\hat{p}_1 - \hat{p}_2 \approx N(p_1-p_2, \text{SE}^2)$:
+
+```{r}
+cond <- tibble(
+  Regimen = c("A", "A", "B", "B"),
+  Condition = c("n*phat", "n*(1-phat)", "n*phat", "n*(1-phat)"),
+  Value = c(nA*phatA, nA*(1-phatA), nB*phatB, nB*(1-phatB))
+)
+cond
+```
+
+All four values exceed 5 (in fact all exceed 10), so the normal approximation is appropriate.
+
+---
+
+### Part (b) — 95% CI (unpooled SE)
+
+```{r}
+SE_unpooled <- sqrt(phatA*(1-phatA)/nA + phatB*(1-phatB)/nB)
+z_crit      <- qnorm(0.975)
+ci_lo_p     <- diff_hat - z_crit * SE_unpooled
+ci_hi_p     <- diff_hat + z_crit * SE_unpooled
+
+cat(sprintf("SE (unpooled) = %.5f\n", SE_unpooled))
+cat(sprintf("95%% CI: (%.4f, %.4f)\n", ci_lo_p, ci_hi_p))
+cat(sprintf("95%% CI: (%.1f%%, %.1f%%)\n", 100*ci_lo_p, 100*ci_hi_p))
+```
+
+**Interpretation:** We are 95% confident that the true success rate for Regimen A is between `r round(100*ci_lo_p,1)`% and `r round(100*ci_hi_p,1)`% higher than for Regimen B. Since the interval contains 0, the data do **not** provide statistically significant evidence of a difference at the 5% level (though the point estimate favors A).
+
+---
+
+### Part (c) — Two-sided z-test (pooled SE)
+
+```{r}
+phat_pool <- (xA + xB) / (nA + nB)
+SE_pool_p <- sqrt(phat_pool*(1-phat_pool)*(1/nA + 1/nB))
+Z_obs     <- diff_hat / SE_pool_p
+p_two     <- 2 * pnorm(abs(Z_obs), lower.tail = FALSE)
+
+cat(sprintf("phat_pool = (%d+%d)/(%d+%d) = %.4f\n", xA, xB, nA, nB, phat_pool))
+cat(sprintf("SE (pooled) = %.5f\n", SE_pool_p))
+cat(sprintf("Z = %.4f\n", Z_obs))
+cat(sprintf("p-value (two-sided) = %.5f\n", p_two))
+
+# Verify
+prop.test(c(xA, xB), c(nA, nB), correct = FALSE) |> tidy()
+```
+
+**Test statistic:** $Z = `r round(Z_obs, 3)`$, **$p$-value** = `r round(p_two, 4)`
+
+At $\alpha = 0.05$ we fail to reject $H_0$. There is insufficient evidence to conclude that the success rates differ between the two regimens.
+
+---
+
+### Part (d) — Pooled vs. unpooled SE: conceptual explanation
+
+When we test $H_0: p_A = p_B$, we assume under $H_0$ that there is a **single common success probability** $p$. The pooled estimate $\hat{p}_{\text{pool}} = (x_A + x_B)/(n_A + n_B)$ is the most efficient estimate of this common $p$ under $H_0$, so plugging it into the SE is consistent with the null hypothesis and yields a valid test.
+
+For the CI we make **no such assumption** — the CI must be valid whether or not $p_A = p_B$. Using the pooled estimate in the CI would distort coverage when $p_A \neq p_B$ (which is the interesting case we are trying to characterize). The unpooled SE is therefore correct for CI construction.
+
+---
+
+### Part (e) — Relative risk and delta-method CI
+
+```{r}
+RR_hat  <- phatA / phatB
+log_RR  <- log(RR_hat)
+
+# Var(log(phat_A/phat_B)) = Var(log phat_A) + Var(log phat_B)
+# By delta method: Var(log phat) = (1-p)/(n*p)
+var_log_A <- (1 - phatA) / (nA * phatA)
+var_log_B <- (1 - phatB) / (nB * phatB)
+se_log_RR <- sqrt(var_log_A + var_log_B)
+
+ci_log  <- log_RR + c(-1,1) * z_crit * se_log_RR
+ci_RR   <- exp(ci_log)
+
+cat(sprintf("RR = phat_A / phat_B = %.4f / %.4f = %.4f\n",
+            phatA, phatB, RR_hat))
+cat(sprintf("log(RR) = %.4f,  SE(log RR) = %.5f\n", log_RR, se_log_RR))
+cat(sprintf("95%% CI for log(RR): (%.4f, %.4f)\n", ci_log[1], ci_log[2]))
+cat(sprintf("95%% CI for RR:      (%.4f, %.4f)\n", ci_RR[1],  ci_RR[2]))
+```
+
+**Point estimate:** $\widehat{RR} = `r round(RR_hat, 3)`$. Regimen A has an estimated `r round((RR_hat-1)*100, 1)`% higher success rate than Regimen B.
+
+**95% CI for RR:** (`r round(ci_RR[1], 3)`, `r round(ci_RR[2], 3)`). Since this interval includes 1.0, the relative risk is not significantly different from 1 at the 5% level, consistent with the z-test conclusion.
+
+---
+
+## Problem 3: Paired Data Analysis
+
+```{r}
+before <- c(3.8, 5.2, 4.1, 6.7, 3.3, 4.9, 5.8, 7.1, 3.6, 4.4,
+            6.0, 5.5, 4.7, 3.9, 5.1)
+after  <- c(2.9, 4.4, 3.2, 5.8, 2.8, 4.1, 4.9, 6.0, 2.7, 3.5,
+            5.0, 4.6, 3.8, 3.1, 4.3)
+d      <- before - after
+n_pair <- length(d)
+```
+
+### Part (a) — Why paired analysis is appropriate
+
+The same 15 participants are measured **twice** (before and after the intervention). The two measurements on the same individual are positively correlated — people who start with high HOMA-IR tend to end with high HOMA-IR even after the intervention, reflecting between-subject variation in baseline insulin sensitivity.
+
+If the Welch two-sample test were incorrectly applied, it would treat the 30 observations as independent, ignoring the within-person correlation. This inflates the variance estimate ($\hat{\sigma}_D^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2 < \sigma_1^2 + \sigma_2^2$ when $\rho > 0$), producing wider CIs and larger $p$-values — i.e., **reduced statistical power** to detect a real treatment effect.
+
+---
+
+### Part (b) — Summary statistics of differences
+
+```{r}
+Dbar  <- mean(d)
+SD_d  <- sd(d)
+r_cor <- cor(before, after)
+
+cat(sprintf("n (pairs)     = %d\n",   n_pair))
+cat(sprintf("D_bar         = %.4f\n", Dbar))
+cat(sprintf("S_D           = %.4f\n", SD_d))
+cat(sprintf("cor(before, after) = %.4f\n", r_cor))
+```
+
+$\bar{D} = `r round(Dbar, 4)`$, $S_D = `r round(SD_d, 4)`$, $r = `r round(r_cor, 4)`$.
+
+---
+
+### Part (c) — Paired t-test (one-sided)
+
+```{r}
+t_pair <- Dbar / (SD_d / sqrt(n_pair))
+p_pair <- pt(t_pair, df = n_pair - 1, lower.tail = FALSE)
+t_crit_pair <- qt(0.975, df = n_pair - 1)
+
+cat(sprintf("T = %.4f\n", t_pair))
+cat(sprintf("df = %d\n", n_pair - 1))
+cat(sprintf("p-value (one-sided) = %.6f\n", p_pair))
+
+# Confirm with t.test
+t.test(before, after, paired = TRUE, alternative = "greater") |> tidy()
+```
+
+**Test statistic:** $T = \bar{D}/(S_D/\sqrt{n}) = `r round(Dbar,4)` / (`r round(SD_d,4)`/$\sqrt{15}$) = `r round(t_pair, 3)`$
+
+**$p$-value:** $`r round(p_pair, 6)`$
+
+**Conclusion:** We reject $H_0: \mu_D = 0$ at $\alpha = 0.05$ ($p \ll 0.001$). There is strong evidence that the dietary intervention reduces HOMA-IR.
+
+---
+
+### Part (d) — 95% CI for $\mu_D$
+
+```{r}
+ci_pair_lo <- Dbar - t_crit_pair * SD_d / sqrt(n_pair)
+ci_pair_hi <- Dbar + t_crit_pair * SD_d / sqrt(n_pair)
+
+cat(sprintf("95%% CI for mu_D: (%.4f, %.4f)\n", ci_pair_lo, ci_pair_hi))
+```
+
+**Interpretation:** We are 95% confident that the dietary intervention reduces HOMA-IR by between `r round(ci_pair_lo, 2)` and `r round(ci_pair_hi, 2)` units on average. The entire interval is positive and away from zero, confirming a clinically meaningful reduction.
+
+---
+
+### Part (e) — Incorrect Welch two-sample t-test
+
+```{r}
+welch_wrong <- t.test(before, after, paired = FALSE, 
+                       alternative = "greater") |> tidy()
+welch_paired <- t.test(before, after, paired = TRUE) |> tidy()
+
+cat("=== Incorrect: Welch two-sample ===\n")
+cat(sprintf("SE      = %.4f\n", welch_wrong$std.error))
+cat(sprintf("p-value = %.6f (one-sided approx)\n", welch_wrong$p.value))
+cat(sprintf("95%% CI  = (%.4f, %.4f)\n", welch_wrong$conf.low, welch_wrong$conf.high))
+
+cat("\n=== Correct: Paired t-test ===\n")
+cat(sprintf("SE      = %.4f\n", welch_paired$std.error))
+cat(sprintf("p-value = %.6f (two-sided)\n", welch_paired$p.value))
+cat(sprintf("95%% CI  = (%.4f, %.4f)\n", welch_paired$conf.low, welch_paired$conf.high))
+```
+
+**Variance formula explanation:**
+
+Under the correct paired model:
+$$\text{Var}(D_i) = \sigma_1^2 + \sigma_2^2 - 2\rho\,\sigma_1\,\sigma_2$$
+
+```{r}
+s1_obs <- sd(before)
+s2_obs <- sd(after)
+
+var_d_formula <- s1_obs^2 + s2_obs^2 - 2 * r_cor * s1_obs * s2_obs
+var_d_direct  <- SD_d^2
+
+cat(sprintf("s_before = %.4f,  s_after = %.4f,  r = %.4f\n",
+            s1_obs, s2_obs, r_cor))
+cat(sprintf("Var(D) via formula = %.4f\n", var_d_formula))
+cat(sprintf("Var(D) direct      = %.4f  (should match)\n", var_d_direct))
+cat(sprintf("Var(D) if rho = 0  = %.4f  (what unpaired assumes)\n",
+            s1_obs^2 + s2_obs^2))
+```
+
+When $\rho > 0$, $\sigma_D^2$ is smaller than $\sigma_1^2 + \sigma_2^2$. The incorrect Welch test uses $S_1^2/n + S_2^2/n$ as its SE, which overestimates the variance, yielding a **wider CI and larger $p$-value** — in this case failing to detect the significant treatment effect more clearly.
+
+---
+
+### Part (f) — Spaghetti plot and histogram
+
+```{r}
+#| fig-height: 6
+#| fig-width: 13
+#| code-fold: true
+
+pair_df <- tibble(
+  Patient = factor(seq_len(n_pair)),
+  Before  = before,
+  After   = after,
+  D       = d
+)
+
+p1 <- pair_df |>
+  pivot_longer(c(Before, After), names_to = "Time", values_to = "HOMA_IR") |>
+  mutate(Time = factor(Time, levels = c("Before", "After"))) |>
+  ggplot(aes(x = Time, y = HOMA_IR, group = Patient)) +
+  geom_line(color = "grey65", linewidth = 0.6) +
+  geom_point(aes(color = Time), size = 3) +
+  scale_color_manual(values = c("Before" = "#e74c3c", "After" = "#006a4e")) +
+  labs(
+    title  = "Individual HOMA-IR Profiles",
+    x      = NULL,
+    y      = "HOMA-IR",
+    color  = NULL
+  ) +
+  theme(legend.position = "bottom")
+
+p2 <- pair_df |>
+  ggplot(aes(x = D)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 8,
+                 fill = "#3498db", color = "white", alpha = 0.75) +
+  geom_density(color = "#2c3e50", linewidth = 1.1) +
+  geom_vline(xintercept = 0,    linetype = "dashed",
+             color = "grey40",  linewidth = 1.0) +
+  geom_vline(xintercept = Dbar, color = "#e74c3c", linewidth = 1.4) +
+  annotate("text", x = Dbar + 0.03, y = 1.05,
+           label = bquote(bar(D) == .(round(Dbar, 2))),
+           color = "#e74c3c", size = 5, hjust = 0) +
+  labs(
+    title = expression("Distribution of Differences  " * D[i] == "Before" - "After"),
+    x     = "D (HOMA-IR units)",
+    y     = "Density"
+  )
+
+p1 + p2 +
+  plot_annotation(
+    title    = "Dietary Intervention: HOMA-IR Before vs. After (n = 15 pairs)",
+    subtitle = "Left: each line connects the same patient's two measurements  |  Right: distribution of within-patient differences"
+  )
+```
+
+---
+
+## Problem 4: Bootstrap and Permutation Inference
+
+```{r}
+set.seed(551)
+platelets_shock  <- round(rgamma(35, shape = 2.0, rate = 0.016), 1)
+platelets_sepsis <- round(rgamma(40, shape = 3.5, rate = 0.022), 1)
+```
+
+### Part (a) — Exploratory summaries
+
+```{r}
+tibble(
+  Group = c(rep("Septic Shock", 35), rep("Non-septic Sepsis", 40)),
+  Platelets = c(platelets_shock, platelets_sepsis)
+) |>
+  group_by(Group) |>
+  summarise(
+    n      = n(),
+    Mean   = round(mean(Platelets), 1),
+    Median = round(median(Platelets), 1),
+    SD     = round(sd(Platelets), 1),
+    .groups = "drop"
+  )
+```
+
+```{r}
+#| fig-height: 5.5
+#| fig-width: 11
+#| code-fold: true
+
+tibble(
+  Group     = c(rep("Septic Shock", 35), rep("Non-septic Sepsis", 40)),
+  Platelets = c(platelets_shock, platelets_sepsis)
+) |>
+  ggplot(aes(x = Platelets, fill = Group)) +
+  geom_density(aes(color = Group), linewidth = 1.1, alpha = 0.35) +
+  geom_rug(aes(color = Group), linewidth = 0.6, alpha = 0.7) +
+  scale_fill_manual(values  = c("Septic Shock" = "#e74c3c", "Non-septic Sepsis" = "#006a4e")) +
+  scale_color_manual(values = c("Septic Shock" = "#e74c3c", "Non-septic Sepsis" = "#006a4e")) +
+  labs(
+    title    = expression("Platelet Count Distribution by Sepsis Severity  (× 10"^3 * "/µL)"),
+    subtitle = "Right-skewed distributions; rug marks show individual observations",
+    x        = expression("Platelet Count (× 10"^3 * "/µL)"),
+    y        = "Density",
+    fill     = NULL, color = NULL
+  ) +
+  theme(legend.position = "bottom")
+```
+
+Both distributions are right-skewed, as expected from gamma-distributed platelet counts. The septic shock group shows a lower mean and median compared to the non-septic sepsis group, and also greater spread (larger SD).
+
+---
+
+### Part (b) — Bootstrap CIs for difference in means
+
+```{r}
+set.seed(551)
+B        <- 5000
+n1_plt   <- length(platelets_shock)
+n2_plt   <- length(platelets_sepsis)
+obs_diff <- mean(platelets_shock) - mean(platelets_sepsis)
+
+boot_means <- replicate(B, {
+  mean(sample(platelets_shock,  n1_plt, replace = TRUE)) -
+  mean(sample(platelets_sepsis, n2_plt, replace = TRUE))
+})
+
+ci_pct   <- quantile(boot_means, c(0.025, 0.975))
+ci_basic <- 2 * obs_diff - quantile(boot_means, c(0.975, 0.025))
+boot_se  <- sd(boot_means)
+
+cat(sprintf("Observed difference (Shock - Sepsis): %.2f\n", obs_diff))
+cat(sprintf("Bootstrap SE:                         %.4f\n", boot_se))
+cat(sprintf("Bootstrap Percentile 95%% CI: (%.2f, %.2f)\n", ci_pct[1],   ci_pct[2]))
+cat(sprintf("Bootstrap Basic      95%% CI: (%.2f, %.2f)\n", ci_basic[1], ci_basic[2]))
+```
+
+The two bootstrap intervals are similar; the percentile CI is (`r round(ci_pct[1],2)`, `r round(ci_pct[2],2)`) and the basic CI is (`r round(ci_basic[1],2)`, `r round(ci_basic[2],2)`).
+
+---
+
+### Part (c) — Bootstrap CI for difference in medians
+
+```{r}
+set.seed(551)
+obs_med_diff <- median(platelets_shock) - median(platelets_sepsis)
+
+boot_meds <- replicate(B, {
+  median(sample(platelets_shock,  n1_plt, replace = TRUE)) -
+  median(sample(platelets_sepsis, n2_plt, replace = TRUE))
+})
+
+ci_med_pct <- quantile(boot_meds, c(0.025, 0.975))
+
+cat(sprintf("Observed median difference (Shock - Sepsis): %.2f\n", obs_med_diff))
+cat(sprintf("Bootstrap Percentile 95%% CI (medians): (%.2f, %.2f)\n",
+            ci_med_pct[1], ci_med_pct[2]))
+```
+
+The percentile CI for the difference in medians is (`r round(ci_med_pct[1],2)`, `r round(ci_med_pct[2],2)`). For right-skewed data, the median is often a more robust measure of location than the mean, and the bootstrap provides a valid CI without requiring distributional assumptions.
+
+---
+
+### Part (d) — Welch t-test comparison
+
+```{r}
+welch_plt <- t.test(platelets_shock, platelets_sepsis) |> tidy()
+cat(sprintf("Welch t-test:  diff = %.2f,  95%% CI = (%.2f, %.2f),  p = %.4f\n",
+            welch_plt$estimate, welch_plt$conf.low, welch_plt$conf.high,
+            welch_plt$p.value))
+
+cat(sprintf("Bootstrap SE CI: diff = %.2f,  boot SE = %.4f\n", obs_diff, boot_se))
+cat(sprintf("Bootstrap Percentile 95%% CI: (%.2f, %.2f)\n", ci_pct[1], ci_pct[2]))
+```
+
+The Welch $t$ CI and bootstrap percentile CI are similar, suggesting the CLT approximation is reasonably good for these moderate sample sizes despite some skewness. If the distributions were more severely skewed or $n$ were smaller, the bootstrap percentile CI would be preferred because it does not rely on the approximate normality of $\bar{X}_1 - \bar{X}_2$.
+
+---
+
+### Part (e) — Two-sample permutation test
+
+```{r}
+set.seed(551)
+all_obs <- c(platelets_shock, platelets_sepsis)
+T_obs   <- mean(platelets_shock) - mean(platelets_sepsis)
+
+perm_stats <- replicate(B, {
+  perm <- sample(all_obs)
+  mean(perm[1:n1_plt]) - mean(perm[(n1_plt+1):(n1_plt+n2_plt)])
+})
+
+p_perm <- mean(abs(perm_stats) >= abs(T_obs))
+
+cat(sprintf("Observed test statistic: %.4f\n", T_obs))
+cat(sprintf("Permutation p-value (two-sided): %.4f\n", p_perm))
+cat(sprintf("Welch t-test p-value:            %.4f\n", welch_plt$p.value))
+```
+
+**Observed statistic:** $\hat{\Delta} = `r round(T_obs, 2)`$, **permutation $p$-value:** $`r round(p_perm, 4)`$
+
+The permutation $p$-value and Welch $t$-test $p$-value agree closely. The **permutation test** is exactly valid under $H_0: F_1 = F_2$ (the two populations have the *same distribution*) — it tests whether the group labels could have been permuted by chance. The Welch $t$-test is asymptotically valid under the weaker $H_0: \mu_1 = \mu_2$.
+
+---
+
+### Part (f) — Permutation null distribution
+
+```{r}
+#| fig-height: 5.5
+#| fig-width: 12
+#| code-fold: true
+
+# Pre-compute histogram bins so density heights are consistent across fill groups.
+# Mapping fill = abs(stat) >= abs(T_obs) inside aes() of geom_histogram splits
+# the data into two sub-groups and computes after_stat(density) within each
+# group separately, so tail bars appear at rescaled (incorrect) heights.
+# Instead, compute bins via hist() and use geom_rect with correct density values.
+
+h <- hist(perm_stats, breaks = 60, plot = FALSE)
+
+bin_df <- tibble(
+  xmin    = h$breaks[-length(h$breaks)],
+  xmax    = h$breaks[-1],
+  density = h$density,
+  xmid    = h$mids,
+  in_tail = abs(xmid) >= abs(T_obs)
+)
+
+p_val_label <- sprintf("p = %.3f", p_perm)
+
+ggplot(bin_df) +
+  geom_rect(aes(xmin = xmin, xmax = xmax,
+                ymin = 0,    ymax = density,
+                fill = in_tail),
+            color = "white", linewidth = 0.2) +
+  scale_fill_manual(values = c("FALSE" = "#aecde8", "TRUE" = "#e74c3c"),
+                    guide = "none") +
+  geom_vline(xintercept =  T_obs, color = "#2c3e50", linewidth = 1.5) +
+  geom_vline(xintercept = -T_obs, color = "#2c3e50", linewidth = 1.5,
+             linetype = "dashed") +
+  annotate("text", x = T_obs + 2, y = max(h$density) * 0.92,
+           label = bquote(hat(Delta)[obs] == .(round(T_obs, 1))),
+           color = "#2c3e50", size = 5, hjust = 0) +
+  annotate("text", x = min(h$breaks) + 2, y = max(h$density) * 0.80,
+           label = p_val_label, color = "#e74c3c",
+           size = 5.5, hjust = 0) +
+  labs(
+    title    = "Permutation Null Distribution: Difference in Mean Platelet Count",
+    subtitle = "Red bars = permuted statistics at least as extreme as observed (both tails)",
+    x        = expression(bar(x)[shock]^"*" - bar(x)[sepsis]^"*" ~
+                          "(× 10"^3 * "/µL)"),
+    y        = "Density"
+  )
+```
+
+---
+
+## Problem 5: Conceptual Questions
+
+### Part (a) — Paired t-test with small, skewed sample
+
+**(i) Reliability:** With $n = 12$ pairs and moderately right-skewed differences, the paired $t$-test has two concerns. The CLT provides only limited justification at $n = 12$; the sampling distribution of $\bar{D}$ may be noticeably skewed. Additionally, the $t$-test's validity requires that $D_i \sim N(\mu_D, \sigma_D^2)$ exactly for small samples. Moderate skewness may inflate the Type I error rate.
+
+**(ii) Alternatives:**
+- **Wilcoxon signed-rank test:** nonparametric rank-based test of the null hypothesis that the distribution of differences is symmetric around zero. Valid without normality and more powerful than the sign test when the symmetric-distribution assumption holds.
+- **Sign test:** tests whether the median difference is zero; minimal assumptions but low power.
+- **Bootstrap inference on paired differences:** resamples the observed $D_i$ with replacement; the bootstrap $t$ interval tends to perform well for skewed data.
+
+**(iii) Bootstrap approach:** Compute $D_i = X_{1i} - X_{2i}$ as usual. Then resample $D_1^*, \ldots, D_{12}^*$ from $\{D_1, \ldots, D_{12}\}$ with replacement, compute $\bar{D}^*$ for each bootstrap replicate, and form the percentile or bootstrap $t$ CI for $\mu_D$. This is exactly a one-sample bootstrap CI applied to the differences.
+
+---
+
+### Part (b) — Why the permutation test tests $H_0: F_1 = F_2$
+
+The permutation test works by computing the test statistic (e.g., $\bar{X}_1 - \bar{X}_2$) under random reassignment of observations to groups. This relabeling is exchangeable — each assignment is equally likely — **only if all observations come from the same distribution**, i.e., $H_0: F_1 = F_2$. The resulting reference distribution is then the exact null distribution under this strong hypothesis.
+
+If $F_1 \neq F_2$ even in ways other than location (e.g., same mean but different variances or shapes), the test may be incorrectly calibrated; random relabeling of asymmetric or heteroscedastic observations would still produce a non-uniform $p$-value.
+
+**Additional assumptions for the location null:** If $F_1$ and $F_2$ are assumed to differ only in location (i.e., $F_2(x) = F_1(x - \Delta)$ for some shift $\Delta$), then $H_0: F_1 = F_2$ is equivalent to $H_0: \mu_1 = \mu_2$. Under the location-shift model, the permutation test is a valid test of the location hypothesis.
+
+---
+
+### Part (c) — F-test non-normality and Levene's test
+
+When the underlying populations are **non-normal**, the $F$-statistic $S_1^2/S_2^2$ no longer follows an $F$ distribution under $H_0$. Both heavy-tailed distributions (e.g., $t_3$) and skewed distributions (e.g., exponential) cause the Type I error rate of the $F$-test to exceed the nominal level substantially — simulation studies show rejection rates of 15–30% at the 5% nominal level for exponential data (as illustrated in the Lesson 18 slides).
+
+**Levene's test** replaces the raw observations with their absolute deviations from the group median:
+$$Z_{ij} = |X_{ij} - \tilde{\mu}_j|$$
+and applies a standard $F$-test (or $t$-test for $k=2$ groups) to these transformed values. Because $Z_{ij}$ reflects spread without being directly tied to the tails of the original distribution, Levene's test is much less sensitive to non-normality while maintaining good power to detect unequal variances. It is therefore the preferred test for equality of variances in biomedical applications where normality cannot be assumed.
