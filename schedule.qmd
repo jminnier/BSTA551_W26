@@ -68,7 +68,8 @@ source(here("class_dates.R"))
 |  | `r w10d2 %>% format("%m/%d")` |  |  | No class, see recording of end of Lesson 23 |  |  |  |  |  |  |
 |  | **`r hw7 %>% format("%m/%d")`** |  |  | [**HW 7 due 11 pm**](/homework/HW_07.qmd) |  |  |  |  |  |  |
 |  |  |  |  |  |  |  |  |  |  |  |
-| 11 | `r w11d1 %>% format("%m/%d")` |  |  | Finals week (no class) |  |  |  |  |  |  |
+| 11 | `r w11d1 %>% format("%m/%d")` |  |  | Finals week: Office Hour |  |  |  |  |  |  |
+|  | `r w11d2 %>% format("%m/%d")` |  |  | Finals week: No class |  |  |  |  |  |  |
 |  | **`r final_close %>% format("%m/%d")`** |  |  | [**Final Exam due 11 pm**](/homework/Final_Exam.qmd) |  |  |  |  |  |  |
 |  |  | [[{{< iconify healthicons health-worker-form size=32px >}}](https://forms.office.com/r/itTyB4Viti)]{style="color:#f8f5f0;"} |  | Final exit survey, please complete if you have time! |  |  |  |  |  |  |
 
