@@ -1,0 +1,839 @@
+---
+title: "BSTA 551: Theory of Statistical Inference"
+subtitle: "Final Exam — Solutions"
+author: "Jessica Minnier"
+date: "2026-03-20"
+format:
+  html:
+    self-contained: true
+    toc: true
+    toc-depth: 2
+    number-sections: false
+    html-math-method: mathjax
+    theme: "../simple_NW.scss"
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+set.seed(551)
+theme_set(theme_minimal(base_size = 14))
+```
+
+---
+
+> Total: 100 points + 5 bonus. Rubric notes appear in orange boxes.  
+
+---
+
+# Problem 1 — Confidence Intervals and the CI–Test Duality (20 points)
+
+## Part (a): 95% $t$-interval (4 pts)
+
+::: {.solution}
+With $n = 16$, $\bar{x} = -8.4$ mmHg, $s = 6.2$ mmHg, and $\sigma$ unknown, the appropriate
+pivot is $T = (\bar{X} - \mu)/(S/\sqrt{n}) \sim t_{n-1}$. We use the
+$t$-distribution with $n - 1 = 15$ degrees of freedom because $\sigma$ must be estimated.
+
+$$\bar{x} \pm t_{15,\,0.025} \cdot \frac{s}{\sqrt{n}}
+  = -8.4 \pm 2.131 \cdot \frac{6.2}{\sqrt{16}}
+  = -8.4 \pm 2.131 \times 1.55
+  = -8.4 \pm 3.30.$$
+
+```{r}
+xbar <- -8.4; s <- 6.2; n <- 16
+t_star <- qt(0.975, df = n - 1)
+me <- t_star * s / sqrt(n)
+ci <- c(xbar - me, xbar + me)
+ci
+cat("length:", ci[2]-ci[1])
+```
+
+**95% CI for $\mu$:** $(-11.70,\; -5.10)$ mmHg.
+:::
+
+
+## Part (b): CI–Test duality (3 pts)
+
+::: {.solution}
+The null value $\mu_0 = 0$ does **not** fall inside the 95% CI $(-11.70,\; -5.10)$, so we
+**reject $H_0: \mu = 0$** at the $\alpha = 0.05$ level.
+
+**Duality principle:** A $100(1-\alpha)\%$ confidence interval contains exactly the set of
+parameter values that would *not* be rejected by a two-sided level-$\alpha$ test.
+Equivalently, $H_0: \mu = \mu_0$ is rejected at level $\alpha$ if and only if $\mu_0$ lies
+outside the $(1-\alpha)$ CI. No separate test calculation is required.
+
+**Conclusion:** There is statistically significant evidence at $\alpha = 0.05$ that the mean
+blood pressure change differs from zero; the entire interval lies below zero, indicating the
+drug produces a genuine reduction.
+:::
+
+
+
+## Part (c): Conceptual explanation of interval width (4 pts)
+
+```{r}
+xbar <- -8.4; s <- 6.2; n <- 25
+t_star <- qt(0.95, df = n - 1)
+me <- t_star * s / sqrt(n)
+ci <- c(xbar - me, xbar + me)
+ci
+cat("length:", ci[2]-ci[1])
+```
+
+::: {.solution}
+Two forces simultaneously narrow the second group's interval:
+
+1. **Lower confidence level (90% vs. 95%):** A lower confidence level requires a smaller
+   multiplier (e.g., $z_{0.05} \approx 1.645$ instead of $z_{0.025} \approx 1.960$ for large $n$),
+   directly shrinking the half-width.
+
+2. **Larger sample size ($n = 25$ vs. $n = 16$):** A larger $n$ reduces the standard error
+   $s/\sqrt{n}$, making the estimate more precise and again shrinking the half-width.
+
+Both effects work in the same direction, so despite any difference in sample variability, the
+90% CI with $n = 25$ is narrower. If we *increased* the confidence level to 95% for the second
+group, the larger $n$ might or might not fully compensate — it would depend on the specific $s$ values.
+:::
+
+
+
+## Part (d): Bootstrap percentile CI procedure and choice (4 pts)
+
+::: {.solution}
+**Steps for a 95% bootstrap percentile CI:**
+
+1. From the original sample $\{x_1, \ldots, x_{16}\}$, draw $B$ bootstrap samples
+   $\mathbf{x}^{*(b)}$ of size 16 **with replacement** (typically $B = 1{,}000$–$10{,}000$).
+2. For each $b$, compute the bootstrap replicate $\bar{x}^{*(b)}$.
+3. The 95% percentile interval is the 2.5th and 97.5th percentiles of
+   $\{\bar{x}^{*(1)}, \ldots, \bar{x}^{*(B)}\}$:
+$$\left(\hat{\theta}^*_{(0.025)},\;\hat{\theta}^*_{(0.975)}\right).$$
+
+**Prefer bootstrap percentile when:** the bootstrap distribution of $\bar{X}^*$ is
+approximately symmetric and the statistic has no simple closed-form SE (e.g., for medians,
+ratios, or complex functionals). It avoids relying on the normality assumption when $n$ is
+moderate.
+
+**Prefer studentized bootstrap $t$ when:** the data are noticeably skewed or the sampling
+distribution of the estimator is asymmetric. The studentized interval adapts to skewness by
+using bootstrap-estimated standard errors for each replicate, giving better coverage than the
+percentile interval in those cases.
+:::
+
+
+
+## Part (e): Wald, Wilson, and Agresti-Coull proportion CIs (5 pts)
+
+::: {.solution}
+```{r}
+n_prop <- 16; x_prop <- 10
+p_hat_prop <- x_prop / n_prop
+z95 <- qnorm(0.975)
+
+# Wald
+se_wald <- sqrt(p_hat_prop * (1 - p_hat_prop) / n_prop)
+wald <- p_hat_prop + c(-1, 1) * z95 * se_wald
+
+# Wilson (Score)
+denom_w <- 1 + z95^2 / n_prop
+center_w <- (p_hat_prop + z95^2 / (2 * n_prop)) / denom_w
+margin_w <- z95 * sqrt(p_hat_prop*(1-p_hat_prop)/n_prop + z95^2/(4*n_prop^2)) / denom_w
+wilson <- center_w + c(-1, 1) * margin_w
+
+# Agresti-Coull: add z^2/2 successes and z^2/2 failures, then Wald
+n_ac <- n_prop + z95^2
+p_tilde <- (x_prop + z95^2 / 2) / n_ac
+se_ac <- sqrt(p_tilde * (1 - p_tilde) / n_ac)
+agresti <- p_tilde + c(-1, 1) * z95 * se_ac
+
+cat(sprintf("p_hat = %.4f\n\n", p_hat_prop))
+cat(sprintf("Wald:          (%.4f, %.4f)\n", wald[1], wald[2]))
+cat(sprintf("Wilson:        (%.4f, %.4f)\n", wilson[1], wilson[2]))
+cat(sprintf("Agresti-Coull: (%.4f, %.4f)\n", agresti[1], agresti[2]))
+```
+
+With $\hat{p} = 10/16 = 0.625$, the three intervals are:
+
+| Method | Lower | Upper |
+|--------|-------|-------|
+| Wald | 0.388 | 0.862 |
+| Wilson | 0.377 | 0.818 |
+| Agresti-Coull | 0.373 | 0.822 |
+
+**Recommendation: Wilson (Score) or Agresti-Coull.**
+
+The Wald interval uses $\hat{p}$ to estimate the SE, which works well when $n$ is large and
+$\hat{p}$ is not near 0 or 1. With $n = 16$ and $\hat{p} = 0.625$, the counts $n\hat{p} = 10$
+and $n(1-\hat{p}) = 6$ are borderline — the rule of thumb of at least 10 successes and 10
+failures is not quite satisfied. Simulation studies show the Wald interval can have
+substantially below-nominal coverage (actual coverage $< 95\%$) in this regime, even when
+$\hat{p}$ is near 0.5, due to the discreteness of the binomial.
+
+The Wilson interval inverts the score test rather than approximating the SE at $\hat{p}$,
+giving it near-nominal coverage across a much wider range of $n$ and $p$. The Agresti-Coull
+interval adds $z^2/2 \approx 2$ pseudo-observations of each type before computing a Wald
+interval, acting as a simple approximation to the Wilson that is equally well-calibrated and
+easier to compute by hand. Either is preferred here. The Wilson and Agresti-Coull intervals
+are also notably asymmetric around $\hat{p}$, pulling the upper bound below the Wald
+upper bound — an appropriate correction when $\hat{p}$ is above 0.5.
+:::
+
+
+
+---
+
+# Problem 2 — Hypothesis Testing: Framework, Power, and Sample Size (20 points)
+
+## Part (a): Type I and Type II errors in context (4 pts)
+
+::: {.solution}
+- **Type I error ($\alpha$):** Rejecting $H_0: p = 0.10$ when it is true — concluding the SAE
+  rate is below 10% when it actually equals 10%. *Practical consequence:* The regulatory agency
+  approves (or supports claims for) a drug whose safety profile is no better than the 10%
+  threshold, potentially exposing patients to more harm than expected.
+
+- **Type II error ($\beta$):** Failing to reject $H_0$ when $H_a$ is true (e.g., the real SAE
+  rate is only 6%) — missing genuine evidence that the drug is safer. *Practical consequence:*
+  A drug that is truly safer may not receive regulatory recognition, delaying patient access to a
+  better treatment or discouraging the manufacturer from pursuing it further.
+
+In this regulatory context, controlling $\alpha$ protects against falsely endorsing an unsafe
+drug, while minimizing $\beta$ (maximizing power) ensures genuinely safer drugs are detected.
+:::
+
+
+
+## Part (b): Cutoff $c$ for level $\alpha = 0.05$ (5 pts)
+
+::: {.solution}
+Under $H_0: p = 0.10$, $n = 200$, the CLT gives
+
+$$Z = \frac{\hat{p} - 0.10}{\sqrt{0.10 \times 0.90 / 200}} \approx N(0,1).$$
+
+The standard error under $H_0$ is $\sqrt{0.09/200} = \sqrt{0.00045} \approx 0.02121$.
+
+For a lower-tailed test at $\alpha = 0.05$, reject when $Z < -z_{0.05} = -1.645$:
+
+$$\hat{p} < 0.10 - 1.645 \times 0.02121 = 0.10 - 0.03489 \approx 0.0651.$$
+
+In general: $c = p_0 - z_\alpha\sqrt{p_0(1-p_0)/n}$.
+
+```{r}
+p0 <- 0.10; n2 <- 200
+se_h0 <- sqrt(p0 * (1 - p0) / n2)
+c_cutoff <- p0 - qnorm(0.95) * se_h0
+round(c_cutoff, 4)
+```
+
+**Cutoff: $c \approx 0.0651$.**
+:::
+
+::: {.rubric}
+**Rubric (5 pts):** 1 pt — correct SE formula under $H_0$; 1 pt — lower-tailed direction;
+1 pt — using $z_{0.05} = 1.645$; 2 pts — correct numerical value $c \approx 0.065$.
+Accept $c$ expressed as general formula for 1 pt, numerical for 2nd pt.
+:::
+
+## Part (c): Power at $p_a = 0.06$ (5 pts)
+
+::: {.solution}
+Under $H_a: p = 0.06$, the SE is
+
+$$\text{SE}_{p_a} = \sqrt{\frac{0.06 \times 0.94}{200}} = \sqrt{0.000282} \approx 0.01679.$$
+
+Standardize the cutoff under $p_a$:
+
+$$Z = \frac{0.0651 - 0.06}{0.01679} = \frac{0.0051}{0.01679} \approx 0.304.$$
+
+$$\text{Power} = P(\hat{p} < 0.0651 \mid p = 0.06) = \Phi(0.304) \approx 0.620.$$
+
+```{r}
+pa <- 0.06
+se_ha <- sqrt(pa * (1 - pa) / n2)
+z_power <- (c_cutoff - pa) / se_ha
+power <- pnorm(z_power)
+cat("SE under Ha:", round(se_ha, 5),
+    "\nZ:", round(z_power, 3),
+    "\nPower:", round(power, 3))
+```
+
+The power is approximately **62%**. This is relatively low for a regulatory trial; larger $n$
+would be needed to reliably detect a true SAE rate of 6%.
+:::
+
+
+
+## Part (d): Sample size for 90% power (3 pts)
+
+::: {.solution}
+For a one-sided test $H_0: p = p_0$ vs. $H_a: p < p_0$ at level $\alpha$ with power $1-\beta$
+at $p_a$:
+
+$$n = \frac{\left[z_\alpha\sqrt{p_0(1-p_0)} + z_\beta\sqrt{p_a(1-p_a)}\right]^2}{(p_0 - p_a)^2}.$$
+
+With $p_0 = 0.10$, $p_a = 0.06$, $z_{0.05} = 1.645$, $z_{0.10} = 1.282$:
+
+```{r}
+z_alpha <- qnorm(0.95); z_beta <- qnorm(0.90)
+n_ss <- (z_alpha * sqrt(p0*(1-p0)) + z_beta * sqrt(pa*(1-pa)))^2 / (p0 - pa)^2
+ceiling(n_ss)
+```
+
+$$n = \frac{[1.645\sqrt{0.09} + 1.282\sqrt{0.0564}]^2}{(0.04)^2}
+    = \frac{(0.4935 + 0.3045)^2}{0.0016}
+    = \frac{(0.798)^2}{0.0016} \approx 398.$$
+
+**Required sample size: $n = 398$ patients** (always round up).
+:::
+
+
+
+## Part (e): p-value misinterpretation (3 pts)
+
+::: {.solution}
+**Error:** The statement treats the p-value as $P(H_0 \text{ is true} \mid \text{data})$ — a
+posterior probability on the hypothesis. This confuses frequentist and Bayesian frameworks
+(base-rate fallacy).
+
+**Correct interpretation:** A p-value of 0.03 means: *assuming $H_0$ is true* (SAE rate = 10%),
+the probability of observing a sample proportion as small as (or smaller than) what was observed
+is 3%. The p-value is computed under $H_0$ and says nothing directly about whether $H_0$ is
+true. To state "the probability the drug is harmful is 3%" would require a prior probability on
+$H_0$, which is a Bayesian quantity not provided by a p-value.
+:::
+
+
+---
+
+# Problem 3 — Neyman-Pearson Lemma and Likelihood Ratio Tests (20 points)
+
+## Part (a): Neyman-Pearson MP test (5 pts)
+
+::: {.solution}
+The likelihood ratio for $H_0: \theta = \theta_0$ vs. $H_a: \theta = \theta_1$
+($\theta_1 > \theta_0$) is
+
+$$\frac{L(\theta_1)}{L(\theta_0)}
+  = \frac{\theta_0^{-n} e^{-n\bar{x}/\theta_0}}{\theta_1^{-n} e^{-n\bar{x}/\theta_1}}
+  = \left(\frac{\theta_0}{\theta_1}\right)^n
+    \exp\!\left[-n\bar{x}\!\left(\frac{1}{\theta_1} - \frac{1}{\theta_0}\right)\right].$$
+
+By the **Neyman-Pearson Lemma**, the most powerful (MP) level-$\alpha$ test rejects $H_0$
+when this ratio exceeds a constant $k$. Taking logarithms (a monotone transformation):
+
+$$n\log\!\left(\frac{\theta_0}{\theta_1}\right)
+  - n\bar{x}\!\left(\frac{1}{\theta_1} - \frac{1}{\theta_0}\right) > \log k.$$
+
+Since $\theta_1 > \theta_0$ implies $\tfrac{1}{\theta_1} < \tfrac{1}{\theta_0}$, the coefficient
+of $\bar{x}$ is **negative**. Dividing both sides by this negative quantity reverses the
+inequality, yielding
+
+$$\bar{X} > c \quad \text{for some constant } c.$$
+
+**Intuition:** The exponential mean is $E[X] = \theta$, so larger $\theta_1 > \theta_0$ means
+observations tend to be larger. A large sample mean $\bar{X}$ is therefore evidence in favor
+of $\theta_1$.
+:::
+
+
+
+## Part (b): LRT statistic (4 pts)
+
+::: {.solution}
+The unrestricted MLE is $\hat\theta = \bar{X}$. Under $H_0$, the only value is $\theta_0$.
+The likelihood ratio statistic is
+
+$$\Lambda = \frac{L(\theta_0 \mid \mathbf{x})}{L(\hat\theta \mid \mathbf{x})}
+  = \frac{\theta_0^{-n}\, e^{-\sum x_i / \theta_0}}
+         {\bar{x}^{-n}\, e^{-\sum x_i / \bar{x}}}
+  = \left(\frac{\bar{x}}{\theta_0}\right)^n
+    \exp\!\left\{-n\!\left(\frac{\bar{x}}{\theta_0} - 1\right)\right\}.$$
+
+The LRT rejects $H_0$ when $\Lambda$ is small (the data are much more compatible with some
+$\theta \neq \theta_0$ than with $\theta_0$ itself):
+
+$$\text{Reject } H_0 \text{ when } \Lambda \leq c,$$
+
+for a cutoff $c \in (0,1)$ chosen to control the Type I error at the desired level $\alpha$.
+:::
+
+
+
+## Part (c): Choosing $c$ to control Type I error (3 pts)
+
+::: {.solution}
+To achieve level $\alpha = 0.05$, we need the cutoff $c$ to satisfy
+
+$$P(\Lambda \leq c \mid \theta = \theta_0) = \alpha = 0.05.$$
+
+In words: under $H_0$, we need the probability that the LRT statistic falls below $c$ to equal
+5%. This requires knowing the **exact null distribution** of $\Lambda$ (i.e., the distribution
+of $\Lambda$ when $\theta = \theta_0$ is the true value).
+
+For the exponential model, when $\theta = \theta_0$ is true, $2n\bar{X}/\theta_0 \sim \chi^2_{2n}$,
+which gives us an exact pivot to obtain the null distribution of $\Lambda$. We would find $c$
+by inverting this relationship — or use the asymptotic $\chi^2_1$ approximation for $-2\log\Lambda$
+described in part (d), setting $-2\log c_\text{approx} = \chi^2_{1,\,0.95} = 3.84$.
+:::
+
+
+
+## Part (d): Asymptotic distribution of $-2\log\Lambda$ (4 pts)
+
+::: {.solution}
+By **Wilks' Theorem**: under $H_0$ and standard regularity conditions (satisfied here by the
+exponential family), as $n \to \infty$,
+
+$$-2\log\Lambda \overset{d}{\longrightarrow} \chi^2_r,$$
+
+where $r$ = (dimension of full parameter space) $-$ (dimension of null parameter space)
+$= 1 - 0 = 1$.
+
+$$-2\log\Lambda \overset{d}{\longrightarrow} \chi^2_1 \quad \text{under } H_0.$$
+
+**Finding the critical value for $\alpha = 0.05$:** Reject $H_0$ when
+
+$$-2\log\Lambda > \chi^2_{1,\,0.95} = 3.84.$$
+
+This value comes from the 95th percentile of the $\chi^2_1$ distribution (`qchisq(0.95, df=1)`
+in R).
+:::
+
+
+
+## Part (e): Numerical evaluation (4 pts)
+
+::: {.solution}
+```{r}
+n3 <- 30; sum_x <- 1350; theta0 <- 50
+x_bar3 <- sum_x / n3
+u <- x_bar3 / theta0
+lrt_stat <- -2 * (n3 * log(u) + n3 * (1 - u))
+crit_val <- qchisq(0.95, df = 1)
+p_val3 <- 1 - pchisq(lrt_stat, df = 1)
+
+cat("x_bar =", x_bar3, "\n")
+cat("u = x_bar/theta_0 =", u, "\n")
+cat("-2 log Lambda =", round(lrt_stat, 4), "\n")
+cat("Chi-sq critical value (df=1, alpha=0.05):", round(crit_val, 3), "\n")
+cat("p-value:", round(p_val3, 4), "\n")
+```
+
+$\bar{x} = 1350/30 = 45$ days. With $u = 45/50 = 0.9$:
+
+$$-2\log\Lambda = -2n[\log u - (u - 1)]
+  = -2(30)[\log(0.9) - (0.9-1)]
+  = -60[-0.10536 + 0.10]
+  = -60(-0.00536) \approx 0.322.$$
+
+Since $0.322 < 3.84$, we **fail to reject $H_0$** at the 5% level ($p \approx 0.57$).
+
+**Conclusion:** There is insufficient evidence that the true mean readmission time differs
+from the claimed value of 50 days. The observed $\bar{x} = 45$ days is not statistically
+distinguishable from $\theta_0 = 50$ at $\alpha = 0.05$.
+:::
+
+
+
+---
+
+# Problem 4 — Two-Sample Inference (20 points)
+
+## Part (a): Hypotheses and Welch $t$-statistic (4 pts)
+
+::: {.solution}
+Drug A produces a greater mean *reduction* (more negative change) than Drug B when $\mu_1 < \mu_2$,
+i.e., $\mu_1 - \mu_2 < 0$.
+
+$$H_0: \mu_1 - \mu_2 = 0 \qquad \text{vs.} \qquad H_a: \mu_1 - \mu_2 < 0.$$
+
+**Welch two-sample $t$-statistic:**
+
+$$T = \frac{(\bar{X}_1 - \bar{X}_2) - 0}{\sqrt{S_1^2/n_1 + S_2^2/n_2}}.$$
+
+**Why Welch?** The sample standard deviations ($s_1 = 4.8$ vs. $s_2 = 6.3$) suggest
+$\sigma_1^2 \neq \sigma_2^2$. The pooled-variance $t$-test requires $\sigma_1^2 = \sigma_2^2$;
+violating this assumption can distort the Type I error, especially with unequal sample sizes
+($n_1 = 45 \neq n_2 = 42$). Welch's procedure uses a Satterthwaite-adjusted degrees of freedom
+to account for the variance heterogeneity and maintains valid level without that assumption.
+:::
+
+
+
+## Part (b): Compute test statistic and conclude (5 pts)
+
+::: {.solution}
+```{r}
+n1 <- 45; xbar1 <- -9.2; s1 <- 4.8
+n2b <- 42; xbar2 <- -7.1; s2 <- 6.3
+
+se_welch <- sqrt(s1^2/n1 + s2^2/n2b)
+t_welch <- (xbar1 - xbar2) / se_welch
+
+# Satterthwaite df
+df_satt <- (s1^2/n1 + s2^2/n2b)^2 /
+           ((s1^2/n1)^2/(n1 - 1) + (s2^2/n2b)^2/(n2b - 1))
+
+p_welch <- pt(t_welch, df = df_satt)  # one-sided lower tail
+
+cat("SE =", round(se_welch, 4), "\n")
+cat("T =", round(t_welch, 3), "\n")
+cat("Satterthwaite df =", round(df_satt, 1), "\n")
+cat("One-sided p-value =", round(p_welch, 4), "\n")
+```
+
+$$\text{SE} = \sqrt{\frac{4.8^2}{45} + \frac{6.3^2}{42}}
+  = \sqrt{0.5120 + 0.9450} = \sqrt{1.457} \approx 1.207.$$
+
+$$T = \frac{-9.2 - (-7.1)}{1.207} = \frac{-2.1}{1.207} \approx -1.739.$$
+
+**Satterthwaite df:**
+
+$$\hat\nu = \frac{(0.5120 + 0.9450)^2}{0.5120^2/44 + 0.9450^2/41}
+  \approx \frac{2.123}{0.00596 + 0.02178} \approx 76.5 \approx 77.$$
+
+For a lower-tailed test at $\alpha = 0.05$, $t_{77,\,0.05} \approx -1.665$.
+Since $T = -1.739 < -1.665$, we **reject $H_0$** at $\alpha = 0.05$ ($p \approx 0.043$).
+
+**Conclusion:** There is statistically significant evidence that Drug A produces a greater mean
+HDRS reduction than Drug B.
+:::
+
+
+
+## Part (c): 95% CI for $\mu_1 - \mu_2$ (4 pts)
+
+::: {.solution}
+```{r}
+t_star_ci <- qt(0.975, df = df_satt)
+lower_ci <- (xbar1 - xbar2) - t_star_ci * se_welch
+upper_ci <- (xbar1 - xbar2) + t_star_ci * se_welch
+cat("95% CI: (", round(lower_ci, 2), ",", round(upper_ci, 2), ")\n")
+```
+
+$$(\bar{x}_1 - \bar{x}_2) \pm t_{77,\,0.025} \cdot \text{SE}
+  = -2.1 \pm 1.991 \times 1.207 = -2.1 \pm 2.403.$$
+
+**95% CI for $\mu_1 - \mu_2$:** $(-4.50,\; 0.30)$ HDRS points.
+
+**Interpretation:** We are 95% confident that the true difference in mean HDRS change (Drug A
+minus Drug B) is between $-4.50$ and $0.30$ points. Because the interval includes 0, a
+two-sided test would not reject at $\alpha = 0.05$ — consistent with the one-sided test being
+just significant while the two-sided is borderline. Clinically, Drug A could plausibly achieve
+anywhere from essentially the same effect as Drug B to a 4.5-point greater reduction.
+:::
+
+
+## Part (d): Argument against sequential $F$-test strategy (3 pts)
+
+::: {.solution}
+**Primary theoretical argument — inflated Type I error via sequential testing:**
+Using the data first to test $H_0: \sigma_1^2 = \sigma_2^2$ and then to test equality of means
+performs two dependent hypothesis tests on the same data. The overall Type I error of the
+two-step procedure is not controlled at the nominal $\alpha$; in fact, simulation studies show
+the actual level can exceed $\alpha$ substantially, defeating the purpose of the pre-test.
+
+**Supplementary argument — non-robustness of the $F$-test:**
+The $F$-test for equal variances is highly sensitive to non-normality (more so than the
+$t$-tests themselves). If the populations are not normal, the pre-test is unreliable and the
+decision of which $t$-test to use becomes corrupted by a faulty preliminary test.
+
+**Recommendation:** Apply Welch's test by default. Simulation studies demonstrate it has nearly
+the same power as the pooled $t$-test when variances are equal, and it substantially
+outperforms the pooled $t$-test when variances differ — there is little cost to using it
+unconditionally.
+:::
+
+
+## Part (e): Permutation test procedure (4 pts)
+
+::: {.solution}
+**Procedure:**
+
+1. Compute the observed test statistic:
+   $T_\text{obs} = \bar{X}_1 - \bar{X}_2 = -9.2 - (-7.1) = -2.1$ HDRS points.
+2. Pool all $n_1 + n_2 = 87$ observations into one dataset.
+3. Randomly reassign group labels: draw 45 of the 87 observations (without replacement) as
+   the "Drug A" group; the remaining 42 are "Drug B." Compute the permuted statistic
+   $T^* = \bar{X}_1^* - \bar{X}_2^*$.
+4. Repeat step 3 $B$ times (e.g., $B = 10{,}000$) to obtain the permutation distribution
+   $\{T^{*(1)}, \ldots, T^{*(B)}\}$.
+5. The one-sided p-value is the proportion of permuted statistics at least as extreme as
+   the observed:
+$$p\text{-value} = \frac{\#\{T^{*(b)} \leq -2.1\}}{B}.$$
+
+Under $H_0: \mu_1 = \mu_2$, all $\binom{87}{45}$ group assignments are equally likely
+(exchangeability), so no distributional assumption is needed.
+:::
+
+
+---
+
+# Problem 5 — Paired Data and Nonparametric Inference (20 points)
+
+```{r}
+d <- c(-3, 0, -2, -3, 0, -5, 0, -3, -3, -3, -1, -1)
+```
+
+## Part (a): Rationale for paired analysis (3 pts)
+
+::: {.solution}
+**Why paired:** Each patient serves as their own control — the two pain scores within a patient
+are correlated due to individual characteristics (pain sensitivity, comorbidities, psychological
+factors). Treating the 24 observations as two independent groups ignores this positive
+within-patient correlation, which inflates the variance estimate and reduces power. A paired
+analysis explicitly removes between-patient variability from the error term, yielding a more
+sensitive comparison.
+
+**Questionable assumption:** The paired $t$-test requires the differences $D_i = X_i - Y_i$ to
+be approximately normally distributed. With only $n = 12$ pairs, the CLT provides limited
+protection. Pain scores are bounded (0–10), discrete, and may be skewed, making normality
+of differences questionable. Nonparametric alternatives are worth considering.
+:::
+
+
+
+## Part (b): Paired $t$-test (4 pts)
+
+::: {.solution}
+```{r}
+n5 <- length(d)
+d_bar <- mean(d)
+s_d <- sd(d)
+t_paired <- d_bar / (s_d / sqrt(n5))
+crit_t <- qt(0.975, df = n5 - 1)
+p_paired <- 2 * pt(t_paired, df = n5 - 1)
+
+cat("d_bar =", round(d_bar, 4), "\n")
+cat("s_D =", round(s_d, 4), "\n")
+cat("t =", round(t_paired, 4), "\n")
+cat("Critical value t_{11, 0.025} =", round(crit_t, 3), "\n")
+cat("Two-sided p-value =", round(p_paired, 5), "\n")
+```
+
+$\sum d_i = -24$, so $\bar{d} = -24/12 = -2.0$ points.
+
+Computing $s_D$:
+
+| $d_i$ | $d_i - \bar{d}$ | $(d_i - \bar{d})^2$ |
+|--------|-----------------|----------------------|
+| −3 | −1 | 1 |
+| 0 | 2 | 4 |
+| −2 | 0 | 0 |
+| −3 | −1 | 1 |
+| 0 | 2 | 4 |
+| −5 | −3 | 9 |
+| 0 | 2 | 4 |
+| −3 | −1 | 1 |
+| −3 | −1 | 1 |
+| −3 | −1 | 1 |
+| −1 | 1 | 1 |
+| −1 | 1 | 1 |
+
+$\sum(d_i - \bar{d})^2 = 28$, so $s_D = \sqrt{28/11} \approx 1.596$.
+
+$$T = \frac{-2.0}{1.596/\sqrt{12}} = \frac{-2.0}{0.4607} \approx -4.341.$$
+
+With $df = 11$, the critical value is $t_{11,\,0.025} = 2.201$. Since $|-4.341| > 2.201$, we
+**reject $H_0$** at $\alpha = 0.05$ ($p \approx 0.0012$).
+
+**Conclusion:** There is strong evidence that the mean pain score difference (opioid $-$
+non-opioid) is not zero; opioid treatment is associated with significantly lower pain scores.
+:::
+
+
+
+## Part (c): Sign test (5 pts)
+
+::: {.solution}
+**Step 1 — Exclude ties ($D_i = 0$):** Patients 2, 5, and 7 have $D_i = 0$. Remove them.
+Remaining $n^* = 9$ non-zero differences: all are negative.
+
+**Step 2 — Test statistic:** Under $H_0: M_D = 0$, each non-zero difference is equally likely
+positive or negative. Let $B^+ =$ number of positive differences.
+$B^+ \sim \text{Binomial}(9, 0.5)$ under $H_0$.
+Observed: $B^+ = 0$ (no positive differences).
+
+**Step 3 — Exact two-sided p-value:**
+
+```{r}
+n_sign <- sum(d != 0)   # 9 non-zero differences
+b_plus <- sum(d > 0)    # 0 positive differences
+cat("n* =", n_sign, "\n")
+cat("B+ =", b_plus, "\n")
+
+# Two-sided: both tails as extreme as observed (B+ = 0 is lower extreme)
+p_sign <- 2 * pbinom(b_plus, size = n_sign, prob = 0.5)
+cat("Two-sided p-value:", round(p_sign, 5), "\n")
+```
+
+$$p\text{-value} = 2 \times P(B^+ \leq 0 \mid n^* = 9,\; p = 0.5)
+  = 2 \times (0.5)^9 = \frac{2}{512} \approx 0.0039.$$
+
+Since $p \approx 0.0039 < 0.05$, we **reject $H_0$** at $\alpha = 0.05$.
+
+**Conclusion:** There is strong evidence that the median pain score difference is not zero;
+opioid treatment produces systematically lower pain scores.
+:::
+
+## Part (d): Wilcoxon signed-rank test (5 pts)
+
+::: {.solution}
+**Additional assumption:** The Wilcoxon signed-rank test requires the distribution of differences
+$D_i$ to be **symmetric about the (population) median $M_D$**. This is weaker than normality
+(the $t$-test requirement) but stronger than the sign test, which requires only a well-defined
+median. Under symmetry, the mean and median of $D$ coincide, so the test is about both location
+parameters simultaneously.
+
+**Steps to compute $W^+$:**
+
+1. **Exclude zeros:** Remove $D_i = 0$ (patients 2, 5, 7); retain $n^* = 9$ non-zero
+   differences.
+2. **Rank absolute values:** Compute $|D_i|$ for the remaining 9 differences, sort from
+   smallest to largest, and assign ranks 1–9. **Average ranks for ties** (e.g., the six
+   values $|D| = 3$ would share the average rank of their positions).
+3. **Attach signs:** Label each rank with the sign of the original $D_i$.
+4. **Compute $W^+$:** Sum the ranks of all *positive* differences. (Since all 9 differences
+   are negative here, $W^+ = 0$.)
+5. **Reference distribution:** Compare $W^+$ to critical values from the Wilcoxon signed-rank
+   table for $n^* = 9$, or use the large-sample normal approximation:
+
+$$Z = \frac{W^+ - \frac{n^*(n^*+1)}{4}}{\sqrt{\frac{n^*(n^*+1)(2n^*+1)}{24}}}
+    = \frac{0 - 22.5}{\sqrt{71.25}} \approx -2.67 \implies p \approx 0.008 \text{ (two-sided)}.$$
+
+```{r}
+# Optional computation
+d_nonzero <- d[d != 0]
+ranks_abs <- rank(abs(d_nonzero))
+W_plus <- sum(ranks_abs[d_nonzero > 0])
+n_wsr <- length(d_nonzero)
+E_W <- n_wsr * (n_wsr + 1) / 4
+Var_W <- n_wsr * (n_wsr + 1) * (2 * n_wsr + 1) / 24
+Z_wsr <- (W_plus - E_W) / sqrt(Var_W)
+cat("W+ =", W_plus, "\n")
+cat("Z (normal approx) =", round(Z_wsr, 3), "\n")
+cat("Two-sided p-value:", round(2 * pnorm(Z_wsr), 4), "\n")
+```
+:::
+
+
+
+## Part (e): Parametric vs. nonparametric (3 pts)
+
+::: {.solution}
+**Prefer nonparametric when:**
+
+- Sample sizes are small and normality cannot be verified (here, $n = 12$)
+- The outcome is ordinal or bounded (pain scores are discrete values on 0–10 scale — the
+  differences between values are not guaranteed to be clinically equal)
+- The data show heavy tails, severe skewness, or outliers
+
+**Parametric retains an advantage when:**
+
+- The sample is large enough that the CLT provides approximately valid inference regardless of
+  distribution (with large $n$, the $t$-test is robust)
+- Normality is plausible — under normality the $t$-test is the UMPU test and has the highest
+  power for a given level; the asymptotic relative efficiency (ARE) of the Wilcoxon vs. $t$
+  under normality is $\pi/3 \approx 0.955$, so the parametric test is only slightly more
+  efficient but still has an edge
+
+In this problem all three tests agree on both direction and significance, suggesting the
+result is robust to the choice of method.
+:::
+
+
+---
+
+# Bonus Problem — MLE, Fisher Information, and Proportion Intervals (5 points)
+
+## Part (a): MLE for Bernoulli (1 pt)
+
+::: {.solution}
+For $X_1, \ldots, X_n \overset{\text{iid}}{\sim} \text{Bernoulli}(p)$, the log-likelihood is
+
+$$\ell(p) = \left(\sum_{i=1}^n x_i\right)\log p + \left(n - \sum_{i=1}^n x_i\right)\log(1-p).$$
+
+Let $T = \sum x_i$. Setting the derivative to zero:
+
+$$\frac{d\ell}{dp} = \frac{T}{p} - \frac{n - T}{1-p} = 0
+  \implies T(1-p) = (n-T)p
+  \implies T = np
+  \implies \hat{p}_{\text{MLE}} = \frac{T}{n} = \bar{X}.$$
+:::
+
+
+
+## Part (b): Fisher information and CRLB (2 pts)
+
+::: {.solution}
+The log of the single-observation pmf is
+
+$$\log f(x \mid p) = x\log p + (1-x)\log(1-p).$$
+
+The second derivative is
+
+$$\frac{\partial^2}{\partial p^2}\log f(x\mid p) = -\frac{x}{p^2} - \frac{1-x}{(1-p)^2}.$$
+
+Taking the negative expectation:
+
+$$I(p) = -E\!\left[-\frac{X}{p^2} - \frac{1-X}{(1-p)^2}\right]
+  = \frac{E[X]}{p^2} + \frac{1 - E[X]}{(1-p)^2}
+  = \frac{p}{p^2} + \frac{1-p}{(1-p)^2}
+  = \frac{1}{p} + \frac{1}{1-p} = \frac{1}{p(1-p)}.$$
+
+The **Cramér–Rao Lower Bound** for any unbiased estimator of $p$ from $n$ observations:
+
+$$\text{Var}(\hat{p}) \geq \frac{1}{n\,I(p)} = \frac{p(1-p)}{n}.$$
+
+**Does $\hat{p}_{\text{MLE}} = \bar{X}$ achieve the CRLB?**
+
+$\hat{p}$ is unbiased: $E[\bar{X}] = p$.  
+$\text{Var}(\bar{X}) = p(1-p)/n$ = CRLB exactly.
+
+Yes — $\hat{p}$ achieves the CRLB for all $p$, so it is the **UMVUE** of $p$.
+:::
+
+
+
+## Part (c): Wald and Wilson CIs in R (2 pts)
+
+::: {.solution}
+```{r}
+n_b <- 50; x_b <- 34
+p_hat <- x_b / n_b
+z95 <- qnorm(0.975)
+
+# Wald CI
+se_wald <- sqrt(p_hat * (1 - p_hat) / n_b)
+wald_ci <- p_hat + c(-1, 1) * z95 * se_wald
+cat("Wald 95% CI:  (", round(wald_ci[1], 4), ",", round(wald_ci[2], 4), ")\n")
+
+# Wilson (Score) CI
+denom_w <- 1 + z95^2 / n_b
+center_w <- (p_hat + z95^2 / (2 * n_b)) / denom_w
+margin_w <- z95 * sqrt(p_hat * (1 - p_hat) / n_b + z95^2 / (4 * n_b^2)) / denom_w
+wilson_ci <- center_w + c(-1, 1) * margin_w
+cat("Wilson 95% CI: (", round(wilson_ci[1], 4), ",", round(wilson_ci[2], 4), ")\n")
+```
+
+| Method | 95% CI |
+|--------|--------|
+| Wald   | $(0.547,\; 0.813)$ |
+| Wilson | $(0.548,\; 0.797)$ |
+
+**Preference:** The **Wilson (Score) interval** is preferred. The Wald interval is known to
+have poor coverage when $p$ is close to 0 or 1, or when $n\hat{p}$ is small — it can even
+produce bounds outside $[0,1]$. The Wilson interval maintains near-nominal coverage across a
+wider range of $p$ values because it inverts the score test rather than approximating the SE
+at $\hat{p}$. With $n = 50$ and $\hat{p} = 0.68$, both intervals are reasonable, but the Wilson
+is still preferred as the default.
+:::
+

@@ -1,0 +1,2102 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/tabby.min.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-a14e345711173c227b21482e2eb4cc70.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.8.25">
+
+  <meta name="author" content="Jessica Minnier">
+  <meta name="dcterms.date" content="2026-03-11">
+  <title>Theory of Statistical Inference – Lesson 24: Course Review</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #383a42;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #383a42; } /* Normal */
+    code span.al { color: #95da4c; background-color: #4d1f24; font-weight: bold; } /* Alert */
+    code span.an { color: #50a14f; } /* Annotation */
+    code span.at { color: #a626a4; } /* Attribute */
+    code span.bn { color: #986801; } /* BaseN */
+    code span.bu { color: #a626a4; } /* BuiltIn */
+    code span.cf { color: #a626a4; } /* ControlFlow */
+    code span.ch { color: #50a14f; } /* Char */
+    code span.cn { color: #986801; } /* Constant */
+    code span.co { color: #a0a1a7; font-style: italic; } /* Comment */
+    code span.cv { color: #e45649; font-style: italic; } /* CommentVar */
+    code span.do { color: #e45649; } /* Documentation */
+    code span.dt { color: #a626a4; } /* DataType */
+    code span.dv { color: #986801; } /* DecVal */
+    code span.er { color: #f44747; text-decoration: underline; } /* Error */
+    code span.ex { color: #4078f2; font-weight: bold; } /* Extension */
+    code span.fl { color: #986801; } /* Float */
+    code span.fu { color: #4078f2; } /* Function */
+    code span.im { color: #50a14f; } /* Import */
+    code span.in { color: #c45b00; } /* Information */
+    code span.kw { color: #a626a4; } /* Keyword */
+    code span.op { color: #a626a4; } /* Operator */
+    code span.ot { color: #27ae60; } /* Other */
+    code span.pp { color: #a626a4; } /* Preprocessor */
+    code span.re { color: #2980b9; background-color: #153042; } /* RegionMarker */
+    code span.sc { color: #0184bc; } /* SpecialChar */
+    code span.ss { color: #da4453; } /* SpecialString */
+    code span.st { color: #50a14f; } /* String */
+    code span.va { color: #e45649; } /* Variable */
+    code span.vs { color: #da4453; } /* VerbatimString */
+    code span.wa { color: #da4453; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-2e74a31c1bd85ff20c819e764b562f47.css">
+  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link href="../../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+  <script src="../../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+  <script src="../../site_libs/viz-1.8.2/viz.js"></script>
+  <link href="../../site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet">
+  <script src="../../site_libs/grViz-binding-1.0.11/grViz.js"></script>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" data-background-color="#006a4e" class="quarto-title-block center">
+  <h1 class="title">Lesson 24: Course Review</h1>
+  <p class="subtitle">BSTA 551: Statistical Inference</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Jessica Minnier 
+</div>
+</div>
+</div>
+
+  <p class="date">2026-03-11</p>
+</section>
+<section>
+<section id="lesson-24-course-review" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>Lesson 24: Course Review</h1>
+
+</section>
+<section id="the-big-picture-what-this-course-was-about" class="slide level2 scrollable">
+<h2>The Big Picture: What This Course Was About</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Central Question of Statistical Inference</strong></p>
+</div>
+<div class="callout-content">
+<p>Given a <strong>random sample</strong> <span class="math inline">\(X_1, X_2, \ldots, X_n\)</span> from a population with unknown parameter <span class="math inline">\(\theta\)</span>, how do we:</p>
+<ol type="1">
+<li><strong>Estimate</strong> <span class="math inline">\(\theta\)</span>? (Point estimation: Lessons 1–6)</li>
+<li><strong>Quantify uncertainty</strong> about <span class="math inline">\(\theta\)</span>? (Confidence intervals: Lessons 7–11)</li>
+<li><strong>Test claims</strong> about <span class="math inline">\(\theta\)</span>? (Hypothesis testing: Lessons 12–21)</li>
+<li><strong>Connect</strong> to broader frameworks? (OLS, Bayesian: Lessons 22–23)</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>The three pillars share a foundation:</strong> the sampling distribution of estimators.</p>
+</div>
+</section>
+<section id="course-roadmap" class="slide level2">
+<h2>Course Roadmap</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-c13b0cc6a17462780063" style="width:1728px;height:864px;"></div>
+<script type="application/json" data-for="htmlwidget-c13b0cc6a17462780063">{"x":{"diagram":"\ndigraph course_map {\n  graph [rankdir = TB, bgcolor = transparent, fontsize = 28]\n  node [shape = box, style = filled, fontsize = 22, fontname = \"Helvetica\"]\n\n  subgraph cluster_pe {\n    label = \"Point Estimation (Lessons 1-6)\"\n    style = filled; color = \"#3498db30\"; fontsize = 24\n    pe1 [label = \"Statistics &\\nSampling Distributions\", fillcolor = \"#85c1e9\"]\n    pe2 [label = \"Bias, Variance,\\nMSE\", fillcolor = \"#85c1e9\"]\n    pe3 [label = \"MVUE, CRLB,\\nFisher Information\", fillcolor = \"#85c1e9\"]\n    pe4 [label = \"MOM & MLE\", fillcolor = \"#85c1e9\"]\n    pe5 [label = \"Sufficiency,\\nRao-Blackwell\", fillcolor = \"#85c1e9\"]\n  }\n\n  subgraph cluster_ci {\n    label = \"Confidence Intervals (Lessons 7-11)\"\n    style = filled; color = \"#27ae6030\"; fontsize = 24\n    ci1 [label = \"Pivotal Quantities\\n(z, t)\", fillcolor = \"#82e0aa\"]\n    ci2 [label = \"Wald, Score,\\nAgresti-Coull\", fillcolor = \"#82e0aa\"]\n    ci3 [label = \"Bootstrap CIs\\n(percentile, t)\", fillcolor = \"#82e0aa\"]\n    ci4 [label = \"Delta Method\", fillcolor = \"#82e0aa\"]\n  }\n\n  subgraph cluster_ht {\n    label = \"Hypothesis Testing (Lessons 12-21)\"\n    style = filled; color = \"#e74c3c30\"; fontsize = 24\n    ht1 [label = \"Null/Alt Hypotheses\\nType I/II Errors\", fillcolor = \"#f1948a\"]\n    ht2 [label = \"z, t Tests\\nProportion Tests\", fillcolor = \"#f1948a\"]\n    ht3 [label = \"P-values, Power,\\nSample Size\", fillcolor = \"#f1948a\"]\n    ht4 [label = \"Neyman-Pearson\\nLikelihood Ratio\", fillcolor = \"#f1948a\"]\n    ht5 [label = \"Bootstrap &\\nPermutation Tests\", fillcolor = \"#f1948a\"]\n    ht6 [label = \"Two-Sample &\\nPaired Tests\", fillcolor = \"#f1948a\"]\n    ht7 [label = \"Nonparametric:\\nSign, Wilcoxon\", fillcolor = \"#f1948a\"]\n  }\n\n  subgraph cluster_ext {\n    label = \"Extensions (Lessons 22-23)\"\n    style = filled; color = \"#9b59b630\"; fontsize = 24\n    ext1 [label = \"Gauss-Markov\\nOLS Theory\", fillcolor = \"#c39bd3\"]\n    ext2 [label = \"Bayesian\\nInference\", fillcolor = \"#c39bd3\"]\n  }\n\n  pe4 -> ci2 [label = \"MLE → Wald CI\", fontsize = 16]\n  pe3 -> ci2 [label = \"Fisher Info → SE\", fontsize = 16]\n  ci1 -> ht2 [label = \"Duality\", fontsize = 16]\n  ht4 -> ext2 [label = \"Likelihood\", fontsize = 16]\n  pe5 -> ext1 [label = \"BLUE\", fontsize = 16]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section></section>
+<section>
+<section id="i.-point-estimation-lessons-16" class="title-slide slide level1 center" data-background-color="#3498db">
+<h1>I. Point Estimation (Lessons 1–6)</h1>
+
+</section>
+<section id="key-concepts-evaluating-estimators" class="slide level2">
+<h2>Key Concepts: Evaluating Estimators</h2>
+<p>Given data <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} f(x|\theta)\)</span>, a <strong>statistic</strong> <span class="math inline">\(T = g(X_1, \ldots, X_n)\)</span> is an <strong>estimator</strong> of <span class="math inline">\(\theta\)</span>.</p>
+<div class="fragment">
+<p><strong>Criteria for a good estimator:</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 32%">
+<col style="width: 35%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Property</th>
+<th>Definition</th>
+<th>Measures</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Bias</strong></td>
+<td><span class="math inline">\(\text{Bias}(\hat{\theta}) = E[\hat{\theta}] - \theta\)</span></td>
+<td>Systematic error</td>
+</tr>
+<tr class="even">
+<td><strong>Variance</strong></td>
+<td><span class="math inline">\(\text{Var}(\hat{\theta}) = E[(\hat{\theta} - E[\hat{\theta}])^2]\)</span></td>
+<td>Precision / spread</td>
+</tr>
+<tr class="odd">
+<td><strong>MSE</strong></td>
+<td><span class="math inline">\(\text{MSE}(\hat{\theta}) = \text{Var}(\hat{\theta}) + [\text{Bias}(\hat{\theta})]^2\)</span></td>
+<td>Overall accuracy</td>
+</tr>
+<tr class="even">
+<td><strong>Consistency</strong></td>
+<td><span class="math inline">\(\hat{\theta}_n \xrightarrow{P} \theta\)</span> as <span class="math inline">\(n \to \infty\)</span></td>
+<td>Large-sample reliability</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Bias-Variance Tradeoff</strong></p>
+</div>
+<div class="callout-content">
+<p>A biased estimator with small variance (low MSE) can be <strong>preferred</strong> over an unbiased estimator with large variance. MSE captures this tradeoff.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="finding-estimators-mom-and-mle" class="slide level2">
+<h2>Finding Estimators: MOM and MLE</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Method of Moments (MOM)</strong></p>
+<p>Set sample moments equal to population moments: <span class="math display">\[\frac{1}{n}\sum_{i=1}^n X_i^k = E[X^k] \quad k = 1, 2, \ldots\]</span></p>
+<ul>
+<li>Simple to compute</li>
+<li>Not always efficient</li>
+<li>May not respect parameter constraints</li>
+</ul>
+</div><div class="column" style="width:48%;">
+<p><strong>Maximum Likelihood (MLE)</strong></p>
+<p>Maximize the likelihood (or log-likelihood): <span class="math display">\[\hat{\theta}_{MLE} = \arg\max_\theta L(\theta | \mathbf{x}) = \arg\max_\theta \ell(\theta | \mathbf{x})\]</span></p>
+<ul>
+<li>Asymptotically efficient: <span class="math inline">\(\text{Var}(\hat{\theta}_{MLE}) \to \frac{1}{I_n(\theta)}\)</span></li>
+<li>Invariant: <span class="math inline">\(g(\hat{\theta}_{MLE}) = \widehat{g(\theta)}_{MLE}\)</span></li>
+<li>Asymptotically normal</li>
+</ul>
+</div></div>
+</section>
+<section id="optimality-theory-the-quest-for-the-best-estimator" class="slide level2">
+<h2>Optimality Theory: The Quest for the Best Estimator</h2>
+<p><strong>Goal:</strong> Among all unbiased estimators, find the one with <strong>minimum variance</strong> (MVUE).</p>
+<div class="fragment">
+<p><strong>Cramér-Rao Lower Bound (CRLB):</strong></p>
+<p>For any unbiased estimator <span class="math inline">\(\hat{\theta}\)</span>: <span class="math display">\[\text{Var}(\hat{\theta}) \geq \frac{1}{I_n(\theta)} = \frac{1}{nI_1(\theta)}\]</span></p>
+<p>where the <strong>Fisher Information</strong> for a single observation is: <span class="math display">\[I_1(\theta) = E\left[-\frac{\partial^2}{\partial\theta^2}\ln f(X|\theta)\right] = \text{Var}\left(\frac{\partial}{\partial\theta}\ln f(X|\theta)\right)\]</span></p>
+</div>
+<div class="fragment">
+<p><strong>If</strong> <span class="math inline">\(\text{Var}(\hat{\theta}) = \frac{1}{I_n(\theta)}\)</span>, then <span class="math inline">\(\hat{\theta}\)</span> <strong>is MVUE</strong> (attains the CRLB).</p>
+</div>
+</section>
+<section id="finding-mvue-the-complete-toolkit" class="slide level2">
+<h2>Finding MVUE: The Complete Toolkit</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 32%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Method</th>
+<th>Approach</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>CRLB attainment</strong></td>
+<td>Show <span class="math inline">\(\text{Var}(\hat{\theta}) = 1/I_n(\theta)\)</span></td>
+<td>If equality holds</td>
+</tr>
+<tr class="even">
+<td><strong>Rao-Blackwell</strong></td>
+<td>Condition on sufficient statistic: <span class="math inline">\(E[\hat{\theta}|T]\)</span></td>
+<td>Improve an unbiased estimator</td>
+</tr>
+<tr class="odd">
+<td><strong>Lehmann-Scheffé</strong></td>
+<td>Unbiased + function of complete sufficient statistic</td>
+<td>Most general approach</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>Sufficiency</strong> (Fisher-Neyman Factorization): <span class="math inline">\(T\)</span> is sufficient for <span class="math inline">\(\theta\)</span> if <span class="math display">\[f(\mathbf{x}|\theta) = g(T(\mathbf{x}), \theta) \cdot h(\mathbf{x})\]</span></p>
+<p>The sufficient statistic captures <strong>all information</strong> about <span class="math inline">\(\theta\)</span> in the data.</p>
+</div>
+</section>
+<section id="quick-example-normal-mean" class="slide level2">
+<h2>Quick Example: Normal Mean</h2>
+<p><strong>Data:</strong> <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} N(\mu, \sigma^2)\)</span> with <span class="math inline">\(\sigma^2\)</span> known.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a></a><span class="co"># Demonstrate CRLB: comparing estimators of normal mean</span></span>
+<span id="cb1-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb1-3"><a></a>n <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb1-4"><a></a>n_sim <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb1-5"><a></a>true_mu <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb1-6"><a></a></span>
+<span id="cb1-7"><a></a>sims <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">sim =</span> <span class="dv">1</span><span class="sc">:</span>n_sim) <span class="sc">|&gt;</span></span>
+<span id="cb1-8"><a></a>  <span class="fu">mutate</span>(</span>
+<span id="cb1-9"><a></a>    <span class="at">data =</span> <span class="fu">map</span>(sim, <span class="sc">~</span><span class="fu">rnorm</span>(n, <span class="at">mean =</span> true_mu, <span class="at">sd =</span> <span class="dv">2</span>)),</span>
+<span id="cb1-10"><a></a>    <span class="at">xbar =</span> <span class="fu">map_dbl</span>(data, mean),</span>
+<span id="cb1-11"><a></a>    <span class="at">median =</span> <span class="fu">map_dbl</span>(data, median),</span>
+<span id="cb1-12"><a></a>    <span class="at">midrange =</span> <span class="fu">map_dbl</span>(data, <span class="sc">~</span>(<span class="fu">max</span>(.x) <span class="sc">+</span> <span class="fu">min</span>(.x)) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb1-13"><a></a>  )</span>
+<span id="cb1-14"><a></a></span>
+<span id="cb1-15"><a></a>sims_long <span class="ot">&lt;-</span> sims <span class="sc">|&gt;</span></span>
+<span id="cb1-16"><a></a>  <span class="fu">select</span>(sim, xbar, median, midrange) <span class="sc">|&gt;</span></span>
+<span id="cb1-17"><a></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>sim, <span class="at">names_to =</span> <span class="st">"Estimator"</span>, <span class="at">values_to =</span> <span class="st">"estimate"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb1-18"><a></a>  <span class="fu">mutate</span>(<span class="at">Estimator =</span> <span class="fu">fct_recode</span>(Estimator,</span>
+<span id="cb1-19"><a></a>    <span class="st">"Sample Mean"</span> <span class="ot">=</span> <span class="st">"xbar"</span>,</span>
+<span id="cb1-20"><a></a>    <span class="st">"Sample Median"</span> <span class="ot">=</span> <span class="st">"median"</span>,</span>
+<span id="cb1-21"><a></a>    <span class="st">"Midrange"</span> <span class="ot">=</span> <span class="st">"midrange"</span></span>
+<span id="cb1-22"><a></a>  ))</span>
+<span id="cb1-23"><a></a></span>
+<span id="cb1-24"><a></a><span class="co"># CRLB for this problem: sigma^2 / n = 4/10 = 0.4</span></span>
+<span id="cb1-25"><a></a>crlb_var <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="sc">/</span> n</span>
+<span id="cb1-26"><a></a></span>
+<span id="cb1-27"><a></a>var_summary <span class="ot">&lt;-</span> sims_long <span class="sc">|&gt;</span></span>
+<span id="cb1-28"><a></a>  <span class="fu">group_by</span>(Estimator) <span class="sc">|&gt;</span></span>
+<span id="cb1-29"><a></a>  <span class="fu">summarise</span>(</span>
+<span id="cb1-30"><a></a>    <span class="at">variance =</span> <span class="fu">var</span>(estimate),</span>
+<span id="cb1-31"><a></a>    <span class="at">bias =</span> <span class="fu">mean</span>(estimate) <span class="sc">-</span> true_mu,</span>
+<span id="cb1-32"><a></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb1-33"><a></a>  )</span>
+<span id="cb1-34"><a></a></span>
+<span id="cb1-35"><a></a><span class="fu">ggplot</span>(sims_long, <span class="fu">aes</span>(<span class="at">x =</span> estimate, <span class="at">fill =</span> Estimator)) <span class="sc">+</span></span>
+<span id="cb1-36"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">60</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>, <span class="at">position =</span> <span class="st">"identity"</span>) <span class="sc">+</span></span>
+<span id="cb1-37"><a></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>Estimator, <span class="at">nrow =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb1-38"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> true_mu, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb1-39"><a></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> var_summary, </span>
+<span id="cb1-40"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> <span class="fl">7.5</span>, <span class="at">y =</span> <span class="cn">Inf</span>, </span>
+<span id="cb1-41"><a></a>                <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Var = "</span>, <span class="fu">round</span>(variance, <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">Bias = "</span>, <span class="fu">round</span>(bias, <span class="dv">3</span>))),</span>
+<span id="cb1-42"><a></a>            <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">size =</span> <span class="dv">5</span>, <span class="at">inherit.aes =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb1-43"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">7.5</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"CRLB = "</span>, crlb_var), </span>
+<span id="cb1-44"><a></a>           <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.5</span>, <span class="at">size =</span> <span class="fl">4.5</span>, <span class="at">fontface =</span> <span class="st">"italic"</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb1-45"><a></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"#3498db"</span>, <span class="st">"#e74c3c"</span>, <span class="st">"#f39c12"</span>)) <span class="sc">+</span></span>
+<span id="cb1-46"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">hat</span>(mu)), <span class="at">y =</span> <span class="st">"Count"</span>,</span>
+<span id="cb1-47"><a></a>       <span class="at">title =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"Comparing Estimators of "</span>, mu, <span class="st">" (Normal data, n = 10, "</span>, sigma<span class="sc">^</span><span class="dv">2</span>, <span class="st">" = 4)"</span>)),</span>
+<span id="cb1-48"><a></a>       <span class="at">subtitle =</span> <span class="st">"Sample mean attains the CRLB — it is MVUE"</span>) <span class="sc">+</span></span>
+<span id="cb1-49"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="24_CourseReview_files/figure-revealjs/unnamed-chunk-2-1.png" width="1344" class="r-stretch"></section></section>
+<section>
+<section id="ii.-confidence-intervals-lessons-711" class="title-slide slide level1 center" data-background-color="#27ae60">
+<h1>II. Confidence Intervals (Lessons 7–11)</h1>
+
+</section>
+<section id="ci-construction-three-approaches" class="slide level2">
+<h2>CI Construction: Three Approaches</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Core Idea</strong></p>
+</div>
+<div class="callout-content">
+<p>A <span class="math inline">\(100(1-\alpha)\%\)</span> confidence interval provides a range of <strong>plausible values</strong> for <span class="math inline">\(\theta\)</span> based on the observed data. In repeated sampling, <span class="math inline">\(100(1-\alpha)\%\)</span> of such intervals contain the true <span class="math inline">\(\theta\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Approach 1: Pivotal Quantities</strong> — Find <span class="math inline">\(Q(X_1, \ldots, X_n, \theta)\)</span> whose distribution is known and free of <span class="math inline">\(\theta\)</span>, then invert.</p>
+<p><strong>Approach 2: Asymptotic (Wald / Score)</strong> — Use the asymptotic normality of the MLE.</p>
+<p><strong>Approach 3: Bootstrap</strong> — Resample from the data to approximate the sampling distribution.</p>
+</div>
+</section>
+<section id="ci-quick-reference" class="slide level2">
+<h2>CI Quick Reference</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 34%">
+<col style="width: 30%">
+<col style="width: 34%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Method</th>
+<th>Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span> known</td>
+<td>z-interval</td>
+<td><span class="math inline">\(\bar{x} \pm z_{\alpha/2}\frac{\sigma}{\sqrt{n}}\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span> unknown</td>
+<td>t-interval</td>
+<td><span class="math inline">\(\bar{x} \pm t_{\alpha/2, n-1}\frac{s}{\sqrt{n}}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Proportion <span class="math inline">\(p\)</span></td>
+<td>Wald</td>
+<td><span class="math inline">\(\hat{p} \pm z_{\alpha/2}\sqrt{\frac{\hat{p}(1-\hat{p})}{n}}\)</span></td>
+</tr>
+<tr class="even">
+<td>Proportion <span class="math inline">\(p\)</span></td>
+<td>Score (Wilson)</td>
+<td><span class="math inline">\(\tilde{p} \pm z_{\alpha/2}\frac{\sqrt{\hat{p}(1-\hat{p})/n + z^2/(4n^2)}}{1 + z^2/n}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Proportion <span class="math inline">\(p\)</span></td>
+<td>Agresti-Coull</td>
+<td>Wald with <span class="math inline">\(\tilde{p} = \frac{X + 2}{n + 4}\)</span></td>
+</tr>
+<tr class="even">
+<td>General <span class="math inline">\(\theta\)</span></td>
+<td>Wald</td>
+<td><span class="math inline">\(\hat{\theta}_{MLE} \pm z_{\alpha/2}\sqrt{1/I_n(\hat{\theta})}\)</span></td>
+</tr>
+<tr class="odd">
+<td>General <span class="math inline">\(\theta\)</span></td>
+<td>Bootstrap percentile</td>
+<td><span class="math inline">\((\hat{\theta}^*_{\alpha/2}, \; \hat{\theta}^*_{1-\alpha/2})\)</span></td>
+</tr>
+<tr class="even">
+<td>General <span class="math inline">\(\theta\)</span></td>
+<td>Bootstrap t</td>
+<td><span class="math inline">\(\hat{\theta} \pm t_{\alpha/2, n-1} \cdot SE_{boot}\)</span></td>
+</tr>
+<tr class="odd">
+<td>General <span class="math inline">\(\theta\)</span></td>
+<td>Studentized bootstrap</td>
+<td><span class="math inline">\(\hat{\theta} - t^*_{1-\alpha/2} \cdot SE_{\hat{\theta}}, \;\; \hat{\theta} - t^*_{\alpha/2} \cdot SE_{\hat{\theta}}\)</span></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="the-delta-method" class="slide level2">
+<h2>The Delta Method</h2>
+<p>When we want a CI for <span class="math inline">\(g(\theta)\)</span> but have an estimator of <span class="math inline">\(\theta\)</span>:</p>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Delta Method</strong></p>
+</div>
+<div class="callout-content">
+<p>If <span class="math inline">\(\hat{\theta} \stackrel{approx}{\sim} N(\theta, \sigma^2_{\hat{\theta}})\)</span>, then for differentiable <span class="math inline">\(g\)</span>: <span class="math display">\[g(\hat{\theta}) \stackrel{approx}{\sim} N\left(g(\theta), \; [g'(\theta)]^2 \cdot \sigma^2_{\hat{\theta}}\right)\]</span></p>
+<p>Equivalently: <span class="math inline">\(SE[g(\hat{\theta})] \approx |g'(\hat{\theta})| \cdot SE(\hat{\theta})\)</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Example:</strong> If <span class="math inline">\(\hat{\lambda}_{MLE} = 1/\bar{X}\)</span> for Exponential data and we want a CI for the <strong>mean</strong> <span class="math inline">\(\mu = 1/\lambda\)</span>:</p>
+<ul>
+<li><span class="math inline">\(g(\lambda) = 1/\lambda\)</span>, so <span class="math inline">\(g'(\lambda) = -1/\lambda^2\)</span></li>
+<li><span class="math inline">\(SE(g(\hat{\lambda})) = \frac{1}{\hat{\lambda}^2} \cdot \frac{\hat{\lambda}}{\sqrt{n}} = \frac{1}{\hat{\lambda}\sqrt{n}} = \frac{\bar{X}}{\sqrt{n}}\)</span></li>
+</ul>
+</div>
+</section>
+<section id="bootstrap-when-and-how" class="slide level2">
+<h2>Bootstrap: When and How</h2>
+
+<img data-src="24_CourseReview_files/figure-revealjs/unnamed-chunk-3-1.png" width="1536" class="r-stretch"><div class="fragment">
+<p><strong>Use bootstrap when:</strong> no analytical formula for SE, complex statistics (medians, ratios, correlations), or data are skewed.</p>
+<p><strong>Bootstrap t intervals</strong> have better coverage for skewed data than percentile intervals (second-order accuracy). <strong>Percentile intervals</strong> are preferred when the bootstrap distribution is discrete or violates normality assumptions.</p>
+</div>
+</section></section>
+<section>
+<section id="iii.-hypothesis-testing-lessons-1217" class="title-slide slide level1 center" data-background-color="#e74c3c">
+<h1>III. Hypothesis Testing (Lessons 12–17)</h1>
+
+</section>
+<section id="the-hypothesis-testing-framework" class="slide level2">
+<h2>The Hypothesis Testing Framework</h2>
+<p><strong>Setup:</strong></p>
+<ul>
+<li><strong>Null hypothesis</strong> <span class="math inline">\(H_0\)</span>: the “status quo” or “no effect” claim</li>
+<li><strong>Alternative hypothesis</strong> <span class="math inline">\(H_a\)</span>: what we want to show evidence for</li>
+<li><strong>Test statistic</strong> <span class="math inline">\(T\)</span>: a summary of the data relevant to distinguishing <span class="math inline">\(H_0\)</span> from <span class="math inline">\(H_a\)</span></li>
+<li><strong>Decision rule</strong>: reject <span class="math inline">\(H_0\)</span> if <span class="math inline">\(T\)</span> falls in the <strong>rejection region</strong></li>
+</ul>
+<div class="fragment">
+<p><strong>Two types of error:</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th><span class="math inline">\(H_0\)</span> True</th>
+<th><span class="math inline">\(H_0\)</span> False</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Reject <span class="math inline">\(H_0\)</span></strong></td>
+<td>Type I Error (<span class="math inline">\(\alpha\)</span>)</td>
+<td>Correct (Power = <span class="math inline">\(1-\beta\)</span>)</td>
+</tr>
+<tr class="even">
+<td><strong>Fail to reject <span class="math inline">\(H_0\)</span></strong></td>
+<td>Correct</td>
+<td>Type II Error (<span class="math inline">\(\beta\)</span>)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Key Distinction</strong></p>
+</div>
+<div class="callout-content">
+<ul>
+<li><span class="math inline">\(\alpha\)</span> = P(reject <span class="math inline">\(H_0\)</span> | <span class="math inline">\(H_0\)</span> true) — <strong>significance level</strong>, set in advance</li>
+<li><span class="math inline">\(\beta\)</span> = P(fail to reject <span class="math inline">\(H_0\)</span> | <span class="math inline">\(H_0\)</span> false) — depends on true parameter value</li>
+<li><strong>Power</strong> = <span class="math inline">\(1 - \beta\)</span> = P(reject <span class="math inline">\(H_0\)</span> | <span class="math inline">\(H_0\)</span> false) — ability to detect a real effect</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="common-one-sample-tests" class="slide level2">
+<h2>Common One-Sample Tests</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 25%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parameter</th>
+<th>Hypotheses</th>
+<th>Test Statistic</th>
+<th>Distribution under <span class="math inline">\(H_0\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><span class="math inline">\(\mu\)</span> (<span class="math inline">\(\sigma\)</span> known)</td>
+<td><span class="math inline">\(H_0: \mu = \mu_0\)</span></td>
+<td><span class="math inline">\(Z = \frac{\bar{X} - \mu_0}{\sigma/\sqrt{n}}\)</span></td>
+<td><span class="math inline">\(N(0,1)\)</span></td>
+</tr>
+<tr class="even">
+<td><span class="math inline">\(\mu\)</span> (<span class="math inline">\(\sigma\)</span> unknown)</td>
+<td><span class="math inline">\(H_0: \mu = \mu_0\)</span></td>
+<td><span class="math inline">\(T = \frac{\bar{X} - \mu_0}{S/\sqrt{n}}\)</span></td>
+<td><span class="math inline">\(t_{n-1}\)</span></td>
+</tr>
+<tr class="odd">
+<td><span class="math inline">\(p\)</span> (proportion)</td>
+<td><span class="math inline">\(H_0: p = p_0\)</span></td>
+<td><span class="math inline">\(Z = \frac{\hat{p} - p_0}{\sqrt{p_0(1-p_0)/n}}\)</span></td>
+<td><span class="math inline">\(N(0,1)\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>P-value:</strong> The probability, under <span class="math inline">\(H_0\)</span>, of observing a test statistic <strong>as extreme or more extreme</strong> than the observed value.</p>
+<ul>
+<li>Small p-value → strong evidence against <span class="math inline">\(H_0\)</span></li>
+<li>P-value is <strong>not</strong> the probability that <span class="math inline">\(H_0\)</span> is true</li>
+</ul>
+</div>
+</section>
+<section id="p-values-power-and-sample-size" class="slide level2">
+<h2>P-values, Power, and Sample Size</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a></a><span class="co"># Visualize the relationship between alpha, beta, and power</span></span>
+<span id="cb2-2"><a></a>mu_0 <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-3"><a></a>mu_a <span class="ot">&lt;-</span> <span class="fl">1.5</span></span>
+<span id="cb2-4"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb2-5"><a></a>n <span class="ot">&lt;-</span> <span class="dv">16</span></span>
+<span id="cb2-6"><a></a>se <span class="ot">&lt;-</span> sigma <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb2-7"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb2-8"><a></a>z_crit <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>)</span>
+<span id="cb2-9"><a></a>crit_val <span class="ot">&lt;-</span> mu_0 <span class="sc">+</span> z_crit <span class="sc">*</span> se</span>
+<span id="cb2-10"><a></a></span>
+<span id="cb2-11"><a></a>x_seq <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="sc">-</span><span class="dv">2</span>, <span class="dv">4</span>, <span class="at">length.out =</span> <span class="dv">500</span>)</span>
+<span id="cb2-12"><a></a>df_null <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> x_seq, <span class="at">density =</span> <span class="fu">dnorm</span>(x_seq, mu_0, se), <span class="at">dist =</span> <span class="st">"Null"</span>)</span>
+<span id="cb2-13"><a></a>df_alt  <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">x =</span> x_seq, <span class="at">density =</span> <span class="fu">dnorm</span>(x_seq, mu_a, se), <span class="at">dist =</span> <span class="st">"Alternative"</span>)</span>
+<span id="cb2-14"><a></a></span>
+<span id="cb2-15"><a></a><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb2-16"><a></a>  <span class="co"># Null distribution</span></span>
+<span id="cb2-17"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df_null <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&gt;=</span> crit_val),</span>
+<span id="cb2-18"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> density), <span class="at">fill =</span> <span class="st">"#e74c3c"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb2-19"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> df_null, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> density), </span>
+<span id="cb2-20"><a></a>            <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb2-21"><a></a>  <span class="co"># Alternative distribution</span></span>
+<span id="cb2-22"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df_alt <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&gt;=</span> crit_val),</span>
+<span id="cb2-23"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> density), <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb2-24"><a></a>  <span class="fu">geom_area</span>(<span class="at">data =</span> df_alt <span class="sc">|&gt;</span> <span class="fu">filter</span>(x <span class="sc">&lt;</span> crit_val),</span>
+<span id="cb2-25"><a></a>            <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> density), <span class="at">fill =</span> <span class="st">"#f39c12"</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb2-26"><a></a>  <span class="fu">geom_line</span>(<span class="at">data =</span> df_alt, <span class="fu">aes</span>(<span class="at">x =</span> x, <span class="at">y =</span> density), </span>
+<span id="cb2-27"><a></a>            <span class="at">color =</span> <span class="st">"#27ae60"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb2-28"><a></a>  <span class="co"># Critical value</span></span>
+<span id="cb2-29"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> crit_val, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb2-30"><a></a>  <span class="co"># Labels</span></span>
+<span id="cb2-31"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mu_0, <span class="at">y =</span> <span class="fu">max</span>(df_null<span class="sc">$</span>density) <span class="sc">+</span> <span class="fl">0.02</span>, </span>
+<span id="cb2-32"><a></a>           <span class="at">label =</span> <span class="fu">expression</span>(H[<span class="dv">0</span>]<span class="sc">:</span> <span class="er">~</span> mu <span class="sc">==</span> mu[<span class="dv">0</span>]), <span class="at">size =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>) <span class="sc">+</span></span>
+<span id="cb2-33"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mu_a, <span class="at">y =</span> <span class="fu">max</span>(df_alt<span class="sc">$</span>density) <span class="sc">+</span> <span class="fl">0.02</span>,</span>
+<span id="cb2-34"><a></a>           <span class="at">label =</span> <span class="fu">expression</span>(H[a]<span class="sc">:</span> <span class="er">~</span> mu <span class="sc">==</span> mu[a]), <span class="at">size =</span> <span class="dv">6</span>, <span class="at">color =</span> <span class="st">"#27ae60"</span>) <span class="sc">+</span></span>
+<span id="cb2-35"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">+</span> <span class="fl">0.45</span>, <span class="at">y =</span> <span class="fl">0.15</span>,</span>
+<span id="cb2-36"><a></a>           <span class="at">label =</span> <span class="fu">expression</span>(alpha <span class="sc">~</span> <span class="st">"(Type I)"</span>), <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>) <span class="sc">+</span></span>
+<span id="cb2-37"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> crit_val <span class="sc">-</span> <span class="fl">0.55</span>, <span class="at">y =</span> <span class="fl">0.1</span>,</span>
+<span id="cb2-38"><a></a>           <span class="at">label =</span> <span class="fu">expression</span>(beta <span class="sc">~</span> <span class="st">"(Type II)"</span>), <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#f39c12"</span>) <span class="sc">+</span></span>
+<span id="cb2-39"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> mu_a <span class="sc">+</span> <span class="fl">0.5</span>, <span class="at">y =</span> <span class="fl">0.25</span>,</span>
+<span id="cb2-40"><a></a>           <span class="at">label =</span> <span class="fu">expression</span>(<span class="st">"Power"</span> <span class="sc">==</span> <span class="dv">1</span> <span class="sc">-</span> beta), <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"#27ae60"</span>) <span class="sc">+</span></span>
+<span id="cb2-41"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X)), <span class="at">y =</span> <span class="st">"Density"</span>,</span>
+<span id="cb2-42"><a></a>       <span class="at">title =</span> <span class="st">"Hypothesis Testing: Type I Error, Type II Error, and Power"</span>,</span>
+<span id="cb2-43"><a></a>       <span class="at">subtitle =</span> <span class="fu">expression</span>(<span class="fu">paste</span>(<span class="st">"One-sided test: "</span>, H[<span class="dv">0</span>]<span class="sc">:</span> mu <span class="sc">==</span> <span class="dv">0</span>, <span class="st">" vs "</span>, H[a]<span class="sc">:</span> mu <span class="sc">==</span> <span class="fl">1.5</span>, </span>
+<span id="cb2-44"><a></a>                                   <span class="st">", n = 16, "</span>, sigma, <span class="st">" = 2"</span>))) <span class="sc">+</span></span>
+<span id="cb2-45"><a></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="24_CourseReview_files/figure-revealjs/unnamed-chunk-4-1.png" width="1536" class="r-stretch"></section>
+<section id="sample-size-determination" class="slide level2">
+<h2>Sample Size Determination</h2>
+<p>To achieve power <span class="math inline">\(1 - \beta\)</span> at significance level <span class="math inline">\(\alpha\)</span> for detecting a difference <span class="math inline">\(\delta = \mu_a - \mu_0\)</span>:</p>
+<p><span class="math display">\[n = \left(\frac{(z_{\alpha/2} + z_\beta) \cdot \sigma}{\delta}\right)^2 \quad \text{(two-sided z-test)}\]</span></p>
+<div class="fragment">
+<p><strong>Medical Example:</strong> A trial needs 80% power (<span class="math inline">\(\beta = 0.20\)</span>) to detect a 3 mmHg reduction in systolic blood pressure (<span class="math inline">\(\sigma = 12\)</span> mmHg) at <span class="math inline">\(\alpha = 0.05\)</span>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a></a>delta <span class="ot">&lt;-</span> <span class="dv">3</span>     <span class="co"># effect size (mmHg)</span></span>
+<span id="cb3-2"><a></a>sigma <span class="ot">&lt;-</span> <span class="dv">12</span>    <span class="co"># population SD</span></span>
+<span id="cb3-3"><a></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.05</span></span>
+<span id="cb3-4"><a></a>beta <span class="ot">&lt;-</span> <span class="fl">0.20</span></span>
+<span id="cb3-5"><a></a></span>
+<span id="cb3-6"><a></a>n_required <span class="ot">&lt;-</span> ((<span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> alpha<span class="sc">/</span><span class="dv">2</span>) <span class="sc">+</span> <span class="fu">qnorm</span>(<span class="dv">1</span> <span class="sc">-</span> beta)) <span class="sc">*</span> sigma <span class="sc">/</span> delta)<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb3-7"><a></a><span class="fu">cat</span>(<span class="st">"Required sample size per group:"</span>, <span class="fu">ceiling</span>(n_required))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Required sample size per group: 126</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="neyman-pearson-lemma" class="slide level2">
+<h2>Neyman-Pearson Lemma</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Neyman-Pearson Lemma (Most Powerful Tests)</strong></p>
+</div>
+<div class="callout-content">
+<p>For testing <span class="math inline">\(H_0: \theta = \theta_0\)</span> vs <span class="math inline">\(H_a: \theta = \theta_1\)</span> (simple vs.&nbsp;simple), the <strong>most powerful</strong> <span class="math inline">\(\alpha\)</span>-level test rejects <span class="math inline">\(H_0\)</span> when:</p>
+<p><span class="math display">\[\Lambda = \frac{L(\theta_1 | \mathbf{x})}{L(\theta_0 | \mathbf{x})} &gt; k\]</span></p>
+<p>where <span class="math inline">\(k\)</span> is chosen so that <span class="math inline">\(P(\text{reject} | H_0) = \alpha\)</span>.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Uniformly Most Powerful (UMP) tests</strong> exist for one-sided alternatives in <strong>monotone likelihood ratio</strong> families (e.g., exponential family with one parameter).</p>
+<p>For <strong>composite</strong> hypotheses, we use the <strong>Likelihood Ratio Test (LRT)</strong>:</p>
+<p><span class="math display">\[\Lambda = \frac{\sup_{\theta \in \Theta_0} L(\theta|\mathbf{x})}{\sup_{\theta \in \Theta} L(\theta|\mathbf{x})} \quad \text{Reject } H_0 \text{ when } -2\ln\Lambda &gt; \chi^2_{\alpha, r}\]</span></p>
+<p>where <span class="math inline">\(r\)</span> = number of restrictions imposed by <span class="math inline">\(H_0\)</span>.</p>
+</div>
+</section>
+<section id="connection-testing-and-confidence-intervals" class="slide level2">
+<h2>Connection: Testing and Confidence Intervals</h2>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>The Duality Principle</strong></p>
+</div>
+<div class="callout-content">
+<p>A <span class="math inline">\(100(1-\alpha)\%\)</span> confidence interval for <span class="math inline">\(\theta\)</span> contains exactly those values <span class="math inline">\(\theta_0\)</span> for which a two-sided <span class="math inline">\(\alpha\)</span>-level test would <strong>fail to reject</strong> <span class="math inline">\(H_0: \theta = \theta_0\)</span>.</p>
+<p><span class="math display">\[\theta_0 \in \text{CI} \iff \text{fail to reject } H_0: \theta = \theta_0\]</span></p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p>This means:</p>
+<ul>
+<li><strong>Wald CI</strong> ↔︎ <strong>Wald test</strong> (z-test or t-test)</li>
+<li><strong>Score CI</strong> (Wilson) ↔︎ <strong>Score test</strong></li>
+<li><strong>LRT CI</strong> ↔︎ <strong>Likelihood ratio test</strong></li>
+</ul>
+<p>The CI tells you the same thing as the test — and gives you <strong>more</strong> information (the range of plausible values, not just reject/fail to reject).</p>
+</div>
+</section></section>
+<section>
+<section id="iv.-two-sample-paired-inference-lessons-1819" class="title-slide slide level1 center" data-background-color="#f39c12">
+<h1>IV. Two-Sample &amp; Paired Inference (Lessons 18–19)</h1>
+
+</section>
+<section id="two-sample-methods" class="slide level2">
+<h2>Two-Sample Methods</h2>
+<p><strong>Goal:</strong> Compare parameters from two independent populations.</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 41%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Setting</th>
+<th>Test Statistic</th>
+<th>CI Formula</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Means, <span class="math inline">\(\sigma_1, \sigma_2\)</span> known</td>
+<td><span class="math inline">\(Z = \frac{\bar{X}_1 - \bar{X}_2 - \delta_0}{\sqrt{\sigma_1^2/n_1 + \sigma_2^2/n_2}}\)</span></td>
+<td><span class="math inline">\((\bar{X}_1 - \bar{X}_2) \pm z_{\alpha/2}\sqrt{\frac{\sigma_1^2}{n_1} + \frac{\sigma_2^2}{n_2}}\)</span></td>
+</tr>
+<tr class="even">
+<td>Means, <span class="math inline">\(\sigma\)</span> unknown</td>
+<td>Welch t-test with <span class="math inline">\(\hat{\nu}\)</span> df</td>
+<td><span class="math inline">\((\bar{X}_1 - \bar{X}_2) \pm t_{\alpha/2, \hat{\nu}} \sqrt{\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}}\)</span></td>
+</tr>
+<tr class="odd">
+<td>Proportions</td>
+<td><span class="math inline">\(Z = \frac{\hat{p}_1 - \hat{p}_2}{\sqrt{\hat{p}(1-\hat{p})(1/n_1 + 1/n_2)}}\)</span></td>
+<td><span class="math inline">\((\hat{p}_1 - \hat{p}_2) \pm z_{\alpha/2}\sqrt{\frac{\hat{p}_1(1-\hat{p}_1)}{n_1} + \frac{\hat{p}_2(1-\hat{p}_2)}{n_2}}\)</span></td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Welch Degrees of Freedom</strong></p>
+</div>
+<div class="callout-content">
+<p><span class="math display">\[\hat{\nu} = \frac{\left(\frac{s_1^2}{n_1} + \frac{s_2^2}{n_2}\right)^2}{\frac{(s_1^2/n_1)^2}{n_1 - 1} + \frac{(s_2^2/n_2)^2}{n_2 - 1}}\]</span> Use <code>t.test()</code> in R — it uses Welch by default (no equal-variance assumption needed).</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="paired-data" class="slide level2">
+<h2>Paired Data</h2>
+<p><strong>When observations are naturally paired</strong> (before/after, matched subjects, same patient):</p>
+<p><span class="math display">\[D_i = X_{1i} - X_{2i}, \quad i = 1, \ldots, n\]</span></p>
+<p>Reduces to a <strong>one-sample problem</strong> on the differences <span class="math inline">\(D_1, \ldots, D_n\)</span>.</p>
+<div class="fragment">
+<p><strong>Paired t-test:</strong> <span class="math display">\[T = \frac{\bar{D} - \delta_0}{S_D / \sqrt{n}} \sim t_{n-1} \quad \text{under } H_0\]</span></p>
+</div>
+<div class="fragment">
+<p><strong>Medical Example:</strong> Blood pressure measured before and after treatment in 20 patients — pairing controls for patient-level variation (baseline health, age, genetics) that would add noise in an independent two-sample design.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a></a><span class="co"># Simulated paired blood pressure data</span></span>
+<span id="cb5-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb5-3"><a></a>n <span class="ot">&lt;-</span> <span class="dv">20</span></span>
+<span id="cb5-4"><a></a>bp_before <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="dv">145</span>, <span class="at">sd =</span> <span class="dv">12</span>)</span>
+<span id="cb5-5"><a></a>bp_after <span class="ot">&lt;-</span> bp_before <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="at">mean =</span> <span class="sc">-</span><span class="dv">5</span>, <span class="at">sd =</span> <span class="dv">6</span>)  <span class="co"># treatment effect ~ -5 mmHg</span></span>
+<span id="cb5-6"><a></a></span>
+<span id="cb5-7"><a></a><span class="fu">t.test</span>(bp_before, bp_after, <span class="at">paired =</span> <span class="cn">TRUE</span>) <span class="sc">|&gt;</span> <span class="fu">tidy</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-8"><a></a>  <span class="fu">select</span>(estimate, statistic, p.value, conf.low, conf.high) <span class="sc">|&gt;</span></span>
+<span id="cb5-9"><a></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span><span class="fu">round</span>(.x, <span class="dv">3</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb5-10"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: right;">estimate</th>
+<th style="text-align: right;">statistic</th>
+<th style="text-align: right;">p.value</th>
+<th style="text-align: right;">conf.low</th>
+<th style="text-align: right;">conf.high</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">5.52</td>
+<td style="text-align: right;">3.629</td>
+<td style="text-align: right;">0.002</td>
+<td style="text-align: right;">2.337</td>
+<td style="text-align: right;">8.704</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="v.-bootstrap-permutation-methods-lessons-17-20" class="title-slide slide level1 center" data-background-color="#27ae60">
+<h1>V. Bootstrap &amp; Permutation Methods (Lessons 17, 20)</h1>
+
+</section>
+<section id="bootstrap-hypothesis-testing" class="slide level2 scrollable">
+<h2>Bootstrap Hypothesis Testing</h2>
+<p><strong>Idea:</strong> Under <span class="math inline">\(H_0\)</span>, the null is true — create a bootstrap world that reflects this.</p>
+<div class="fragment">
+<p><strong>One-sample bootstrap test</strong> for <span class="math inline">\(H_0: \mu = \mu_0\)</span>:</p>
+<ol type="1">
+<li><strong>Shift</strong> the data: <span class="math inline">\(X_i^{\text{shifted}} = X_i - \bar{X} + \mu_0\)</span> (centers at <span class="math inline">\(\mu_0\)</span>)</li>
+<li>Resample from shifted data, compute <span class="math inline">\(\bar{X}^*\)</span> (or <span class="math inline">\(t^*\)</span>) each time</li>
+<li>P-value = proportion of bootstrap statistics as extreme as observed</li>
+</ol>
+</div>
+<div class="fragment">
+<p><strong>Two-sample permutation test</strong> for <span class="math inline">\(H_0: F_1 = F_2\)</span> (same distribution):</p>
+<ol type="1">
+<li>Pool both samples</li>
+<li>Randomly assign labels to groups (permute)</li>
+<li>Compute test statistic under permutation</li>
+<li>P-value = proportion of permutation statistics as extreme as observed</li>
+</ol>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Important <code>infer</code> Package Note</strong></p>
+</div>
+<div class="callout-content">
+<p><code>generate(type = "bootstrap")</code> with <code>hypothesize(null = "independence")</code> does <strong>not</strong> implement the shift method for two-sample tests. Use <code>type = "permute"</code> for two-sample null hypothesis testing. The shift-bootstrap must be coded manually.</p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="bootstrap-vs.-permutation-when-to-use-each" class="slide level2">
+<h2>Bootstrap vs.&nbsp;Permutation: When to Use Each</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>Bootstrap</th>
+<th>Permutation</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Tests</strong></td>
+<td>One-sample (via shift), CIs</td>
+<td>Two-sample equality</td>
+</tr>
+<tr class="even">
+<td><strong><span class="math inline">\(H_0\)</span></strong></td>
+<td>Specific parameter value</td>
+<td><span class="math inline">\(F_1 = F_2\)</span> (exchangeability)</td>
+</tr>
+<tr class="odd">
+<td><strong>Resampling</strong></td>
+<td>With replacement from (shifted) sample</td>
+<td>Without replacement across pooled sample</td>
+</tr>
+<tr class="even">
+<td><strong>CIs</strong></td>
+<td>Yes (percentile, t, studentized)</td>
+<td>Not directly (test only)</td>
+</tr>
+<tr class="odd">
+<td><strong>Assumption</strong></td>
+<td>Data representative of population</td>
+<td>Exchangeability under <span class="math inline">\(H_0\)</span></td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="vi.-nonparametric-methods-lesson-21" class="title-slide slide level1 center" data-background-color="#8e44ad">
+<h1>VI. Nonparametric Methods (Lesson 21)</h1>
+
+</section>
+<section id="when-parametric-assumptions-fail" class="slide level2">
+<h2>When Parametric Assumptions Fail</h2>
+<p><strong>Nonparametric tests</strong> do not require a specific distributional form (e.g., normality).</p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 27%">
+<col style="width: 24%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Test</th>
+<th>Setting</th>
+<th><span class="math inline">\(H_0\)</span></th>
+<th>Based On</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>Sign test</strong></td>
+<td>One-sample</td>
+<td><span class="math inline">\(\text{median} = m_0\)</span></td>
+<td>Count of <span class="math inline">\(X_i &gt; m_0\)</span></td>
+</tr>
+<tr class="even">
+<td><strong>Wilcoxon signed-rank</strong></td>
+<td>One-sample / paired</td>
+<td>Symmetric about <span class="math inline">\(m_0\)</span></td>
+<td>Signed ranks of <span class="math inline">\(|X_i - m_0|\)</span></td>
+</tr>
+<tr class="odd">
+<td><strong>Wilcoxon rank-sum</strong></td>
+<td>Two independent samples</td>
+<td><span class="math inline">\(F_1 = F_2\)</span></td>
+<td>Ranks of combined sample</td>
+</tr>
+</tbody>
+</table>
+<div class="fragment">
+<p><strong>Asymptotic relative efficiency (ARE):</strong></p>
+<ul>
+<li>Sign test vs.&nbsp;t-test (normal data): ARE <span class="math inline">\(= 2/\pi \approx 0.637\)</span> — sign test needs ~57% more data</li>
+<li>Wilcoxon signed-rank vs.&nbsp;t-test (normal data): ARE <span class="math inline">\(= 3/\pi \approx 0.955\)</span> — nearly as efficient</li>
+<li>Wilcoxon signed-rank is <strong>more</strong> efficient than t for heavy-tailed distributions</li>
+</ul>
+</div>
+</section>
+<section id="nonparametric-example-pain-relief-scores" class="slide level2">
+<h2>Nonparametric Example: Pain Relief Scores</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a></a><span class="co"># Skewed pain relief data — nonparametric appropriate</span></span>
+<span id="cb6-2"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb6-3"><a></a>pain_scores <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">2.1</span>, <span class="fl">3.5</span>, <span class="fl">1.8</span>, <span class="fl">4.2</span>, <span class="fl">2.9</span>, <span class="fl">6.1</span>, <span class="fl">3.3</span>, <span class="fl">2.5</span>, <span class="fl">8.4</span>, <span class="fl">3.0</span>,</span>
+<span id="cb6-4"><a></a>                 <span class="fl">1.2</span>, <span class="fl">5.7</span>, <span class="fl">2.8</span>, <span class="fl">3.6</span>, <span class="fl">4.8</span>)</span>
+<span id="cb6-5"><a></a></span>
+<span id="cb6-6"><a></a><span class="co"># Null: median pain relief = 3.0 (clinically meaningful threshold)</span></span>
+<span id="cb6-7"><a></a>m0 <span class="ot">&lt;-</span> <span class="fl">3.0</span></span>
+<span id="cb6-8"><a></a></span>
+<span id="cb6-9"><a></a><span class="co"># Sign test</span></span>
+<span id="cb6-10"><a></a>n_above <span class="ot">&lt;-</span> <span class="fu">sum</span>(pain_scores <span class="sc">&gt;</span> m0)</span>
+<span id="cb6-11"><a></a>n_below <span class="ot">&lt;-</span> <span class="fu">sum</span>(pain_scores <span class="sc">&lt;</span> m0)</span>
+<span id="cb6-12"><a></a>n_nonzero <span class="ot">&lt;-</span> n_above <span class="sc">+</span> n_below</span>
+<span id="cb6-13"><a></a>sign_p <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pbinom</span>(<span class="fu">min</span>(n_above, n_below), n_nonzero, <span class="fl">0.5</span>)</span>
+<span id="cb6-14"><a></a></span>
+<span id="cb6-15"><a></a><span class="co"># Wilcoxon signed-rank test</span></span>
+<span id="cb6-16"><a></a>wsr <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(pain_scores, <span class="at">mu =</span> m0, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-17"><a></a></span>
+<span id="cb6-18"><a></a><span class="co"># Visualization</span></span>
+<span id="cb6-19"><a></a>p1 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">score =</span> pain_scores) <span class="sc">|&gt;</span></span>
+<span id="cb6-20"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> score)) <span class="sc">+</span></span>
+<span id="cb6-21"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">8</span>, <span class="at">fill =</span> <span class="st">"#9b59b6"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb6-22"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> m0, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-23"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> m0 <span class="sc">+</span> <span class="fl">0.3</span>, <span class="at">y =</span> <span class="fl">3.5</span>, <span class="at">label =</span> <span class="fu">expression</span>(m[<span class="dv">0</span>] <span class="sc">==</span> <span class="fl">3.0</span>),</span>
+<span id="cb6-24"><a></a>           <span class="at">size =</span> <span class="dv">5</span>, <span class="at">color =</span> <span class="st">"red"</span>) <span class="sc">+</span></span>
+<span id="cb6-25"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pain Relief Score"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Distribution of Pain Scores"</span>) <span class="sc">+</span></span>
+<span id="cb6-26"><a></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb6-27"><a></a></span>
+<span id="cb6-28"><a></a>p2 <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb6-29"><a></a>  <span class="at">Test =</span> <span class="fu">c</span>(<span class="st">"Sign Test"</span>, <span class="st">"Wilcoxon Signed-Rank"</span>, <span class="st">"t-test"</span>),</span>
+<span id="cb6-30"><a></a>  <span class="st">`</span><span class="at">P-value</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">c</span>(sign_p, wsr<span class="sc">$</span>p.value, <span class="fu">t.test</span>(pain_scores, <span class="at">mu =</span> m0)<span class="sc">$</span>p.value)</span>
+<span id="cb6-31"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb6-32"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> Test, <span class="at">y =</span> <span class="st">`</span><span class="at">P-value</span><span class="st">`</span>)) <span class="sc">+</span></span>
+<span id="cb6-33"><a></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="fu">c</span>(<span class="st">"#e74c3c"</span>, <span class="st">"#9b59b6"</span>, <span class="st">"#3498db"</span>), <span class="at">alpha =</span> <span class="fl">0.8</span>, <span class="at">width =</span> <span class="fl">0.6</span>) <span class="sc">+</span></span>
+<span id="cb6-34"><a></a>  <span class="fu">geom_hline</span>(<span class="at">yintercept =</span> <span class="fl">0.05</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"gray40"</span>) <span class="sc">+</span></span>
+<span id="cb6-35"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">3.4</span>, <span class="at">y =</span> <span class="fl">0.06</span>, <span class="at">label =</span> <span class="fu">expression</span>(alpha <span class="sc">==</span> <span class="fl">0.05</span>), <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb6-36"><a></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"P-value"</span>, <span class="at">x =</span> <span class="st">""</span>, <span class="at">title =</span> <span class="st">"Comparing Test Results"</span>) <span class="sc">+</span></span>
+<span id="cb6-37"><a></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb6-38"><a></a></span>
+<span id="cb6-39"><a></a>p1 <span class="sc">+</span> p2</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="24_CourseReview_files/figure-revealjs/unnamed-chunk-7-1.png" width="1344" class="r-stretch"></section></section>
+<section>
+<section id="vii.-extensions-lessons-2223" class="title-slide slide level1 center" data-background-color="#9b59b6">
+<h1>VII. Extensions (Lessons 22–23)</h1>
+
+</section>
+<section id="gauss-markov-and-ols-lesson-22" class="slide level2 scrollable">
+<h2>Gauss-Markov and OLS (Lesson 22)</h2>
+<div class="callout callout-important callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Gauss-Markov Theorem</strong></p>
+</div>
+<div class="callout-content">
+<p>Under the linear model <span class="math inline">\(\mathbf{Y} = \mathbf{X}\boldsymbol{\beta} + \boldsymbol{\varepsilon}\)</span> with:</p>
+<ol type="1">
+<li><span class="math inline">\(E[\boldsymbol{\varepsilon}] = \mathbf{0}\)</span> (errors have mean zero)</li>
+<li><span class="math inline">\(\text{Cov}(\boldsymbol{\varepsilon}) = \sigma^2 \mathbf{I}\)</span> (constant variance, uncorrelated errors)</li>
+</ol>
+<p>The OLS estimator <span class="math inline">\(\hat{\boldsymbol{\beta}} = (\mathbf{X}^T\mathbf{X})^{-1}\mathbf{X}^T\mathbf{Y}\)</span> is <strong>BLUE</strong>: Best (minimum variance) Linear Unbiased Estimator.</p>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Connection to MVUE theory:</strong></p>
+<ul>
+<li>BLUE is the regression analog of MVUE — but restricted to <strong>linear</strong> estimators</li>
+<li>Adding normality → OLS estimator is MVUE (not just BLUE) and is the MLE</li>
+<li>Hypothesis tests for coefficients: <span class="math inline">\(T = \frac{\hat{\beta}_j}{SE(\hat{\beta}_j)} \sim t_{n-p}\)</span></li>
+</ul>
+</div>
+</section>
+<section id="bayesian-inference-lesson-23" class="slide level2">
+<h2>Bayesian Inference (Lesson 23)</h2>
+<p><strong>The Bayesian approach</strong> treats <span class="math inline">\(\theta\)</span> as a random variable:</p>
+<p><span class="math display">\[\underbrace{\pi(\theta | \mathbf{x})}_{\text{Posterior}} \propto \underbrace{L(\theta | \mathbf{x})}_{\text{Likelihood}} \times \underbrace{\pi(\theta)}_{\text{Prior}}\]</span></p>
+<div class="fragment">
+<p><strong>Key conjugate families:</strong></p>
+<table class="caption-top">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 24%">
+<col style="width: 37%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Likelihood</th>
+<th>Prior</th>
+<th>Posterior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Binomial<span class="math inline">\((n, p)\)</span></td>
+<td>Beta<span class="math inline">\((\alpha, \beta)\)</span></td>
+<td>Beta<span class="math inline">\((\alpha + x, \; \beta + n - x)\)</span></td>
+</tr>
+<tr class="even">
+<td>Poisson<span class="math inline">\((\lambda)\)</span></td>
+<td>Gamma<span class="math inline">\((\alpha, \beta)\)</span></td>
+<td>Gamma<span class="math inline">\((\alpha + \sum x_i, \; \beta + n)\)</span></td>
+</tr>
+<tr class="odd">
+<td>Normal<span class="math inline">\((\mu, \sigma^2)\)</span></td>
+<td>Normal<span class="math inline">\((\mu_0, \tau^2)\)</span></td>
+<td>Normal<span class="math inline">\(\left(\frac{\mu_0/\tau^2 + n\bar{x}/\sigma^2}{1/\tau^2 + n/\sigma^2}, \; \frac{1}{1/\tau^2 + n/\sigma^2}\right)\)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="fragment">
+<p><strong>Bayesian vs.&nbsp;Frequentist:</strong></p>
+<ul>
+<li><strong>Credible interval</strong>: <span class="math inline">\(P(\theta \in [a, b] | \mathbf{x}) = 1-\alpha\)</span> — direct probability statement about <span class="math inline">\(\theta\)</span></li>
+<li><strong>Confidence interval</strong>: <span class="math inline">\(P(\theta \in [L(X), U(X)]) = 1-\alpha\)</span> — coverage frequency across repeated samples</li>
+<li>As <span class="math inline">\(n \to \infty\)</span>, Bayesian posterior concentrates at MLE; credible and confidence intervals converge</li>
+</ul>
+</div>
+</section></section>
+<section>
+<section id="viii.-comprehensive-example" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>VIII. Comprehensive Example</h1>
+
+</section>
+<section id="tying-it-all-together-hemoglobin-levels-after-treatment" class="slide level2">
+<h2>Tying It All Together: Hemoglobin Levels After Treatment</h2>
+<p>A clinical trial measures hemoglobin (g/dL) in <span class="math inline">\(n = 25\)</span> patients with chronic anemia after 12 weeks of a new erythropoiesis-stimulating agent. The clinically important threshold is <span class="math inline">\(\mu_0 = 11\)</span> g/dL.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="fu">set.seed</span>(<span class="dv">551</span>)</span>
+<span id="cb7-2"><a></a><span class="co"># Simulated hemoglobin data (slightly skewed)</span></span>
+<span id="cb7-3"><a></a>hgb <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">rnorm</span>(<span class="dv">20</span>, <span class="at">mean =</span> <span class="fl">11.8</span>, <span class="at">sd =</span> <span class="fl">1.5</span>), <span class="fu">rlnorm</span>(<span class="dv">5</span>, <span class="at">meanlog =</span> <span class="fu">log</span>(<span class="dv">12</span>), <span class="at">sdlog =</span> <span class="fl">0.15</span>))</span>
+<span id="cb7-4"><a></a>n <span class="ot">&lt;-</span> <span class="fu">length</span>(hgb)</span>
+<span id="cb7-5"><a></a></span>
+<span id="cb7-6"><a></a><span class="fu">cat</span>(<span class="st">"n ="</span>, n, <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>n = 25 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">cat</span>(<span class="st">"Mean:"</span>, <span class="fu">round</span>(<span class="fu">mean</span>(hgb), <span class="dv">3</span>), <span class="st">"  SD:"</span>, <span class="fu">round</span>(<span class="fu">sd</span>(hgb), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Mean: 12.168   SD: 1.496 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="fu">cat</span>(<span class="st">"Median:"</span>, <span class="fu">round</span>(<span class="fu">median</span>(hgb), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Median: 12.42 </code></pre>
+</div>
+</div>
+</section>
+<section id="step-1-point-estimation" class="slide level2">
+<h2>Step 1: Point Estimation</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="co"># MLE for normal mean (same as sample mean)</span></span>
+<span id="cb13-2"><a></a>theta_hat <span class="ot">&lt;-</span> <span class="fu">mean</span>(hgb)</span>
+<span id="cb13-3"><a></a>se_hat <span class="ot">&lt;-</span> <span class="fu">sd</span>(hgb) <span class="sc">/</span> <span class="fu">sqrt</span>(n)</span>
+<span id="cb13-4"><a></a></span>
+<span id="cb13-5"><a></a><span class="fu">cat</span>(<span class="st">"Point estimate (MLE):"</span>, <span class="fu">round</span>(theta_hat, <span class="dv">3</span>), <span class="st">"g/dL</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Point estimate (MLE): 12.168 g/dL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a></a><span class="fu">cat</span>(<span class="st">"Standard error:"</span>, <span class="fu">round</span>(se_hat, <span class="dv">3</span>), <span class="st">"g/dL</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Standard error: 0.299 g/dL</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a></a><span class="fu">cat</span>(<span class="st">"Fisher Information (estimated): I_n ="</span>, <span class="fu">round</span>(n <span class="sc">/</span> <span class="fu">var</span>(hgb), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Fisher Information (estimated): I_n = 11.178 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a></a><span class="fu">cat</span>(<span class="st">"CRLB-based SE: sqrt(1/I_n) ="</span>, <span class="fu">round</span>(<span class="fu">sqrt</span>(<span class="fu">var</span>(hgb) <span class="sc">/</span> n), <span class="dv">3</span>), <span class="st">"g/dL"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>CRLB-based SE: sqrt(1/I_n) = 0.299 g/dL</code></pre>
+</div>
+</div>
+</section>
+<section id="step-2-confidence-intervals-multiple-methods" class="slide level2">
+<h2>Step 2: Confidence Intervals (Multiple Methods)</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a></a><span class="co"># 1. t-interval (pivotal)</span></span>
+<span id="cb21-2"><a></a>t_ci <span class="ot">&lt;-</span> <span class="fu">t.test</span>(hgb)<span class="sc">$</span>conf.int</span>
+<span id="cb21-3"><a></a></span>
+<span id="cb21-4"><a></a><span class="co"># 2. Bootstrap percentile CI</span></span>
+<span id="cb21-5"><a></a>B <span class="ot">&lt;-</span> <span class="dv">10000</span></span>
+<span id="cb21-6"><a></a>boot_means <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(hgb, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb21-7"><a></a>pct_ci <span class="ot">&lt;-</span> <span class="fu">quantile</span>(boot_means, <span class="fu">c</span>(<span class="fl">0.025</span>, <span class="fl">0.975</span>))</span>
+<span id="cb21-8"><a></a></span>
+<span id="cb21-9"><a></a><span class="co"># 3. Bootstrap t CI</span></span>
+<span id="cb21-10"><a></a>boot_t_ci <span class="ot">&lt;-</span> theta_hat <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qt</span>(<span class="fl">0.975</span>, n <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">sd</span>(boot_means)</span>
+<span id="cb21-11"><a></a></span>
+<span id="cb21-12"><a></a><span class="fu">tibble</span>(</span>
+<span id="cb21-13"><a></a>  <span class="at">Method =</span> <span class="fu">c</span>(<span class="st">"t-interval"</span>, <span class="st">"Bootstrap percentile"</span>, <span class="st">"Bootstrap t"</span>),</span>
+<span id="cb21-14"><a></a>  <span class="at">Lower =</span> <span class="fu">round</span>(<span class="fu">c</span>(t_ci[<span class="dv">1</span>], pct_ci[<span class="dv">1</span>], boot_t_ci[<span class="dv">1</span>]), <span class="dv">3</span>),</span>
+<span id="cb21-15"><a></a>  <span class="at">Upper =</span> <span class="fu">round</span>(<span class="fu">c</span>(t_ci[<span class="dv">2</span>], pct_ci[<span class="dv">2</span>], boot_t_ci[<span class="dv">2</span>]), <span class="dv">3</span>),</span>
+<span id="cb21-16"><a></a>  <span class="at">Width =</span> <span class="fu">round</span>(<span class="fu">c</span>(<span class="fu">diff</span>(t_ci), <span class="fu">diff</span>(pct_ci), <span class="fu">diff</span>(boot_t_ci)), <span class="dv">3</span>)</span>
+<span id="cb21-17"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb21-18"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Method</th>
+<th style="text-align: right;">Lower</th>
+<th style="text-align: right;">Upper</th>
+<th style="text-align: right;">Width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">t-interval</td>
+<td style="text-align: right;">11.551</td>
+<td style="text-align: right;">12.785</td>
+<td style="text-align: right;">1.235</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Bootstrap percentile</td>
+<td style="text-align: right;">11.578</td>
+<td style="text-align: right;">12.717</td>
+<td style="text-align: right;">1.139</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bootstrap t</td>
+<td style="text-align: right;">11.562</td>
+<td style="text-align: right;">12.774</td>
+<td style="text-align: right;">1.213</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="step-3-hypothesis-testing" class="slide level2">
+<h2>Step 3: Hypothesis Testing</h2>
+<p><span class="math inline">\(H_0: \mu = 11\)</span> vs.&nbsp;<span class="math inline">\(H_a: \mu &gt; 11\)</span> (is mean hemoglobin above threshold?)</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="co"># Classical t-test</span></span>
+<span id="cb22-2"><a></a>t_result <span class="ot">&lt;-</span> <span class="fu">t.test</span>(hgb, <span class="at">mu =</span> <span class="dv">11</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span>
+<span id="cb22-3"><a></a></span>
+<span id="cb22-4"><a></a><span class="co"># Wilcoxon signed-rank test</span></span>
+<span id="cb22-5"><a></a>w_result <span class="ot">&lt;-</span> <span class="fu">wilcox.test</span>(hgb, <span class="at">mu =</span> <span class="dv">11</span>, <span class="at">alternative =</span> <span class="st">"greater"</span>)</span>
+<span id="cb22-6"><a></a></span>
+<span id="cb22-7"><a></a><span class="co"># Bootstrap test (shift method)</span></span>
+<span id="cb22-8"><a></a>hgb_shifted <span class="ot">&lt;-</span> hgb <span class="sc">-</span> <span class="fu">mean</span>(hgb) <span class="sc">+</span> <span class="dv">11</span>  <span class="co"># center at null</span></span>
+<span id="cb22-9"><a></a>boot_null <span class="ot">&lt;-</span> <span class="fu">replicate</span>(B, <span class="fu">mean</span>(<span class="fu">sample</span>(hgb_shifted, <span class="at">replace =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb22-10"><a></a>boot_pval <span class="ot">&lt;-</span> <span class="fu">mean</span>(boot_null <span class="sc">&gt;=</span> theta_hat)</span>
+<span id="cb22-11"><a></a></span>
+<span id="cb22-12"><a></a><span class="fu">tibble</span>(</span>
+<span id="cb22-13"><a></a>  <span class="at">Test =</span> <span class="fu">c</span>(<span class="st">"One-sample t-test"</span>, <span class="st">"Wilcoxon signed-rank"</span>, <span class="st">"Bootstrap (shift)"</span>),</span>
+<span id="cb22-14"><a></a>  <span class="at">Statistic =</span> <span class="fu">round</span>(<span class="fu">c</span>(t_result<span class="sc">$</span>statistic, w_result<span class="sc">$</span>statistic, <span class="cn">NA</span>), <span class="dv">3</span>),</span>
+<span id="cb22-15"><a></a>  <span class="st">`</span><span class="at">P-value</span><span class="st">`</span> <span class="ot">=</span> <span class="fu">round</span>(<span class="fu">c</span>(t_result<span class="sc">$</span>p.value, w_result<span class="sc">$</span>p.value, boot_pval), <span class="dv">4</span>)</span>
+<span id="cb22-16"><a></a>) <span class="sc">|&gt;</span></span>
+<span id="cb22-17"><a></a>  knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Test</th>
+<th style="text-align: right;">Statistic</th>
+<th style="text-align: right;">P-value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">One-sample t-test</td>
+<td style="text-align: right;">3.905</td>
+<td style="text-align: right;">3e-04</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Wilcoxon signed-rank</td>
+<td style="text-align: right;">280.000</td>
+<td style="text-align: right;">5e-04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bootstrap (shift)</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: right;">0e+00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="step-4-visualizing-the-evidence" class="slide level2">
+<h2>Step 4: Visualizing the Evidence</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a></a>p_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">hgb =</span> hgb) <span class="sc">|&gt;</span></span>
+<span id="cb23-2"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hgb)) <span class="sc">+</span></span>
+<span id="cb23-3"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">12</span>, <span class="at">fill =</span> <span class="st">"#3498db"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb23-4"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">11</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>, <span class="at">linetype =</span> <span class="st">"dashed"</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(hgb), <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb23-6"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="dv">11</span>, <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="fu">expression</span>(mu[<span class="dv">0</span>] <span class="sc">==</span> <span class="dv">11</span>), </span>
+<span id="cb23-7"><a></a>           <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb23-8"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fu">mean</span>(hgb), <span class="at">y =</span> <span class="cn">Inf</span>, <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"x-bar = "</span>, <span class="fu">round</span>(<span class="fu">mean</span>(hgb), <span class="dv">2</span>)),</span>
+<span id="cb23-9"><a></a>           <span class="at">vjust =</span> <span class="dv">3</span>, <span class="at">color =</span> <span class="st">"#2c3e50"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb23-10"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Hemoglobin (g/dL)"</span>, <span class="at">y =</span> <span class="st">"Count"</span>, <span class="at">title =</span> <span class="st">"Observed Data"</span>) <span class="sc">+</span></span>
+<span id="cb23-11"><a></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb23-12"><a></a></span>
+<span id="cb23-13"><a></a>p_boot <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">stat =</span> boot_null) <span class="sc">|&gt;</span></span>
+<span id="cb23-14"><a></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> stat)) <span class="sc">+</span></span>
+<span id="cb23-15"><a></a>  <span class="fu">geom_histogram</span>(<span class="at">bins =</span> <span class="dv">50</span>, <span class="at">fill =</span> <span class="st">"#27ae60"</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb23-16"><a></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> theta_hat, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">linewidth =</span> <span class="fl">1.2</span>) <span class="sc">+</span></span>
+<span id="cb23-17"><a></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> theta_hat <span class="sc">+</span> <span class="fl">0.05</span>, <span class="at">y =</span> <span class="cn">Inf</span>, </span>
+<span id="cb23-18"><a></a>           <span class="at">label =</span> <span class="fu">paste0</span>(<span class="st">"Observed = "</span>, <span class="fu">round</span>(theta_hat, <span class="dv">2</span>)),</span>
+<span id="cb23-19"><a></a>           <span class="at">vjust =</span> <span class="fl">1.5</span>, <span class="at">hjust =</span> <span class="dv">0</span>, <span class="at">color =</span> <span class="st">"#e74c3c"</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb23-20"><a></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="fu">expression</span>(<span class="fu">bar</span>(X) <span class="sc">*</span> <span class="st">" under "</span> <span class="sc">*</span> H[<span class="dv">0</span>]), <span class="at">y =</span> <span class="st">"Count"</span>,</span>
+<span id="cb23-21"><a></a>       <span class="at">title =</span> <span class="st">"Bootstrap Null Distribution"</span>,</span>
+<span id="cb23-22"><a></a>       <span class="at">subtitle =</span> <span class="fu">paste0</span>(<span class="st">"P-value = "</span>, <span class="fu">round</span>(boot_pval, <span class="dv">4</span>))) <span class="sc">+</span></span>
+<span id="cb23-23"><a></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span>
+<span id="cb23-24"><a></a></span>
+<span id="cb23-25"><a></a>p_data <span class="sc">+</span> p_boot</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+
+</div>
+<img data-src="24_CourseReview_files/figure-revealjs/unnamed-chunk-12-1.png" width="1536" class="r-stretch"></section></section>
+<section>
+<section id="ix.-decision-guides" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>IX. Decision Guides</h1>
+
+</section>
+<section id="choosing-a-method-master-flowchart" class="slide level2">
+<h2>Choosing a Method: Master Flowchart</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-b8818733038dae55c9d7" style="width:1728px;height:960px;"></div>
+<script type="application/json" data-for="htmlwidget-b8818733038dae55c9d7">{"x":{"diagram":"\ndigraph decision {\n  graph [rankdir = TB, bgcolor = transparent]\n  node [shape = box, style = filled, fontsize = 20, fontname = \"Helvetica\"]\n\n  Q1 [label = \"How many samples?\", fillcolor = \"#ecf0f1\"]\n  \n  one [label = \"One Sample\", fillcolor = \"#d5f5e3\"]\n  two [label = \"Two Samples\", fillcolor = \"#d6eaf8\"]\n  \n  paired [label = \"Paired or\\nIndependent?\", fillcolor = \"#ecf0f1\"]\n  ind [label = \"Independent\", fillcolor = \"#d6eaf8\"]\n  pair [label = \"Paired → Reduce\\nto One Sample\", fillcolor = \"#d5f5e3\"]\n  \n  norm1 [label = \"Data approx\\nnormal?\", fillcolor = \"#ecf0f1\"]\n  norm2 [label = \"Data approx\\nnormal?\", fillcolor = \"#ecf0f1\"]\n  \n  t1 [label = \"t-test / t-interval\\n(Lesson 8, 13)\", fillcolor = \"#85c1e9\"]\n  nonpar1 [label = \"Sign test / Wilcoxon\\nSigned-Rank (21)\\nor Bootstrap (17, 20)\", fillcolor = \"#82e0aa\"]\n  \n  t2 [label = \"Welch t-test\\n(Lesson 18)\", fillcolor = \"#85c1e9\"]\n  nonpar2 [label = \"Wilcoxon Rank-Sum (21)\\nor Permutation (20)\", fillcolor = \"#82e0aa\"]\n  \n  prop [label = \"Proportion?\", fillcolor = \"#fdebd0\"]\n  proptest [label = \"z-test / Score CI\\n(Lessons 8, 13)\", fillcolor = \"#f9e79f\"]\n  prop2test [label = \"Two-proportion\\nz-test (Lesson 18)\", fillcolor = \"#f9e79f\"]\n  \n  Q1 -> one\n  Q1 -> two\n  two -> paired\n  paired -> ind\n  paired -> pair\n  pair -> norm1\n  one -> prop [label = \"Categorical\"]\n  one -> norm1 [label = \"Continuous\"]\n  prop -> proptest\n  ind -> norm2 [label = \"Continuous\"]\n  ind -> prop2test [label = \"Categorical\"]\n  norm1 -> t1 [label = \"Yes or n ≥ 30\"]\n  norm1 -> nonpar1 [label = \"No, small n\"]\n  norm2 -> t2 [label = \"Yes or n ≥ 30\"]\n  norm2 -> nonpar2 [label = \"No, small n\"]\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="ci-method-selection-guide" class="slide level2">
+<h2>CI Method Selection Guide</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 39%">
+<col style="width: 42%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Best Method</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Normal data, <span class="math inline">\(\sigma\)</span> known</td>
+<td>z-interval</td>
+<td>Exact pivotal quantity</td>
+</tr>
+<tr class="even">
+<td>Normal data, <span class="math inline">\(\sigma\)</span> unknown</td>
+<td>t-interval</td>
+<td>Exact pivotal quantity</td>
+</tr>
+<tr class="odd">
+<td>Proportion, large n</td>
+<td>Wald or Score</td>
+<td>Wald is simpler; Score better near boundaries</td>
+</tr>
+<tr class="even">
+<td>Proportion, small n or <span class="math inline">\(p\)</span> near 0/1</td>
+<td>Score (Wilson) or Agresti-Coull</td>
+<td>Avoids undercoverage</td>
+</tr>
+<tr class="odd">
+<td>General parameter, large n</td>
+<td>Wald (MLE-based)</td>
+<td>Asymptotic normality of MLE</td>
+</tr>
+<tr class="even">
+<td>Complex statistic (median, ratio)</td>
+<td>Bootstrap</td>
+<td>No analytical SE formula</td>
+</tr>
+<tr class="odd">
+<td>Skewed data, <span class="math inline">\(n \geq 15\)</span></td>
+<td>Studentized bootstrap t</td>
+<td>Second-order accuracy</td>
+</tr>
+<tr class="even">
+<td>Very small n (&lt; 10)</td>
+<td>Classical t (if normal)</td>
+<td>Bootstrap unreliable</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hypothesis-test-selection-guide" class="slide level2">
+<h2>Hypothesis Test Selection Guide</h2>
+<table class="caption-top">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 20%">
+<col style="width: 41%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Situation</th>
+<th>Test</th>
+<th>Assumption</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>One mean, normal/large n</td>
+<td>One-sample t</td>
+<td>Normality or CLT</td>
+</tr>
+<tr class="even">
+<td>One mean, non-normal, small n</td>
+<td>Wilcoxon signed-rank or bootstrap</td>
+<td>Symmetry (Wilcoxon)</td>
+</tr>
+<tr class="odd">
+<td>One median</td>
+<td>Sign test</td>
+<td>Minimal (none beyond iid)</td>
+</tr>
+<tr class="even">
+<td>Two means, independent</td>
+<td>Welch t</td>
+<td>Normality or CLT</td>
+</tr>
+<tr class="odd">
+<td>Two means, paired</td>
+<td>Paired t</td>
+<td>Differences ~ normal</td>
+</tr>
+<tr class="even">
+<td>Two distributions equal</td>
+<td>Permutation test</td>
+<td>Exchangeability under <span class="math inline">\(H_0\)</span></td>
+</tr>
+<tr class="odd">
+<td>Two independent, non-normal</td>
+<td>Wilcoxon rank-sum</td>
+<td>Continuous distributions</td>
+</tr>
+<tr class="even">
+<td>Optimal test (simple <span class="math inline">\(H_0\)</span> vs <span class="math inline">\(H_1\)</span>)</td>
+<td>Neyman-Pearson (LR)</td>
+<td>Parametric model specified</td>
+</tr>
+<tr class="odd">
+<td>Composite <span class="math inline">\(H_0\)</span></td>
+<td>Likelihood ratio test</td>
+<td><span class="math inline">\(-2\ln\Lambda \sim \chi^2\)</span> (large n)</td>
+</tr>
+</tbody>
+</table>
+</section></section>
+<section>
+<section id="x.-key-formulas-and-connections" class="title-slide slide level1 center" data-background-color="#2c3e50">
+<h1>X. Key Formulas and Connections</h1>
+
+</section>
+<section id="the-likelihood-thread" class="slide level2">
+<h2>The Likelihood Thread</h2>
+<p>The <strong>likelihood function</strong> <span class="math inline">\(L(\theta|\mathbf{x})\)</span> connects nearly every topic in this course:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="grViz html-widget html-fill-item" id="htmlwidget-2e85536ef6d70a05597c" style="width:1536px;height:768px;"></div>
+<script type="application/json" data-for="htmlwidget-2e85536ef6d70a05597c">{"x":{"diagram":"\ndigraph likelihood {\n  graph [rankdir = LR, bgcolor = transparent]\n  node [shape = box, style = filled, fontsize = 22, fontname = \"Helvetica\"]\n  \n  L [label = \"Likelihood\\nL(θ|x)\", fillcolor = \"#f5b7b1\", shape = ellipse, fontsize = 26]\n  \n  mle [label = \"MLE\\nmaximize L(θ|x)\", fillcolor = \"#85c1e9\"]\n  fi [label = \"Fisher Information\\nI(θ) = -E[ℓ′′(θ)]\", fillcolor = \"#85c1e9\"]\n  suff [label = \"Sufficiency\\nFactorization\", fillcolor = \"#85c1e9\"]\n  \n  wald [label = \"Wald CI & Test\\nθ̂ ± z·SE\", fillcolor = \"#82e0aa\"]\n  score [label = \"Score CI & Test\", fillcolor = \"#82e0aa\"]\n  lrt [label = \"Likelihood\\nRatio Test\", fillcolor = \"#82e0aa\"]\n  \n  np [label = \"Neyman-Pearson\\nLemma (LR > k)\", fillcolor = \"#f9e79f\"]\n  bayes [label = \"Bayesian Posterior\\nπ(θ|x) ∝ L·π(θ)\", fillcolor = \"#d2b4de\"]\n  \n  L -> mle\n  L -> fi\n  L -> suff\n  L -> lrt\n  L -> np\n  L -> bayes\n  fi -> wald\n  fi -> score\n  mle -> wald\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="essential-formulas-reference" class="slide level2">
+<h2>Essential Formulas Reference</h2>
+<div class="columns">
+<div class="column" style="width:48%;">
+<p><strong>Point Estimation:</strong></p>
+<ul>
+<li>MLE: <span class="math inline">\(\hat{\theta} = \arg\max \ell(\theta|\mathbf{x})\)</span></li>
+<li>Fisher Info: <span class="math inline">\(I_1(\theta) = E[-\ell''(\theta)]\)</span></li>
+<li>CRLB: <span class="math inline">\(\text{Var}(\hat{\theta}) \geq 1/I_n(\theta)\)</span></li>
+<li>MSE: <span class="math inline">\(\text{MSE} = \text{Var} + \text{Bias}^2\)</span></li>
+</ul>
+<p><strong>Confidence Intervals:</strong></p>
+<ul>
+<li>Wald: <span class="math inline">\(\hat{\theta} \pm z_{\alpha/2}/\sqrt{I_n(\hat{\theta})}\)</span></li>
+<li>t-interval: <span class="math inline">\(\bar{X} \pm t_{\alpha/2, n-1} \cdot S/\sqrt{n}\)</span></li>
+<li>Delta method: <span class="math inline">\(SE[g(\hat{\theta})] \approx |g'(\hat{\theta})| \cdot SE(\hat{\theta})\)</span></li>
+</ul>
+</div><div class="column" style="width:48%;">
+<p><strong>Hypothesis Testing:</strong></p>
+<ul>
+<li>z-statistic: <span class="math inline">\(Z = (\bar{X} - \mu_0)/(\sigma/\sqrt{n})\)</span></li>
+<li>t-statistic: <span class="math inline">\(T = (\bar{X} - \mu_0)/(S/\sqrt{n})\)</span></li>
+<li>LRT: <span class="math inline">\(-2\ln\Lambda \stackrel{d}{\to} \chi^2_r\)</span></li>
+<li>Sample size: <span class="math inline">\(n = \left(\frac{(z_{\alpha/2} + z_\beta)\sigma}{\delta}\right)^2\)</span></li>
+</ul>
+<p><strong>Bayesian:</strong></p>
+<ul>
+<li>Posterior: <span class="math inline">\(\pi(\theta|\mathbf{x}) \propto L(\theta|\mathbf{x}) \cdot \pi(\theta)\)</span></li>
+<li>Posterior mean as Bayes estimator (squared error loss)</li>
+</ul>
+</div></div>
+</section>
+<section id="common-mistakes-to-avoid" class="slide level2 scrollable">
+<h2>Common Mistakes to Avoid</h2>
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Interpretation Errors</strong></p>
+</div>
+<div class="callout-content">
+<ol type="1">
+<li><strong>P-value <span class="math inline">\(\neq\)</span> P(<span class="math inline">\(H_0\)</span> true)</strong> — it is P(data this extreme | <span class="math inline">\(H_0\)</span> true)</li>
+<li><strong>CI does not mean</strong> “95% probability <span class="math inline">\(\theta\)</span> is in the interval” — it’s about the procedure’s coverage rate</li>
+<li><strong>“Fail to reject” <span class="math inline">\(\neq\)</span> “accept <span class="math inline">\(H_0\)</span>”</strong> — absence of evidence is not evidence of absence</li>
+<li><strong>Statistical significance <span class="math inline">\(\neq\)</span> practical significance</strong> — a tiny effect can be “significant” with large n</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="fragment">
+<div class="callout callout-warning callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Technical Errors</strong></p>
+</div>
+<div class="callout-content">
+<ol start="5" type="1">
+<li>Using pooled variance t-test when variances differ — use <strong>Welch</strong> (default in R)</li>
+<li>Ignoring pairing — always use paired test when data are paired</li>
+<li>Using Wald CI for proportions near 0 or 1 — use <strong>Score/Wilson</strong> or <strong>Agresti-Coull</strong></li>
+<li>Bootstrap with <span class="math inline">\(n &lt; 10\)</span> — bootstrap distribution is a poor approximation</li>
+<li>Applying Wilcoxon signed-rank without symmetry — use the <strong>sign test</strong> instead</li>
+</ol>
+</div>
+</div>
+</div>
+</div>
+</section></section>
+<section>
+<section id="final-exam-preparation" class="title-slide slide level1 center" data-background-color="#006a4e">
+<h1>Final Exam Preparation</h1>
+
+</section>
+<section id="what-to-expect" class="slide level2">
+<h2>What to Expect</h2>
+<div class="callout callout-note callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Final Exam Coverage</strong></p>
+</div>
+<div class="callout-content">
+<p>The final exam is <strong>comprehensive</strong>, covering Lessons 1–23. Emphasis is on:</p>
+<ul>
+<li><strong>Conceptual understanding</strong>: What do the methods assume? When do they apply?</li>
+<li><strong>Mathematical derivations</strong>: MLEs, Fisher information, sufficiency, CRLB, LRT</li>
+<li><strong>Choosing appropriate methods</strong>: Given a scenario, identify the right analysis</li>
+<li><strong>Interpretation</strong>: What do results mean in the context of the problem?</li>
+<li><strong>R output</strong>: Read and interpret output from <code>t.test()</code>, <code>wilcox.test()</code>, bootstrap code</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="fragment">
+<p><strong>Study strategy:</strong></p>
+<ul>
+<li>Review the three review lessons (6, 11, and this one)</li>
+<li>Rework homework problems, especially derivations</li>
+<li>Practice choosing methods for new medical scenarios</li>
+<li>Review R code and output interpretation — know what each piece means</li>
+</ul>
+</div>
+</section>
+<section id="practice-problems" class="slide level2 scrollable">
+<h2>Practice Problems</h2>
+<p><strong>Problem 1 (Point Estimation):</strong> Let <span class="math inline">\(X_1, \ldots, X_n \stackrel{iid}{\sim} \text{Gamma}(\alpha, \beta)\)</span> with <span class="math inline">\(\alpha\)</span> known.</p>
+<ol type="a">
+<li><p>Find the MLE of <span class="math inline">\(\beta\)</span>.</p></li>
+<li><p>Find <span class="math inline">\(I_1(\beta)\)</span> and determine whether the MLE attains the CRLB.</p></li>
+<li><p>Is <span class="math inline">\(T = \sum X_i\)</span> sufficient for <span class="math inline">\(\beta\)</span>? Prove using the factorization theorem.</p></li>
+</ol>
+<div class="fragment">
+<p><strong>Problem 2 (CI and Testing):</strong> In a clinical trial, 45 out of 200 patients experience symptom relief (vs.&nbsp;historical rate of 30%).</p>
+<ol type="a">
+<li><p>Construct a 95% Wald CI and a 95% Score (Wilson) CI for the true relief rate.</p></li>
+<li><p>Test <span class="math inline">\(H_0: p = 0.30\)</span> vs <span class="math inline">\(H_a: p \neq 0.30\)</span>. State conclusions at <span class="math inline">\(\alpha = 0.05\)</span>.</p></li>
+<li><p>Explain why the Score CI is preferred here.</p></li>
+</ol>
+</div>
+</section>
+<section id="practice-problems-continued" class="slide level2 scrollable">
+<h2>Practice Problems (continued)</h2>
+<p><strong>Problem 3 (Two-sample and Nonparametric):</strong> Researchers compare recovery times (days) for two surgical techniques. Group A (<span class="math inline">\(n_1 = 15\)</span>): <span class="math inline">\(\bar{x}_1 = 8.2\)</span>, <span class="math inline">\(s_1 = 3.1\)</span>. Group B (<span class="math inline">\(n_2 = 12\)</span>): <span class="math inline">\(\bar{x}_2 = 6.5\)</span>, <span class="math inline">\(s_2 = 2.4\)</span>.</p>
+<ol type="a">
+<li><p>Perform a Welch t-test for <span class="math inline">\(H_0: \mu_1 - \mu_2 = 0\)</span> vs <span class="math inline">\(H_a: \mu_1 - \mu_2 \neq 0\)</span>.</p></li>
+<li><p>If data were highly skewed, which nonparametric test would you use instead and why?</p></li>
+<li><p>Describe how you would perform a permutation test for this comparison.</p></li>
+</ol>
+<div class="fragment">
+<p><strong>Problem 4 (Connections):</strong></p>
+<ol type="a">
+<li><p>Explain the duality between a 95% CI for <span class="math inline">\(\mu\)</span> and a two-sided <span class="math inline">\(\alpha = 0.05\)</span> t-test.</p></li>
+<li><p>For testing <span class="math inline">\(H_0: \lambda = \lambda_0\)</span> vs <span class="math inline">\(H_a: \lambda = \lambda_1\)</span> (where <span class="math inline">\(\lambda_1 &gt; \lambda_0\)</span>) in a Poisson model, use the Neyman-Pearson lemma to derive the most powerful test.</p></li>
+<li><p>Describe how the posterior distribution in Bayesian inference relates to the MLE as <span class="math inline">\(n \to \infty\)</span>.</p></li>
+</ol>
+</div>
+</section>
+<section id="thank-you" class="slide level2 center" data-background-color="#006a4e">
+<h2>Thank You!</h2>
+<p><strong>Good luck on the final exam!</strong></p>
+<p>The exam is due <strong>March 19 at 11pm.</strong></p>
+<p>Office hours and review sessions will be available — check the course website for times.</p>
+</section>
+<section id="references" class="slide level2">
+<h2>References</h2>
+<ul>
+<li>Devore, Berk, and Carlton. <em>Modern Mathematical Statistics with Applications</em> (Springer). Chapters 6–10, 15.</li>
+<li>Chihara and Hesterberg. <em>Mathematical Statistics with Resampling and R</em> (Wiley). Chapters 3, 5, 7, 8, 10.</li>
+</ul>
+
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Lesson 24 - Course Review</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="../../site_libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
+  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1955,
+
+        height: 1100,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>

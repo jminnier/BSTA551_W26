@@ -1,0 +1,626 @@
+---
+title: "Lesson 22: Course Review"
+subtitle: "BSTA 551: Statistical Inference"
+author: "Jessica Minnier"
+title-slide-attributes:
+    data-background-color: "#006a4e"
+date: "`r library(here); source(here('class_dates.R')); w11d2`"
+format: 
+  revealjs:
+    theme: "../simple_NW.scss"
+    chalkboard: true
+    scrollable: true
+    slide-number: true
+    show-slide-number: all
+    width: 1955
+    height: 1100
+    footer: Lesson 22 - Course Review
+    html-math-method: mathjax
+    highlight-style: atom-one
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+library(tidyverse)
+library(broom)
+library(patchwork)
+set.seed(551)
+theme_set(theme_minimal(base_size = 18))
+```
+
+# Lesson 22: Course Review {background-color="#2c3e50"}
+
+## The Course in One Slide
+
+**BSTA 551** is a course in the *theory* of statistical inference — the mathematical foundations of how we use data to learn about population parameters.
+
+| Theme | Lessons | Core Question |
+|-------|---------|--------------|
+| **Point Estimation** | 1–6 | What is the best single estimate of $\theta$? When is it optimal? |
+| **Interval Estimation** | 7–11 | How do we quantify our uncertainty? What guarantees do CIs provide? |
+| **Hypothesis Testing** | 12–17 | How do we make decisions? How powerful are those decisions? |
+| **Two-Sample Inference** | 18–20 | How do we compare two groups formally? |
+| **Nonparametric Inference** | 21 | What can we do without distributional assumptions? |
+
+. . .
+
+**Connecting thread:** Every method in this course is built from the same skeleton — a **model**, a **statistic** derived from data, and a **distributional argument** that tells us how that statistic behaves.
+
+# Arc 1: Point Estimation {background-color="#3498db"}
+
+## Bias, Variance, and MSE (Lessons 1–2)
+
+For an estimator $\hat\theta$ of $\theta$:
+
+$$\text{MSE}(\hat\theta) = \text{Var}(\hat\theta) + [\text{Bias}(\hat\theta)]^2$$
+
+A sequence of estimators $\hat\theta_n$ is **consistent** if $\hat\theta_n \xrightarrow{P} \theta$ as $n \to \infty$.
+
+**Key examples:**
+
+- $\bar{X}$: unbiased for $\mu$; $\text{Var}(\bar{X}) = \sigma^2/n$; consistent
+- $S^2 = \frac{1}{n-1}\sum(X_i - \bar{X})^2$: unbiased for $\sigma^2$; $\frac{1}{n}\sum(X_i - \bar{X})^2$ is biased (but consistent)
+- MLE of $\sigma^2$ in $N(\mu, \sigma^2)$: $\hat\sigma^2_\text{MLE} = \frac{1}{n}\sum(X_i - \bar{X})^2$ — biased by factor $(n-1)/n$
+
+## Cramér-Rao Lower Bound and Fisher Information (Lesson 3)
+
+**Fisher information:**
+$$I(\theta) = E\!\left[\left(\frac{\partial}{\partial\theta}\ln f(X;\theta)\right)^2\right] = -E\!\left[\frac{\partial^2}{\partial\theta^2}\ln f(X;\theta)\right]$$
+
+**Cramér-Rao Lower Bound:** For any unbiased $\hat\theta$:
+$$\text{Var}(\hat\theta) \geq \frac{1}{n\,I(\theta)}$$
+
+An unbiased estimator that achieves the CRLB for all $\theta$ is the **MVUE** (minimum variance unbiased estimator). Equivalently, it is a function of a complete sufficient statistic (Lehmann–Scheffé theorem).
+
+. . .
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Fisher information and CRLB for Poisson(lambda)
+# f(x; lambda) = e^{-lambda} lambda^x / x!
+# d/d(lambda) log f = x/lambda - 1
+# I(lambda) = E[(X/lambda - 1)^2] = Var(X)/lambda^2 = lambda/lambda^2 = 1/lambda
+
+fisher_info_pois <- function(lambda) 1 / lambda
+lambda_true <- 3
+crlb        <- 1 / (20 * fisher_info_pois(lambda_true))
+
+cat(sprintf("CRLB for estimating lambda = %.1f with n = 20:  %.5f\n", lambda_true, crlb))
+cat(sprintf("Var(Xbar) = lambda/n = %.5f  — achieves CRLB? %s\n",
+            lambda_true / 20, isTRUE(all.equal(crlb, lambda_true / 20))))
+```
+
+## MLE: Properties and Asymptotics (Lesson 4)
+
+The MLE $\hat\theta_\text{MLE}$ maximizes the log-likelihood $\ell(\theta) = \sum_{i=1}^n \ln f(x_i; \theta)$.
+
+**Key properties under regularity conditions:**
+
+1. **Consistent:** $\hat\theta_\text{MLE} \xrightarrow{P} \theta$
+2. **Asymptotically normal:** $\sqrt{n}(\hat\theta_\text{MLE} - \theta) \xrightarrow{d} N\bigl(0,\, [I(\theta)]^{-1}\bigr)$
+3. **Asymptotically efficient:** achieves the CRLB as $n \to \infty$
+4. **Equivariant:** $g(\hat\theta_\text{MLE})$ is the MLE of $g(\theta)$
+
+. . .
+
+The asymptotic normality result gives an approximate CI:
+$$\hat\theta_\text{MLE} \pm z_{\alpha/2} / \sqrt{n\,I(\hat\theta_\text{MLE})}$$
+
+This is the basis of **score intervals** and the connection between MLE theory and large-sample inference.
+
+## Sufficiency (Lessons 5–6)
+
+$T(X_1, \ldots, X_n)$ is **sufficient** for $\theta$ if $f(x_1, \ldots, x_n; \theta) = h(\mathbf{x})\cdot g(T(\mathbf{x}); \theta)$ (Factorization Theorem).
+
+Sufficiency means $T$ captures **all information in the sample about $\theta$** — the conditional distribution of $\mathbf{X} \mid T$ does not depend on $\theta$.
+
+**Rao-Blackwell theorem:** If $\hat\theta$ is unbiased and $T$ is sufficient, then $\tilde\theta = E[\hat\theta \mid T]$ satisfies:
+
+$$\text{Var}(\tilde\theta) \leq \text{Var}(\hat\theta), \quad \text{with equality iff } \hat\theta = h(T) \text{ a.s.}$$
+
+**Exponential family:** $f(x; \theta) = h(x)\,c(\theta)\exp\!\bigl(\eta(\theta)\,T(x)\bigr)$ — the natural sufficient statistic is $\sum T(x_i)$.
+
+# Arc 2: Interval Estimation {background-color="#27ae60"}
+
+## The Pivot Method (Lesson 7)
+
+A **pivotal quantity** $Q(X_1, \ldots, X_n, \theta)$ has a distribution that is free of all unknown parameters.
+
+**Procedure:** Find $Q$, then solve $P(a \leq Q \leq b) = 1-\alpha$ for $\theta$ to obtain the CI.
+
+**Key pivots:**
+
+| Setting | Pivot | Distribution |
+|---------|-------|-------------|
+| $\mu$, $\sigma^2$ known | $Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}}$ | $N(0,1)$ |
+| $\mu$, $\sigma^2$ unknown | $T = \frac{\bar{X} - \mu}{S/\sqrt{n}}$ | $t_{n-1}$ |
+| $\sigma^2$, $\mu$ unknown | $\chi^2 = \frac{(n-1)S^2}{\sigma^2}$ | $\chi^2_{n-1}$ |
+| $\mu_1 - \mu_2$, $\sigma$'s unknown | $T_W = \frac{(\bar{X}_1 - \bar{X}_2) - \Delta}{\sqrt{S_1^2/n_1 + S_2^2/n_2}}$ | $t_{\hat\nu}$ (approx.) |
+
+## CI Summary: One-Sample and Two-Sample
+
+```{r}
+#| echo: true
+#| code-fold: false
+#| eval: false
+
+# One-sample t CI for mu
+t.test(x)$conf.int
+
+# One-sample chi-squared CI for sigma^2
+n <- length(x); s2 <- var(x)
+c(lower = (n-1)*s2 / qchisq(0.975, n-1),
+  upper = (n-1)*s2 / qchisq(0.025, n-1))
+
+# One-sample proportion: Wald
+p_hat <- mean(x); n <- length(x)
+p_hat + c(-1,1) * qnorm(0.975) * sqrt(p_hat*(1-p_hat)/n)
+
+# Wilson score interval (preferred for small n or extreme p)
+prop.test(sum(x), length(x), correct = FALSE)$conf.int
+
+# Two-sample Welch t CI
+t.test(x1, x2)$conf.int            # default: Welch
+
+# Two-sample proportions CI (unpooled SE)
+prop.test(c(y1, y2), c(n1, n2), correct = FALSE)$conf.int
+
+# Two-sample F CI for sigma1^2/sigma2^2
+var.test(x1, x2)$conf.int
+
+# Paired t CI
+t.test(x1, x2, paired = TRUE)$conf.int
+```
+
+## Bootstrap CIs (Lessons 9–10, 20)
+
+The bootstrap approximates the **sampling distribution** of $\hat\theta$ without parametric assumptions.
+
+**Algorithm:** Resample with replacement $B$ times; compute $\hat\theta^{*b}$ each time.
+
+**Percentile CI:** $\bigl(\hat\theta^*_{(\alpha/2)},\; \hat\theta^*_{(1-\alpha/2)}\bigr)$
+
+**Basic (reflection) CI:** $\bigl(2\hat\theta - \hat\theta^*_{(1-\alpha/2)},\; 2\hat\theta - \hat\theta^*_{(\alpha/2)}\bigr)$
+
+. . .
+
+**For two samples:** resample each group **separately and independently**
+
+**For paired data:** resample **whole pairs** $D_i$ with replacement
+
+**When to prefer bootstrap over parametric CIs:**
+
+- Small $n$ with non-normal or skewed data
+- Parameter is not a mean (median, correlation, quantile)
+- Complex estimator with no known SE formula
+
+# Arc 3: Hypothesis Testing {background-color="#e74c3c"}
+
+## The Framework (Lesson 12)
+
+| Term | Definition |
+|------|-----------|
+| $H_0$ | Null hypothesis (default claim) |
+| $H_a$ | Alternative hypothesis |
+| Type I error | $\alpha = P(\text{Reject } H_0 \mid H_0 \text{ true})$ |
+| Type II error | $\beta = P(\text{Fail to reject } H_0 \mid H_a \text{ true})$ |
+| Power | $1 - \beta = P(\text{Reject } H_0 \mid H_a \text{ true})$ |
+| p-value | $P(\text{observed or more extreme} \mid H_0)$ |
+
+. . .
+
+**CI–Test duality (Lesson 7, used throughout):**
+$$\theta_0 \in \text{CI}_{1-\alpha} \;\iff\; \text{fail to reject } H_0: \theta = \theta_0 \text{ at level } \alpha$$
+
+**Always report** both a p-value **and** a CI — the CI conveys effect size and precision; the p-value conveys whether $H_0$ is compatible with the data.
+
+## Neyman-Pearson Lemma and LRT (Lessons 15–16)
+
+**Neyman-Pearson Lemma:** For simple $H_0: \theta = \theta_0$ vs. $H_a: \theta = \theta_1$, the most powerful level-$\alpha$ test rejects when:
+$$\Lambda = \frac{L(\theta_1; \mathbf{x})}{L(\theta_0; \mathbf{x})} = \frac{\prod f(x_i; \theta_1)}{\prod f(x_i; \theta_0)} > k_\alpha$$
+
+**Likelihood Ratio Test (LRT):** For composite hypotheses, reject when:
+$$\lambda(\mathbf{x}) = \frac{\sup_{\theta \in \Theta_0} L(\theta)}{\sup_{\theta \in \Theta} L(\theta)} < c_\alpha$$
+
+**Wilks' theorem:** Under $H_0$ and regularity conditions, $-2\ln\lambda(\mathbf{X}) \xrightarrow{d} \chi^2_\nu$ where $\nu = \dim(\Theta) - \dim(\Theta_0)$.
+
+## Hypothesis Test Summary
+
+| $H_0$ | Test Statistic | Null Distribution |
+|--------|---------------|------------------|
+| $\mu = \mu_0$ ($\sigma$ known) | $Z = (\bar{X}-\mu_0)/(\sigma/\sqrt{n})$ | $N(0,1)$ |
+| $\mu = \mu_0$ ($\sigma$ unknown) | $T = (\bar{X}-\mu_0)/(S/\sqrt{n})$ | $t_{n-1}$ |
+| $p = p_0$ | $Z = (\hat{p}-p_0)/\sqrt{p_0(1-p_0)/n}$ | $N(0,1)$ |
+| $\sigma^2 = \sigma_0^2$ | $\chi^2 = (n-1)S^2/\sigma_0^2$ | $\chi^2_{n-1}$ |
+| $\mu_1 - \mu_2 = 0$ (Welch) | $T_W = (\bar{X}_1-\bar{X}_2)/\sqrt{S_1^2/n_1+S_2^2/n_2}$ | $t_{\hat\nu}$ |
+| $p_1 = p_2$ | $Z = (\hat{p}_1-\hat{p}_2)/\text{SE}_\text{pool}$ | $N(0,1)$ |
+| $\sigma_1^2 = \sigma_2^2$ | $F = S_1^2/S_2^2$ | $F_{n_1-1,n_2-1}$ |
+| $\mu_D = 0$ (paired) | $T = \bar{D}/(S_D/\sqrt{n})$ | $t_{n-1}$ |
+
+# Arc 4: Two-Sample and Nonparametric {background-color="#9b59b6"}
+
+## Two-Sample Inference Map (Lessons 18–21)
+
+```{r}
+#| echo: false
+#| fig-height: 7
+#| fig-width: 16
+
+tbl <- tribble(
+  ~x, ~y, ~label, ~fill,
+  # Row 1: Two continuous samples
+  2, 9,  "Independent samples\n(Lesson 18)",         "#3498db",
+  8, 9,  "Paired samples\n(Lesson 19)",              "#27ae60",
+  # Row 2: parametric options
+  0.5, 7, "Normal/large n?\nWelch t-test",           "#3498db",
+  2,   7, "Equal variances?\nPooled t-test",         "#3498db",
+  3.5, 7, "Any dist.?\nBootstrap CI / Permutation",  "#3498db",
+  6.5, 7, "Normal D_i?\nPaired t-test",              "#27ae60",
+  8,   7, "Non-normal D_i?\nWilcoxon signed-rank",   "#27ae60",
+  9.5, 7, "Any D_i?\nSign test",                     "#27ae60",
+  # Row 3: binary outcomes
+  2,   5, "Proportions\np_1 - p_2\n(z-test, Wald CI)", "#e74c3c",
+  8,   5, "Variances\nsigma_1^2 / sigma_2^2\n(F-test)", "#e74c3c"
+)
+
+ggplot(tbl, aes(x = x, y = y)) +
+  geom_tile(aes(fill = fill), width = 2.6, height = 1.4,
+            color = "white", linewidth = 0.8) +
+  geom_text(aes(label = label), color = "white",
+            size = 3.8, lineheight = 0.9) +
+  scale_fill_identity() +
+  annotate("segment", x = 2, xend = 0.5, y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("segment", x = 2, xend = 2,   y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("segment", x = 2, xend = 3.5, y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("segment", x = 8, xend = 6.5, y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("segment", x = 8, xend = 8,   y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("segment", x = 8, xend = 9.5, y = 8.3, yend = 7.7,
+           arrow = arrow(length = unit(0.15,"cm")), color = "grey50") +
+  annotate("text", x = 2, y = 10.1, label = "Continuous outcome",
+           fontface = "bold", size = 5) +
+  annotate("text", x = 2, y = 5.9, label = "Binary / Variance",
+           fontface = "bold", size = 5) +
+  coord_cartesian(xlim = c(-1, 11), ylim = c(3.8, 11)) +
+  theme_void()
+```
+
+## Welch vs. Pooled: When Does It Matter?
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 5.5
+#| fig-width: 14
+
+set.seed(551)
+B_sim <- 3000
+
+sim_t1_error <- function(n1, n2, sigma1, sigma2) {
+  replicate(B_sim, {
+    x1 <- rnorm(n1, 0, sigma1)
+    x2 <- rnorm(n2, 0, sigma2)
+    c(Welch  = t.test(x1, x2, var.equal = FALSE)$p.value,
+      Pooled = t.test(x1, x2, var.equal = TRUE)$p.value)
+  }) |> t() |> as_tibble() |>
+    summarise(across(everything(), \(x) mean(x < 0.05))) |>
+    mutate(n1 = n1, n2 = n2, sigma1 = sigma1, sigma2 = sigma2,
+           scenario = sprintf("n=(%d,%d)\nsd=(%.0f,%.0f)", n1,n2,sigma1,sigma2))
+}
+
+scenarios <- list(
+  list(n1=20, n2=20, s1=5,  s2=5),
+  list(n1=20, n2=20, s1=5,  s2=15),
+  list(n1=10, n2=30, s1=5,  s2=15),  # larger group has larger sd -> conservative
+  list(n1=30, n2=10, s1=5,  s2=15)   # larger group has smaller sd -> anti-conservative
+)
+
+results_t <- map_dfr(scenarios, function(s) {
+  sim_t1_error(s$n1, s$n2, s$s1, s$s2)
+})
+
+results_t |>
+  pivot_longer(c(Welch, Pooled), names_to = "Test", values_to = "TypeI") |>
+  ggplot(aes(x = scenario, y = TypeI, fill = Test)) +
+  geom_col(position = "dodge", width = 0.55) +
+  geom_hline(yintercept = 0.05, linetype = "dashed", linewidth = 1.1) +
+  scale_fill_manual(values = c("Welch" = "#006a4e", "Pooled" = "#e74c3c")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.22)) +
+  labs(
+    title    = "Type I Error: Welch vs. Pooled t-test Under H\u2080 (equal means)",
+    subtitle = "Pooled t-test inflates Type I error when variances are unequal AND n's are unequal with larger group having smaller sd",
+    x = "Scenario", y = "Type I Error Rate", fill = NULL
+  ) +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(size = 10))
+```
+
+## Nonparametric Test Summary (Lesson 21)
+
+| Test | Statistic | R function | Null distribution |
+|------|-----------|-----------|------------------|
+| Sign test | $S^+ = \#\{D_i > 0\}$ | `pbinom(s, n*, 0.5)` | $\text{Bin}(n^*, 1/2)$ |
+| Wilcoxon signed-rank | $W^+ = \sum_{\{D_i>0\}} R_i$ | `wilcox.test(x, y, paired=TRUE)` | Exact / normal approx |
+| Wilcoxon rank-sum | $W = \sum_{\text{grp 1}} R_i$ | `wilcox.test(x, y)` | Exact / normal approx |
+
+**ARE at normality** (relative to corresponding parametric test):
+
+- Signed-rank vs. $t$: $3/\pi \approx 0.955$ — minimal loss, sometimes large gains
+- Sign vs. $t$: $2/\pi \approx 0.637$ — notable loss at normality, but gains for heavy tails
+- Rank-sum vs. Welch $t$: $3/\pi \approx 0.955$ — same as signed-rank
+
+# Method Selection and Complete Example {background-color="#2c3e50"}
+
+## Decision Guide
+
+**Step 1 — What parameter am I estimating / testing?**
+$\mu$, $\sigma^2$, $p$, $\mu_1 - \mu_2$, $\mu_D$, $p_1 - p_2$, median, …
+
+**Step 2 — What is the study design?**
+One sample / Two independent samples / Paired
+
+**Step 3 — What distributional assumptions are reasonable?**
+Normal? Large $n$ (CLT)? Heavy-tailed/skewed? Ordinal only?
+
+**Step 4 — What is the goal?**
+Point estimate / CI / Hypothesis test / All three?
+
+. . .
+
+::: callout-important
+## Three Rules of Thumb
+1. **Default for two independent groups:** Welch $t$-test (not pooled). Use pooled only with strong prior evidence of equal variances and balanced $n$
+2. **Default for paired non-normal data with small $n$:** Wilcoxon signed-rank test
+3. **Always report** a CI alongside your p-value — the CI conveys magnitude and precision
+:::
+
+## Complete Example: Hypertension Trial
+
+A clinical trial randomizes 50 patients to Drug A and 50 to Drug B. Outcomes at 12 weeks: SBP change from baseline (continuous, approximately normal) and proportion achieving $\geq 5$ mmHg reduction (binary).
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+set.seed(551)
+n_a <- 50;  n_b <- 50
+sbp_a <- rnorm(n_a, mean = -12, sd = 8)   # Drug A: mean -12 mmHg
+sbp_b <- rnorm(n_b, mean = -8,  sd = 9)   # Drug B: mean -8 mmHg
+
+# Binary outcome: >=5 mmHg reduction
+resp_a <- as.integer(sbp_a <= -5)
+resp_b <- as.integer(sbp_b <= -5)
+
+cat("=== PRIMARY ENDPOINT: CONTINUOUS SBP CHANGE ===\n")
+cat(sprintf("Drug A: mean = %.2f  sd = %.2f\n", mean(sbp_a), sd(sbp_a)))
+cat(sprintf("Drug B: mean = %.2f  sd = %.2f\n", mean(sbp_b), sd(sbp_b)))
+```
+
+## Applying All Methods
+
+```{r}
+#| echo: true
+#| code-fold: false
+
+# Welch t-test (primary analysis)
+t_res <- t.test(sbp_a, sbp_b)
+cat(sprintf("Welch t-test:  diff = %.2f  95%% CI (%.2f, %.2f)  p = %.4f\n",
+            diff(rev(t_res$estimate)),
+            t_res$conf.int[1], t_res$conf.int[2], t_res$p.value))
+
+# Wilcoxon rank-sum (sensitivity)
+w_res <- wilcox.test(sbp_a, sbp_b, conf.int = TRUE)
+cat(sprintf("Rank-sum test: HL est = %.2f  95%% CI (%.2f, %.2f)  p = %.4f\n",
+            w_res$estimate, w_res$conf.int[1], w_res$conf.int[2], w_res$p.value))
+
+# F-test (to check pooled t assumption)
+f_res <- var.test(sbp_a, sbp_b)
+cat(sprintf("F-test: sd_A = %.2f  sd_B = %.2f  F = %.3f  p = %.4f\n",
+            sd(sbp_a), sd(sbp_b), f_res$statistic, f_res$p.value))
+
+# Binary outcome
+cat("\n=== SECONDARY ENDPOINT: PROPORTION RESPONDING ===\n")
+p_res <- prop.test(c(sum(resp_a), sum(resp_b)), c(n_a, n_b), correct = FALSE)
+cat(sprintf("Drug A: %.1f%%  Drug B: %.1f%%\n",
+            100*mean(resp_a), 100*mean(resp_b)))
+cat(sprintf("Diff: %.1f%%  95%% CI (%.1f%%, %.1f%%)  p = %.4f\n",
+            100*(mean(resp_a) - mean(resp_b)),
+            100*p_res$conf.int[1], 100*p_res$conf.int[2], p_res$p.value))
+```
+
+## Visualizing the Trial Results
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| fig-height: 6.5
+#| fig-width: 14
+
+df_trial <- tibble(
+  SBP_Change = c(sbp_a, sbp_b),
+  Drug       = rep(c("Drug A", "Drug B"), c(n_a, n_b)),
+  Responded  = c(resp_a, resp_b)
+)
+
+p1 <- df_trial |>
+  ggplot(aes(x = Drug, y = SBP_Change, fill = Drug)) +
+  geom_violin(alpha = 0.45, trim = FALSE) +
+  geom_boxplot(width = 0.15, fill = "white", outlier.shape = 1) +
+  scale_fill_manual(values = c("Drug A" = "#006a4e", "Drug B" = "#e74c3c")) +
+  labs(title = "SBP Change from Baseline",
+       x = NULL, y = "SBP Change (mmHg)") +
+  theme(legend.position = "none")
+
+resp_summ <- df_trial |>
+  group_by(Drug) |>
+  summarise(rate = mean(Responded), n = n()) |>
+  mutate(se = sqrt(rate*(1-rate)/n),
+         lo = rate - qnorm(0.975)*se,
+         hi = rate + qnorm(0.975)*se)
+
+p2 <- resp_summ |>
+  ggplot(aes(x = Drug, y = rate, color = Drug)) +
+  geom_point(size = 6) +
+  geom_errorbar(aes(ymin = lo, ymax = hi), width = 0.07, linewidth = 1.3) +
+  scale_color_manual(values = c("Drug A" = "#006a4e", "Drug B" = "#e74c3c")) +
+  scale_y_continuous(labels = scales::percent, limits = c(0, 1)) +
+  labs(title = "Proportion with \u22655 mmHg Reduction",
+       x = NULL, y = "Response Rate (95% CI)") +
+  theme(legend.position = "none")
+
+p1 + p2 +
+  plot_annotation(
+    title    = "Hypertension RCT: Drug A vs. Drug B",
+    subtitle = "Left: Welch t-test and Wilcoxon rank-sum for SBP change   |   Right: z-test for proportions"
+  )
+```
+
+# Key Formulas Reference {background-color="#2c3e50"}
+
+## Point Estimation Formulas
+
+**Fisher information:**
+$$I(\theta) = E\!\left[\!\left(\frac{\partial \ln f}{\partial\theta}\right)^{\!2}\right] = -E\!\left[\frac{\partial^2 \ln f}{\partial\theta^2}\right]$$
+
+**CRLB:** $\text{Var}(\hat\theta) \geq [n\,I(\theta)]^{-1}$ for any unbiased $\hat\theta$
+
+**MLE asymptotics:** $\sqrt{n}(\hat\theta_\text{MLE} - \theta) \xrightarrow{d} N\bigl(0,\,[I(\theta)]^{-1}\bigr)$
+
+**Rao-Blackwell:** $\tilde\theta = E[\hat\theta \mid T] \Rightarrow \text{Var}(\tilde\theta) \leq \text{Var}(\hat\theta)$
+
+## Interval Estimation Formulas
+
+**Welch-Satterthwaite df:**
+$$\hat\nu = \frac{(S_1^2/n_1 + S_2^2/n_2)^2}{(S_1^2/n_1)^2/(n_1-1) + (S_2^2/n_2)^2/(n_2-1)}$$
+
+**Variance of paired differences:**
+$$\sigma_D^2 = \sigma_1^2 + \sigma_2^2 - 2\rho\sigma_1\sigma_2$$
+
+**CI width ratio (paired/unpaired, $\sigma_1 = \sigma_2$):** $\sqrt{1 - \rho}$
+
+**Bootstrap percentile CI:** $\bigl(\hat\theta^*_{(\alpha/2)},\; \hat\theta^*_{(1-\alpha/2)}\bigr)$
+
+## Hypothesis Testing Formulas
+
+**NP Lemma rejection region:** $\Lambda = L(\theta_1)/L(\theta_0) > k_\alpha$
+
+**Wilks' theorem:** $-2\ln\lambda(\mathbf{X}) \xrightarrow{d} \chi^2_{\dim(\Theta) - \dim(\Theta_0)}$ under $H_0$
+
+**Power:** $1 - \beta(\theta') = P\bigl(T(\mathbf{X}) \in C \mid \theta = \theta'\bigr)$ for $\theta' \in \Theta_a$
+
+**CI–test duality:** $\theta_0 \in \text{CI}_{1-\alpha} \iff$ fail to reject $H_0: \theta = \theta_0$ at level $\alpha$
+
+## Nonparametric Formulas
+
+**Sign test:** $S^+ = \#\{D_i > 0\} \sim \text{Bin}(n^*, 1/2)$ under $H_0$
+
+**Wilcoxon signed-rank:**
+$$E[W^+] = \frac{n^*(n^*+1)}{4}, \quad \text{Var}(W^+) = \frac{n^*(n^*+1)(2n^*+1)}{24}$$
+
+**Wilcoxon rank-sum:**
+$$E[W] = \frac{n_1(N+1)}{2}, \quad \text{Var}(W) = \frac{n_1 n_2(N+1)}{12}$$
+
+**ARE (signed-rank vs. $t$, normal data):** $3/\pi \approx 0.955$
+
+# R Function Reference {background-color="#2c3e50"}
+
+## Key R Functions
+
+```{r}
+#| echo: true
+#| code-fold: false
+#| eval: false
+
+# ---- Point Estimation ----
+mean(x); median(x); var(x); sd(x)        # summary statistics
+optim(par, fn = neg_loglik, ...)          # general MLE via optimization
+# (many MLE problems have closed-form solutions)
+
+# ---- Confidence Intervals ----
+t.test(x)$conf.int                        # one-sample t CI
+t.test(x, y)$conf.int                    # Welch two-sample t CI
+t.test(x, y, var.equal = TRUE)$conf.int  # pooled t CI
+t.test(x, y, paired = TRUE)$conf.int     # paired t CI
+prop.test(y, n, correct = FALSE)$conf.int # proportion CI (Wilson)
+var.test(x, y)$conf.int                  # CI for sigma1^2/sigma2^2
+
+# Bootstrap CI
+boot_stat <- replicate(B, mean(sample(x, length(x), replace = TRUE)))
+quantile(boot_stat, c(0.025, 0.975))
+
+# ---- Hypothesis Tests ----
+t.test(x, mu = mu0)                      # one-sample t-test
+t.test(x, y)                             # Welch t-test (default)
+t.test(x, y, var.equal = TRUE)           # pooled t-test
+t.test(x, y, paired = TRUE)             # paired t-test
+prop.test(c(y1, y2), c(n1, n2))         # two-sample z-test for props
+var.test(x, y)                           # F-test for equal variances
+
+# ---- Nonparametric ----
+wilcox.test(x)                           # one-sample signed-rank
+wilcox.test(x, y, paired = TRUE)        # paired signed-rank
+wilcox.test(x, y)                        # rank-sum (Mann-Whitney)
+wilcox.test(x, y, conf.int = TRUE)      # + Hodges-Lehmann estimate
+
+# ---- Tidy Output ----
+library(broom)
+broom::tidy(t.test(x, y))
+broom::tidy(wilcox.test(x, y, conf.int = TRUE))
+```
+
+## Final Exam Guidance
+
+The take-home final exam spans the full course. You should be able to:
+
+**Theoretical problems:**
+
+- Derive the MLE and assess whether it achieves the CRLB
+- Apply the factorization theorem to identify a sufficient statistic
+- Apply the Neyman-Pearson Lemma to derive the UMP test for simple hypotheses
+- Derive and justify a confidence interval using the pivot method
+- Compute Fisher information and state the large-sample distribution of the MLE
+
+**Applied / computational problems:**
+
+- Choose the appropriate test for a given study design and data type
+- Implement a bootstrap CI and permutation test in R
+- Interpret CIs, p-values, and test decisions in medical research context
+- Compare parametric and nonparametric tests; justify the choice
+
+. . .
+
+::: callout-important
+## Last Reminder
+Every method we have studied is connected: the NP Lemma motivates the $t$-test (via UMP in normal families), the pivot method underlies all parametric CIs, and the bootstrap/permutation tests generalize both frameworks to arbitrary settings. Understanding the **connections** is more valuable than memorizing any single formula.
+:::
+
+## Thank You {.center background-color="#006a4e"}
+
+**BSTA 551 — Theory of Statistical Inference**
+
+Good luck on the final exam!
+
+## References
+
+::: nonincremental
+- Devore, Berk, and Carlton. *Modern Mathematical Statistics with Applications* (Springer). All chapters covered in the course.
+- Chihara, L. M. and Hesterberg, T. C. *Mathematical Statistics with Resampling and R* (Wiley). Chapters 3, 5, 8.
+- Casella, G. and Berger, R. L. *Statistical Inference* (Duxbury). Supplemental theoretical reference.
+:::
+
+```{bash}
+#| eval: false
+#| include: false
+decktape reveal --fragments docs/lessons/22_CourseReview/22_CourseReview.html lessons/22_CourseReview/22_CourseReview.pdf
+```
