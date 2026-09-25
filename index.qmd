@@ -75,6 +75,6 @@ E-mail or OHSU Teams is the best way to get in contact with me.
 :::
 
 ::: g-col-3
-[{{< iconify icomoon-free github size=24px >}} View the source on GitHub](https://github.com/jminnier/sph_bsta551_w26_website)
+[{{< iconify icomoon-free github size=24px >}} View the source on GitHub](https://github.com/jminnier/BSTA551_W26)
 :::
 :::
