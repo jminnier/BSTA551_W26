@@ -202,7 +202,7 @@ tibble(boot_diff = boot_diffs) |>
   geom_vline(xintercept = ci_welch,
              color = "#e74c3c", linewidth = 1.0, linetype = "dotted") +
   annotate("text", x = obs_diff + 0.1, y = 0.52,
-           label = bquote(hat(Delta) == .(round(obs_diff, 2))),
+           label = as.expression(bquote(hat(Delta) == .(round(obs_diff, 2)))),
            color = "#e74c3c", size = 5.5, hjust = 0) +
   annotate("text", x = ci_pct[2] + 0.1, y = 0.45,
            label = "Bootstrap\npercentile CI", color = "#006a4e",
@@ -348,7 +348,7 @@ tibble(null_diff = boot_null) |>
   geom_vline(xintercept = c(-abs(t_obs), abs(t_obs)),
              color = "#e74c3c", linewidth = 1.5) +
   annotate("text", x = abs(t_obs) + 0.05, y = 0.6,
-           label = bquote("|" * T[obs] * "| =" ~ .(round(abs(t_obs), 2))),
+           label = as.expression(bquote("|" * T[obs] * "| =" ~ .(round(abs(t_obs), 2)))),
            color = "#e74c3c", size = 5.5, hjust = 0) +
   annotate("text", x = 0, y = 0.7,
            label = sprintf("Bootstrap p = %.4f", p_boot),
@@ -568,7 +568,7 @@ tibble(perm_diff = perm_diffs) |>
   geom_vline(xintercept = c(-abs(t_obs), abs(t_obs)),
              color = "#e74c3c", linewidth = 1.5) +
   annotate("text", x = abs(t_obs) + 0.05, y = 0.65,
-           label = bquote("|" * T[obs] * "| =" ~ .(round(abs(t_obs), 2))),
+           label = as.expression(bquote("|" * T[obs] * "| =" ~ .(round(abs(t_obs), 2)))),
            color = "#e74c3c", size = 5.5, hjust = 0) +
   annotate("text", x = 0, y = 0.72,
            label = sprintf("p = %.4f", p_perm),
@@ -794,7 +794,7 @@ tibble(
     "Sampling distribution (for CI)"            = "#27ae60"
   )) +
   annotate("text", x = D_obs + 0.3, y = 0.28,
-           label = bquote(bar(D)[obs] == .(round(D_obs, 2))),
+           label = as.expression(bquote(bar(D)[obs] == .(round(D_obs, 2)))),
            color = "#e74c3c", size = 5.5, hjust = 0) +
   labs(
     title    = "Paired Bootstrap: Null Distribution vs. Sampling Distribution",

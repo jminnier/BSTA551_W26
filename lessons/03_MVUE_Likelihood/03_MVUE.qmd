@@ -312,7 +312,7 @@ log_lik_data |>
        x = "Parameter (p)", 
        y = expression("Log-Likelihood "*ell(p))) +
   annotate("text", x = mle_p + 0.05, y = x * log(mle_p) + (n - x) * log(1 - mle_p) - 2,
-           label = bquote(atop("Maximum at", hat(p) == .(mle_p))), 
+           label = as.expression(bquote(atop("Maximum at", hat(p) == .(mle_p)))), 
            color = "red", size = 5, parse = FALSE)
 ```
 

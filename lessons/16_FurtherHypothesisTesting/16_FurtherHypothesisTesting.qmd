@@ -443,7 +443,7 @@ p2 <- test_grid |>
   annotate("rect", xmin = ci_low, xmax = ci_high, ymin = -Inf, ymax = Inf,
            fill = "#006a4e", alpha = 0.1) +
   annotate("text", x = -3.5, y = t_crit + 0.5,
-           label = bquote(t[0.975*","*.(df)] == .(round(t_crit, 2))),
+           label = as.expression(bquote(t[0.975*","*.(df)] == .(round(t_crit, 2)))),
            color = "#e74c3c", size = 4.5) +
   labs(
     title = expression("t-statistic as a function of " * mu[0]),

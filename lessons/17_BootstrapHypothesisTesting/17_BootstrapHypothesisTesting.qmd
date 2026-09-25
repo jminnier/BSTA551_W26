@@ -407,7 +407,7 @@ p_cr <- ggplot(tibble(T = T_correct), aes(x = T)) +
   geom_vline(xintercept = c(-abs(T_obs_demo), abs(T_obs_demo)),
              color = "#e74c3c", linewidth = 1.2) +
   annotate("text", x = abs(T_obs_demo) + 0.15, y = 0.32,
-           label = bquote(T[obs] == .(round(T_obs_demo, 2))),
+           label = as.expression(bquote(T[obs] == .(round(T_obs_demo, 2)))),
            color = "#e74c3c", size = 4.5) +
   labs(title = expression(bold("CORRECT") * ": Bootstrap from shifted data"),
        subtitle = sprintf("Centered at theta0 \u2014 Bootstrap p = %.3f,  t-test p = %.3f",

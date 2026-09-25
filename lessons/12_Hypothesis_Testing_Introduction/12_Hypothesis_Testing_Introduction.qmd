@@ -1003,7 +1003,7 @@ tibble(
   geom_point(aes(x = x), size = 5, color = "steelblue") +
   geom_vline(xintercept = 10, linetype = "dashed", color = "red", linewidth = 1.5) +
   annotate("text", x = 10, y = 1.15, label = expression(H[0]:~mu == 10), color = "red", size = 6) +
-  annotate("text", x = xbar, y = 0.85, label = bquote(bar(x) == .(xbar)), size = 5) +
+  annotate("text", x = xbar, y = 0.85, label = as.expression(bquote(bar(x) == .(xbar))), size = 5) +
   annotate("text", x = (ci_lower + ci_upper)/2, y = 1.1, 
            label = paste0("95% CI: (", round(ci_lower, 1), ", ", round(ci_upper, 1), ")"), 
            size = 5, color = "steelblue") +

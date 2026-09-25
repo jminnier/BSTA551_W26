@@ -240,7 +240,7 @@ tibble(x = xbar, lower = ci_lower, upper = ci_upper) |>
   annotate("text", x = 3300, y = 1.15, label = expression(H[0]:~mu == 3300), 
            color = "red", size = 6) +
   annotate("text", x = xbar, y = 0.85, size = 5,
-           label = bquote(bar(x) == .(xbar))) +
+           label = as.expression(bquote(bar(x) == .(xbar)))) +
   coord_cartesian(xlim = c(3000, 3400), ylim = c(0.7, 1.3)) +
   labs(x = "Birth Weight (g)", y = "",
        title = "95% Confidence Interval vs Null Value") +
@@ -512,7 +512,7 @@ tibble(x = x_seq, y = y) |>
   geom_vline(xintercept = t_crit, linetype = "dashed", color = "red", linewidth = 1) +
   geom_vline(xintercept = t_stat, color = "darkgreen", linewidth = 1.5) +
   annotate("text", x = t_crit + 0.15, y = 0.33, hjust = 0, size = 5, color = "red",
-           label = bquote(t[list(0.05, 14)] == .(round(t_crit, 3)))) +
+           label = as.expression(bquote(t[list(0.05, 14)] == .(round(t_crit, 3))))) +
   annotate("text", x = t_stat + 0.15, y = 0.25, hjust = 0, size = 5, color = "darkgreen",
            label = paste0("t = ", round(t_stat, 3))) +
   annotate("text", x = 2.8, y = 0.05, label = expression(alpha == 0.05), 
@@ -771,7 +771,7 @@ p1 <- tibble(phat = phat_vals, se = se_wald) |>
   geom_hline(yintercept = se_h0, linetype = "dashed", color = "red", linewidth = 1) +
   geom_vline(xintercept = p0, linetype = "dotted", alpha = 0.5) +
   annotate("text", x = 0.42, y = se_h0 + 0.001, color = "red", size = 5,
-           label = bquote("SE under" ~ H[0] ~ "=" ~ .(round(se_h0, 4)))) +
+           label = as.expression(bquote("SE under" ~ H[0] ~ "=" ~ .(round(se_h0, 4))))) +
   labs(x = expression(hat(p)), y = "Standard Error",
        title = "Standard Error: Under H0 vs Using Sample Proportion",
        subtitle = expression(p[0] == 0.30 ~ ", " ~ n == 200))
@@ -849,7 +849,7 @@ tibble(z = z_seq, y = y) |>
   geom_vline(xintercept = z_crit, linetype = "dashed", color = "red", linewidth = 1) +
   geom_vline(xintercept = z_stat, color = "darkgreen", linewidth = 1.5) +
   annotate("text", x = z_crit - 0.1, y = 0.33, hjust = 1, size = 5, color = "red",
-           label = bquote(-z[0.05] == .(round(z_crit, 3)))) +
+           label = as.expression(bquote(-z[0.05] == .(round(z_crit, 3))))) +
   annotate("text", x = z_stat + 0.1, y = 0.25, hjust = 0, size = 5, color = "darkgreen",
            label = paste0("z = ", round(z_stat, 3))) +
   labs(x = "z", y = "Density",
@@ -1076,7 +1076,7 @@ tibble(x = x_vals, prob = probs) |>
                                 "Not in p-value region" = "steelblue")) +
   geom_vline(xintercept = n_ex * p0_ex, linetype = "dashed", linewidth = 1) +
   annotate("text", x = n_ex * p0_ex + 0.3, y = max(probs) * 0.9, hjust = 0, size = 5,
-           label = bquote("E[X] =" ~ np[0] ~ "=" ~ .(n_ex * p0_ex))) +
+           label = as.expression(bquote("E[X] =" ~ np[0] ~ "=" ~ .(n_ex * p0_ex)))) +
   labs(x = "X (number of successes)", y = "P(X = x)",
        title = expression("Binomial(n = 20, " * p[0] * " = 0.30) under " * H[0]),
        subtitle = paste0("Exact p-value: P(X \u2264 3 | p = 0.30) = ", round(p_lower, 4)),
@@ -1436,7 +1436,7 @@ p1 <- tibble(x = creatinine) |>
            color = "red", hjust = 1.1, size = 5) +
   annotate("text", x = mean(creatinine), y = 4.5, hjust = -0.1, size = 5,
            color = "darkgreen",
-           label = bquote(bar(x) == .(round(mean(creatinine), 3))))
+           label = as.expression(bquote(bar(x) == .(round(mean(creatinine), 3)))))
 
 p2 <- tibble(x = creatinine) |>
   ggplot(aes(sample = x)) +

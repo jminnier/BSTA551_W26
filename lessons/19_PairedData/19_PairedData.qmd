@@ -279,7 +279,7 @@ p2 <- tibble(d = d) |>
              color = "grey40", linewidth = 1.0) +
   geom_vline(xintercept = mean(d), color = "#e74c3c", linewidth = 1.4) +
   annotate("text", x = mean(d) - 0.5, y = 0.045,
-           label = bquote(bar(D) == .(round(mean(d), 1))),
+           label = as.expression(bquote(bar(D) == .(round(mean(d), 1)))),
            color = "#e74c3c", size = 5.5, hjust = 1) +
   labs(title = "Distribution of Differences  D = Drug \u2212 Placebo",
        x = "Difference (mmHg)", y = "Density")
@@ -367,7 +367,7 @@ p_hist <- tibble(d = d_iron) |>
   geom_vline(xintercept = mean(d_iron), color = "#e74c3c",
              linewidth = 1.3, linetype = "dashed") +
   annotate("text", x = mean(d_iron) + 0.4, y = 2.7,
-           label = bquote(bar(D) == .(round(mean(d_iron), 1))),
+           label = as.expression(bquote(bar(D) == .(round(mean(d_iron), 1)))),
            color = "#e74c3c", size = 5.5, hjust = 0) +
   labs(title = "Histogram of Differences",
        x = "Ferritin increase (ng/mL)", y = "Count")
