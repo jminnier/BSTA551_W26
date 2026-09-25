@@ -10,7 +10,20 @@ Repo: `github.com/jminnier/BSTA551_W26`. Assignments are submitted through Sakai
 
 **Course context.** An 11-week masters-level course in theoretical statistical inference: distributions of random variables (location-scale and exponential families), data reduction (sufficiency, completeness), estimation (MME, MLE), convergence and finite/large-sample properties, interval estimation, hypothesis testing, asymptotic tests (LRT, score, Wald), and simulation to evaluate methods. Students arrive with one quarter of probability (BSTA 550) and working R. Learning objectives: (1) explain major concepts and theorems in inference, (2) connect theory to statistical analyses, (3) conduct simulations to study and evaluate methods.
 
-`syllabus.qmd` is the authoritative source for scope, grading, and policies; `schedule.qmd` is authoritative for what is taught when. Read them before writing or revising course content.
+## Authoritative sources
+
+When these disagree, the left column wins. Do not infer what the course covers from the file tree — drafts and leftovers live alongside taught material.
+
+| Question | Read this | Do **not** trust |
+|---|---|---|
+| What was taught, in what order, with which textbook sections? | `schedule.qmd` | the `lessons/` directory listing, or `draft_schedule.qmd` (a BSTA **550 probability** schedule) |
+| Which homework was actually assigned? | `homeworks.qmd` (HW 0–7) | `homework/` listing — `HW_08`–`HW_10` were never assigned, and `hw_answers/` is 550 |
+| Scope, objectives, grading, policies, no-class dates | `syllabus.qmd` | `_course-settings.yml` (Fall 2023, unused); `quiz.qmd` (BSTA 551 gives no quizzes) |
+| Every date in the term | `class_dates.R` | any date typed into a `.qmd` |
+| What gets published | the `render:` list in `_quarto.yml` | the presence of a `.qmd` on disk |
+| Textbook section and exercise numbers | the Devore PDF (see *Reference materials*) | slide citations — Lesson 18 miscites "DBC 9.5" for two-sample z/t |
+
+**Taught content is exactly lessons 0–23 and HW 0–7.** Everything else on disk is a draft, a BSTA 550 leftover, or an unassigned extra, and is excluded from the render list.
 
 ---
 
@@ -249,6 +262,44 @@ Local PDFs, outside this repo:
 Check section and exercise numbers against these PDFs before citing them.
 
 ---
+
+---
+
+## Rolling over to a new term
+
+Worked example: Winter 2026 → Winter 2027. Copy the folder, point `git remote set-url origin` at the new repo, then work through this list. Nothing here is automated — every item is a place a stale 2026 value hides.
+
+**1. Dates — do this first, everything else depends on it.**
+- `class_dates.R`: set `first_day` to the OHSU "Term begins" date and `last_day` to "Term ends".
+- Re-derive every index. `cal_dates` is a day-by-day sequence, so `w4d1 = cal_dates[22]` only lands on the right weekday if the term starts on the same weekday. **Verify each `wXdY` prints a Monday or Wednesday** — holidays and a shifted start silently move everything.
+- `year = "2026"` is defined but unused; update or delete it.
+- Run `Rscript class_dates_update.R` to re-render the date-bearing pages.
+
+**2. Hardcoded dates that bypass `class_dates.R`** — these will not update themselves:
+- `lessons/23_BayesianInference/23_BayesianInference.qmd` and `lessons/24_CourseReview/24_CourseReview.qmd` — `date: "2026-03-11"`
+- `lessons/00_Intro/00_Intro_key_info.qmd` — `date: "01-05-2026"`
+- `homework/Final_Exam.qmd` (`2026-03-06`), `Final_Exam_Solutions.qmd` and `Final_Exam_Solutions_rubric.qmd` (`2026-03-20`), `Midterm_Exam.qmd` (`2026-02-02`)
+- `syllabus.qmd` lines ~34 and ~166 — "March 11, 2026", "March 18, 2026", "March 19, 2026 at 11pm"
+- `syllabus.qmd` → *Known Exceptions* — the holiday list (Jan 19, Feb 11, Feb 16) and the finals-week line
+- `syllabus.qmd` → *Attendance Policy* — "There are 17 classes total"
+- `index.qmd` — "Winter 2026", "Jan 5 - March 18", meeting days/time, and the office-hours block
+
+**3. Term-specific links — all 19 Microsoft Forms URLs are single-use per term.**
+- Exit-ticket forms, one per class meeting, in `schedule.qmd`
+- The course-feedback form in `syllabus.qmd`
+- The forms embedded in `lessons/00_Intro/00_Intro.qmd`
+- The TA's Webex room in `index.qmd` (`ohsu.webex.com/meet/parkecha`) — changes if the TA changes
+- Sakai assignment links, and the instructor/TA names and office hours in `index.qmd` and `instructors.qmd`
+
+**4. Clear the build cache.** `_freeze/` is ~130 MB and still carries `lessons copy/`, `lessons_old/`, and BSTA 550 probability entries (`07_pmfs`, `05_Equally_likely_outcomes`, …). Delete the whole directory and let it rebuild; stale freeze output is the usual cause of a page that will not update.
+
+**5. Decide what the drafts are for.** The `render:` list keeps 30 `_old`/`_long` files and the 550 leftovers unpublished but on disk. If they are not useful as reference, deleting them removes most of the repo's bulk (the repo is ~1.2 GB: 287 MB `docs`, 155 MB `lessons`, 130 MB `_freeze`).
+
+**6. Housekeeping.** Three `.DS_Store` files are tracked (`git rm --cached` them and add to `.gitignore`); `homework/HW_07_Solutions.aux/.log/.tex` and five `.Rhistory` files are build litter; `_publish.yml` still names Nicky Wakim's quarto-pub site and can go; `index.qmd` reads "This is course introduces".
+
+**7. Re-point the site.** Update the repo URL in `index.qmd`, the `jessicaminnier.com/BSTA551_W26/` iframes in `lessons/00_Intro/00_Intro.qmd`, and confirm GitHub Pages serves `docs/` from `main` in the new repo.
+
+**8. Before publishing, check the render list.** Run `quarto inspect` and confirm the input list is only the lessons and homework you intend to publish. A new draft named without `_old`/`_long` in it *will* be published.
 
 ## Legacy content and known issues
 
