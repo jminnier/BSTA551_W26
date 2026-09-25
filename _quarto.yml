@@ -1,6 +1,22 @@
 project:
   type: website
   output-dir: docs
+  # Without this list Quarto renders EVERY .qmd in the project, which published
+  # 30 superseded drafts plus leftover BSTA 550 material. Sources are kept on
+  # disk for reference; they are simply not part of the published site.
+  render:
+    - "**/*.qmd"
+    - "!draft_schedule.qmd"        # BSTA 550 probability draft schedule
+    - "!quiz.qmd"                  # quizzes are not part of BSTA 551 assessment
+    - "!hw_answers/"               # BSTA 550 homework answers
+    - "!readings/"                 # BSTA 550 probability/calculus readings
+    - "!**/*_old*.qmd"             # superseded lesson/homework drafts
+    - "!**/*_long*.qmd"            # alternate long-form drafts
+    - "!homework/HW_08.qmd"        # never assigned (no hw8 in class_dates.R)
+    - "!homework/HW_09.qmd"        # never assigned (no hw9 in class_dates.R)
+    - "!homework/HW_10.qmd"        # never assigned; BSTA 550 leftover
+    - "!lessons/24_CourseReview/"  # not on the schedule
+    - "!lessons/0x_Test_Distributions/"  # not on the schedule
 
 website:
   title: "Theory of Statistical Inference"

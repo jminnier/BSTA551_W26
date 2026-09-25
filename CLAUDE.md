@@ -64,7 +64,7 @@ decktape reveal --fragments docs/lessons/NN_Name/NN_Name.html lessons/NN_Name/NN
 
 **Freeze is on.** `execute: freeze: auto` caches chunk results in the tracked `_freeze/` directory; pages re-execute only when their source changes. Commits touching only `_freeze/**/execute-results/*.json` are normal. If output looks stale despite a source edit, delete that page's `_freeze/` subdirectory and re-render.
 
-**No render list.** `_quarto.yml` has no `render:` key, so `quarto render` picks up *every* `.qmd` — including all solution files. Solutions are published and reachable by URL; they are gated only by not being linked from `homeworks.qmd` until released.
+**The render list is the publish gate.** `_quarto.yml` carries an explicit `render:` list. Without it Quarto renders *every* `.qmd` in the project, which is how 30 superseded `_old`/`_long` drafts and leftover BSTA 550 material ended up on the live site. The list keeps those sources on disk but out of `docs/`. **Add new lessons and homework freely — they match `**/*.qmd` — but if you add a draft, name it `*_old*` or `*_long*` so it is excluded automatically.** Solution files *are* published and reachable by URL; they are gated only by not being linked from `homeworks.qmd` until released.
 
 **Theming.** `sandstone_NW_JM.scss` is the site theme (the only theme in `_quarto.yml`); `sandstone_NW.scss` is the un-customized upstream copy. Slides use `lessons/simple_NW.scss`, referenced from decks as `../simple_NW.scss`. `styles.css` exists but is **not** wired into `_quarto.yml` — editing it has no effect unless you also add `css: styles.css` to the html format.
 
@@ -113,7 +113,7 @@ TB = Devore/Berk/Carlton section unless marked C&H. Date key = the `class_dates.
 | `15_NeymanPearson_LRT/…` | Neyman–Pearson lemma; LRTs | 9.5 | `w7d2` |
 | `16_FurtherHypothesisTesting/…` | Further aspects of testing; test–CI duality | 9.6 | `w8d2` |
 | `17_BootstrapHypothesisTesting/…` | Bootstrap hypothesis testing | C&H 8 | `w8d2` |
-| `18_TwoSampleTests/…` | Two-sample CIs and tests | 9.5–9.6 in schedule (likely Ch 10) | `w9d1` |
+| `18_TwoSampleTests/…` | Two-sample CIs and tests | 10.1–10.2, 10.4–10.5 | `w9d1` |
 | `19_PairedData/…` | Analysis of paired data | 10.3 | `w9d2` |
 | `20_BootstrapPermutation/…` | Bootstrap & permutation, two samples | 10.6, C&H 3, 5 | `w10d1` |
 | `21_NonparametricInference/…` | Nonparametric inference | 14 | `w10d1` |
@@ -252,7 +252,9 @@ Check section and exercise numbers against these PDFs before citing them.
 
 ## Legacy content and known issues
 
-- `hw_answers/`, `readings/`, and `_course-settings.yml` are carried over from the BSTA 550 site and are not part of BSTA 551's navigation. `_course-settings.yml` describes a Fall 2023 schedule and is unused. They still render (no render list), so leave them unless asked to prune.
+- `hw_answers/`, `readings/`, `draft_schedule.qmd`, `quiz.qmd`, and `_course-settings.yml` are carried over from the BSTA 550 site. `draft_schedule.qmd` is a *probability* schedule; `hw_answers/` are 550 homework answers; `quiz.qmd` describes quizzes BSTA 551 does not give. All are excluded from the render list and no longer published — kept on disk only as reference.
+- `homework/HW_08–HW_10.qmd`, `lessons/24_CourseReview/`, and `lessons/0x_Test_Distributions/` exist but were never assigned or scheduled; also excluded from the render list.
 - `_publish.yml` still points at Nicky Wakim's quarto-pub ID and `nwakim.github.io/bsta-550-25F` — stale, and unused by the GitHub Pages `docs/` deploy.
-- `quiz.qmd` references `q2_open` / `q2_close`, which `class_dates.R` does not define. It renders only from the existing freeze cache and will error if forced to re-execute.
-- `schedule.qmd` lists 9.5–9.6 for Lesson 18 (two-sample topics), which is most likely Chapter 10.
+- `quiz.qmd` references `q2_open` / `q2_close` and `HW_08`/`HW_09` reference `hw8`/`hw9`, none of which `class_dates.R` defines. All three are excluded from the render list, so this no longer breaks a build.
+- **Lesson 18's deck cites "DBC 9.5" on several slides for two-sample z/t procedures.** That is wrong — Devore 9.5 is the Neyman–Pearson lemma; two-sample z/t is 10.1–10.2. `schedule.qmd` has been corrected; the in-deck citations have not.
+- `_freeze/` still holds `lessons copy/`, `lessons_old/`, and BSTA 550 probability entries (`07_pmfs`, `05_Equally_likely_outcomes`, …). Harmless build cache, but ~130 MB of it.
