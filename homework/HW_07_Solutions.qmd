@@ -305,7 +305,7 @@ cat(sprintf("p-value (one-sided) = %.6f\n", p_pair))
 t.test(before, after, paired = TRUE, alternative = "greater") |> tidy()
 ```
 
-**Test statistic:** $T = \bar{D}/(S_D/\sqrt{n}) = `r round(Dbar,4)` / (`r round(SD_d,4)`/$\sqrt{15}$) = `r round(t_pair, 3)`$
+**Test statistic:** $T = \bar{D}/(S_D/\sqrt{n}) = `r round(Dbar,4)` / (`r round(SD_d,4)`/\sqrt{`r n_pair`}) = `r round(t_pair, 3)`$
 
 **$p$-value:** $`r round(p_pair, 6)`$
 
@@ -406,7 +406,7 @@ p2 <- pair_df |>
              color = "grey40",  linewidth = 1.0) +
   geom_vline(xintercept = Dbar, color = "#e74c3c", linewidth = 1.4) +
   annotate("text", x = Dbar + 0.03, y = 1.05,
-           label = bquote(bar(D) == .(round(Dbar, 2))),
+           label = as.expression(bquote(bar(D) == .(round(Dbar, 2)))),
            color = "#e74c3c", size = 5, hjust = 0) +
   labs(
     title = expression("Distribution of Differences  " * D[i] == "Before" - "After"),
@@ -600,7 +600,7 @@ ggplot(bin_df) +
   geom_vline(xintercept = -T_obs, color = "#2c3e50", linewidth = 1.5,
              linetype = "dashed") +
   annotate("text", x = T_obs + 2, y = max(h$density) * 0.92,
-           label = bquote(hat(Delta)[obs] == .(round(T_obs, 1))),
+           label = as.expression(bquote(hat(Delta)[obs] == .(round(T_obs, 1)))),
            color = "#2c3e50", size = 5, hjust = 0) +
   annotate("text", x = min(h$breaks) + 2, y = max(h$density) * 0.80,
            label = p_val_label, color = "#e74c3c",
